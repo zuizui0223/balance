@@ -6,16 +6,20 @@ from .world import MiddleWorldCertificate, classify_middle_world
 from .worldlines import WorldlineComparison, compare_worldlines
 from .worldline_path import WorldlinePathResult, analyze_worldline_path
 from .concordance import CriticalConcordanceResult, compare_critical_paths
+from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 
 __all__ = [
     "BalancePathResult",
     "CriticalConcordanceResult",
+    "Interval",
     "MiddleWorldCertificate",
+    "MiddleWorldReceipt",
     "SwitchingCostResult",
     "WorldlineComparison",
     "WorldlinePathResult",
     "analyze_balance_path",
     "analyze_worldline_path",
+    "classify_bounded_receipt",
     "classify_middle_world",
     "compare_critical_paths",
     "compare_worldlines",
