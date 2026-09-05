@@ -13,6 +13,7 @@ def test_direct_worldlines_identify_middle_world():
     )
     assert result.state == "BALANCE_MIDDLE_WORLD"
     assert math.isclose(result.direct_worldline_gap, -0.2)
+    assert result.parallel_world_residual is None
 
 
 def test_direct_worldline_crossing_identifies_architecture_interface():
@@ -31,9 +32,10 @@ def test_decomposed_bridge_must_match_direct_worldline_gap():
     )
     assert result.bridge_consistent
     assert math.isclose(result.decomposed_gap, result.direct_worldline_gap)
+    assert math.isclose(result.parallel_world_residual, 0.0, abs_tol=1e-12)
 
 
-def test_scale_or_model_mismatch_is_exposed_not_repaired():
+def test_scale_or_model_mismatch_is_exposed_as_parallel_world_residual():
     result = compare_worldlines(
         10.0,
         9.8,
@@ -43,6 +45,7 @@ def test_scale_or_model_mismatch_is_exposed_not_repaired():
     )
     assert result.bridge_consistent is False
     assert not math.isclose(result.decomposed_gap, result.direct_worldline_gap)
+    assert math.isclose(result.parallel_world_residual, -0.2)
 
 
 def test_differentiation_without_registered_sch_conflict_is_outside_bridge():
