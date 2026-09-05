@@ -12,6 +12,7 @@ class WorldlineComparison:
     conflict_load: float
     direct_worldline_gap: float
     decomposed_gap: float | None
+    parallel_world_residual: float | None
     bridge_consistent: bool | None
     state: str
 
@@ -34,10 +35,13 @@ def compare_worldlines(
 
         W_D* - W_S* = sL - K.
 
-    A failure of this identity is not silently repaired.  It means the direct
-    worldline comparison and the decomposed SCH/BITA bridge are not currently
-    on the same registered scale/model and must be investigated before a
-    common critical point is claimed.
+    and reports
+
+        delta_parallel = (W_D* - W_S*) - (sL - K).
+
+    A non-zero residual is a *candidate* parallel-world shift, not proof of
+    one. Scale mismatch, context mismatch, cost-definition mismatch and
+    omitted ecological channels must be excluded first.
     """
     Ws = float(shared_optimum_fitness)
     Wd = float(differentiated_optimum_fitness)
@@ -50,6 +54,7 @@ def compare_worldlines(
 
     direct = Wd - Ws
     decomposed = None
+    residual = None
     consistent = None
 
     if (decoupling is None) != (architecture_cost is None):
@@ -62,7 +67,8 @@ def compare_worldlines(
         if K < 0:
             raise ValueError("architecture_cost must be non-negative")
         decomposed = s * L - K
-        consistent = abs(direct - decomposed) <= tol
+        residual = direct - decomposed
+        consistent = abs(residual) <= tol
 
     if L <= tol:
         if direct > tol:
@@ -82,6 +88,7 @@ def compare_worldlines(
         conflict_load=L,
         direct_worldline_gap=direct,
         decomposed_gap=decomposed,
+        parallel_world_residual=residual,
         bridge_consistent=consistent,
         state=state,
     )
