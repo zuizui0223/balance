@@ -31,6 +31,15 @@ def test_middle_position_runs_from_sch_facing_to_bita_facing_boundary():
     assert bita_side.middle_position > centre.middle_position
 
 
+def test_middle_position_is_invariant_to_common_positive_fitness_rescaling():
+    base = classify_middle_world(0.2, 0.5, 0.3)
+    scaled = classify_middle_world(2.0, 0.5, 3.0)
+    assert base.state == scaled.state == "BALANCE_MIDDLE_WORLD"
+    assert math.isclose(base.middle_position, scaled.middle_position)
+    assert math.isclose(scaled.two_sided_depth, 10.0 * base.two_sided_depth)
+    assert math.isclose(scaled.architecture_margin, 10.0 * base.architecture_margin)
+
+
 def test_boundaries_and_bita_world_are_distinct():
     sch_boundary = classify_middle_world(0.0, 0.5, 0.3)
     assert sch_boundary.state == "SCH_NO_CONFLICT_WORLD"
