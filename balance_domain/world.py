@@ -1,4 +1,4 @@
-"""Two-sided world certificate for Chapter 2 BALANCE.
+"""Two-sided world certificate and geometry for Chapter 2 BALANCE.
 
 SCH and BITA contribute complementary inequalities:
 
@@ -6,7 +6,7 @@ SCH and BITA contribute complementary inequalities:
 - BITA-facing condition: differentiated architecture is not yet favoured,
   ``Phi = sL - K < 0``.
 
-BALANCE is their intersection.  When all terms use a common fitness scale,
+BALANCE is their intersection. When all terms use a common fitness scale,
 this module also locates a point inside the middle world relative to its two
 bounding surfaces.
 """
@@ -14,6 +14,7 @@ bounding surfaces.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 
 @dataclass(frozen=True)
@@ -32,6 +33,76 @@ class MiddleWorldCertificate:
     two_sided_depth: float | None
 
 
+@dataclass(frozen=True)
+class BalanceDomainGeometry:
+    decoupling: float
+    architecture_cost: float
+    finite_bita_boundary: bool
+    critical_conflict_load: float | None
+    equal_margin_conflict_load: float | None
+    max_two_sided_depth: float | None
+    equal_margin_fraction_of_conflict_width: float | None
+    criticality_index_at_equal_margin: float | None
+
+
+def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
+    """Return the one-dimensional BALANCE geometry when ``s`` and ``K`` are fixed.
+
+    For ``s>0`` the static middle world is
+
+        0 < L < K/s.
+
+    In the common fitness-margin coordinates used by :func:`classify_middle_world`,
+    the point equally far from the SCH boundary and the BITA boundary satisfies
+
+        L = K-sL,
+
+    hence
+
+        L_equal = K/(1+s).
+
+    At this point ``xi=1/2`` and the two-sided depth ``min(L, K-sL)`` is maximal.
+    It is *not* generally halfway along the conflict-load interval ``(0, K/s)``.
+
+    When ``s=0`` no finite BITA-facing boundary exists: added dimensionality
+    recovers none of the conflict load. The equal-margin point is therefore not
+    treated as a unique domain centre.
+    """
+    s = float(decoupling)
+    K = float(architecture_cost)
+    if not 0 <= s <= 1:
+        raise ValueError("decoupling must lie in [0,1]")
+    if K < 0:
+        raise ValueError("architecture_cost must be non-negative")
+
+    if s == 0:
+        return BalanceDomainGeometry(
+            decoupling=s,
+            architecture_cost=K,
+            finite_bita_boundary=False,
+            critical_conflict_load=None,
+            equal_margin_conflict_load=None,
+            max_two_sided_depth=None,
+            equal_margin_fraction_of_conflict_width=None,
+            criticality_index_at_equal_margin=None,
+        )
+
+    Lcrit = K / s
+    Lequal = K / (1.0 + s)
+    fraction = None if Lcrit == 0 else Lequal / Lcrit
+    q_equal = None if K == 0 else s * Lequal / K
+    return BalanceDomainGeometry(
+        decoupling=s,
+        architecture_cost=K,
+        finite_bita_boundary=True,
+        critical_conflict_load=Lcrit,
+        equal_margin_conflict_load=Lequal,
+        max_two_sided_depth=Lequal,
+        equal_margin_fraction_of_conflict_width=fraction,
+        criticality_index_at_equal_margin=q_equal,
+    )
+
+
 def classify_middle_world(
     conflict_load: float,
     decoupling: float,
@@ -45,7 +116,7 @@ def classify_middle_world(
     ----------
     conflict_load
         Fitness-scale loss created by forcing the functions onto one shared
-        coordinate.  ``L = 0`` is the SCH-facing no-conflict boundary.
+        coordinate. ``L = 0`` is the SCH-facing no-conflict boundary.
     decoupling
         Fraction ``s`` of the conflict load recoverable by adding dimensionality.
     architecture_cost
@@ -68,6 +139,8 @@ def classify_middle_world(
     K = float(architecture_cost)
     tol = float(tolerance)
 
+    if not all(math.isfinite(x) for x in (L, s, K, tol)):
+        raise ValueError("inputs must be finite")
     if L < 0 or K < 0:
         raise ValueError("conflict_load and architecture_cost must be non-negative")
     if not 0 <= s <= 1:
