@@ -43,6 +43,9 @@ class BalanceDomainGeometry:
     max_two_sided_depth: float | None
     equal_margin_fraction_of_conflict_width: float | None
     criticality_index_at_equal_margin: float | None
+    sch_limited_width: float | None
+    bita_limited_width: float | None
+    bita_to_sch_width_ratio: float | None
 
 
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
@@ -64,12 +67,23 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     At this point ``xi=1/2`` and the two-sided depth ``min(L, K-sL)`` is maximal.
     It is *not* generally halfway along the conflict-load interval ``(0, K/s)``.
 
+    The interval can be split into a SCH-boundary-limited segment and a
+    BITA-boundary-limited segment. Their widths are
+
+        W_S = K/(1+s)
+        W_B = K/[s(1+s)]
+
+    and therefore ``W_B/W_S = 1/s``.  Architecture cost ``K`` scales the whole
+    interval, whereas decoupling ``s`` controls its normalized skew/shape.
+
     When ``s=0`` no finite BITA-facing boundary exists: added dimensionality
     recovers none of the conflict load. The equal-margin point is therefore not
-    treated as a unique domain centre.
+    treated as a unique finite domain centre.
     """
     s = float(decoupling)
     K = float(architecture_cost)
+    if not math.isfinite(s) or not math.isfinite(K):
+        raise ValueError("inputs must be finite")
     if not 0 <= s <= 1:
         raise ValueError("decoupling must lie in [0,1]")
     if K < 0:
@@ -85,12 +99,18 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
             max_two_sided_depth=None,
             equal_margin_fraction_of_conflict_width=None,
             criticality_index_at_equal_margin=None,
+            sch_limited_width=None,
+            bita_limited_width=None,
+            bita_to_sch_width_ratio=None,
         )
 
     Lcrit = K / s
     Lequal = K / (1.0 + s)
+    sch_width = Lequal
+    bita_width = Lcrit - Lequal
     fraction = None if Lcrit == 0 else Lequal / Lcrit
     q_equal = None if K == 0 else s * Lequal / K
+    skew = None if sch_width == 0 else bita_width / sch_width
     return BalanceDomainGeometry(
         decoupling=s,
         architecture_cost=K,
@@ -100,6 +120,9 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         max_two_sided_depth=Lequal,
         equal_margin_fraction_of_conflict_width=fraction,
         criticality_index_at_equal_margin=q_equal,
+        sch_limited_width=sch_width,
+        bita_limited_width=bita_width,
+        bita_to_sch_width_ratio=skew,
     )
 
 
