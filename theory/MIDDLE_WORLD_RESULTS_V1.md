@@ -13,7 +13,7 @@ Phi = R-K    differentiated-minus-shared architecture margin
 rho = K-R    BALANCE reserve
 ```
 
-When both optimized architectures are directly observed on one common fitness scale,
+When both optimized worldlines are directly observed on one common fitness scale,
 
 ```text
 Delta_W = W_D* - W_S*.
@@ -45,7 +45,7 @@ If `s>0`, this is equivalent to
 
 ---
 
-## Proposition 2 — direct worldline identification
+## Proposition 2 — direct worldline identification and localization
 
 If `L`, `W_S*`, and `W_D*` are measured in matched contexts on one common fitness scale, then BALANCE can be identified without a prior `s,K` decomposition:
 
@@ -57,13 +57,23 @@ Delta_W < 0.
 
 The architecture interface is `Delta_W=0` and the BITA side is `Delta_W>0`.
 
-**Consequence.** Chapter 2 is empirically testable before Chapter 3 mechanism decomposition, removing a circular chapter-order dependency.
+Inside a directly identified BALANCE context define
+
+```text
+rho_direct = W_S* - W_D* = -Delta_W
+xi_direct  = L/(L+rho_direct)
+d_B,direct = min(L,rho_direct).
+```
+
+Thus Chapter 2 can estimate both **occupancy** and **position/depth inside the middle world** before Chapter 3 estimates `s` or `K`.
+
+**Consequence.** Chapter 2 is empirically testable and internally measurable before Chapter 3 mechanism decomposition, removing a circular chapter-order dependency.
 
 ---
 
-## Proposition 3 — middle-world position and depth
+## Proposition 3 — decomposed middle-world position and direct equivalence
 
-Inside BALANCE let
+Under the registered decomposition, inside BALANCE let
 
 ```text
 rho = K-sL > 0
@@ -84,7 +94,15 @@ L -> 0+       implies xi -> 0
 rho -> 0+     implies xi -> 1.
 ```
 
-Thus `xi` is an orientation from the SCH-facing boundary toward the BITA-facing boundary, while `d_B` measures the minimum one-margin perturbation needed to reach either boundary on the common fitness scale.
+If the direct and decomposed worldline descriptions are consistent,
+
+```text
+rho_direct = rho
+xi_direct  = xi
+d_B,direct = d_B.
+```
+
+Thus BITA decomposition becomes an independent reconciliation test of Chapter-2 coordinates rather than a prerequisite for defining them.
 
 `xi` is not evolutionary time and `d_B` is not a historical transition cost.
 
@@ -133,7 +151,46 @@ For `s=0`, no finite BITA-facing boundary exists and there is no unique finite m
 
 ---
 
-## Proposition 5 — positive affine-scale invariance
+## Proposition 5 — architecture cost sets scale, decoupling sets normalized shape
+
+For fixed `s>0` and `K>0`, split the conflict-load interval at the deepest ridge. The SCH-boundary-limited width is
+
+```text
+W_S = K/(1+s),
+```
+
+whereas the BITA-boundary-limited width is
+
+```text
+W_B = K/[s(1+s)].
+```
+
+Therefore
+
+```text
+W_B/W_S = 1/s.
+```
+
+Increasing `K` stretches both subregions proportionally but leaves this ratio unchanged. Changing `s` changes the normalized skew of the middle world.
+
+Equivalently, in the dimensionless phase plane
+
+```text
+c = L/K
+q = sL/K = sc,
+```
+
+BALANCE is `c>0` and `q<1`, the architecture boundary is `c=1/s`, and the deepest ridge is
+
+```text
+c_deep = 1/(1+s).
+```
+
+**Consequence.** Chapter 2 separates a domain **scale parameter** (`K`) from a domain **shape parameter** (`s`) in this baseline geometry.
+
+---
+
+## Proposition 6 — positive affine-scale invariance
 
 Suppose the common reproductive-fitness scale is transformed by
 
@@ -166,9 +223,9 @@ while dimensional quantities such as `rho` and `d_B` scale by `a`.
 
 ---
 
-## Proposition 6 — direct/decomposed concordance
+## Proposition 7 — direct/decomposed concordance
 
-If the direct optimized architecture comparison and the decomposed bridge describe the same contexts, same reproductive fitness scale, same architecture cost definition, and same modeled channels, then
+If the direct optimized worldline comparison and the decomposed bridge describe the same contexts, same reproductive fitness scale, same architecture cost definition, and same modeled channels, then
 
 ```text
 Delta_W = sL-K.
@@ -184,9 +241,11 @@ Under those assumptions `delta_parallel=0`.
 
 A non-zero value is therefore a **bridge residual**. It can motivate a parallel-world hypothesis only after scale mismatch, context mismatch, cost mismatch, and omitted ecological channels have been excluded.
 
+The same logic applies to the inferred middle-world coordinates: under bridge consistency, direct and decomposed `rho`, `xi`, and `d_B` must agree.
+
 ---
 
-## Proposition 7 — no-reentry sufficient condition
+## Proposition 8 — no-reentry sufficient condition
 
 Along an ordered environment `e`, if
 
@@ -214,7 +273,7 @@ requires at least one registered monotonicity condition, or the common-world map
 
 ---
 
-## Proposition 8 — switching-cost hysteresis
+## Proposition 9 — switching-cost hysteresis
 
 Let switching shared->differentiated cost `C_SD`, differentiated->shared cost `C_DS`, and let the context persist for horizon `T>0`.
 
@@ -251,10 +310,12 @@ with width
 The Chapter-2 theory becomes especially informative if data recover any of the following:
 
 1. direct `Delta_W` and decomposed `sL-K` disagree after bridge audits;
-2. natural re-entry occurs despite apparently monotone `L`, `s`, and `K`;
-3. forward and reverse architecture thresholds differ and scale with context duration as predicted;
-4. systems with comparable conflict load `L` occupy very different `xi` or `d_B`, showing that conflict magnitude alone does not determine architecture state;
-5. systems thought to share one architecture critical point instead show reproducibly separated direct and decomposed environmental crossings;
-6. empirical deep-BALANCE contexts do not shift with estimated decoupling in the direction predicted by `L_deep=K/(1+s)`.
+2. direct and decomposed `xi` or `d_B` disagree after bridge audits;
+3. natural re-entry occurs despite apparently monotone `L`, `s`, and `K`;
+4. forward and reverse architecture thresholds differ and scale with context duration as predicted;
+5. systems with comparable conflict load `L` occupy very different direct `xi` or `d_B`, showing that conflict magnitude alone does not determine architecture state;
+6. systems thought to share one architecture critical point instead show reproducibly separated direct and decomposed environmental crossings;
+7. empirical deep-BALANCE contexts do not shift with estimated decoupling in the direction predicted by `L_deep=K/(1+s)`;
+8. normalized BALANCE-domain skew fails to track `1/s` after the declared scale/model assumptions are met.
 
 These are BALANCE-specific questions rather than restatements of the SCH optimum or BITA mechanism problems.
