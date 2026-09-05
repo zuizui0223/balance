@@ -90,7 +90,50 @@ Thus `xi` is an orientation from the SCH-facing boundary toward the BITA-facing 
 
 ---
 
-## Proposition 4 — positive affine-scale invariance
+## Proposition 4 — the deepest point is decoupling-dependent
+
+Fix `s>0` and `K>0`. The BALANCE interval in conflict-load coordinates is
+
+```text
+0 < L < K/s.
+```
+
+The two-sided depth is
+
+```text
+d_B(L) = min[L, K-sL].
+```
+
+It rises with `L` while the SCH-facing margin is limiting, then falls when the BITA-facing reserve becomes limiting. The maximum occurs where the two margins are equal:
+
+```text
+L = K-sL
+```
+
+so
+
+```text
+L_deep = K/(1+s)
+rho_deep = K/(1+s)
+xi_deep = 1/2
+d_B,max = K/(1+s).
+```
+
+Relative to the full conflict-load width `K/s`, the deepest point lies at
+
+```text
+L_deep / (K/s) = s/(1+s).
+```
+
+Thus the deepest BALANCE point is generally **not** halfway along the conflict-load interval. When decoupling is weak (`s` small), the widest safety margin is displaced toward the SCH-facing side; when `s=1`, it lies at half the conflict-load threshold.
+
+For `s=0`, no finite BITA-facing boundary exists and there is no unique finite middle point of this kind.
+
+**Consequence.** The geometry of the BALANCE interior contains information about decoupling even before the differentiated state becomes favoured.
+
+---
+
+## Proposition 5 — positive affine-scale invariance
 
 Suppose the common reproductive-fitness scale is transformed by
 
@@ -123,7 +166,7 @@ while dimensional quantities such as `rho` and `d_B` scale by `a`.
 
 ---
 
-## Proposition 5 — direct/decomposed concordance
+## Proposition 6 — direct/decomposed concordance
 
 If the direct optimized architecture comparison and the decomposed bridge describe the same contexts, same reproductive fitness scale, same architecture cost definition, and same modeled channels, then
 
@@ -143,7 +186,7 @@ A non-zero value is therefore a **bridge residual**. It can motivate a parallel-
 
 ---
 
-## Proposition 6 — no-reentry sufficient condition
+## Proposition 7 — no-reentry sufficient condition
 
 Along an ordered environment `e`, if
 
@@ -171,7 +214,7 @@ requires at least one registered monotonicity condition, or the common-world map
 
 ---
 
-## Proposition 7 — switching-cost hysteresis
+## Proposition 8 — switching-cost hysteresis
 
 Let switching shared->differentiated cost `C_SD`, differentiated->shared cost `C_DS`, and let the context persist for horizon `T>0`.
 
@@ -211,6 +254,7 @@ The Chapter-2 theory becomes especially informative if data recover any of the f
 2. natural re-entry occurs despite apparently monotone `L`, `s`, and `K`;
 3. forward and reverse architecture thresholds differ and scale with context duration as predicted;
 4. systems with comparable conflict load `L` occupy very different `xi` or `d_B`, showing that conflict magnitude alone does not determine architecture state;
-5. systems thought to share one architecture critical point instead show reproducibly separated direct and decomposed environmental crossings.
+5. systems thought to share one architecture critical point instead show reproducibly separated direct and decomposed environmental crossings;
+6. empirical deep-BALANCE contexts do not shift with estimated decoupling in the direction predicted by `L_deep=K/(1+s)`.
 
 These are BALANCE-specific questions rather than restatements of the SCH optimum or BITA mechanism problems.
