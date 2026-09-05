@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "balance-domain"
+version = "0.1.0"
+description = "Chapter 2 theory and analysis for persistence inside the compromise domain"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
