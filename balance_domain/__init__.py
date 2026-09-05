@@ -2,7 +2,12 @@
 
 from .static import BalancePathResult, analyze_balance_path
 from .dynamics import SwitchingCostResult, switching_cost_state
-from .world import MiddleWorldCertificate, classify_middle_world
+from .world import (
+    BalanceDomainGeometry,
+    MiddleWorldCertificate,
+    balance_domain_geometry,
+    classify_middle_world,
+)
 from .worldlines import WorldlineComparison, compare_worldlines
 from .worldline_path import WorldlinePathResult, analyze_worldline_path
 from .concordance import CriticalConcordanceResult, compare_critical_paths
@@ -16,6 +21,7 @@ from .definition_concordance import (
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 
 __all__ = [
+    "BalanceDomainGeometry",
     "BalancePathResult",
     "CriticalConcordanceResult",
     "CrossingBracket",
@@ -29,6 +35,7 @@ __all__ = [
     "analyze_balance_path",
     "analyze_definitions",
     "analyze_worldline_path",
+    "balance_domain_geometry",
     "classify_bounded_receipt",
     "classify_middle_world",
     "compare_critical_paths",
