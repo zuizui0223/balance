@@ -1,3 +1,5 @@
+import math
+
 from balance_domain import analyze_balance_path, switching_cost_state
 
 
@@ -34,7 +36,7 @@ def test_criticality_index_and_reserve_inside_balance():
     assert all(state == "BALANCE" for state in result.states)
     assert all(0 < q < 1 for q in result.criticality_index if q is not None)
     assert all(r > 0 for r in result.reserve)
-    assert result.balance_width == 2.0
+    assert math.isclose(result.balance_width, 2.0)
 
 
 def test_switching_costs_create_history_dependent_band():
@@ -44,9 +46,9 @@ def test_switching_costs_create_history_dependent_band():
         cost_shared_to_diff=1.0,
         cost_diff_to_shared=0.5,
     )
-    assert result.forward_threshold == 0.1
-    assert result.reverse_threshold == -0.05
-    assert result.hysteresis_width == 0.15
+    assert math.isclose(result.forward_threshold, 0.1)
+    assert math.isclose(result.reverse_threshold, -0.05)
+    assert math.isclose(result.hysteresis_width, 0.15)
     assert result.history_dependent
     assert result.shared_stays
     assert result.differentiated_stays
