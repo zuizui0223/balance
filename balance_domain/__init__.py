@@ -8,6 +8,7 @@ from .world import (
     balance_domain_geometry,
     classify_middle_world,
 )
+from .phase import NormalizedPhasePoint, normalized_phase_point
 from .worldlines import WorldlineComparison, compare_worldlines
 from .worldline_path import WorldlinePathResult, analyze_worldline_path
 from .concordance import CriticalConcordanceResult, compare_critical_paths
@@ -29,6 +30,7 @@ __all__ = [
     "Interval",
     "MiddleWorldCertificate",
     "MiddleWorldReceipt",
+    "NormalizedPhasePoint",
     "SwitchingCostResult",
     "WorldlineComparison",
     "WorldlinePathResult",
@@ -42,5 +44,6 @@ __all__ = [
     "compare_definition_brackets",
     "compare_worldlines",
     "crossing_bracket",
+    "normalized_phase_point",
     "switching_cost_state",
 ]
