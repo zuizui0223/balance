@@ -1,0 +1,51 @@
+{
+  "input_version": "BALANCE_PEUCEDANUM_ANTAGONIST_PROXY_CRITICALITY_INPUT_V1",
+  "system": "Peucedanum multivittatum",
+  "source": {
+    "citation": "Kudo & Shibata 2025, Journal of Ecology 113:2832-2845",
+    "doi": "10.1111/1365-2745.70130",
+    "repository_provenance": "migrated from the validated BITA critical-definition sensitivity analysis",
+    "egg_load_source": "main-text section 3.3",
+    "selection_source": "Table 3 and female-gain results"
+  },
+  "proxy_axis": {
+    "name": "mean_predator_eggs_per_umbel",
+    "units": "eggs_per_umbel",
+    "left_context": "HL",
+    "left_value": 3.09,
+    "right_context": "HC",
+    "right_value": 1.64,
+    "axis_uncertainty": "plot means treated as fixed descriptive proxy values; individual-level SDs are not converted to SEs here"
+  },
+  "definitions": {
+    "final_fruit_selection_gradient_beta": {
+      "left_mean": -0.029,
+      "left_se": 0.011,
+      "right_mean": 0.034,
+      "right_se": 0.010,
+      "zero_semantics": "no direct standardized selection gradient on perfect-flower production for final fruit-set rate"
+    },
+    "final_fruit_selection_differential_S": {
+      "left_mean": -0.051,
+      "left_se": 0.010,
+      "right_mean": 0.036,
+      "right_se": 0.008,
+      "zero_semantics": "no univariate standardized selection differential on perfect-flower production for final fruit-set rate"
+    },
+    "female_gain_exponent_b_minus_1": {
+      "left_mean": -0.55,
+      "left_se": 0.21,
+      "right_mean": 0.15,
+      "right_se": 0.22,
+      "zero_semantics": "female-gain exponent b equals one"
+    }
+  },
+  "registered_sensitivity_model": {
+    "local_interpolation": "piecewise_linear_between_HL_and_HC_only",
+    "uncertainty_model": "independent_normal_sampling_of_published_definition_coefficients",
+    "draws": 50000,
+    "random_seed": 20260905,
+    "conditioning": "retain draws only when HL margin < 0 and HC margin > 0",
+    "warning": "observational proxy-axis sensitivity only; not a causal calibration of architecture variables"
+  }
+}
