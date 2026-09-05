@@ -90,7 +90,40 @@ Thus `xi` is an orientation from the SCH-facing boundary toward the BITA-facing 
 
 ---
 
-## Proposition 4 — direct/decomposed concordance
+## Proposition 4 — positive affine-scale invariance
+
+Suppose the common reproductive-fitness scale is transformed by
+
+```text
+W' = aW + b
+```
+
+with `a>0` applied identically to the SCH, BALANCE and BITA comparisons.
+
+All fitness **differences** are multiplied by `a`, while the additive constant cancels. Hence
+
+```text
+L'   = aL
+rho' = a rho
+Phi' = a Phi
+Delta_W' = a Delta_W.
+```
+
+Therefore:
+
+```text
+BALANCE state is unchanged
+xi' = xi
+q' = q
+```
+
+while dimensional quantities such as `rho` and `d_B` scale by `a`.
+
+**Consequence.** `xi` and `q` are natural dimensionless comparative coordinates once the same biological outcome and orientation are used. This does not license comparison across different outcome definitions merely because the ratios are dimensionless.
+
+---
+
+## Proposition 5 — direct/decomposed concordance
 
 If the direct optimized architecture comparison and the decomposed bridge describe the same contexts, same reproductive fitness scale, same architecture cost definition, and same modeled channels, then
 
@@ -110,7 +143,7 @@ A non-zero value is therefore a **bridge residual**. It can motivate a parallel-
 
 ---
 
-## Proposition 5 — no-reentry sufficient condition
+## Proposition 6 — no-reentry sufficient condition
 
 Along an ordered environment `e`, if
 
@@ -138,7 +171,7 @@ requires at least one registered monotonicity condition, or the common-world map
 
 ---
 
-## Proposition 6 — switching-cost hysteresis
+## Proposition 7 — switching-cost hysteresis
 
 Let switching shared->differentiated cost `C_SD`, differentiated->shared cost `C_DS`, and let the context persist for horizon `T>0`.
 
@@ -177,6 +210,7 @@ The Chapter-2 theory becomes especially informative if data recover any of the f
 1. direct `Delta_W` and decomposed `sL-K` disagree after bridge audits;
 2. natural re-entry occurs despite apparently monotone `L`, `s`, and `K`;
 3. forward and reverse architecture thresholds differ and scale with context duration as predicted;
-4. systems with comparable conflict load `L` occupy very different `xi` or `d_B`, showing that conflict magnitude alone does not determine architecture state.
+4. systems with comparable conflict load `L` occupy very different `xi` or `d_B`, showing that conflict magnitude alone does not determine architecture state;
+5. systems thought to share one architecture critical point instead show reproducibly separated direct and decomposed environmental crossings.
 
 These are BALANCE-specific questions rather than restatements of the SCH optimum or BITA mechanism problems.
