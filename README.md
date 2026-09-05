@@ -61,6 +61,38 @@ Inside BALANCE, `0 < xi < 1`. `xi -> 0` approaches the SCH-facing no-conflict bo
 
 See `docs/MIDDLE_WORLD_DEFINITION.md` and `balance_domain/world.py`.
 
+## Direct empirical two-worldline route
+
+Chapter 2 does **not** require the full Chapter-3 decomposition before it can be tested.
+
+If the two architectures can be optimized on one matched reproductive fitness scale, define
+
+```text
+W_S*(e) = optimized shared-coordinate fitness
+W_D*(e) = optimized differentiated-coordinate fitness
+Delta_W(e) = W_D*(e)-W_S*(e).
+```
+
+Then an empirical BALANCE receipt can be obtained directly from
+
+```text
+L(e) > 0
+and
+Delta_W(e) < 0.
+```
+
+This makes the chapter logically independent: SCH supplies evidence that the shared world is genuinely conflicted, BALANCE compares the two optimized worldlines, and BITA may later decompose the observed gap into
+
+```text
+Delta_W = sL-K
+```
+
+and identify its mechanism.
+
+When both the direct and decomposed routes are available, they must agree on the registered common fitness scale. A mismatch is exposed as a bridge failure rather than averaged away.
+
+See `docs/TWO_WORLDLINE_CONCORDANCE.md`, `balance_domain/worldlines.py`, and `balance_domain/worldline_path.py`.
+
 ## Static domain
 
 Let
@@ -109,9 +141,11 @@ N_0                       number of Phi=0 crossings
 
 1. **Two-sided world certificate.** BALANCE is exactly the intersection `L>0` and `Phi<0`; the new `xi` and `d_B` estimands locate a context inside that sandwiched region on a common fitness scale.
 
-2. **No-reentry sufficient condition.** If along an ordered environment `L` and `s` are nondecreasing and `K` is nonincreasing, then `Phi=sL-K` is nondecreasing. BALANCE can therefore form at most one connected interval before differentiation; a BALANCE→DIFFERENTIATION→BALANCE sequence requires at least one monotonicity condition or the common-world mapping to fail.
+2. **Direct worldline route.** `L>0` and `W_D*-W_S*<0` identify the middle world without requiring a prior `s,K` decomposition. This removes circular dependence on Chapter 3.
 
-3. **Switching-cost persistence.** If moving shared→differentiated costs `C_SD`, moving differentiated→shared costs `C_DS`, and a context persists for horizon `T`, then history dependence occurs for
+3. **No-reentry sufficient condition.** If along an ordered environment `L` and `s` are nondecreasing and `K` is nonincreasing, then `Phi=sL-K` is nondecreasing. BALANCE can therefore form at most one connected interval before differentiation; a BALANCE→DIFFERENTIATION→BALANCE sequence requires at least one monotonicity condition or the common-world mapping to fail.
+
+4. **Switching-cost persistence.** If moving shared→differentiated costs `C_SD`, moving differentiated→shared costs `C_DS`, and a context persists for horizon `T`, then history dependence occurs for
 
 ```text
 -C_DS/T <= Phi <= C_SD/T
@@ -128,15 +162,15 @@ Thus BALANCE can be a persistent state even after the instantaneous fitness orde
 ## Separation from the sister chapters
 
 - **SCH supplies** the shared-coordinate compromise geometry and, when identified, a fitness-scale conflict budget `L`.
-- **BALANCE studies** the geometry, two-sided depth, reserve, topology, and persistence inside the region where conflict exists but shared architecture still wins.
-- **BITA supplies** the recoverable fraction `s`, architecture comparison `K`, dimensional release, and mechanism identification once differentiated axes become relevant.
+- **BALANCE studies** the direct ordering of the shared and differentiated worldlines and the geometry, two-sided depth, reserve, topology, and persistence of the region where conflict exists but shared architecture still wins.
+- **BITA supplies** the mechanistic decomposition into recoverability `s`, architecture cost `K`, dimensional release, and ecological mechanism identification once differentiated axes become relevant.
 
 The definitions intentionally complement one another:
 
 ```text
 SCH says:   conflict exists.
-BITA says:  differentiation pays or does not pay.
-BALANCE asks what kind of ecological world exists when the first is YES and the second is NO.
+BALANCE says: the shared world still outranks the differentiated world despite that conflict.
+BITA says:  the differentiated world has crossed above it, and asks why.
 ```
 
 Do not claim historical trait splitting from this repository without independent historical evidence.
@@ -150,6 +184,9 @@ Implemented and regression-tested:
 - switching-cost hysteresis,
 - middle-world certificate,
 - middle-world position `xi`,
-- two-sided depth `d_B`.
+- two-sided depth `d_B`,
+- direct shared-vs-differentiated worldline comparison,
+- direct empirical worldline-path mapping,
+- direct-versus-decomposed bridge concordance checks.
 
-Immediate empirical validation targets are paired SCH/BITA receipts from systems such as *Pedicularis rex* and observational critical brackets such as *Peucedanum multivittatum*. The main empirical question is whether natural systems occupy a measurable interior BALANCE world, merely sit close to one boundary, or show history-dependent overlap of the shared and differentiated worldlines.
+Immediate empirical validation targets are paired SCH/BALANCE/BITA receipts from systems such as *Pedicularis rex* and observational critical brackets such as *Peucedanum multivittatum*. The main empirical question is whether natural systems occupy a measurable interior BALANCE world, merely sit close to one boundary, or show history-dependent overlap of the shared and differentiated worldlines.
