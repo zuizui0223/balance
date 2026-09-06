@@ -25,3 +25,10 @@ def test_pedicularis_direct_balance_is_not_marked_executed():
 def test_cross_domain_anchor_is_not_a_balance_receipt():
     rows = _rows()
     assert "NOT_BALANCE_RECEIPT" in rows["Cichlid_jaw_systems"]["middle_world_status"]
+
+
+def test_hisa_trpf_is_boundary_candidate_not_direct_balance_receipt():
+    rows = _rows()
+    item = rows["Salmonella_HisA_TrpF"]
+    assert item["program_role"] == "G3_CROSS_DOMAIN_ARCHITECTURE_BOUNDARY_CANDIDATE"
+    assert item["middle_world_status"] == "DIRECT_BALANCE_WORLDLINE_NOT_IDENTIFIED"
