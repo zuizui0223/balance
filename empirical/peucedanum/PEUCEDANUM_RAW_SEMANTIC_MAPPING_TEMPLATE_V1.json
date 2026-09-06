@@ -1,0 +1,58 @@
+{
+  "schema_version": "BALANCE_PEUCEDANUM_RAW_SEMANTIC_MAPPING_V1",
+  "status": "TEMPLATE_NOT_SOURCE_VERIFIED",
+  "registered_sources": [
+    {
+      "source_doi": "10.5061/dryad.b5mkkwhcq",
+      "expected_file": "Kudo&Shibata_Ecol&Evol_DataSet.xlsx",
+      "sheet_mappings": []
+    },
+    {
+      "source_doi": "10.5061/dryad.w3r2280v5",
+      "expected_files": [
+        "Data1_FloralGender.xls",
+        "Data2_basedata20-21.xls",
+        "Data3_FitnessAnal.xls",
+        "README.md"
+      ],
+      "sheet_mappings": []
+    },
+    {
+      "source_doi": "10.14943/hu95572",
+      "expected_role": "2025 raw data and reproducible code",
+      "sheet_mappings": []
+    }
+  ],
+  "normalized_fields": {
+    "required_identifiers": [
+      "dataset_id",
+      "source_doi",
+      "year",
+      "population_id",
+      "plant_id"
+    ],
+    "core_traits": [
+      "flowering_day",
+      "perfect_flower_count",
+      "male_flower_count"
+    ],
+    "female_fitness_and_antagonism": [
+      "initial_fruit_count",
+      "intact_fruit_count",
+      "predator_egg_count",
+      "seed_predation_rate"
+    ],
+    "optional_covariates": [
+      "flower_stem_height",
+      "male_fitness",
+      "pollen_or_siring_measure"
+    ],
+    "derived": [
+      "total_flower_count",
+      "male_fraction",
+      "final_fruit_set_rate"
+    ]
+  },
+  "mapping_rule": "Populate source_file/source_sheet/source_column only after inspecting the source workbook notes or README. Do not infer source columns from this template.",
+  "missing_value_rule": "Preserve source missingness; no silent imputation."
+}
