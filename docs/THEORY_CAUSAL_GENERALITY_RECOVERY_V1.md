@@ -41,9 +41,17 @@ and, under fixed `s,K`, the deepest ridge and normalized phase geometry.
 
 Status: `DERIVED_AND_IMPLEMENTED`.
 
-## T3. Domain topology
+## T3. Domain existence and topology
 
-If along environment `e`:
+Along an ordered environmental path after conflict onset, BALANCE now has a general static trichotomy:
+
+```text
+1. no positive-width BALANCE domain
+2. one finite BALANCE interval before a first architecture crossing
+3. persistent BALANCE over the observed/accessible path when no crossing occurs.
+```
+
+If the direct architecture gap `Delta_W(e)` is nondecreasing after conflict onset, these exhaust the sampled topology. The earlier sufficient conditions
 
 ```text
 L(e) nondecreasing
@@ -51,9 +59,11 @@ s(e) nondecreasing
 K(e) nonincreasing
 ```
 
-then the architecture margin is nondecreasing and BALANCE -> DIFFERENTIATION -> BALANCE re-entry is impossible on that path.
+imply nondecreasing decomposed architecture margin and therefore exclude BALANCE -> DIFFERENTIATION -> BALANCE re-entry on that path.
 
-Status: `SUFFICIENT_NO_REENTRY_RESULT_IMPLEMENTED`.
+See `theory/DOMAIN_EXISTENCE_TRICHOTOMY_V1.md` and `balance_domain/domain_existence.py`.
+
+Status: `TRICHOTOMY_AND_MONOTONE_TOPOLOGY_IMPLEMENTED`.
 
 ## T4. Persistence / hysteresis
 
@@ -63,7 +73,7 @@ Status: `SWITCHING_COST_THEORY_IMPLEMENTED`.
 
 ### Theory claim ceiling
 
-The theory defines a possible and measurable middle regime. It does not establish that a natural system actually occupies it, nor that any observed sign reversal is a direct worldline crossing.
+The theory defines a possible and measurable middle regime. It does not establish that a natural system actually occupies it, nor that any observed sign reversal is a direct worldline crossing. Failure to observe a crossing on a finite environmental range does not prove that no crossing exists outside that range.
 
 ---
 
@@ -112,6 +122,8 @@ critical crossing(s)
 direct vs decomposed crossing concordance
 same vs shifted / parallel critical region.
 ```
+
+Use the trichotomy to distinguish no positive-width interior, finite interior, persistent observed interior, and nonmonotone/re-entry cases without inventing unsampled crossing locations.
 
 Status: `ANALYZERS_IMPLEMENTED_EMPIRICAL_PATH_PENDING`.
 
@@ -172,11 +184,11 @@ The universal object is a **finite sandwiched occupancy/persistence regime**, no
 # Current bottleneck
 
 ```text
-theory / topology / persistence math   strong / implemented
-Peucedanum observational mosaic         positive anchor
-Pedicularis direct worldline machinery  ready
-Pedicularis direct worldline biology    NOT YET EXECUTED
-cross-system direct BALANCE replication incomplete
+theory / domain trichotomy / persistence math strong / implemented
+Peucedanum observational mosaic              positive anchor
+Pedicularis direct worldline machinery       ready
+Pedicularis direct worldline biology         NOT YET EXECUTED
+cross-system direct BALANCE replication      incomplete
 ```
 
 The next scientific gate is direct same-context `W_S*` vs `W_D*` measurement, not PAYOFF invasion dynamics.
