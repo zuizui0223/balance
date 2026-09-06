@@ -22,6 +22,12 @@ from .definition_concordance import (
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 from .handoff import ConflictHandoff, consume_conflict_handoff
 from .depth_path import DeepestMiddleWorldPoint, deepest_middle_point
+from .sensitivity import (
+    BoundarySensitivity,
+    DeepestPointSensitivity,
+    boundary_sensitivity,
+    deepest_point_sensitivity,
+)
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -35,10 +41,12 @@ from .longitudinal_mosaic import LongitudinalMosaicResult, classify_longitudinal
 __all__ = [
     "BalanceDomainGeometry",
     "BalancePathResult",
+    "BoundarySensitivity",
     "ConflictHandoff",
     "CriticalConcordanceResult",
     "CrossingBracket",
     "DeepestMiddleWorldPoint",
+    "DeepestPointSensitivity",
     "DefinitionConcordance",
     "Interval",
     "LongitudinalMosaicResult",
@@ -56,6 +64,7 @@ __all__ = [
     "analyze_definitions",
     "analyze_worldline_path",
     "balance_domain_geometry",
+    "boundary_sensitivity",
     "classify_bounded_receipt",
     "classify_longitudinal_mosaic",
     "classify_middle_world",
@@ -65,6 +74,7 @@ __all__ = [
     "consume_conflict_handoff",
     "crossing_bracket",
     "deepest_middle_point",
+    "deepest_point_sensitivity",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
     "switching_cost_state",
