@@ -21,6 +21,7 @@ from .definition_concordance import (
 )
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 from .handoff import ConflictHandoff, consume_conflict_handoff
+from .depth_path import DeepestMiddleWorldPoint, deepest_middle_point
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -37,6 +38,7 @@ __all__ = [
     "ConflictHandoff",
     "CriticalConcordanceResult",
     "CrossingBracket",
+    "DeepestMiddleWorldPoint",
     "DefinitionConcordance",
     "Interval",
     "LongitudinalMosaicResult",
@@ -62,6 +64,7 @@ __all__ = [
     "compare_worldlines",
     "consume_conflict_handoff",
     "crossing_bracket",
+    "deepest_middle_point",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
     "switching_cost_state",
