@@ -29,6 +29,7 @@ from .sensitivity import (
     deepest_point_sensitivity,
 )
 from .environmental_depth import EnvironmentalDepth, environmental_depth
+from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -60,6 +61,7 @@ __all__ = [
     "RawInventory",
     "ReproductionGate",
     "SwitchingCostResult",
+    "WidthDepthBounds",
     "WorldlineComparison",
     "WorldlinePathResult",
     "analyze_balance_path",
@@ -73,6 +75,7 @@ __all__ = [
     "compare_critical_paths",
     "compare_definition_brackets",
     "compare_worldlines",
+    "constant_slope_depth",
     "consume_conflict_handoff",
     "crossing_bracket",
     "deepest_middle_point",
@@ -82,4 +85,5 @@ __all__ = [
     "published_regime_reproduction_gate",
     "switching_cost_state",
     "validate_normalized_rows",
+    "width_depth_bounds",
 ]
