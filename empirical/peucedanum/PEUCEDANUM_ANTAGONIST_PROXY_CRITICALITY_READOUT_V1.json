@@ -1,0 +1,45 @@
+{
+  "analysis": "balance_peucedanum_antagonist_proxy_criticality",
+  "system": "Peucedanum multivittatum",
+  "input_version": "BALANCE_PEUCEDANUM_ANTAGONIST_PROXY_CRITICALITY_INPUT_V1",
+  "registered_draws": 50000,
+  "random_seed": 20260905,
+  "proxy_axis": {
+    "name": "mean_predator_eggs_per_umbel",
+    "units": "eggs_per_umbel",
+    "left_context": "HL",
+    "left_value": 3.09,
+    "right_context": "HC",
+    "right_value": 1.64,
+    "observed_bracket_width": 1.45
+  },
+  "definitions": {
+    "final_fruit_selection_gradient_beta": {
+      "point_critical_proxy": 2.422539682539682,
+      "conditional_median_critical_proxy": 2.423820807633716,
+      "conditional_95_interval": [2.0749480214088, 2.8260710791568258],
+      "sign_consistent_draw_fraction": 0.99566,
+      "n_sign_consistent_draws": 49783
+    },
+    "final_fruit_selection_differential_S": {
+      "point_critical_proxy": 2.24,
+      "conditional_median_critical_proxy": 2.239040236451377,
+      "conditional_95_interval": [2.0254451102686195, 2.458005282507504],
+      "sign_consistent_draw_fraction": 1.0,
+      "n_sign_consistent_draws": 50000
+    },
+    "female_gain_exponent_b_minus_1": {
+      "point_critical_proxy": 1.9507142857142856,
+      "conditional_median_critical_proxy": 2.0623473955123215,
+      "conditional_95_interval": [1.6750102523593817, 2.605567686643701],
+      "sign_consistent_draw_fraction": 0.74924,
+      "n_sign_consistent_draws": 37462
+    }
+  },
+  "point_estimate_spread": 0.4718253968253965,
+  "point_estimate_spread_fraction_of_observed_bracket": 0.3253968253968252,
+  "common_conditional_95_interval": [2.0749480214088, 2.458005282507504],
+  "classification": "SAME_NUMERIC_PROXY_CRITICAL_CONTEXT_COMPATIBLE",
+  "interpretation": "Point estimates differ, but the registered coefficient-uncertainty intervals retain a non-empty common intersection. One latent numeric proxy-critical region therefore remains compatible with this conditional observational model.",
+  "claim_ceiling": "conditional_proxy_interpolation_only; egg_load_not_calibrated_functional_weight; axis_uncertainty_not_propagated; not_direct_middle_world_receipt; not_causal_architecture_threshold; not_parallel_world_proof"
+}

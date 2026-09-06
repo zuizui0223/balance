@@ -1,0 +1,39 @@
+{
+  "schema": "BALANCE_PEUCEDANUM_CRITICAL_DEFINITIONS_V1",
+  "role": "observational_critical_region_anchor_not_architecture_worldline_receipt",
+  "source_provenance": {
+    "primary_source": "Kudo & Shibata 2025",
+    "repository_provenance": "zuizui0223/bita docs/CRITICAL_DEFINITION_CONCORDANCE_V1.md",
+    "claim_ceiling": "multiple operational definitions locate one concordant observational transition region; common SCH/BITA architecture boundary not identified"
+  },
+  "ordered_contexts": ["HA", "HL", "HC", "KD", "HD"],
+  "definitions": {
+    "final_fruit_selection_gradient_beta": {
+      "HA": -0.035,
+      "HL": -0.029,
+      "HC": 0.034,
+      "KD": 0.008,
+      "HD": 0.026
+    },
+    "final_fruit_selection_differential_S": {
+      "HA": -0.027,
+      "HL": -0.051,
+      "HC": 0.036,
+      "KD": 0.021,
+      "HD": 0.024
+    },
+    "female_gain_exponent_minus_one": {
+      "HA": -0.37,
+      "HL": -0.55,
+      "HC": 0.15,
+      "KD": 0.26,
+      "HD": 0.55
+    }
+  },
+  "conditional_predator_egg_proxy": {
+    "HL": 3.09,
+    "HC": 1.64,
+    "units": "mean predator eggs per umbel",
+    "warning": "observational proxy only; do not equate with theoretical functional weight"
+  }
+}
