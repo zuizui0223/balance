@@ -44,6 +44,12 @@ from .multi_alternative import (
     classify_multi_alternative_middle_world,
 )
 from .accessibility_scope import AccessibilityScopeBounds, accessibility_scope_bounds
+from .affine_envelope import (
+    EnvelopeSegment,
+    affine_upper_envelope_segments,
+    alternative_reserve,
+    threat_switch_bound,
+)
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
@@ -67,6 +73,7 @@ __all__ = [
     "DeepestMiddleWorldPoint",
     "DeepestPointSensitivity",
     "DefinitionConcordance",
+    "EnvelopeSegment",
     "EnvironmentalDepth",
     "Interval",
     "LongitudinalMosaicResult",
@@ -84,6 +91,8 @@ __all__ = [
     "WorldlineComparison",
     "WorldlinePathResult",
     "accessibility_scope_bounds",
+    "affine_upper_envelope_segments",
+    "alternative_reserve",
     "analyze_balance_path",
     "analyze_definitions",
     "analyze_worldline_path",
@@ -109,6 +118,7 @@ __all__ = [
     "normalized_phase_point",
     "published_regime_reproduction_gate",
     "switching_cost_state",
+    "threat_switch_bound",
     "validate_normalized_rows",
     "width_depth_bounds",
 ]
