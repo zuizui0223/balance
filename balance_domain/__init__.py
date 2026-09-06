@@ -20,6 +20,7 @@ from .definition_concordance import (
     crossing_bracket,
 )
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
+from .handoff import ConflictHandoff, consume_conflict_handoff
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -33,6 +34,7 @@ from .longitudinal_mosaic import LongitudinalMosaicResult, classify_longitudinal
 __all__ = [
     "BalanceDomainGeometry",
     "BalancePathResult",
+    "ConflictHandoff",
     "CriticalConcordanceResult",
     "CrossingBracket",
     "DefinitionConcordance",
@@ -58,6 +60,7 @@ __all__ = [
     "compare_critical_paths",
     "compare_definition_brackets",
     "compare_worldlines",
+    "consume_conflict_handoff",
     "crossing_bracket",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
