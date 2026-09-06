@@ -45,9 +45,11 @@ from .multi_alternative import (
 )
 from .accessibility_scope import AccessibilityScopeBounds, accessibility_scope_bounds
 from .affine_envelope import (
+    EndpointReserveCertificate,
     EnvelopeSegment,
     affine_upper_envelope_segments,
     alternative_reserve,
+    endpoint_reserve_certificate,
     threat_switch_bound,
 )
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
@@ -73,6 +75,7 @@ __all__ = [
     "DeepestMiddleWorldPoint",
     "DeepestPointSensitivity",
     "DefinitionConcordance",
+    "EndpointReserveCertificate",
     "EnvelopeSegment",
     "EnvironmentalDepth",
     "Interval",
@@ -112,6 +115,7 @@ __all__ = [
     "deepest_middle_point",
     "deepest_point_sensitivity",
     "diagonal_metric_boundary_depth",
+    "endpoint_reserve_certificate",
     "environmental_depth",
     "metric_middle_coordinate",
     "metric_middle_world_depth",
