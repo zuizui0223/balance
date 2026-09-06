@@ -28,6 +28,7 @@ from .peucedanum_raw import (
     published_regime_reproduction_gate,
     validate_normalized_rows,
 )
+from .longitudinal_mosaic import LongitudinalMosaicResult, classify_longitudinal_mosaic
 
 __all__ = [
     "BalanceDomainGeometry",
@@ -36,6 +37,7 @@ __all__ = [
     "CrossingBracket",
     "DefinitionConcordance",
     "Interval",
+    "LongitudinalMosaicResult",
     "MiddleWorldCertificate",
     "MiddleWorldReceipt",
     "NormalizedPhasePoint",
@@ -51,6 +53,7 @@ __all__ = [
     "analyze_worldline_path",
     "balance_domain_geometry",
     "classify_bounded_receipt",
+    "classify_longitudinal_mosaic",
     "classify_middle_world",
     "compare_critical_paths",
     "compare_definition_brackets",
