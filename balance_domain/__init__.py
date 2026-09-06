@@ -52,6 +52,13 @@ from .affine_envelope import (
     endpoint_reserve_certificate,
     threat_switch_bound,
 )
+from .concave_domain import (
+    ConcaveSegmentCertificate,
+    JensenAudit,
+    audit_concave_margin,
+    certify_concave_balance_segment,
+    concave_segment_lower_bounds,
+)
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
@@ -68,6 +75,7 @@ __all__ = [
     "BalanceDomainGeometry",
     "BalancePathResult",
     "BoundarySensitivity",
+    "ConcaveSegmentCertificate",
     "ConflictHandoff",
     "ConstantSlopeCenters",
     "CriticalConcordanceResult",
@@ -79,6 +87,7 @@ __all__ = [
     "EnvelopeSegment",
     "EnvironmentalDepth",
     "Interval",
+    "JensenAudit",
     "LongitudinalMosaicResult",
     "MetricBoundaryDepth",
     "MiddleWorldCertificate",
@@ -99,8 +108,10 @@ __all__ = [
     "analyze_balance_path",
     "analyze_definitions",
     "analyze_worldline_path",
+    "audit_concave_margin",
     "balance_domain_geometry",
     "boundary_sensitivity",
+    "certify_concave_balance_segment",
     "classify_bounded_receipt",
     "classify_longitudinal_mosaic",
     "classify_middle_world",
@@ -108,6 +119,7 @@ __all__ = [
     "compare_critical_paths",
     "compare_definition_brackets",
     "compare_worldlines",
+    "concave_segment_lower_bounds",
     "constant_slope_centers",
     "constant_slope_depth",
     "consume_conflict_handoff",
