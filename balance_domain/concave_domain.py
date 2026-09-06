@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import isinf
 from typing import Sequence
 
 
@@ -99,7 +100,10 @@ def strong_concave_bulge_bounds(
     if metric_distance_sq < 0.0:
         raise ValueError("metric_distance_sq must be nonnegative")
     factor = 0.5 * t * (1.0 - t) * metric_distance_sq
-    return curvature_lower * factor, curvature_upper * factor
+    upper = float("inf") if isinf(curvature_upper) and factor > 0.0 else curvature_upper * factor
+    if factor == 0.0:
+        upper = 0.0
+    return curvature_lower * factor, upper
 
 
 def audit_strong_concave_chord(
@@ -179,14 +183,12 @@ def classify_interval_concave_chord(
         interior_upper=interior_upper,
         t=t,
     )
-    if curvature_lower < 0.0 or curvature_upper < curvature_lower:
-        raise ValueError("curvature bounds must satisfy 0 <= lower <= upper")
-    if metric_distance_sq < 0.0:
-        raise ValueError("metric_distance_sq must be nonnegative")
-
-    factor = 0.5 * t * (1.0 - t) * metric_distance_sq
-    required_lower = curvature_lower * factor
-    required_upper = curvature_upper * factor
+    required_lower, required_upper = strong_concave_bulge_bounds(
+        curvature_lower=curvature_lower,
+        curvature_upper=curvature_upper,
+        t=t,
+        metric_distance_sq=metric_distance_sq,
+    )
 
     if possible_upper < required_lower:
         classification = "LOWER_BOUND_VIOLATED"
