@@ -64,11 +64,14 @@ remaining span. The exact minimax value and guaranteed gain are
 With one equal-cost query and target W=c_F+c_R, choose the direction with the
 larger gain. No realized future outcome is supplied to the planner.
 
-The recurrence above approaches a 2e span per threshold. At w<=2e no single
-query guarantees further contraction. The two-direction minimax width-span floor
-is 2(e_F+e_R), within this bounded-adversarial-query model. It is NOT a universal
-measurement limit: more accurate calibration, a justified stochastic error
-model, dependent-error information or a different experimental action can change it.
+Starting from a bracket wider than 2e, the worst-case recurrence approaches 2e.
+At w<=2e no single query guarantees further contraction; an already tighter
+prior bracket is retained, not widened to 2e. Starting with both directional
+brackets wider than their query-error scales, the two-direction worst-case
+width-span limit is 2(e_F+e_R), within this bounded-adversarial-query model.
+This is NOT a universal measurement limit: stronger prior information, more
+accurate calibration, a justified stochastic error model, dependent-error
+information or a different experimental action can change it.
 
 ## Synthetic example
 
