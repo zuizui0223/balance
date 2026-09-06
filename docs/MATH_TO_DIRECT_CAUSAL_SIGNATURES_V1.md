@@ -100,9 +100,36 @@ In `p` environmental dimensions with affine status boundaries, an optimal basic 
 
 **Interpretation:** a study-domain boundary in the certificate means robustness is partly sampling/accessibility limited rather than purely biologically centered.
 
+## Signature B8 — concave-domain chord certificate
+
+If `L(e)` and every registered architecture reserve `rho_j(e)` are concave on a convex environmental domain, then the static BALANCE region is convex.
+
+For any two BALANCE endpoints `e_0,e_1` and `e_t=(1-t)e_0+t e_1`, each margin obeys
+
+\[
+\boxed{
+f(e_t)\ge(1-t)f(e_0)+t f(e_1).}
+\]
+
+Therefore two positive endpoints certify the whole straight segment as BALANCE **once concavity has been independently justified**.
+
+**Test:** reserve endpoint contexts for the continuous-segment certificate and use held-out interior contexts for the Jensen audit
+
+\[
+r_f(t)=f(e_t)-[(1-t)f(e_0)+t f(e_1)]\ge0.
+\]
+
+Apply this separately to `L` and every registered reserve, or equivalently to the best-alternative reserve after verifying the registered concavity conditions.
+
+**Failure:** a held-out interior margin falls below its endpoint chord beyond tolerance, or an interior context leaves BALANCE between two certified BALANCE endpoints. This rejects the declared concave static-domain model; it is not evidence for hysteresis by itself.
+
+**Use:** this generalizes the one-dimensional affine endpoint certificate to nonlinear concave margins and multidimensional environmental chords.
+
 ## Pedicularis use
 
-The immediate Experiment-B surface can establish B1 for the functional-state alternative. Repeated matched contexts are required for B5-B7. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
+The immediate Experiment-B surface can establish B1 for the functional-state alternative. Repeated matched contexts are required for B5-B8. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
+
+B8 is attractive for later repeated-environment Pedicularis work because interior contexts can be used as held-out shape checks rather than all contexts being consumed to fit a flexible path model.
 
 ## Promotion rule
 
