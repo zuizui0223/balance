@@ -46,6 +46,8 @@ from .multi_alternative import (
 from .accessibility_scope import AccessibilityScopeBounds, accessibility_scope_bounds
 from .covering_certificate import (
     CoveringCertificate,
+    certified_balance_ball_radius,
+    certified_outside_ball_radius,
     lipschitz_covering_certificate,
     lipschitz_lower_envelope,
     maximum_covering_radius_for_target_depth,
@@ -137,6 +139,8 @@ __all__ = [
     "audit_strong_concave_chord",
     "balance_domain_geometry",
     "boundary_sensitivity",
+    "certified_balance_ball_radius",
+    "certified_outside_ball_radius",
     "certify_concave_balance_segment",
     "classify_bounded_receipt",
     "classify_interval_concave_chord",
