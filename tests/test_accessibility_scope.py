@@ -13,9 +13,10 @@ def test_robust_balance_requires_positive_reserve_even_under_possible_scope():
     assert result.scope_fragility == pytest.approx(0.4)
     assert result.depth_lower == pytest.approx(0.3)
     assert result.depth_upper == pytest.approx(0.7)
+    assert result.signed_margin_lower == pytest.approx(0.3)
 
 
-def test_scope_unresolved_when_possible_alternative_can_erase_reserve():
+def test_scope_unresolved_returns_signed_margin_not_balance_depth():
     result = accessibility_scope_bounds(
         conflict_load=0.8,
         reserve_definite=0.4,
@@ -23,15 +24,22 @@ def test_scope_unresolved_when_possible_alternative_can_erase_reserve():
     )
     assert result.classification == "ACCESSIBILITY_SCOPE_UNRESOLVED"
     assert result.scope_fragility == pytest.approx(0.5)
+    assert result.signed_margin_lower == pytest.approx(-0.1)
+    assert result.signed_margin_upper == pytest.approx(0.4)
+    assert result.depth_lower is None
+    assert result.depth_upper is None
 
 
-def test_robust_non_balance_when_definite_scope_already_wins():
+def test_robust_non_balance_returns_no_depth():
     result = accessibility_scope_bounds(
         conflict_load=0.8,
         reserve_definite=-0.2,
         reserve_possible=-0.5,
     )
     assert result.classification == "ROBUST_NON_BALANCE"
+    assert result.signed_margin_upper == pytest.approx(-0.2)
+    assert result.depth_lower is None
+    assert result.depth_upper is None
 
 
 def test_no_positive_conflict_fails_before_architecture_scope():
@@ -41,6 +49,8 @@ def test_no_positive_conflict_fails_before_architecture_scope():
         reserve_possible=0.2,
     )
     assert result.classification == "NO_POSITIVE_CONFLICT"
+    assert result.depth_lower is None
+    assert result.depth_upper is None
 
 
 def test_sch_facing_margin_can_make_depth_scope_invariant():
