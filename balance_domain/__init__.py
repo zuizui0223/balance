@@ -29,6 +29,11 @@ from .sensitivity import (
     deepest_point_sensitivity,
 )
 from .environmental_depth import EnvironmentalDepth, environmental_depth
+from .metric_depth import (
+    MetricBoundaryDepth,
+    diagonal_metric_boundary_depth,
+    metric_middle_world_depth,
+)
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
@@ -53,6 +58,7 @@ __all__ = [
     "EnvironmentalDepth",
     "Interval",
     "LongitudinalMosaicResult",
+    "MetricBoundaryDepth",
     "MiddleWorldCertificate",
     "MiddleWorldReceipt",
     "NormalizedPhasePoint",
@@ -80,7 +86,9 @@ __all__ = [
     "crossing_bracket",
     "deepest_middle_point",
     "deepest_point_sensitivity",
+    "diagonal_metric_boundary_depth",
     "environmental_depth",
+    "metric_middle_world_depth",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
     "switching_cost_state",
