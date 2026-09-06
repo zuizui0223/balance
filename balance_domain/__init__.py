@@ -39,6 +39,10 @@ from .metric_center import (
     constant_slope_centers,
     metric_middle_coordinate,
 )
+from .multi_alternative import (
+    MultiAlternativeState,
+    classify_multi_alternative_middle_world,
+)
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
@@ -67,6 +71,7 @@ __all__ = [
     "MetricBoundaryDepth",
     "MiddleWorldCertificate",
     "MiddleWorldReceipt",
+    "MultiAlternativeState",
     "NormalizedPhasePoint",
     "PLOT_ORDER",
     "PUBLISHED_2025",
@@ -84,6 +89,7 @@ __all__ = [
     "classify_bounded_receipt",
     "classify_longitudinal_mosaic",
     "classify_middle_world",
+    "classify_multi_alternative_middle_world",
     "compare_critical_paths",
     "compare_definition_brackets",
     "compare_worldlines",
