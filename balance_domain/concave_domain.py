@@ -28,6 +28,15 @@ class StrongConcaveChordAudit:
     violates_upper: bool
 
 
+@dataclass(frozen=True)
+class IntervalChordClassification:
+    possible_bulge_lower: float
+    possible_bulge_upper: float
+    required_bulge_lower: float
+    required_bulge_upper: float
+    classification: str
+
+
 def concave_segment_lower_bounds(
     left_margins: Sequence[float],
     right_margins: Sequence[float],
@@ -122,3 +131,86 @@ def audit_strong_concave_chord(
         violates_lower=bulge < lower - tolerance,
         violates_upper=bulge > upper + tolerance,
     )
+
+
+def interval_concave_bulge_bounds(
+    *,
+    left_lower: float,
+    left_upper: float,
+    right_lower: float,
+    right_upper: float,
+    interior_lower: float,
+    interior_upper: float,
+    t: float,
+) -> tuple[float, float]:
+    if not 0.0 <= t <= 1.0:
+        raise ValueError("t must lie in [0, 1]")
+    if left_lower > left_upper or right_lower > right_upper or interior_lower > interior_upper:
+        raise ValueError("each interval must satisfy lower <= upper")
+
+    possible_lower = float(interior_lower) - (
+        (1.0 - t) * float(left_upper) + t * float(right_upper)
+    )
+    possible_upper = float(interior_upper) - (
+        (1.0 - t) * float(left_lower) + t * float(right_lower)
+    )
+    return possible_lower, possible_upper
+
+
+def classify_interval_concave_chord(
+    *,
+    left_lower: float,
+    left_upper: float,
+    right_lower: float,
+    right_upper: float,
+    interior_lower: float,
+    interior_upper: float,
+    t: float,
+    curvature_lower: float = 0.0,
+    curvature_upper: float = float("inf"),
+    metric_distance_sq: float = 1.0,
+) -> IntervalChordClassification:
+    possible_lower, possible_upper = interval_concave_bulge_bounds(
+        left_lower=left_lower,
+        left_upper=left_upper,
+        right_lower=right_lower,
+        right_upper=right_upper,
+        interior_lower=interior_lower,
+        interior_upper=interior_upper,
+        t=t,
+    )
+    if curvature_lower < 0.0 or curvature_upper < curvature_lower:
+        raise ValueError("curvature bounds must satisfy 0 <= lower <= upper")
+    if metric_distance_sq < 0.0:
+        raise ValueError("metric_distance_sq must be nonnegative")
+
+    factor = 0.5 * t * (1.0 - t) * metric_distance_sq
+    required_lower = curvature_lower * factor
+    required_upper = curvature_upper * factor
+
+    if possible_upper < required_lower:
+        classification = "LOWER_BOUND_VIOLATED"
+    elif possible_lower > required_upper:
+        classification = "UPPER_BOUND_VIOLATED"
+    elif possible_lower >= required_lower and possible_upper <= required_upper:
+        classification = "IDENTIFIED_WITHIN_INTERVALS"
+    else:
+        classification = "UNRESOLVED"
+
+    return IntervalChordClassification(
+        possible_bulge_lower=possible_lower,
+        possible_bulge_upper=possible_upper,
+        required_bulge_lower=required_lower,
+        required_bulge_upper=required_upper,
+        classification=classification,
+    )
+
+
+def robust_positive_concave_endpoints(
+    *,
+    left_lower_margins: Sequence[float],
+    right_lower_margins: Sequence[float],
+) -> ConcaveSegmentCertificate:
+    if not left_lower_margins or len(left_lower_margins) != len(right_lower_margins):
+        raise ValueError("endpoint lower-bound vectors must have the same nonzero length")
+    return certify_concave_balance_segment(left_lower_margins, right_lower_margins)
