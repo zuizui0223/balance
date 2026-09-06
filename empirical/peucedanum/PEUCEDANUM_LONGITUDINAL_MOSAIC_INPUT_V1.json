@@ -1,0 +1,47 @@
+{
+  "schema_version": "BALANCE_PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V1",
+  "system": "Peucedanum multivittatum",
+  "source_layers": {
+    "2021_population_mosaic": {
+      "citation": "Kudo & Shibata 2021, Ecology and Evolution 11:5646-5656",
+      "doi": "10.1002/ece3.7468",
+      "years": "2017-2019",
+      "n_populations": 9,
+      "flowering_time_to_predation": {
+        "estimate": -0.803,
+        "se": 0.110,
+        "z": -7.29,
+        "p_upper_bound": 0.0001
+      },
+      "predation_risk_to_male_flower_proportion": {
+        "r_squared": 0.64,
+        "p_upper_bound": 0.0001
+      },
+      "within_population_temporal_check": {
+        "population": "HC",
+        "early_year": 2018,
+        "early_year_predation_rate": 0.59,
+        "usual_year": 2019,
+        "usual_year_predation_rate": 0.29
+      }
+    },
+    "2022_followup_dataset": {
+      "dataset_doi": "10.5061/dryad.w3r2280v5",
+      "status": "QUALITATIVE_SOURCE_LAYER_NOT_COUNTED_AS_INDEPENDENT_STUDY",
+      "registered_pattern": "early-snowmelt populations have intensive seed predation; oviposition increases with perfect flowers while male flower number is independent; male-biased allocation is advantageous under high predation"
+    },
+    "2025_selection_mosaic": {
+      "citation": "Kudo & Shibata 2025, Journal of Ecology 113:2832-2845",
+      "doi": "10.1111/1365-2745.70130",
+      "ordered_contexts": ["HA", "HL", "HC", "KD", "HD"],
+      "final_fruit_selection_gradient_beta": {
+        "HA": -0.035,
+        "HL": -0.029,
+        "HC": 0.034,
+        "KD": 0.008,
+        "HD": 0.026
+      }
+    }
+  },
+  "claim_ceiling": "longitudinal observational concordance within one biological system; source layers may overlap in authors, locations, or years and are not counted as independent studies"
+}
