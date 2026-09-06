@@ -47,7 +47,9 @@ from .accessibility_scope import AccessibilityScopeBounds, accessibility_scope_b
 from .covering_certificate import (
     CoveringCertificate,
     lipschitz_covering_certificate,
+    lipschitz_lower_envelope,
     maximum_covering_radius_for_target_depth,
+    multi_margin_lower_depth,
 )
 from .affine_envelope import (
     EndpointReserveCertificate,
@@ -158,10 +160,12 @@ __all__ = [
     "environmental_depth",
     "interval_concave_bulge_bounds",
     "lipschitz_covering_certificate",
+    "lipschitz_lower_envelope",
     "lipschitz_threat_radius",
     "maximum_covering_radius_for_target_depth",
     "metric_middle_coordinate",
     "metric_middle_world_depth",
+    "multi_margin_lower_depth",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
     "robust_positive_concave_endpoints",
