@@ -59,6 +59,37 @@ def diagonal_affine_threat_distance(
     return gap / sqrt(denom_sq)
 
 
+def diagonal_affine_gradient_from_minimum_switch(
+    *,
+    gap: float,
+    switch_vector: Sequence[float],
+    metric_diag: Sequence[float],
+) -> tuple[float, ...]:
+    """Recover the affine pairwise-gradient difference from the nearest tie move.
+
+    Assumes ``switch_vector`` is the Q-metric shortest displacement from the
+    current context to the pairwise tie hyperplane, and ``gap`` is current
+    best-alternative fitness minus competitor fitness.  For diagonal Q,
+
+        a = -gap * Q * delta / (delta^T Q delta).
+    """
+
+    if gap <= 0:
+        raise ValueError("gap must be positive for inverse recovery from a unique threat")
+    if len(switch_vector) != len(metric_diag) or not switch_vector:
+        raise ValueError("switch_vector and metric_diag must have the same nonzero length")
+    if any(q <= 0 for q in metric_diag):
+        raise ValueError("metric diagonal must be positive")
+
+    radius_sq = sum(q * d * d for d, q in zip(switch_vector, metric_diag))
+    if radius_sq <= 0:
+        raise ValueError("switch_vector must be nonzero")
+    return tuple(
+        -gap * q * d / radius_sq
+        for d, q in zip(switch_vector, metric_diag)
+    )
+
+
 def threat_fragility_index(*, threat_radius: float, state_depth: float) -> float:
     if threat_radius < 0 or state_depth <= 0:
         raise ValueError("threat_radius must be nonnegative and state_depth positive")
