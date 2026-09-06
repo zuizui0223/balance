@@ -166,6 +166,50 @@ If the SCH conflict margin `L(e)` is itself affine or otherwise concave and both
 
 This is explicitly model-based. A strong design should use the two endpoints for the formal certificate and retain at least one interior context as a held-out affine-shape check. If the affine model fails, inference reverts to the sampled contexts rather than preserving the endpoint certificate.
 
+### B6. Active-threat identity stability
+
+State robustness and competitor-identity robustness are different quantities.
+
+At a context with unique best alternative `j*`, define pairwise fitness gaps
+
+\[
+\gamma_k=W_{D_{j^*}}^*-W_{D_k}^*>0.
+\]
+
+If each pairwise difference is locally Lipschitz with constant `L_k`, the identity `j*` is certified unchanged inside
+
+\[
+\boxed{
+r_{threat}=\min_{k\ne j^*}\frac{\gamma_k}{L_k}.}
+\]
+
+Under affine worldlines and metric `Q`, estimate the exact distance to each alternative-tie hyperplane:
+
+\[
+\boxed{
+r_{j^*k,Q}
+=
+\frac{\gamma_k}
+{\sqrt{(a_{j^*}-a_k)^\top Q^{-1}(a_{j^*}-a_k)}}.}
+\]
+
+Then compare the nearest threat-switch radius with the registered BALANCE state depth `d_B,Q`:
+
+\[
+\Psi_T=r_{threat,Q}/d_{B,Q}.
+\]
+
+Prospective interpretation:
+
+```text
+Psi_T < 1   competitor identity can change before any state exit
+Psi_T > 1   BALANCE state is locally more fragile than threat identity
+```
+
+A threat switch while both alternatives remain below `W_S*` is **not** a BALANCE exit. It is a change in which accessible alternative most strongly constrains the shared world.
+
+This creates a direct sampling rule: when `r_threat,Q` is small, add environmental observations near the predicted tie surface if the goal is mechanism/competitor identification rather than only state classification.
+
 ---
 
 ## C. Multiple accessible alternative architectures
@@ -263,7 +307,8 @@ The advanced BALANCE geometry is downgraded if:
 - affine/convex assumptions fail materially between sampled contexts;
 - apparent re-entry is only an envelope identity switch without a sign change in `rho_A`;
 - an affine-path claim shows genuine architecture-reserve re-entry or repeated disjoint activity of the same alternative beyond uncertainty;
-- a two-endpoint certificate is retained after held-out interior contexts reject the affine worldline assumption.
+- a two-endpoint certificate is retained after held-out interior contexts reject the affine worldline assumption;
+- an active-threat stability claim is made without a unique current threat or without prospective pairwise Lipschitz/affine bounds.
 
 ## F. Promotion ladder
 
