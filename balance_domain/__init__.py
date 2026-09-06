@@ -54,6 +54,7 @@ from .affine_envelope import (
 )
 from .threat_stability import (
     ThreatStability,
+    diagonal_affine_gradient_from_minimum_switch,
     diagonal_affine_threat_distance,
     lipschitz_threat_radius,
     threat_fragility_index,
@@ -144,6 +145,7 @@ __all__ = [
     "crossing_bracket",
     "deepest_middle_point",
     "deepest_point_sensitivity",
+    "diagonal_affine_gradient_from_minimum_switch",
     "diagonal_affine_threat_distance",
     "diagonal_metric_boundary_depth",
     "endpoint_reserve_certificate",
