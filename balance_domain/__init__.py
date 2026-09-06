@@ -28,6 +28,7 @@ from .sensitivity import (
     boundary_sensitivity,
     deepest_point_sensitivity,
 )
+from .environmental_depth import EnvironmentalDepth, environmental_depth
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -48,6 +49,7 @@ __all__ = [
     "DeepestMiddleWorldPoint",
     "DeepestPointSensitivity",
     "DefinitionConcordance",
+    "EnvironmentalDepth",
     "Interval",
     "LongitudinalMosaicResult",
     "MiddleWorldCertificate",
@@ -75,6 +77,7 @@ __all__ = [
     "crossing_bracket",
     "deepest_middle_point",
     "deepest_point_sensitivity",
+    "environmental_depth",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
     "switching_cost_state",
