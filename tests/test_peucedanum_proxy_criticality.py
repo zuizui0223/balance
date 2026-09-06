@@ -2,18 +2,22 @@ import json
 import math
 from pathlib import Path
 
-from scripts.analyze_peucedanum_proxy_criticality import analyze
+from balance_domain.peucedanum_proxy import analyze_peucedanum_proxy_criticality
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "empirical" / "peucedanum" / "PEUCEDANUM_ANTAGONIST_PROXY_CRITICALITY_INPUT_V1.json"
 
 
-def test_peucedanum_proxy_analysis_preserves_observational_claim_ceiling():
+def _run():
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
-    # Keep the regression test fast while preserving the preregistered seed/model.
+    # Keep the regression test fast while preserving the registered seed/model.
     config["registered_sensitivity_model"]["draws"] = 5000
-    result = analyze(config)
+    return analyze_peucedanum_proxy_criticality(config)
+
+
+def test_peucedanum_proxy_analysis_preserves_observational_claim_ceiling():
+    result = _run()
     assert result["classification"] == "SAME_NUMERIC_PROXY_CRITICAL_CONTEXT_COMPATIBLE"
     assert result["common_conditional_95_interval"] is not None
     lo, hi = result["common_conditional_95_interval"]
@@ -24,9 +28,7 @@ def test_peucedanum_proxy_analysis_preserves_observational_claim_ceiling():
 
 
 def test_proxy_point_estimates_match_registered_published_summary_inputs():
-    config = json.loads(CONFIG.read_text(encoding="utf-8"))
-    config["registered_sensitivity_model"]["draws"] = 5000
-    result = analyze(config)
+    result = _run()
     points = {
         key: value["point_critical_proxy"]
         for key, value in result["definitions"].items()
@@ -38,9 +40,7 @@ def test_proxy_point_estimates_match_registered_published_summary_inputs():
 
 
 def test_gain_shape_definition_is_less_sign_stable_than_selection_definitions():
-    config = json.loads(CONFIG.read_text(encoding="utf-8"))
-    config["registered_sensitivity_model"]["draws"] = 5000
-    result = analyze(config)
+    result = _run()
     beta = result["definitions"]["final_fruit_selection_gradient_beta"]["sign_consistent_draw_fraction"]
     differential = result["definitions"]["final_fruit_selection_differential_S"]["sign_consistent_draw_fraction"]
     gain = result["definitions"]["female_gain_exponent_b_minus_1"]["sign_consistent_draw_fraction"]
