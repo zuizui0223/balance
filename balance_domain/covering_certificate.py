@@ -49,14 +49,7 @@ def maximum_covering_radius_for_target_depth(
     lipschitz_constants: Sequence[float],
     target_depth: float = 0.0,
 ) -> float:
-    """Largest covering radius allowed by the Lipschitz certificate.
-
-    Returns ``float('inf')`` only when every boundary is constant
-    (K_k=0) and all sampled minima already exceed the requested target.
-    If any constant boundary fails the target, returns a non-positive
-    value, so callers should treat the requested certificate as impossible
-    under the current sampled minima.
-    """
+    """Largest covering radius allowed by the Lipschitz certificate."""
 
     if len(sampled_min_margins) != len(lipschitz_constants) or not sampled_min_margins:
         raise ValueError("sampled_min_margins and lipschitz_constants must have the same nonzero length")
@@ -81,12 +74,7 @@ def lipschitz_lower_envelope(
     distances_to_query: Sequence[float],
     lipschitz_constant: float,
 ) -> float:
-    """Strongest pointwise lower bound from registered Lipschitz sample cones.
-
-    For each sample s, ``f(query) >= f(s) - K d(query,s)``. The maximum
-    across all sample cones is therefore a valid lower bound and is
-    monotone non-decreasing as new samples are added.
-    """
+    """Strongest pointwise lower bound from registered Lipschitz sample cones."""
 
     if len(sampled_values) != len(distances_to_query) or not sampled_values:
         raise ValueError("sampled_values and distances_to_query must have the same nonzero length")
@@ -105,11 +93,7 @@ def multi_margin_lower_depth(
     distances_to_query: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    """Lower-bound direct BALANCE depth at one query context.
-
-    Builds a Lipschitz lower envelope for each registered status margin and
-    returns their minimum, matching ``d_F = min_k f_k``.
-    """
+    """Lower-bound direct BALANCE depth at one query context."""
 
     if len(sampled_values_by_margin) != len(lipschitz_constants) or not sampled_values_by_margin:
         raise ValueError("one Lipschitz constant is required per margin")
@@ -123,3 +107,51 @@ def multi_margin_lower_depth(
         for values, k in zip(sampled_values_by_margin, lipschitz_constants)
     ]
     return min(lowers)
+
+
+def certified_balance_ball_radius(
+    *,
+    margins: Sequence[float],
+    lipschitz_constants: Sequence[float],
+) -> float:
+    """Radius around one sample certified to remain inside BALANCE.
+
+    Returns zero unless every registered status margin is strictly positive.
+    Constant positive margins (K=0) impose no finite radius restriction.
+    """
+
+    if len(margins) != len(lipschitz_constants) or not margins:
+        raise ValueError("margins and lipschitz_constants must have the same nonzero length")
+    if any(k < 0 for k in lipschitz_constants):
+        raise ValueError("lipschitz constants must be nonnegative")
+    if any(m <= 0 for m in margins):
+        return 0.0
+
+    radii = [float(m) / float(k) for m, k in zip(margins, lipschitz_constants) if k > 0]
+    return min(radii) if radii else float("inf")
+
+
+def certified_outside_ball_radius(
+    *,
+    margins: Sequence[float],
+    lipschitz_constants: Sequence[float],
+) -> float:
+    """Radius around one sample certified to remain outside BALANCE.
+
+    Any one negative status margin is sufficient. The largest normalized
+    negative margin gives the largest certified outside ball.
+    """
+
+    if len(margins) != len(lipschitz_constants) or not margins:
+        raise ValueError("margins and lipschitz_constants must have the same nonzero length")
+    if any(k < 0 for k in lipschitz_constants):
+        raise ValueError("lipschitz constants must be nonnegative")
+
+    radii: list[float] = []
+    for margin, k in zip(margins, lipschitz_constants):
+        if margin >= 0:
+            continue
+        if k == 0.0:
+            return float("inf")
+        radii.append(-float(margin) / float(k))
+    return max(radii) if radii else 0.0
