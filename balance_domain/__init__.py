@@ -55,9 +55,12 @@ from .affine_envelope import (
 from .concave_domain import (
     ConcaveSegmentCertificate,
     JensenAudit,
+    StrongConcaveChordAudit,
     audit_concave_margin,
+    audit_strong_concave_chord,
     certify_concave_balance_segment,
     concave_segment_lower_bounds,
+    strong_concave_bulge_bounds,
 )
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
@@ -98,6 +101,7 @@ __all__ = [
     "PUBLISHED_2025",
     "RawInventory",
     "ReproductionGate",
+    "StrongConcaveChordAudit",
     "SwitchingCostResult",
     "WidthDepthBounds",
     "WorldlineComparison",
@@ -109,6 +113,7 @@ __all__ = [
     "analyze_definitions",
     "analyze_worldline_path",
     "audit_concave_margin",
+    "audit_strong_concave_chord",
     "balance_domain_geometry",
     "boundary_sensitivity",
     "certify_concave_balance_segment",
@@ -133,6 +138,7 @@ __all__ = [
     "metric_middle_world_depth",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
+    "strong_concave_bulge_bounds",
     "switching_cost_state",
     "threat_switch_bound",
     "validate_normalized_rows",
