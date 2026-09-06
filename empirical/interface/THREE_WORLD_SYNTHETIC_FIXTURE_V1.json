@@ -1,0 +1,42 @@
+{
+  "schema_version": "THREE_WORLD_SYNTHETIC_FIXTURE_V1",
+  "purpose": "Regression-only fixture proving that one frozen context and fitness scale can pass through SCH conflict, BALANCE direct worldline, and BITA-compatible decomposition without changing identities.",
+  "handoff": {
+    "receipt_schema_version": "THREE_WORLD_CONFLICT_HANDOFF_V1",
+    "status": "THREE_WORLD_CONFLICT_CONTEXT_IDENTIFIED",
+    "context_id": "PEDICULARIS_SYNTHETIC_POP_A_2027",
+    "system": "Pedicularis rex",
+    "population_id": "SYNTHETIC_POP_A",
+    "season_id": "2027",
+    "fitness_scale_id": "INTACT_SEEDS_PER_FLOWER",
+    "conflict_load": {
+      "point": 0.4,
+      "lower_95": 0.38,
+      "upper_95": 0.42
+    },
+    "source": {
+      "repository": "sch",
+      "receipt_schema_version": "SCH_COMPONENT_CONFLICT_BUDGET_V1"
+    }
+  },
+  "balance_worldlines": {
+    "shared_optimum_fitness_95": [10.0, 10.0],
+    "differentiated_optimum_fitness_95": [9.9, 9.9]
+  },
+  "bita_decomposition": {
+    "context_id": "PEDICULARIS_SYNTHETIC_POP_A_2027",
+    "fitness_scale_id": "INTACT_SEEDS_PER_FLOWER",
+    "decoupling_95": [0.45, 0.55],
+    "architecture_cost_95": [0.28, 0.32],
+    "point_decoupling": 0.5,
+    "point_architecture_cost": 0.3,
+    "cost_semantics": "FUNCTIONAL_STATE_DEPLOYMENT_COST"
+  },
+  "expected": {
+    "direct_state": "BALANCE_IDENTIFIED",
+    "direct_gap": -0.1,
+    "point_decomposed_gap": -0.1,
+    "bridge_zero_compatible": true
+  },
+  "claim_ceiling": "synthetic regression fixture only; no empirical Pedicularis result"
+}
