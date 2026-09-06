@@ -52,6 +52,12 @@ from .affine_envelope import (
     endpoint_reserve_certificate,
     threat_switch_bound,
 )
+from .threat_stability import (
+    ThreatStability,
+    diagonal_affine_threat_distance,
+    lipschitz_threat_radius,
+    threat_fragility_index,
+)
 from .concave_domain import (
     ConcaveSegmentCertificate,
     IntervalChordClassification,
@@ -108,6 +114,7 @@ __all__ = [
     "ReproductionGate",
     "StrongConcaveChordAudit",
     "SwitchingCostResult",
+    "ThreatStability",
     "WidthDepthBounds",
     "WorldlineComparison",
     "WorldlinePathResult",
@@ -137,10 +144,12 @@ __all__ = [
     "crossing_bracket",
     "deepest_middle_point",
     "deepest_point_sensitivity",
+    "diagonal_affine_threat_distance",
     "diagonal_metric_boundary_depth",
     "endpoint_reserve_certificate",
     "environmental_depth",
     "interval_concave_bulge_bounds",
+    "lipschitz_threat_radius",
     "metric_middle_coordinate",
     "metric_middle_world_depth",
     "normalized_phase_point",
@@ -148,6 +157,7 @@ __all__ = [
     "robust_positive_concave_endpoints",
     "strong_concave_bulge_bounds",
     "switching_cost_state",
+    "threat_fragility_index",
     "threat_switch_bound",
     "validate_normalized_rows",
     "width_depth_bounds",
