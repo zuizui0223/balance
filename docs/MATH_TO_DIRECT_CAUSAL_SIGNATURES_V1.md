@@ -125,11 +125,37 @@ Apply this separately to `L` and every registered reserve, or equivalently to th
 
 **Use:** this generalizes the one-dimensional affine endpoint certificate to nonlinear concave margins and multidimensional environmental chords.
 
+## Signature B9 — strong-concavity bulge
+
+If a registered status margin `f` has directional curvature bounded by
+
+\[
+\alpha Q\preceq-\nabla^2 f\preceq\beta Q
+\]
+
+along the environmental chord, then with `v=e_1-e_0`
+
+\[
+\boxed{
+\frac{\alpha}{2}t(1-t)v^TQv
+\le
+f(e_t)-[(1-t)f(e_0)+tf(e_1)]
+\le
+\frac{\beta}{2}t(1-t)v^TQv.
+}
+\]
+
+**Test:** use two endpoint contexts plus a preregistered midpoint/interior context and compare the observed bulge with the curvature interval. At the midpoint the predicted bulge is between `alpha v^TQv/8` and `beta v^TQv/8`.
+
+**Failure:** negative bulge rejects concavity; a bulge outside the registered interval rejects the claimed curvature floor/ceiling or the common static worldline branch.
+
+**Interpretation:** B8 says the middle world cannot secretly disappear between two BALANCE endpoints; B9 additionally predicts how much interior fitness reserve should be created by curvature.
+
 ## Pedicularis use
 
-The immediate Experiment-B surface can establish B1 for the functional-state alternative. Repeated matched contexts are required for B5-B8. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
+The immediate Experiment-B surface can establish B1 for the functional-state alternative. Repeated matched contexts are required for B5-B9. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
 
-B8 is attractive for later repeated-environment Pedicularis work because interior contexts can be used as held-out shape checks rather than all contexts being consumed to fit a flexible path model.
+B8-B9 are attractive for later repeated-environment Pedicularis work because interior contexts can be used as held-out shape/curvature checks rather than all contexts being consumed to fit a flexible path model.
 
 ## Promotion rule
 
