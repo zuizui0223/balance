@@ -21,6 +21,7 @@ from .definition_concordance import (
 )
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 from .handoff import ConflictHandoff, consume_conflict_handoff
+from .pedicularis_xy import PedicularisXYBalanceReceipt, consume_pedicularis_xy_surface
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -45,6 +46,7 @@ __all__ = [
     "NormalizedPhasePoint",
     "PLOT_ORDER",
     "PUBLISHED_2025",
+    "PedicularisXYBalanceReceipt",
     "RawInventory",
     "ReproductionGate",
     "SwitchingCostResult",
@@ -61,6 +63,7 @@ __all__ = [
     "compare_definition_brackets",
     "compare_worldlines",
     "consume_conflict_handoff",
+    "consume_pedicularis_xy_surface",
     "crossing_bracket",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
