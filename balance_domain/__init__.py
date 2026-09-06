@@ -20,6 +20,14 @@ from .definition_concordance import (
     crossing_bracket,
 )
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
+from .peucedanum_raw import (
+    PLOT_ORDER,
+    PUBLISHED_2025,
+    RawInventory,
+    ReproductionGate,
+    published_regime_reproduction_gate,
+    validate_normalized_rows,
+)
 
 __all__ = [
     "BalanceDomainGeometry",
@@ -31,6 +39,10 @@ __all__ = [
     "MiddleWorldCertificate",
     "MiddleWorldReceipt",
     "NormalizedPhasePoint",
+    "PLOT_ORDER",
+    "PUBLISHED_2025",
+    "RawInventory",
+    "ReproductionGate",
     "SwitchingCostResult",
     "WorldlineComparison",
     "WorldlinePathResult",
@@ -45,5 +57,7 @@ __all__ = [
     "compare_worldlines",
     "crossing_bracket",
     "normalized_phase_point",
+    "published_regime_reproduction_gate",
     "switching_cost_state",
+    "validate_normalized_rows",
 ]
