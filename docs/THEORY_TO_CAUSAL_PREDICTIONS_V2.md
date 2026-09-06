@@ -106,6 +106,34 @@ d^*=W_e\frac{\ell r}{\ell+r}.
 
 Departure beyond uncertainty is a geometry/model audit rather than automatic evidence for history dependence.
 
+### B4. Affine-envelope no-reentry and threat-switch bound
+
+When the optimized shared worldline and all registered alternative worldlines are prospectively modeled as affine along one scalar environmental coordinate,
+
+\[
+W_S^*(e)=a_Se+b_S,
+\qquad
+W_{D_j}^*(e)=a_je+b_j,
+\]
+
+the best-alternative reserve
+
+\[
+\rho_A(e)=W_S^*(e)-\max_jW_{D_j}^*(e)
+\]
+
+must be concave and piecewise affine.
+
+Prospective signatures are:
+
+- the positive architecture-reserve set `{rho_A>0}` is one connected interval;
+- after the shared world loses to the alternative envelope it cannot later regain static architecture dominance on the same affine path;
+- each alternative architecture can occupy at most one connected upper-envelope segment;
+- with `m` alternatives, threat identity switches at most `m-1` times, apart from explicit tie intervals;
+- reserve slopes are non-increasing across exact envelope switches.
+
+Observed architecture-side re-entry or repeated return of the same threat architecture is therefore a model-audit trigger, not immediate evidence for hysteresis. Curved worldlines, changing accessibility scope or nonstatic effects must be considered before biological interpretation.
+
 ---
 
 ## C. Multiple accessible alternative architectures
@@ -201,7 +229,8 @@ The advanced BALANCE geometry is downgraded if:
 - the chosen environmental metric is selected post hoc to maximize depth;
 - a claimed continuous-domain dominance relation is supported only on sampled points;
 - affine/convex assumptions fail materially between sampled contexts;
-- apparent re-entry is only an envelope identity switch without a sign change in `rho_A`.
+- apparent re-entry is only an envelope identity switch without a sign change in `rho_A`;
+- an affine-path claim shows genuine architecture-reserve re-entry or repeated disjoint activity of the same alternative beyond uncertainty.
 
 ## F. Promotion ladder
 
