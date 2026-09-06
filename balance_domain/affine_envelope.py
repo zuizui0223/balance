@@ -11,6 +11,14 @@ class EnvelopeSegment:
     active_alternative: int
 
 
+@dataclass(frozen=True)
+class EndpointReserveCertificate:
+    left_reserve: float
+    right_reserve: float
+    interval_lower_bound: float
+    positive_throughout_interval: bool
+
+
 def _value(slope: float, intercept: float, x: float) -> float:
     return slope * x + intercept
 
@@ -90,6 +98,50 @@ def alternative_reserve(
         for a, b in zip(alternative_slopes, alternative_intercepts)
     )
     return shared - best_alt
+
+
+def endpoint_reserve_certificate(
+    *,
+    start: float,
+    end: float,
+    shared_slope: float,
+    shared_intercept: float,
+    alternative_slopes: Sequence[float],
+    alternative_intercepts: Sequence[float],
+    strict_tolerance: float = 0.0,
+) -> EndpointReserveCertificate:
+    """Certify an affine-envelope reserve over a full scalar interval.
+
+    Under the registered affine-envelope model, the reserve is concave, so its
+    minimum over a closed interval equals the smaller endpoint reserve.
+    """
+
+    if not start < end:
+        raise ValueError("start must be smaller than end")
+    if strict_tolerance < 0:
+        raise ValueError("strict_tolerance must be nonnegative")
+
+    left = alternative_reserve(
+        environment=start,
+        shared_slope=shared_slope,
+        shared_intercept=shared_intercept,
+        alternative_slopes=alternative_slopes,
+        alternative_intercepts=alternative_intercepts,
+    )
+    right = alternative_reserve(
+        environment=end,
+        shared_slope=shared_slope,
+        shared_intercept=shared_intercept,
+        alternative_slopes=alternative_slopes,
+        alternative_intercepts=alternative_intercepts,
+    )
+    lower = min(left, right)
+    return EndpointReserveCertificate(
+        left_reserve=left,
+        right_reserve=right,
+        interval_lower_bound=lower,
+        positive_throughout_interval=lower > strict_tolerance,
+    )
 
 
 def threat_switch_bound(number_of_alternatives: int) -> int:
