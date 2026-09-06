@@ -27,9 +27,9 @@ Phi = sL-K < 0.
 
 Status: `DEFINED_AND_IMPLEMENTED`.
 
-## T2. Interior geometry
+## T2. Interior geometry and deepest point
 
-Quantify where a system lies inside the middle world using direct or decomposed margins:
+Quantify where a system lies inside the middle world using direct same-scale margins:
 
 ```text
 rho   = W_S* - W_D* = -Delta_W
@@ -37,21 +37,28 @@ xi    = L/(L+rho)
 d_B   = min(L,rho)
 ```
 
-and, under fixed `s,K`, the deepest ridge and normalized phase geometry.
-
-Status: `DERIVED_AND_IMPLEMENTED`.
-
-## T3. Domain existence and topology
-
-Along an ordered environmental path after conflict onset, BALANCE now has a general static trichotomy:
+A new direct theorem now removes the need for the quadratic decomposition. Along any connected environmental path where `L(e)` increases continuously and `rho(e)` decreases continuously, with the two margins straddling one another, there is one and only one deepest BALANCE point:
 
 ```text
-1. no positive-width BALANCE domain
-2. one finite BALANCE interval before a first architecture crossing
-3. persistent BALANCE over the observed/accessible path when no crossing occurs.
+L(e_deep) = rho(e_deep)
+xi(e_deep) = 1/2.
 ```
 
-If the direct architecture gap `Delta_W(e)` is nondecreasing after conflict onset, these exhaust the sampled topology. The earlier sufficient conditions
+The two-sided depth `d_B` increases before this point and decreases after it. `xi` is monotone along the path. Common positive rescaling of the fitness margin leaves `xi` and `e_deep` unchanged.
+
+The fixed-`s,K` quadratic ridge
+
+```text
+L_deep = K/(1+s)
+```
+
+is a special case.
+
+Status: `GENERAL_DEEPEST_MIDDLE_WORLD_THEOREM_PROVED_AND_IMPLEMENTED`.
+
+## T3. Domain topology
+
+If along environment `e`:
 
 ```text
 L(e) nondecreasing
@@ -59,11 +66,11 @@ s(e) nondecreasing
 K(e) nonincreasing
 ```
 
-imply nondecreasing decomposed architecture margin and therefore exclude BALANCE -> DIFFERENTIATION -> BALANCE re-entry on that path.
+then the architecture margin is nondecreasing and BALANCE -> DIFFERENTIATION -> BALANCE re-entry is impossible on that path.
 
-See `theory/DOMAIN_EXISTENCE_TRICHOTOMY_V1.md` and `balance_domain/domain_existence.py`.
+The separate domain-existence classifier distinguishes no positive-width BALANCE, finite BALANCE, and persistence over the observed path.
 
-Status: `TRICHOTOMY_AND_MONOTONE_TOPOLOGY_IMPLEMENTED`.
+Status: `SUFFICIENT_NO_REENTRY_AND_DOMAIN_EXISTENCE_RESULTS_IMPLEMENTED`.
 
 ## T4. Persistence / hysteresis
 
@@ -73,7 +80,7 @@ Status: `SWITCHING_COST_THEORY_IMPLEMENTED`.
 
 ### Theory claim ceiling
 
-The theory defines a possible and measurable middle regime. It does not establish that a natural system actually occupies it, nor that any observed sign reversal is a direct worldline crossing. Failure to observe a crossing on a finite environmental range does not prove that no crossing exists outside that range.
+The theory defines a possible and measurable middle regime. It does not establish that a natural system actually occupies it, nor that any observed sign reversal is a direct worldline crossing.
 
 ---
 
@@ -108,7 +115,7 @@ Status: `ANALYZER_AND_SHARED_HANDOFF_READY_EMPIRICAL_EXECUTION_PENDING`.
 
 ## C2. Middle-world position and depth
 
-Only after direct BALANCE identification, estimate `rho`, `xi`, and `d_B` from the same direct surface.
+Only after direct BALANCE identification, estimate `rho`, `xi`, and `d_B` from the same direct surface. Across ordered contexts, the new theorem predicts a unique `xi=1/2` maximum-depth point if the opposing margins are monotone and straddle one another.
 
 Status: `IMPLEMENTED_NOT_YET_EXECUTED_EMPIRICALLY`.
 
@@ -120,10 +127,9 @@ Repeat matched receipts across ordered environments and estimate:
 BALANCE width
 critical crossing(s)
 direct vs decomposed crossing concordance
-same vs shifted / parallel critical region.
+same vs shifted / parallel critical region
+deepest-middle-world context when identified.
 ```
-
-Use the trichotomy to distinguish no positive-width interior, finite interior, persistent observed interior, and nonmonotone/re-entry cases without inventing unsampled crossing locations.
 
 Status: `ANALYZERS_IMPLEMENTED_EMPIRICAL_PATH_PENDING`.
 
@@ -149,31 +155,15 @@ Status: `PREFERRED_ROUTE_NOT_YET_EXECUTED`.
 
 ## G1. Natural / observational transition anchors
 
-`Peucedanum multivittatum` currently provides:
-
-```text
-multi-definition HL--HC critical bracket
-longitudinal phenology-predation-allocation mosaic
-natural partial functional differentiation context.
-```
-
-This is useful evidence that transition-like environmental mosaics occur, but it is **not** a direct `W_S* / W_D*` BALANCE receipt.
-
-Status: `POSITIVE_OBSERVATIONAL_ANCHOR_DIRECT_WORLDLINE_NOT_IDENTIFIED`.
+`Peucedanum multivittatum` remains a positive transition-mosaic anchor but not a direct BALANCE receipt.
 
 ## G2. Independent floral middle-world replications
 
-After Pedicularis, search systems in which both conflict and an explicit alternative worldline are measurable. Do not infer BALANCE from SCH or BITA evidence alone.
-
-Current cross-chapter candidates require dedicated BALANCE audits rather than automatic promotion.
-
-Status: `CANDIDATE_MATRIX_REGISTERED_DIRECT_REPLICATION_INCOMPLETE`.
+After Pedicularis, require systems in which both conflict and an explicit alternative worldline are measurable. Do not infer BALANCE from SCH or BITA evidence alone.
 
 ## G3. Cross-domain sandwiched regimes
 
-Ask whether finite conflict-but-no-switch domains recur in non-floral multifunctional architectures, with explicit negative/boundary systems.
-
-Status: `NOT_YET_SYSTEMATICALLY_AUDITED`.
+Salmonella HisA/TrpF is now a high-value cross-domain architecture-boundary candidate because both bifunctional/generalist and duplicated/specialized outcomes exist and duplication costs are biologically real. However, the literature does not yet supply a same-background matched `W_S* / W_D*` comparison, so it is not promoted to a BALANCE receipt.
 
 ### Generality promotion rule
 
@@ -184,11 +174,11 @@ The universal object is a **finite sandwiched occupancy/persistence regime**, no
 # Current bottleneck
 
 ```text
-theory / domain trichotomy / persistence math strong / implemented
-Peucedanum observational mosaic              positive anchor
-Pedicularis direct worldline machinery       ready
-Pedicularis direct worldline biology         NOT YET EXECUTED
-cross-system direct BALANCE replication      incomplete
+theory / topology / deepest-state math    strong / implemented
+Peucedanum observational mosaic            positive anchor
+Pedicularis direct worldline machinery     ready
+Pedicularis direct worldline biology       NOT YET EXECUTED
+cross-system direct BALANCE replication    incomplete
 ```
 
 The next scientific gate is direct same-context `W_S*` vs `W_D*` measurement, not PAYOFF invasion dynamics.
