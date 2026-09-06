@@ -8,10 +8,10 @@ def test_true_width_is_bounded_by_observed_width_and_step_resolution():
         max_up_step=0.02,
         max_down_step=0.03,
     )
-    assert result.forward_lower == 0.10
-    assert result.forward_upper == 0.12
-    assert result.reverse_lower == -0.08
-    assert result.reverse_upper == -0.05
+    assert abs(result.forward_lower - 0.10) < 1e-12
+    assert abs(result.forward_upper - 0.12) < 1e-12
+    assert abs(result.reverse_lower + 0.08) < 1e-12
+    assert abs(result.reverse_upper + 0.05) < 1e-12
     assert abs(result.observed_width - 0.20) < 1e-12
     assert abs(result.true_width_lower - 0.15) < 1e-12
     assert abs(result.true_width_upper - 0.20) < 1e-12
@@ -37,7 +37,7 @@ def test_resolution_uncertainty_cannot_make_negative_true_width():
         max_down_step=0.03,
     )
     assert result.true_width_lower == 0.0
-    assert result.true_width_upper == 0.02
+    assert abs(result.true_width_upper - 0.02) < 1e-12
 
 
 def test_observed_threshold_order_must_be_consistent_with_hysteresis():
