@@ -44,6 +44,11 @@ from .multi_alternative import (
     classify_multi_alternative_middle_world,
 )
 from .accessibility_scope import AccessibilityScopeBounds, accessibility_scope_bounds
+from .covering_certificate import (
+    CoveringCertificate,
+    lipschitz_covering_certificate,
+    maximum_covering_radius_for_target_depth,
+)
 from .affine_envelope import (
     EndpointReserveCertificate,
     EnvelopeSegment,
@@ -92,6 +97,7 @@ __all__ = [
     "ConcaveSegmentCertificate",
     "ConflictHandoff",
     "ConstantSlopeCenters",
+    "CoveringCertificate",
     "CriticalConcordanceResult",
     "CrossingBracket",
     "DeepestMiddleWorldPoint",
@@ -151,7 +157,9 @@ __all__ = [
     "endpoint_reserve_certificate",
     "environmental_depth",
     "interval_concave_bulge_bounds",
+    "lipschitz_covering_certificate",
     "lipschitz_threat_radius",
+    "maximum_covering_radius_for_target_depth",
     "metric_middle_coordinate",
     "metric_middle_world_depth",
     "normalized_phase_point",
