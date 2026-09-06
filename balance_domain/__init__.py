@@ -43,6 +43,7 @@ from .multi_alternative import (
     MultiAlternativeState,
     classify_multi_alternative_middle_world,
 )
+from .accessibility_scope import AccessibilityScopeBounds, accessibility_scope_bounds
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
@@ -55,6 +56,7 @@ from .peucedanum_raw import (
 from .longitudinal_mosaic import LongitudinalMosaicResult, classify_longitudinal_mosaic
 
 __all__ = [
+    "AccessibilityScopeBounds",
     "BalanceDomainGeometry",
     "BalancePathResult",
     "BoundarySensitivity",
@@ -81,6 +83,7 @@ __all__ = [
     "WidthDepthBounds",
     "WorldlineComparison",
     "WorldlinePathResult",
+    "accessibility_scope_bounds",
     "analyze_balance_path",
     "analyze_definitions",
     "analyze_worldline_path",
