@@ -34,6 +34,11 @@ from .metric_depth import (
     diagonal_metric_boundary_depth,
     metric_middle_world_depth,
 )
+from .metric_center import (
+    ConstantSlopeCenters,
+    constant_slope_centers,
+    metric_middle_coordinate,
+)
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
 from .peucedanum_raw import (
     PLOT_ORDER,
@@ -50,6 +55,7 @@ __all__ = [
     "BalancePathResult",
     "BoundarySensitivity",
     "ConflictHandoff",
+    "ConstantSlopeCenters",
     "CriticalConcordanceResult",
     "CrossingBracket",
     "DeepestMiddleWorldPoint",
@@ -81,6 +87,7 @@ __all__ = [
     "compare_critical_paths",
     "compare_definition_brackets",
     "compare_worldlines",
+    "constant_slope_centers",
     "constant_slope_depth",
     "consume_conflict_handoff",
     "crossing_bracket",
@@ -88,6 +95,7 @@ __all__ = [
     "deepest_point_sensitivity",
     "diagonal_metric_boundary_depth",
     "environmental_depth",
+    "metric_middle_coordinate",
     "metric_middle_world_depth",
     "normalized_phase_point",
     "published_regime_reproduction_gate",
