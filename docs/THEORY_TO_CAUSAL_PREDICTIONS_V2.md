@@ -134,6 +134,38 @@ Prospective signatures are:
 
 Observed architecture-side re-entry or repeated return of the same threat architecture is therefore a model-audit trigger, not immediate evidence for hysteresis. Curved worldlines, changing accessibility scope or nonstatic effects must be considered before biological interpretation.
 
+### B5. Two-endpoint continuous-interval certificate
+
+The same affine-envelope assumptions give a useful design reduction. Because `rho_A(e)` is concave on a closed scalar interval,
+
+\[
+\min_{e\in[e_L,e_R]}\rho_A(e)
+=
+\min\{\rho_A(e_L),\rho_A(e_R)\}.
+\]
+
+Therefore, if both endpoint reserves are bounded strictly above zero,
+
+\[
+\rho_A(e_L)>0,
+\qquad
+\rho_A(e_R)>0,
+\]
+
+then shared fitness exceeds the entire registered alternative envelope for every interior context:
+
+\[
+\boxed{
+\rho_A(e)>0\quad\forall e\in[e_L,e_R].
+}
+\]
+
+The smaller endpoint reserve is also a conservative lower bound on architecture-facing fitness margin throughout the interval.
+
+If the SCH conflict margin `L(e)` is itself affine or otherwise concave and both endpoint conflict margins are positive, the same logic certifies the **entire interval** as static BALANCE.
+
+This is explicitly model-based. A strong design should use the two endpoints for the formal certificate and retain at least one interior context as a held-out affine-shape check. If the affine model fails, inference reverts to the sampled contexts rather than preserving the endpoint certificate.
+
 ---
 
 ## C. Multiple accessible alternative architectures
@@ -230,7 +262,8 @@ The advanced BALANCE geometry is downgraded if:
 - a claimed continuous-domain dominance relation is supported only on sampled points;
 - affine/convex assumptions fail materially between sampled contexts;
 - apparent re-entry is only an envelope identity switch without a sign change in `rho_A`;
-- an affine-path claim shows genuine architecture-reserve re-entry or repeated disjoint activity of the same alternative beyond uncertainty.
+- an affine-path claim shows genuine architecture-reserve re-entry or repeated disjoint activity of the same alternative beyond uncertainty;
+- a two-endpoint certificate is retained after held-out interior contexts reject the affine worldline assumption.
 
 ## F. Promotion ladder
 
