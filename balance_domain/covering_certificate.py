@@ -11,19 +11,19 @@ class CoveringCertificate:
     whole_domain_balance_certified: bool
 
 
+@dataclass(frozen=True)
+class LipschitzZeroBracket:
+    lower_distance_from_positive: float
+    upper_distance_from_positive: float
+    width: float
+
+
 def lipschitz_covering_certificate(
     *,
     sampled_min_margins: Sequence[float],
     lipschitz_constants: Sequence[float],
     covering_radius: float,
 ) -> CoveringCertificate:
-    """Certify continuous-domain BALANCE from finite sampled margins.
-
-    Each status margin f_k is assumed K_k-Lipschitz in the registered
-    environmental metric. If the sample set has covering radius h, then
-    ``inf_E f_k >= min_sample f_k - K_k h``.
-    """
-
     if covering_radius < 0:
         raise ValueError("covering_radius must be nonnegative")
     if len(sampled_min_margins) != len(lipschitz_constants) or not sampled_min_margins:
@@ -49,8 +49,6 @@ def maximum_covering_radius_for_target_depth(
     lipschitz_constants: Sequence[float],
     target_depth: float = 0.0,
 ) -> float:
-    """Largest covering radius allowed by the Lipschitz certificate."""
-
     if len(sampled_min_margins) != len(lipschitz_constants) or not sampled_min_margins:
         raise ValueError("sampled_min_margins and lipschitz_constants must have the same nonzero length")
     if any(k < 0 for k in lipschitz_constants):
@@ -74,8 +72,6 @@ def lipschitz_lower_envelope(
     distances_to_query: Sequence[float],
     lipschitz_constant: float,
 ) -> float:
-    """Strongest pointwise lower bound from registered Lipschitz sample cones."""
-
     if len(sampled_values) != len(distances_to_query) or not sampled_values:
         raise ValueError("sampled_values and distances_to_query must have the same nonzero length")
     if lipschitz_constant < 0:
@@ -93,8 +89,6 @@ def multi_margin_lower_depth(
     distances_to_query: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    """Lower-bound direct BALANCE depth at one query context."""
-
     if len(sampled_values_by_margin) != len(lipschitz_constants) or not sampled_values_by_margin:
         raise ValueError("one Lipschitz constant is required per margin")
 
@@ -114,12 +108,6 @@ def certified_balance_ball_radius(
     margins: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    """Radius around one sample certified to remain inside BALANCE.
-
-    Returns zero unless every registered status margin is strictly positive.
-    Constant positive margins (K=0) impose no finite radius restriction.
-    """
-
     if len(margins) != len(lipschitz_constants) or not margins:
         raise ValueError("margins and lipschitz_constants must have the same nonzero length")
     if any(k < 0 for k in lipschitz_constants):
@@ -136,12 +124,6 @@ def certified_outside_ball_radius(
     margins: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    """Radius around one sample certified to remain outside BALANCE.
-
-    Any one negative status margin is sufficient. The largest normalized
-    negative margin gives the largest certified outside ball.
-    """
-
     if len(margins) != len(lipschitz_constants) or not margins:
         raise ValueError("margins and lipschitz_constants must have the same nonzero length")
     if any(k < 0 for k in lipschitz_constants):
@@ -155,3 +137,42 @@ def certified_outside_ball_radius(
             return float("inf")
         radii.append(-float(margin) / float(k))
     return max(radii) if radii else 0.0
+
+
+def lipschitz_zero_bracket(
+    *,
+    positive_margin: float,
+    negative_margin: float,
+    path_length: float,
+    lipschitz_constant: float,
+    tolerance: float = 1e-12,
+) -> LipschitzZeroBracket:
+    """Bracket every zero between opposite-sign endpoint margins.
+
+    The path is parameterized by metric arc length from the positive sample
+    at 0 to the negative sample at ``path_length``. A K-Lipschitz margin
+    forces any zero t* to satisfy ``p/K <= t* <= D-|n|/K``.
+    """
+
+    p = float(positive_margin)
+    n = float(negative_margin)
+    d = float(path_length)
+    k = float(lipschitz_constant)
+    if p <= 0:
+        raise ValueError("positive_margin must be strictly positive")
+    if n >= 0:
+        raise ValueError("negative_margin must be strictly negative")
+    if d <= 0:
+        raise ValueError("path_length must be strictly positive")
+    if k <= 0:
+        raise ValueError("lipschitz_constant must be strictly positive")
+    if p + abs(n) > k * d + tolerance:
+        raise ValueError("endpoint margins are inconsistent with the registered Lipschitz constant")
+
+    lower = p / k
+    upper = d - abs(n) / k
+    return LipschitzZeroBracket(
+        lower_distance_from_positive=lower,
+        upper_distance_from_positive=upper,
+        width=max(0.0, upper - lower),
+    )
