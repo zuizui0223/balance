@@ -2,19 +2,24 @@
   "analysis": "balance_reality_pattern_readout",
   "claim_ceiling": "screened_source_adjudicated_recurrence_not_natural_prevalence_or_direct_Phi_identification",
   "confidence_counts": {
-    "high": 1
-  },
-  "context_axis_counts": {
-    "phenology_x_antagonist_pressure": 1
+    "high": 4,
+    "medium": 3
   },
   "n_boundary_crossing_clusters": 0,
-  "n_direct_differentiation_boundary_clusters": 0,
+  "n_direct_differentiation_boundary_clusters": 1,
+  "n_high_confidence_clusters": 4,
   "n_hysteresis_clusters": 0,
-  "n_independent_clusters": 1,
-  "n_middle_regime_signature_clusters": 1,
+  "n_independent_clusters": 7,
+  "n_middle_regime_signature_clusters": 4,
+  "n_no_conflict_no_balance_controls": 2,
   "n_quantitative_pool_eligible_clusters": 0,
-  "n_records": 1,
+  "n_records": 7,
   "pattern_class_counts": {
+    "CONFLICT_WITHOUT_SPLITTING": 2,
+    "DIRECT_DIFFERENTIATION": 1,
+    "NO_CONFLICT_NO_BALANCE_EXPECTED": 2,
+    "PERSISTENT_INTEGRATION_WITH_ALTERNATIVE_AVAILABLE": 1,
     "SANDWICHED_TRANSITION_MOSAIC": 1
-  }
+  },
+  "status": "SOURCE_ADJUDICATED_SEED_UNIVERSE_EXPANDED_MORE_SYSTEMATIC_RETRIEVAL_REQUIRED"
 }
