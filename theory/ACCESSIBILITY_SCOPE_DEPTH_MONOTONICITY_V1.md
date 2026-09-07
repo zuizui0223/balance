@@ -92,35 +92,53 @@ So the deepest attainable fitness-margin middle world cannot become deeper after
 
 ## Theorem 4 — metric environmental inradius monotonicity
 
-Under a fixed positive-definite environmental perturbation metric `Q`, let `d_L,Q(e)` be distance to the SCH conflict-loss boundary and let `d_j,Q(e)` be distance to alternative crossing `rho_j=0` under the declared affine/local boundary model.
+Fix a positive-definite environmental perturbation metric `Q`. Under the declared affine/local boundary model, use **signed inward normalized margins**
 
-Define
+\[
+d_{L,Q}(e)=
+\frac{L(e)}{
+\sqrt{\nabla L(e)^\top Q^{-1}\nabla L(e)}
+}
+\]
+
+and
+
+\[
+d_{j,Q}(e)=
+\frac{\rho_j(e)}{
+\sqrt{\nabla \rho_j(e)^\top Q^{-1}\nabla \rho_j(e)}
+}
+\]
+
+whenever the relevant gradient is nonzero. These quantities are positive on the corresponding inside half-space and negative after crossing that boundary.
+
+For an inside BALANCE context define
 
 \[
 d_Q^A(e)=\min\left\{d_{L,Q}(e),\min_{j\in A}d_{j,Q}(e)\right\}.
 \]
 
-Then
+Adding boundary constraints gives
 
 \[
 \boxed{
-d_Q^B(e)\le d_Q^A(e)\quad\forall e.}
+d_Q^B(e)\le d_Q^A(e)}
 \]
 
-and therefore the global metric inradius obeys
+wherever both local signed-distance representations are valid. Since also `B_B subseteq B_A`, the global inradius over a fixed region `E`,
+
+\[
+r_Q(A)=\sup_{e\in E\cap\mathcal B_A}d_Q^A(e),
+\]
+
+obeys
 
 \[
 \boxed{
-r_Q(B)\le r_Q(A),}
+r_Q(B)\le r_Q(A).}
 \]
 
-where
-
-\[
-r_Q(A)=\sup_{e\in E}d_Q^A(e).
-\]
-
-This extends scope monotonicity from state membership to environmental robustness.
+If the expanded BALANCE domain is empty, set its inradius to zero. This extends scope monotonicity from state membership to environmental robustness.
 
 ## Equality condition — dominated additions do nothing
 
@@ -167,4 +185,4 @@ The curve is theoretically non-increasing. An observed increase indicates either
 
 ## Claim ceiling
 
-The theorem holds only when comparing nested accessibility scopes while keeping the same shared worldline, SCH conflict function, fitness scale, environmental metric and alternative-specific worldlines fixed. Re-fitting models after scope changes can change other quantities and is not the same mathematical comparison. PAYOFF frequency dependence remains separate.
+The theorem holds only when comparing nested accessibility scopes while keeping the same shared worldline, SCH conflict function, fitness scale, environmental metric and alternative-specific worldlines fixed. Re-fitting models after scope changes can change other quantities and is not the same mathematical comparison. Metric inradius claims additionally require valid local/affine boundary-distance formulas over the region being compared. PAYOFF frequency dependence remains separate.
