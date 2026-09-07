@@ -107,7 +107,7 @@ def test_covariance_source_without_matrix_is_rejected():
         )
 
 
-def test_invalid_covariance_shapes_and_asymmetry_are_rejected():
+def test_invalid_covariance_shapes_asymmetry_and_indefiniteness_are_rejected():
     with pytest.raises(ValueError, match="4x4"):
         analyze_factorial_agent_selection(
             (0.1, 0.2, 0.3, 0.4),
@@ -127,6 +127,38 @@ def test_invalid_covariance_shapes_and_asymmetry_are_rejected():
             slope_covariance=asymmetric,
             covariance_source="joint_model",
         )
+
+    # Symmetric with non-negative diagonal, but the leading 2x2 block has
+    # eigenvalues 3 and -1 and therefore cannot be a covariance matrix.
+    indefinite = (
+        (1.0, 2.0, 0.0, 0.0),
+        (2.0, 1.0, 0.0, 0.0),
+        (0.0, 0.0, 1.0, 0.0),
+        (0.0, 0.0, 0.0, 1.0),
+    )
+    with pytest.raises(ValueError, match="positive semidefinite"):
+        analyze_factorial_agent_selection(
+            (0.1, 0.2, 0.3, 0.4),
+            slope_covariance=indefinite,
+            covariance_source="joint_model",
+        )
+
+
+def test_singular_positive_semidefinite_covariance_is_allowed():
+    singular = (
+        (1.0, 1.0, 0.0, 0.0),
+        (1.0, 1.0, 0.0, 0.0),
+        (0.0, 0.0, 0.0, 0.0),
+        (0.0, 0.0, 0.0, 0.0),
+    )
+    receipt = analyze_factorial_agent_selection(
+        (0.1, 0.2, 0.3, 0.4),
+        slope_covariance=singular,
+        covariance_source="joint_model",
+    )
+    assert receipt.effect_size_ready
+    assert receipt.contrast_standard_errors is not None
+    assert all(value >= 0 for value in receipt.contrast_standard_errors)
 
 
 def test_nonfinite_inputs_are_rejected():
