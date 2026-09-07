@@ -2,7 +2,7 @@
 
 The Chapter-2 quantitative R layer distinguishes a simple bivariate agent pair
 from a *diffuse factorial* design, where each agent-mediated selection contrast
-depends on the state of the other agent.  In the latter case one must retain the
+depends on the state of the other agent. In the latter case one must retain the
 full vector of dependent contrasts rather than cherry-pick one convenient pair.
 
 For treatment-specific selection slopes ordered as
@@ -27,7 +27,7 @@ with rows of ``C`` corresponding to
 
 A quantitative receipt is *not* ready from marginal standard errors alone.
 Readiness requires the joint covariance of the four treatment slopes from the
-fitted model, or a covariance estimated by a raw-data bootstrap.  The function
+fitted model, or a covariance estimated by a raw-data bootstrap. The function
 therefore refuses to label a covariance matrix as usable unless its provenance
 is explicitly registered as ``joint_model`` or ``raw_bootstrap``.
 """
@@ -61,7 +61,7 @@ _CONTRAST_MATRIX = (
     (0.0, 1.0, 0.0, -1.0),
 )
 
-# Difference in an agent effect between the two contexts.  The same 2x2
+# Difference in an agent effect between the two contexts. The same 2x2
 # interaction is obtained from either pair of mediated contrasts.
 _INTERACTION_VECTOR = (1.0, -1.0, -1.0, 1.0)
 _ALLOWED_COVARIANCE_SOURCES = {"joint_model", "raw_bootstrap"}
@@ -96,6 +96,32 @@ def _finite_vector(values: Sequence[float], *, name: str) -> tuple[float, ...]:
     return vals
 
 
+def _require_positive_semidefinite(
+    covariance: tuple[tuple[float, float, float, float], ...], *, tolerance: float
+) -> None:
+    """Validate PSD using a tolerance-aware Cholesky-style factorization.
+
+    Symmetry plus non-negative diagonal entries are necessary but not sufficient
+    for a covariance matrix. This decomposition additionally rejects indefinite
+    matrices without adding a numerical dependency such as NumPy.
+    """
+
+    factor = [[0.0] * 4 for _ in range(4)]
+    for i in range(4):
+        for j in range(i + 1):
+            residual = covariance[i][j] - sum(
+                factor[i][k] * factor[j][k] for k in range(j)
+            )
+            if i == j:
+                if residual < -tolerance:
+                    raise ValueError("slope_covariance must be positive semidefinite")
+                factor[i][j] = math.sqrt(max(0.0, residual))
+            elif factor[j][j] > tolerance:
+                factor[i][j] = residual / factor[j][j]
+            elif abs(residual) > tolerance:
+                raise ValueError("slope_covariance must be positive semidefinite")
+
+
 def _validate_covariance(
     covariance: Sequence[Sequence[float]], *, tolerance: float
 ) -> tuple[tuple[float, float, float, float], ...]:
@@ -110,7 +136,9 @@ def _validate_covariance(
         for j in range(4):
             if abs(rows[i][j] - rows[j][i]) > tolerance:
                 raise ValueError("slope_covariance must be symmetric")
-    return rows
+    typed_rows = rows  # shape has been validated above
+    _require_positive_semidefinite(typed_rows, tolerance=tolerance)  # type: ignore[arg-type]
+    return typed_rows  # type: ignore[return-value]
 
 
 def _linear_transform(
@@ -143,8 +171,8 @@ def analyze_factorial_agent_selection(
 ) -> FactorialSelectionReceipt:
     """Transform four treatment slopes into the registered dependent contrasts.
 
-    ``treatment_slopes`` must follow :data:`TREATMENT_ORDER`.  Point contrasts
-    can always be computed.  Joint uncertainty, however, is calculated only
+    ``treatment_slopes`` must follow :data:`TREATMENT_ORDER`. Point contrasts
+    can always be computed. Joint uncertainty, however, is calculated only
     when a full 4x4 covariance matrix is supplied with provenance
     ``joint_model`` or ``raw_bootstrap``.
 
