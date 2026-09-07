@@ -1,0 +1,15 @@
+{
+  "analysis": "balance_reality_pattern_readout",
+  "n_records": 1,
+  "n_independent_clusters": 1,
+  "pattern_class_counts": {
+    "SANDWICHED_TRANSITION_MOSAIC": 1
+  },
+  "n_middle_regime_signature_clusters": 1,
+  "n_boundary_crossing_clusters": 0,
+  "n_hysteresis_clusters": 0,
+  "n_direct_differentiation_boundary_clusters": 0,
+  "n_quantitative_pool_eligible_clusters": 0,
+  "status": "SEED_UNIVERSE_ONLY_EXPANSION_REQUIRED",
+  "claim_ceiling": "screened_source_adjudicated_recurrence_not_natural_prevalence_or_direct_Phi_identification"
+}
