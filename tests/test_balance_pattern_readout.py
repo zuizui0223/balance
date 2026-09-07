@@ -1,3 +1,4 @@
+import csv
 import importlib.util
 import json
 from pathlib import Path
@@ -21,6 +22,16 @@ def test_registered_readout_matches_builder():
     builder = _load_builder()
     expected = json.loads(READOUT.read_text(encoding="utf-8"))
     assert builder.build(LEDGER) == expected
+
+
+def test_ledger_rows_have_exact_registered_schema():
+    with LEDGER.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        rows = list(reader)
+    assert reader.fieldnames is not None
+    assert len(reader.fieldnames) == 15
+    assert all(None not in row for row in rows)
+    assert all(set(row) == set(reader.fieldnames) for row in rows)
 
 
 def test_targeted_recovery_closes_two_empty_classes_without_overpromotion():
