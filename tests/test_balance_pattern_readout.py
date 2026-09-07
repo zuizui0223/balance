@@ -18,6 +18,11 @@ def _load_builder():
     return module
 
 
+def _ledger_rows():
+    with LEDGER.open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
 def test_registered_readout_matches_builder():
     builder = _load_builder()
     expected = json.loads(READOUT.read_text(encoding="utf-8"))
@@ -34,17 +39,17 @@ def test_ledger_rows_have_exact_registered_schema():
     assert all(set(row) == set(reader.fieldnames) for row in rows)
 
 
-def test_targeted_recovery_closes_two_empty_classes_without_overpromotion():
+def test_recovery_closes_three_pattern_gaps_without_overpromotion():
     builder = _load_builder()
     result = builder.build(LEDGER)
-    assert result["n_independent_clusters"] == 11
+    assert result["n_independent_clusters"] == 12
     assert result["n_middle_regime_signature_clusters"] == 4
     assert result["n_conflict_without_splitting_clusters"] == 2
     assert result["n_sandwiched_transition_mosaic_clusters"] == 1
     assert result["n_persistent_integration_with_alternative_clusters"] == 1
+    assert result["n_boundary_crossing_clusters"] == 1
     assert result["n_direct_differentiation_boundary_clusters"] == 1
     assert result["n_unresolved_clusters"] == 6
-    assert result["n_boundary_crossing_clusters"] == 0
     assert result["n_hysteresis_clusters"] == 0
     assert result["n_quantitative_pool_eligible_clusters"] == 0
 
@@ -54,17 +59,20 @@ def test_cross_domain_counts_are_explicit():
     result = builder.build(LEDGER)
     assert result["domain_counts"] == {
         "gene_regulatory_architecture": 1,
-        "plant": 7,
+        "plant": 8,
         "protein_function": 2,
         "vertebrate_morphology": 1,
     }
 
 
-def test_no_population_split_is_relabelled_as_within_architecture_boundary():
-    builder = _load_builder()
-    result = builder.build(LEDGER)
-    assert "BOUNDARY_CROSSING" not in result["pattern_class_counts"]
-    assert result["n_boundary_crossing_clusters"] == 0
+def test_population_split_is_not_relabelled_as_within_architecture_boundary():
+    rows = _ledger_rows()
+    cluster_ids = {row["cluster_id"] for row in rows}
+    assert "Ecoli_alternating_carbon_strategy" not in cluster_ids
+    boundary_ids = {
+        row["cluster_id"] for row in rows if row["pattern_class"] == "BOUNDARY_CROSSING"
+    }
+    assert boundary_ids == {"Solanum_heteranthery_repeated_origins"}
 
 
 def test_no_source_adjudication_is_mistaken_for_hysteresis_or_pooling():
