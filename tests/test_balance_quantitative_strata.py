@@ -21,10 +21,10 @@ def test_all_quantitative_strata_start_below_pooling_gate():
     )
 
 
-def test_opposing_floral_selection_has_three_registered_patterns_but_zero_ready_effects():
+def test_opposing_floral_selection_has_four_registered_patterns_but_zero_ready_effects():
     rows = {row["stratum_id"]: row for row in _rows()}
     floral = rows["OPPOSING_FLORAL_SELECTION"]
-    assert floral["registered_pattern_candidates"] == "3"
+    assert floral["registered_pattern_candidates"] == "4"
     assert floral["reanalysis_candidates"] == "1"
     assert floral["min_independent_clusters"] == "3"
     assert floral["effect_size_ready_clusters"] == "0"
@@ -32,6 +32,7 @@ def test_opposing_floral_selection_has_three_registered_patterns_but_zero_ready_
     assert "assume_covariance_zero" in floral["prohibited_pooling"]
     assert "mix_path_coefficients" in floral["prohibited_pooling"]
     assert "count_populations_as_independent_studies" in floral["prohibited_pooling"]
+    assert "Gymnadenia_factorial_contrast_covariance" in floral["next_gate"]
 
 
 def test_direct_balance_parameters_are_not_backfilled_from_pattern_studies():
