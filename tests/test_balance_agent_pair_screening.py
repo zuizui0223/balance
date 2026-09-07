@@ -38,14 +38,37 @@ def test_candidate_expansion_sources_are_registered_with_bounded_roles():
     assert rows["GALEN_POLEMONIUM_2011"]["screening_role"] == "DOSAGE_CONFLICT_MECHANISM_CANDIDATE"
 
 
-def test_seed_screening_keeps_only_three_current_opposed_agent_pairs():
+def test_gymnadenia_factorial_source_is_registered_as_identified_agent_pair():
+    rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    source = rows["SLETVOLD_GYMNADENIA_2015"]
+    assert source["publication_doi"] == "10.1890/14-0119.1"
+    assert source["screening_role"] == "OPPOSED_AGENT_PAIR_FACTORIAL_SOURCE"
+    assert source["current_status"] == "APPENDIX_A2_NUMERIC_CONTRAST_RECONSTRUCTION_PENDING"
+    assert "2x2_pollination_x_herbivory_factorial" in source["public_scope"]
+
+
+def test_seed_screening_keeps_four_current_opposed_agent_pairs():
     rows = _rows(SCREENING)
     opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
     assert {row["system_taxon"] for row in opposed} == {
         "Dalechampia scandens",
         "Castilleja linariaefolia",
         "Pedicularis rex",
+        "Gymnadenia conopsea",
     }
+
+
+def test_gymnadenia_factorial_pair_is_positive_but_not_effect_ready():
+    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
+    gym = rows["Q1_GYMNADENIA_SLETVOLD2015"]
+    assert gym["trait_coordinate"] == "flowering_start_phenology"
+    assert gym["second_agent_type"] == "herbivore"
+    assert gym["second_agent_identity_status"] == "identified"
+    assert gym["same_fitness_interpretation_status"] == "common_female_fitness_factorial"
+    assert gym["directional_relation"] == "opposed_pollinators_later_herbivores_earlier"
+    assert gym["screening_class"] == "OPPOSED_AGENT_PAIR"
+    assert gym["effect_size_status"] == "APPENDIX_A2_CONTRAST_RECONSTRUCTION_PENDING"
+    assert gym["pattern_promotion_status"] == "R_PATTERN_PROMOTION_SUPPORTED"
 
 
 def test_ipomopsis_is_not_prelabelled_as_positive_conflict():
@@ -56,7 +79,7 @@ def test_ipomopsis_is_not_prelabelled_as_positive_conflict():
     assert ipo["raw_data_status"] == "public"
 
 
-def test_gymnadenia_methods_audit_excludes_antagonist_q1_promotion():
+def test_gymnadenia_2019_methods_audit_still_excludes_antagonist_q1_promotion():
     source_rows = {row["source_key"]: row for row in _rows(SOURCES)}
     source = source_rows["CHAPURLAT_GYMNADENIA_2019"]
     assert source["screening_role"] == "RESIDUAL_NONPOLLINATOR_SELECTION_NOT_ANTAGONIST_Q1"
