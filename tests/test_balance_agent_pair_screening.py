@@ -38,13 +38,8 @@ def test_candidate_expansion_sources_are_registered_with_bounded_roles():
     assert rows["GALEN_POLEMONIUM_2011"]["screening_role"] == "DOSAGE_CONFLICT_MECHANISM_CANDIDATE"
 
 
-def test_seed_screening_contains_positive_boundary_and_unresolved_examples():
+def test_seed_screening_keeps_only_three_current_opposed_agent_pairs():
     rows = _rows(SCREENING)
-    classes = {row["screening_class"] for row in rows}
-    assert "OPPOSED_AGENT_PAIR" in classes
-    assert "ONE_AGENT_NULL_OR_UNRESOLVED" in classes
-    assert "AGENT_IDENTITY_UNRESOLVED_CONFLICT" in classes
-    assert "SOURCE_REANALYSIS_REQUIRED" in classes
     opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
     assert {row["system_taxon"] for row in opposed} == {
         "Dalechampia scandens",
@@ -61,13 +56,18 @@ def test_ipomopsis_is_not_prelabelled_as_positive_conflict():
     assert ipo["raw_data_status"] == "public"
 
 
-def test_gymnadenia_requires_agent_identity_before_antagonist_promotion():
+def test_gymnadenia_methods_audit_excludes_antagonist_q1_promotion():
+    source_rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    source = source_rows["CHAPURLAT_GYMNADENIA_2019"]
+    assert source["screening_role"] == "RESIDUAL_NONPOLLINATOR_SELECTION_NOT_ANTAGONIST_Q1"
+    assert source["current_status"] == "METHODS_AUDITED_ANTAGONIST_ROUTE_NOT_SUPPORTED_RAW_DATA_PUBLIC"
+
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     gym = rows["Q1_GYMNADENIA_CHAPURLAT2019"]
     assert gym["directional_relation"] == "opposed_for_three_compounds"
-    assert gym["second_agent_identity_status"] == "unresolved_from_abstract"
-    assert gym["screening_class"] == "AGENT_IDENTITY_UNRESOLVED_CONFLICT"
-    assert gym["effect_size_status"] == "AGENT_AUDIT_REQUIRED"
+    assert gym["second_agent_identity_status"] == "antagonist_not_supported_flower_herbivore_damage_absent"
+    assert gym["screening_class"] == "RESIDUAL_NONPOLLINATOR_UNRESOLVED"
+    assert gym["effect_size_status"] == "NOT_Q1_ANTAGONIST_ELIGIBLE"
     assert gym["pattern_promotion_status"] == "NO_ANTAGONIST_PROMOTION"
 
 
