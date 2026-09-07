@@ -290,7 +290,7 @@ Experiment-A shared bundle                PR #21 GREEN, NOT MERGED
 Experiment-A pilot/power wrapper           PR #22 GREEN, NOT MERGED
 Experiment-B causal release analyzer       MAIN
 Experiment-B shared x-y handoff            PR #181 GREEN, NOT MERGED
-Experiment-B BALANCE consumer              PR #10 GREEN, NOT MERGED
+Experiment-B BALANCE consumer              MAIN + GREEN
 Experiment-B pilot/power wrapper           PR #182 GREEN, NOT MERGED
 real Pedicularis Experiment A              NOT YET EXECUTED
 real Pedicularis Experiment B              NOT YET EXECUTED
