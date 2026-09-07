@@ -39,18 +39,19 @@ def test_ledger_rows_have_exact_registered_schema():
     assert all(set(row) == set(reader.fieldnames) for row in rows)
 
 
-def test_pattern_recovery_adds_fragaria_diffuse_conflict_without_false_pooling():
+def test_pattern_recovery_counts_include_new_adjudicated_boundaries():
     builder = _load_builder()
     result = builder.build(LEDGER)
-    assert result["n_independent_clusters"] == 17
+    assert result["n_independent_clusters"] == 18
+    assert result["n_records"] == 19
     assert result["n_middle_regime_signature_clusters"] == 9
     assert result["n_conflict_without_splitting_clusters"] == 7
     assert result["n_sandwiched_transition_mosaic_clusters"] == 1
     assert result["n_persistent_integration_with_alternative_clusters"] == 1
-    assert result["n_boundary_crossing_clusters"] == 2
+    assert result["n_boundary_crossing_clusters"] == 3
     assert result["n_direct_differentiation_boundary_clusters"] == 1
     assert result["n_unresolved_clusters"] == 5
-    assert result["n_hysteresis_clusters"] == 0
+    assert result["n_hysteresis_clusters"] == 1
     assert result["n_quantitative_pool_eligible_clusters"] == 0
 
 
@@ -60,7 +61,8 @@ def test_cross_domain_counts_are_explicit():
     assert result["domain_counts"] == {
         "gene_regulatory_architecture": 1,
         "genome_architecture_ecological_strategy": 1,
-        "plant": 12,
+        "microbial_population": 1,
+        "plant": 13,
         "protein_function": 2,
         "vertebrate_morphology": 1,
     }
@@ -114,7 +116,7 @@ def test_gymnadenia_and_fragaria_are_independent_factorial_patterns():
     assert "diffuse_opposing_agent_selection" in frag["claim_ceiling"]
 
 
-def test_population_split_is_not_relabelled_as_within_architecture_boundary():
+def test_boundary_classes_keep_architecture_and_selection_crossings_distinct():
     rows = _ledger_rows()
     cluster_ids = {row["cluster_id"] for row in rows}
     assert "Ecoli_alternating_carbon_strategy" not in cluster_ids
@@ -122,9 +124,18 @@ def test_population_split_is_not_relabelled_as_within_architecture_boundary():
         row["cluster_id"] for row in rows if row["pattern_class"] == "BOUNDARY_CROSSING"
     }
     assert boundary_ids == {
+        "Peucedanum_longitudinal_mosaic",
         "Solanum_heteranthery_repeated_origins",
         "Yeast_GAP1_PUT4_CNV_context",
     }
+    peucedanum_boundary = [
+        row
+        for row in rows
+        if row["cluster_id"] == "Peucedanum_longitudinal_mosaic"
+        and row["pattern_class"] == "BOUNDARY_CROSSING"
+    ]
+    assert len(peucedanum_boundary) == 1
+    assert "not_direct" in peucedanum_boundary[0]["claim_ceiling"]
 
 
 def test_preprint_boundary_is_bounded_and_not_hysteresis():
@@ -136,9 +147,17 @@ def test_preprint_boundary_is_bounded_and_not_hysteresis():
     assert yeast["pattern_class"] == "BOUNDARY_CROSSING"
 
 
-def test_no_source_adjudication_is_mistaken_for_hysteresis_or_pooling():
+def test_hysteresis_anchor_is_explicitly_cross_domain_not_balance_occupancy():
+    rows = [row for row in _ledger_rows() if row["pattern_class"] == "HYSTERESIS_OR_PATH_DEPENDENCE"]
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["domain"] == "microbial_population"
+    assert row["quantitative_pool_eligible"] == "false"
+    assert "not_trait_architecture" in row["claim_ceiling"] or "not_BALANCE" in row["claim_ceiling"]
+
+
+def test_no_quantitative_pooling_is_created_by_pattern_adjudication():
     builder = _load_builder()
     result = builder.build(LEDGER)
-    assert result["n_hysteresis_clusters"] == 0
     assert result["n_quantitative_pool_eligible_clusters"] == 0
     assert result["pattern_class_counts"]["UNRESOLVED"] == 5
