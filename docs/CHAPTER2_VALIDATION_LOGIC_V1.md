@@ -4,7 +4,7 @@
 BALANCE asks whether a real SCH conflict can persist as a stable middle world because the shared worldline still outranks the differentiated-accessible worldline.
 
 ## Theory layer
-Mathematics defines the interior regime rather than a new trait architecture:
+Mathematics defines the interior regime:
 
 ```text
 L > 0
@@ -17,43 +17,48 @@ or, under the registered decomposition,
 Phi = sL - K < 0.
 ```
 
-Theory then predicts measurable properties of the interior: position `xi`, two-sided depth `d_B`, reserve `rho`, width/topology, deepest ridge, no-reentry conditions, and switching-cost hysteresis.
+Theory then predicts interior position/depth/reserve, environmental width/topology, critical boundaries, no-reentry conditions, and switching-cost hysteresis.
 
-## Causal / worldline validation layer
-The key empirical test differs from SCH. BALANCE does not primarily ask whether P or G moves one optimum. It compares two optimized worldlines on the **same biological context and fitness scale**:
+## Primary empirical layer — reality-pattern recovery
+
+The first empirical task is systematic synthesis across systems with evidence of conflict and architecture state. Recover whether nature repeatedly contains a middle regime rather than assuming conflict must immediately produce differentiation.
+
+Primary observable signatures include:
 
 ```text
-shared worldline          W_S*
-alternative/differentiated-accessible worldline  W_D*
+conflict-without-splitting
+persistent integration despite opposing demands
+shared/intermediate/differentiated transition mosaics
+boundary crossings along environment or geography
+path dependence / hysteresis
+negative cases with direct differentiation and no supported middle regime
 ```
 
-Strong direct evidence requires a positive SCH conflict receipt plus a bounded direct gap entirely below zero.
+Primary outputs are recurrence, transition topology, moderator structure, path-dependence cases, boundary cases, and quantitative pooling only within compatible worldline/fitness definitions.
 
-The same Experiment-B surface can later be reused by BITA; BALANCE does not need the `s,K` decomposition first.
+The universal object is the **sandwiched regime / persistence geometry**, not one focal species and not a publication-count estimate of natural prevalence.
 
-## Persistence validation layer
-A second class of tests is unique to Chapter 2:
+See `docs/THEORY_TO_REALITY_PATTERN_RECOVERY_V1.md`.
 
-- environmental occupancy width of the BALANCE region;
-- direct versus decomposed critical-point concordance;
-- re-entry along environment;
-- forward versus reverse thresholds;
-- dependence of hysteresis width on context duration / switching cost.
+## Final validation layer — focal worldline comparison
 
-These are domain/persistence tests, not local functional-mechanism tests.
+After the cross-system pattern map is mature, the strongest direct validation compares optimized worldlines in the same biological context and on the same fitness scale:
 
-## Generality layer
-The comparative target is recurrence of a **sandwiched regime** across systems:
+```text
+shared worldline                         W_S*
+alternative/differentiated-accessible   W_D*
+```
 
-- conflict is demonstrably active;
-- an alternative worldline is available or measurable;
-- the shared world still has higher optimized fitness;
-- the location/depth/persistence of that regime changes predictably with conflict, recoverability and cost.
+A positive SCH conflict receipt plus a bounded direct gap below zero can identify a focal middle world. Additional repeated-context data can test occupancy width, direct-versus-decomposed critical-point concordance, re-entry, forward/reverse thresholds, and hysteresis.
 
-Peucedanum currently supplies an observational transition-mosaic anchor; Pedicularis is the preferred matched causal route.
+This focal experiment is a final identification upgrade, not the entry requirement for BALANCE's empirical half.
+
+## Claim boundary
+
+Cross-system persistence signatures do not identify `s`, `K`, `Phi`, `xi`, `rho`, or `d_B` by pooling unmatched studies. A focal worldline receipt can identify stronger quantities in one system but does not establish generality alone.
 
 ## What BALANCE does not test
-A middle-world receipt does not identify historical trait splitting or the detailed causal loading of differentiated axes. Chapter 3 tests those contemporary differentiation mechanisms.
+A middle-world pattern does not identify historical trait splitting or the detailed functional loading of differentiated axes. BITA addresses contemporary differentiation mechanisms.
 
-## One-line validation question
-**When conflict is already real, can we show directly that the shared world still wins, quantify how far the system lies from both boundaries, and predict when that occupancy persists or disappears?**
+## One-line empirical question
+**When conflict is real, how often and under what conditions does nature retain an integrated middle regime—and only after mapping that recurrence, can a focal common-scale worldline test identify the regime directly?**
