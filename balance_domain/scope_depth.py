@@ -14,6 +14,15 @@ class ScopeDepthComparison:
     new_balance: bool
 
 
+@dataclass(frozen=True)
+class MarginalScopeShock:
+    old_bottleneck: float
+    new_alternative_reserve: float
+    new_bottleneck: float
+    depth_loss: float
+    classification: str
+
+
 def envelope_reserve(reserves: Iterable[float]) -> float:
     values = tuple(float(x) for x in reserves)
     if not values:
@@ -56,6 +65,36 @@ def compare_nested_scopes(
         new_fitness_depth=new_depth,
         old_balance=float(conflict_margin) > 0.0 and old_reserve > 0.0,
         new_balance=float(conflict_margin) > 0.0 and new_reserve > 0.0,
+    )
+
+
+def marginal_scope_shock(
+    conflict_margin: float,
+    old_reserves: Iterable[float],
+    new_alternative_reserve: float,
+) -> MarginalScopeShock:
+    """Exact pointwise bottleneck update after adding one alternative."""
+    old_values = tuple(float(x) for x in old_reserves)
+    if not old_values:
+        raise ValueError("old scope must contain at least one alternative")
+    old_bottleneck = min(float(conflict_margin), envelope_reserve(old_values))
+    r = float(new_alternative_reserve)
+    new_bottleneck = min(old_bottleneck, r)
+    depth_loss = old_bottleneck - new_bottleneck
+
+    if r >= old_bottleneck:
+        classification = "IRRELEVANT_OR_TIED_ADDITION"
+    elif r > 0.0:
+        classification = "DEPTH_REDUCING_BALANCE_PERSISTS"
+    else:
+        classification = "STATE_DESTROYING_ALTERNATIVE"
+
+    return MarginalScopeShock(
+        old_bottleneck=old_bottleneck,
+        new_alternative_reserve=r,
+        new_bottleneck=new_bottleneck,
+        depth_loss=depth_loss,
+        classification=classification,
     )
 
 
