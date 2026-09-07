@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from math import ceil, log2
 
 
 @dataclass(frozen=True)
@@ -92,3 +93,11 @@ def identify_threats_with_auxiliary(
     return tuple(
         label for label in active_threats if auxiliary_codes[label] == observed_code
     )
+
+
+def minimum_binary_auxiliary_assays(number_of_tied_threats: int) -> int:
+    if number_of_tied_threats < 1:
+        raise ValueError("number_of_tied_threats must be at least one")
+    if number_of_tied_threats == 1:
+        return 0
+    return ceil(log2(number_of_tied_threats))
