@@ -39,12 +39,12 @@ def test_ledger_rows_have_exact_registered_schema():
     assert all(set(row) == set(reader.fieldnames) for row in rows)
 
 
-def test_pattern_recovery_adds_gymnadenia_factorial_conflict_without_false_pooling():
+def test_pattern_recovery_adds_fragaria_diffuse_conflict_without_false_pooling():
     builder = _load_builder()
     result = builder.build(LEDGER)
-    assert result["n_independent_clusters"] == 16
-    assert result["n_middle_regime_signature_clusters"] == 8
-    assert result["n_conflict_without_splitting_clusters"] == 6
+    assert result["n_independent_clusters"] == 17
+    assert result["n_middle_regime_signature_clusters"] == 9
+    assert result["n_conflict_without_splitting_clusters"] == 7
     assert result["n_sandwiched_transition_mosaic_clusters"] == 1
     assert result["n_persistent_integration_with_alternative_clusters"] == 1
     assert result["n_boundary_crossing_clusters"] == 2
@@ -60,7 +60,7 @@ def test_cross_domain_counts_are_explicit():
     assert result["domain_counts"] == {
         "gene_regulatory_architecture": 1,
         "genome_architecture_ecological_strategy": 1,
-        "plant": 11,
+        "plant": 12,
         "protein_function": 2,
         "vertebrate_morphology": 1,
     }
@@ -101,16 +101,17 @@ def test_primula_species_are_kept_as_distinct_evidence_objects():
     assert "not_direct_pollinator_beta" in veris["claim_ceiling"]
 
 
-def test_gymnadenia_factorial_is_one_high_confidence_pattern_not_direct_balance():
-    rows = _ledger_rows()
-    gym = [row for row in rows if row["cluster_id"] == "Gymnadenia_conopsea_pollinator_herbivore_conflict"]
-    assert len(gym) == 1
-    row = gym[0]
-    assert row["system_taxon"] == "Gymnadenia conopsea"
-    assert row["pattern_class"] == "CONFLICT_WITHOUT_SPLITTING"
-    assert row["confidence"] == "high"
-    assert row["quantitative_pool_eligible"] == "false"
-    assert "not_direct_BALANCE_occupancy" in row["claim_ceiling"]
+def test_gymnadenia_and_fragaria_are_independent_factorial_patterns():
+    rows = {row["cluster_id"]: row for row in _ledger_rows()}
+    gym = rows["Gymnadenia_conopsea_pollinator_herbivore_conflict"]
+    frag = rows["Fragaria_vesca_pollinator_herbivore_conflict"]
+    assert gym["system_taxon"] == "Gymnadenia conopsea"
+    assert frag["system_taxon"] == "Fragaria vesca"
+    assert gym["pattern_class"] == "CONFLICT_WITHOUT_SPLITTING"
+    assert frag["pattern_class"] == "CONFLICT_WITHOUT_SPLITTING"
+    assert gym["quantitative_pool_eligible"] == "false"
+    assert frag["quantitative_pool_eligible"] == "false"
+    assert "diffuse_opposing_agent_selection" in frag["claim_ceiling"]
 
 
 def test_population_split_is_not_relabelled_as_within_architecture_boundary():

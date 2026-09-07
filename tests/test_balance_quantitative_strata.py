@@ -13,7 +13,7 @@ def _rows():
 
 def test_all_quantitative_strata_start_below_pooling_gate():
     rows = _rows()
-    assert len(rows) == 4
+    assert len(rows) == 5
     assert all(row["pooling_status"].startswith("NOT_READY") for row in rows)
     assert all(
         int(row["effect_size_ready_clusters"]) < int(row["min_independent_clusters"])
@@ -21,7 +21,7 @@ def test_all_quantitative_strata_start_below_pooling_gate():
     )
 
 
-def test_opposing_floral_selection_has_four_registered_patterns_but_zero_ready_effects():
+def test_simple_opposing_floral_selection_keeps_four_candidates_and_zero_ready_effects():
     rows = {row["stratum_id"]: row for row in _rows()}
     floral = rows["OPPOSING_FLORAL_SELECTION"]
     assert floral["registered_pattern_candidates"] == "4"
@@ -33,6 +33,20 @@ def test_opposing_floral_selection_has_four_registered_patterns_but_zero_ready_e
     assert "mix_path_coefficients" in floral["prohibited_pooling"]
     assert "count_populations_as_independent_studies" in floral["prohibited_pooling"]
     assert "Gymnadenia_factorial_contrast_covariance" in floral["next_gate"]
+
+
+def test_diffuse_factorial_stratum_preserves_context_specific_dependence():
+    rows = {row["stratum_id"]: row for row in _rows()}
+    diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
+    assert diffuse["registered_pattern_candidates"] == "1"
+    assert diffuse["effect_size_ready_clusters"] == "0"
+    assert diffuse["min_independent_clusters"] == "3"
+    assert "context_specific_agent_contrast_vector" in diffuse["estimand"]
+    assert "full_joint_covariance" in diffuse["variance_requirement"]
+    assert "cherry_pick_one_context_pair" in diffuse["prohibited_pooling"]
+    assert "treat_context_specific_contrasts_as_independent" in diffuse["prohibited_pooling"]
+    assert "assume_zero_covariance" in diffuse["prohibited_pooling"]
+    assert "Fragaria_Table_S2_or_Dryad_model" in diffuse["next_gate"]
 
 
 def test_direct_balance_parameters_are_not_backfilled_from_pattern_studies():
