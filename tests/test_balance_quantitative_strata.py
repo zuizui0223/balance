@@ -48,7 +48,7 @@ def test_pattern_boundaries_are_not_numeric_thresholds_yet():
     assert boundary["registered_pattern_candidates"] == "2"
     assert boundary["effect_size_ready_clusters"] == "0"
     assert "PATTERN_BOUNDARIES_NOT_DIRECT_THRESHOLDS" in boundary["pooling_status"]
-    assert "categorical_environments" in boundary["prohibited_pooling"]
+    assert "categories_to_continuous_e_star" in boundary["prohibited_pooling"]
 
 
 def test_hysteresis_stratum_stays_empty_until_issue_24_contract_is_met():
