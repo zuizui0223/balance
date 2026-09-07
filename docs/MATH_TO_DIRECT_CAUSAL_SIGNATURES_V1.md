@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Translate the current middle-world mathematics into prospectively testable Chapter-2 signatures. BALANCE is validated by direct same-context worldline comparisons and environmental/domain geometry, not by PAYOFF invasion outcomes.
+Translate the current middle-world mathematics into prospectively testable signatures for the **final focal direct-identification layer**. The primary empirical layer remains cross-system reality-pattern recovery; when a focal system is promoted to direct identification, BALANCE requires same-context worldline comparisons and environmental/domain geometry rather than PAYOFF invasion outcomes.
 
 ## Signature B1 — direct sandwiched state
 
-Primary state condition:
+Primary direct state condition:
 
 \[
 L>0,
@@ -107,8 +107,7 @@ If `L(e)` and every registered architecture reserve `rho_j(e)` are concave on a 
 For any two BALANCE endpoints `e_0,e_1` and `e_t=(1-t)e_0+t e_1`, each margin obeys
 
 \[
-\boxed{
-f(e_t)\ge(1-t)f(e_0)+t f(e_1).}
+\boxed{f(e_t)\ge(1-t)f(e_0)+t f(e_1).}
 \]
 
 Therefore two positive endpoints certify the whole straight segment as BALANCE **once concavity has been independently justified**.
@@ -153,10 +152,10 @@ f(e_t)-[(1-t)f(e_0)+tf(e_1)]
 
 ## Pedicularis use
 
-The immediate Experiment-B surface can establish B1 for the functional-state alternative. Repeated matched contexts are required for B5-B9. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
+The final focal Experiment-B surface can establish B1 for the functional-state alternative once the cross-system pattern map is mature enough to justify the focal identification test. Repeated matched contexts are required for B5-B9. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
 
 B8-B9 are attractive for later repeated-environment Pedicularis work because interior contexts can be used as held-out shape/curvature checks rather than all contexts being consumed to fit a flexible path model.
 
 ## Promotion rule
 
-No observational selection mosaic can substitute for B1. Peucedanum remains an observational anchor until direct matched worldlines exist. PAYOFF frequency dependence cannot promote a BALANCE state.
+No observational selection mosaic or cross-system recurrence pattern can substitute for B1 **when claiming direct focal occupancy**. Conversely, B1 in one focal system does not substitute for the primary cross-system recurrence synthesis or establish natural prevalence. Peucedanum remains an observational pattern anchor until direct matched worldlines exist. PAYOFF frequency dependence cannot promote a direct BALANCE state.

@@ -21,6 +21,7 @@ from .definition_concordance import (
 )
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 from .handoff import ConflictHandoff, consume_conflict_handoff
+from .pedicularis_xy import PedicularisXYBalanceReceipt, consume_pedicularis_xy_surface
 from .depth_path import DeepestMiddleWorldPoint, deepest_middle_point
 from .sensitivity import (
     BoundarySensitivity,
@@ -121,6 +122,7 @@ __all__ = [
     "NormalizedPhasePoint",
     "PLOT_ORDER",
     "PUBLISHED_2025",
+    "PedicularisXYBalanceReceipt",
     "RawInventory",
     "ReproductionGate",
     "StrongConcaveChordAudit",
@@ -154,6 +156,7 @@ __all__ = [
     "constant_slope_centers",
     "constant_slope_depth",
     "consume_conflict_handoff",
+    "consume_pedicularis_xy_surface",
     "crossing_bracket",
     "deepest_middle_point",
     "deepest_point_sensitivity",
