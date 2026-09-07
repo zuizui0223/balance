@@ -2,7 +2,12 @@
 
 ## Purpose
 
-This matrix is the replication layer **after** the first same-system causal chain. It does not treat every literature example as an equivalent replication.
+This matrix now supports **two distinct uses** that must not be conflated:
+
+1. the current `R` layer — cross-system reality-pattern screening before focal causal closure;
+2. the later `G` layer — independent direct replication after a focal same-system receipt exists.
+
+It therefore does not treat every literature example as an equivalent replication, and it no longer makes Pedicularis causal closure the entry gate for BALANCE's empirical half.
 
 The three universal objects are kept separate:
 
@@ -29,13 +34,13 @@ comparative/GENERALITY_CANDIDATE_MATRIX_V1.csv
 
 Cells use `NOT_YET_AUDITED` whenever the current repositories do not already support a stronger role. Missing cells are not filled by analogy.
 
-A literature anchor is not promoted to a causal replication merely because its qualitative biology resembles the theory.
+A literature anchor is not promoted to a causal replication merely because its qualitative biology resembles the theory. During the `R` layer, such anchors can still contribute to source-adjudicated recurrence, boundary, moderator or negative-case synthesis at their registered claim ceiling.
 
-## Current ordering
+## Current R/G ordering
 
 ### G0 — Pedicularis rex
 
-Primary causal existence test.
+Preferred **final focal direct-existence test**, not the first empirical gate.
 
 Current package:
 
@@ -44,15 +49,15 @@ SCH
 causal design + production analyzer ready; real Experiment A not executed
 
 BALANCE
-shared Experiment-B consumer ready in green PR; real worldline not executed
+shared Experiment-B consumer MAIN + GREEN; real worldline not executed
 
 BITA
 production x-y release analyzer ready; real Experiment B not executed
 ```
 
-The point of Pedicularis is not that it is already positive. It is the current system in which the same population × season can, in principle, close all three chapter-specific causal questions.
+The point of Pedicularis is not that it is already positive. It is the current system in which the same population × season can, in principle, close all three chapter-specific causal questions after the cross-system pattern map has identified what the focal direct test should resolve.
 
-## G1 — floral replication layer
+## G1 — floral pattern / later replication layer
 
 ### Dalechampia
 
@@ -114,7 +119,7 @@ D2 experimental R_state not identified
 
 SCH does not currently have the required causal fitness-scale conflict receipt for this system.
 
-Thus Peucedanum is a particularly valuable **observational bridge across Chapters 2 and 3**, not a substitute for Pedicularis causal closure.
+Thus Peucedanum is a particularly valuable **observational bridge across Chapters 2 and 3** and a seed `R`-layer pattern anchor, not a substitute for focal Pedicularis direct closure.
 
 ## G1 negative / boundary controls
 
@@ -127,6 +132,8 @@ SCH currently treats it as a near-complete negative / monotonic control. Its rol
 The flower-angle example is an aligned-optimum control: horizontal orientation improves pollination while also avoiding rain damage. Two functions therefore need not oppose one another.
 
 Under the registered programme logic, absence of a SCH conflict means a BALANCE middle world should not be manufactured merely because two functions exist.
+
+Negative and aligned-optimum controls are useful already in the `R` layer because they prevent reality-pattern synthesis from becoming a positive-example catalog.
 
 ## G2 — broader functional / architectural generality
 
@@ -150,18 +157,19 @@ The BITA repository explicitly states that the literature does **not** estimate 
 
 SCH and BALANCE causal roles therefore remain unaudited.
 
-## Replication priority
+## Execution priority
 
 The matrix does not mean “work down every row.” The current sequence is:
 
 ```text
-1. close Pedicularis G0 causal chain
-2. choose G1 systems that complement the weakest chapter signatures
-3. include negative/aligned controls
-4. only then promote cross-domain G2 claims
+1. expand the R-layer pattern ledger across independent systems and negative controls
+2. recover recurrence, transition classes, moderators and compatible pooling strata
+3. use that map to sharpen the Pedicularis G0 focal direct-identification test
+4. after a direct focal receipt exists, choose independent systems for matched direct replication
+5. only then promote strong cross-domain direct-generality claims
 ```
 
-Likely high-value complementary pairs after G0 are:
+Likely high-value systems for the current `R` layer — and possible later direct-replication targets — are:
 
 ```text
 Dalechampia
@@ -174,17 +182,20 @@ Peucedanum
 -> strongest current observational BALANCE transition + natural partial differentiation
 ```
 
-These are complementary, not interchangeable replications.
+These are complementary, not interchangeable replications, and their present observational roles remain below direct occupancy.
 
 ## Promotion ceiling
 
-Do not call the programme universal until:
+Do not call the programme universal until all relevant forms of evidence are separated and then jointly supported:
 
-1. at least one same-system causal chain is positive;
-2. chapter-specific signatures recur in biologically distinct systems;
-3. at least one negative / aligned-optimum control behaves as predicted;
+1. chapter-specific reality-pattern signatures recur in biologically distinct systems rather than only positive examples being collected;
+2. at least one negative / aligned-optimum control behaves as predicted;
+3. at least one same-system focal causal chain is positive;
 4. direct causal results are separated from observational and historical anchors;
-5. the recurrence is of the **mathematical/causal architecture signature**, not one specific pollination–defence mechanism.
+5. independent matched direct receipts eventually replicate the strongest architecture claim;
+6. the recurrence is of the **mathematical/causal architecture signature**, not one specific pollination–defence mechanism.
+
+Pattern recurrence can mature before focal direct closure; it cannot substitute for direct occupancy. Conversely, one focal direct receipt cannot substitute for cross-system pattern generality.
 
 ## Repository basis used for v1
 
