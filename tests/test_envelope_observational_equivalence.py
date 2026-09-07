@@ -1,5 +1,7 @@
 from balance_domain.envelope_equivalence import (
+    active_threats_at_context,
     compare_sampled_envelopes,
+    identify_threats_with_auxiliary,
     sampled_balance_state,
     sampled_reserve,
     upper_envelope,
@@ -69,3 +71,25 @@ def test_envelope_piercing_scope_expansion_changes_predictions():
     assert not comparison.equivalent
     assert comparison.envelope_a == (1.0, 1.0)
     assert comparison.envelope_b == (1.5, 3.2)
+
+
+def test_tied_envelope_identifies_active_threat_set_not_unique_label():
+    registry = {
+        "D1": [1.0, 2.0],
+        "D2": [1.0, 2.0],
+        "D3": [0.5, 1.0],
+    }
+    assert active_threats_at_context(registry, 0) == ("D1", "D2")
+    assert active_threats_at_context(registry, 1) == ("D1", "D2")
+
+
+def test_injective_auxiliary_code_breaks_an_envelope_tie():
+    active = ("D1", "D2")
+    codes = {"D1": "retained", "D2": "drained"}
+    assert identify_threats_with_auxiliary(active, codes, "retained") == ("D1",)
+
+
+def test_noninjective_auxiliary_code_preserves_partial_identification():
+    active = ("D1", "D2", "D3")
+    codes = {"D1": "retained", "D2": "retained", "D3": "drained"}
+    assert identify_threats_with_auxiliary(active, codes, "retained") == ("D1", "D2")
