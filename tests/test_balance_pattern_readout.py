@@ -39,12 +39,12 @@ def test_ledger_rows_have_exact_registered_schema():
     assert all(set(row) == set(reader.fieldnames) for row in rows)
 
 
-def test_recovery_expands_context_boundaries_without_overpromotion():
+def test_quantitative_seed_adds_geographic_conflict_without_false_pooling():
     builder = _load_builder()
     result = builder.build(LEDGER)
-    assert result["n_independent_clusters"] == 13
-    assert result["n_middle_regime_signature_clusters"] == 4
-    assert result["n_conflict_without_splitting_clusters"] == 2
+    assert result["n_independent_clusters"] == 14
+    assert result["n_middle_regime_signature_clusters"] == 5
+    assert result["n_conflict_without_splitting_clusters"] == 3
     assert result["n_sandwiched_transition_mosaic_clusters"] == 1
     assert result["n_persistent_integration_with_alternative_clusters"] == 1
     assert result["n_boundary_crossing_clusters"] == 2
@@ -60,10 +60,21 @@ def test_cross_domain_counts_are_explicit():
     assert result["domain_counts"] == {
         "gene_regulatory_architecture": 1,
         "genome_architecture_ecological_strategy": 1,
-        "plant": 8,
+        "plant": 9,
         "protein_function": 2,
         "vertebrate_morphology": 1,
     }
+
+
+def test_pedicularis_geographic_study_is_one_cluster_and_not_direct_balance():
+    rows = _ledger_rows()
+    ped = [row for row in rows if row["cluster_id"] == "Pedicularis_rex_geographic_conflict"]
+    assert len(ped) == 1
+    row = ped[0]
+    assert row["pattern_class"] == "CONFLICT_WITHOUT_SPLITTING"
+    assert row["confidence"] == "high"
+    assert row["quantitative_pool_eligible"] == "false"
+    assert "not_direct_BALANCE_occupancy" in row["claim_ceiling"]
 
 
 def test_population_split_is_not_relabelled_as_within_architecture_boundary():
