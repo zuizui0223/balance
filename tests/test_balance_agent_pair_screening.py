@@ -47,7 +47,17 @@ def test_gymnadenia_factorial_source_is_registered_as_identified_agent_pair():
     assert "2x2_pollination_x_herbivory_factorial" in source["public_scope"]
 
 
-def test_seed_screening_keeps_four_current_opposed_agent_pairs():
+def test_fragaria_source_is_registered_as_diffuse_factorial():
+    rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    source = rows["EGAN_FRAGARIA_2021"]
+    assert source["publication_doi"] == "10.1002/evl3.262"
+    assert source["data_doi"] == "10.5061/dryad.1rn8pk0vn"
+    assert source["screening_role"] == "DIFFUSE_OPPOSED_AGENT_FACTORIAL_SOURCE"
+    assert source["current_status"] == "TABLE_S2_OR_RAW_DATA_MULTICONTRAST_EXTRACTION_PENDING"
+    assert "total_fertilized_seed_fitness" in source["public_scope"]
+
+
+def test_simple_q1_keeps_four_current_opposed_agent_pairs():
     rows = _rows(SCREENING)
     opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
     assert {row["system_taxon"] for row in opposed} == {
@@ -56,6 +66,19 @@ def test_seed_screening_keeps_four_current_opposed_agent_pairs():
         "Pedicularis rex",
         "Gymnadenia conopsea",
     }
+
+
+def test_fragaria_is_separate_diffuse_factorial_pair_not_cherry_picked_into_simple_q1():
+    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
+    frag = rows["Q1B_FRAGARIA_EGAN2021"]
+    assert frag["trait_coordinate"] == "inflorescence_density"
+    assert frag["second_agent_type"] == "herbivore"
+    assert frag["second_agent_identity_status"] == "identified"
+    assert frag["same_fitness_interpretation_status"] == "common_fertilized_seed_output_factorial"
+    assert frag["directional_relation"] == "opposed_but_diffuse_context_dependent"
+    assert frag["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
+    assert frag["effect_size_status"] == "TABLE_S2_OR_RAW_DATA_MULTICONTRAST_RECONSTRUCTION_PENDING"
+    assert frag["pattern_promotion_status"] == "R_PATTERN_PROMOTION_SUPPORTED"
 
 
 def test_gymnadenia_factorial_pair_is_positive_but_not_effect_ready():
@@ -120,6 +143,6 @@ def test_polemonium_supports_pattern_upgrade_but_not_q1_pooling():
     assert pole["effect_size_status"] == "NONSTANDARD_EFFECT_REANALYSIS_REQUIRED"
 
 
-def test_no_seed_pair_is_effect_size_ready_by_construction():
+def test_no_screening_pair_is_effect_size_ready_by_construction():
     rows = _rows(SCREENING)
     assert all(row["effect_size_status"] != "EFFECT_SIZE_READY" for row in rows)
