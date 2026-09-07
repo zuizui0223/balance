@@ -41,6 +41,8 @@ def build(path: Path) -> dict:
     boundary = {r["cluster_id"] for r in rows if r["pattern_class"] == "BOUNDARY_CROSSING"}
     hysteresis = {r["cluster_id"] for r in rows if r["pattern_class"] == "HYSTERESIS_OR_PATH_DEPENDENCE"}
     direct_split = {r["cluster_id"] for r in rows if r["pattern_class"] == "DIRECT_DIFFERENTIATION"}
+    no_balance = {r["cluster_id"] for r in rows if r["pattern_class"] == "NO_CONFLICT_NO_BALANCE_EXPECTED"}
+    high_confidence = {r["cluster_id"] for r in rows if r["confidence"] == "high"}
     return {
         "analysis": "balance_reality_pattern_readout",
         "n_records": len(rows),
@@ -48,10 +50,12 @@ def build(path: Path) -> dict:
         "pattern_class_counts": dict(sorted(patterns.items())),
         "context_axis_counts": dict(sorted(contexts.items())),
         "confidence_counts": dict(sorted(confidence.items())),
+        "n_high_confidence_clusters": len(high_confidence),
         "n_middle_regime_signature_clusters": len(middle),
         "n_boundary_crossing_clusters": len(boundary),
         "n_hysteresis_clusters": len(hysteresis),
         "n_direct_differentiation_boundary_clusters": len(direct_split),
+        "n_no_conflict_no_balance_controls": len(no_balance),
         "n_quantitative_pool_eligible_clusters": len(quantitative),
         "claim_ceiling": "screened_source_adjudicated_recurrence_not_natural_prevalence_or_direct_Phi_identification",
     }
