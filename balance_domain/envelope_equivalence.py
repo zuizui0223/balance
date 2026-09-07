@@ -58,3 +58,37 @@ def sampled_balance_state(
     if len(conflict_load) != len(reserve) or not conflict_load:
         raise ValueError("conflict_load and reserve must have the same nonzero length")
     return tuple(l > 0.0 and rho > 0.0 for l, rho in zip(conflict_load, reserve))
+
+
+def active_threats_at_context(
+    worldlines: Mapping[str, Sequence[float]],
+    context_index: int,
+    *,
+    atol: float = 0.0,
+) -> tuple[str, ...]:
+    if atol < 0:
+        raise ValueError("atol must be nonnegative")
+    envelope = upper_envelope(worldlines)
+    if context_index < 0 or context_index >= len(envelope):
+        raise IndexError("context_index is outside the registered context grid")
+    target = envelope[context_index]
+    return tuple(
+        label
+        for label, values in worldlines.items()
+        if abs(values[context_index] - target) <= atol
+    )
+
+
+def identify_threats_with_auxiliary(
+    active_threats: Sequence[str],
+    auxiliary_codes: Mapping[str, object],
+    observed_code: object,
+) -> tuple[str, ...]:
+    if not active_threats:
+        raise ValueError("active_threats must be nonempty")
+    missing = [label for label in active_threats if label not in auxiliary_codes]
+    if missing:
+        raise ValueError(f"missing auxiliary codes for active threats: {missing}")
+    return tuple(
+        label for label in active_threats if auxiliary_codes[label] == observed_code
+    )
