@@ -39,12 +39,12 @@ def test_ledger_rows_have_exact_registered_schema():
     assert all(set(row) == set(reader.fieldnames) for row in rows)
 
 
-def test_pattern_recovery_includes_polemonium_without_false_pooling():
+def test_pattern_recovery_adds_primula_component_conflict_without_false_pooling():
     builder = _load_builder()
     result = builder.build(LEDGER)
-    assert result["n_independent_clusters"] == 14
-    assert result["n_middle_regime_signature_clusters"] == 6
-    assert result["n_conflict_without_splitting_clusters"] == 4
+    assert result["n_independent_clusters"] == 15
+    assert result["n_middle_regime_signature_clusters"] == 7
+    assert result["n_conflict_without_splitting_clusters"] == 5
     assert result["n_sandwiched_transition_mosaic_clusters"] == 1
     assert result["n_persistent_integration_with_alternative_clusters"] == 1
     assert result["n_boundary_crossing_clusters"] == 2
@@ -60,7 +60,7 @@ def test_cross_domain_counts_are_explicit():
     assert result["domain_counts"] == {
         "gene_regulatory_architecture": 1,
         "genome_architecture_ecological_strategy": 1,
-        "plant": 9,
+        "plant": 10,
         "protein_function": 2,
         "vertebrate_morphology": 1,
     }
@@ -87,6 +87,18 @@ def test_polemonium_is_upgraded_once_not_duplicated():
     assert row["confidence"] == "high"
     assert row["quantitative_pool_eligible"] == "false"
     assert "not_direct_BALANCE_occupancy" in row["claim_ceiling"]
+
+
+def test_primula_species_are_kept_as_distinct_evidence_objects():
+    rows = {row["cluster_id"]: row for row in _ledger_rows()}
+    farinosa = rows["Primula_farinosa_polymorphism"]
+    veris = rows["Primula_veris_component_conflict"]
+    assert farinosa["system_taxon"] == "Primula farinosa"
+    assert farinosa["pattern_class"] == "UNRESOLVED"
+    assert veris["system_taxon"] == "Primula veris"
+    assert veris["pattern_class"] == "CONFLICT_WITHOUT_SPLITTING"
+    assert veris["quantitative_pool_eligible"] == "false"
+    assert "not_direct_pollinator_beta" in veris["claim_ceiling"]
 
 
 def test_population_split_is_not_relabelled_as_within_architecture_boundary():
