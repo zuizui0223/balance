@@ -1,0 +1,15 @@
+{
+  "analysis": "balance_quantitative_lane_readout",
+  "n_candidate_rows": 5,
+  "n_independent_clusters": 5,
+  "n_rows_with_common_scale_shared_vs_alternative_fitness": 0,
+  "n_rows_with_uncertainty_bearing_architecture_effect": 0,
+  "n_strata_with_at_least_3_compatible_independent_clusters": 0,
+  "blocker_counts": {
+    "missing_common_fitness_scale": 2,
+    "effect_not_extracted_or_harmonized": 2,
+    "analogue_only_not_BALANCE_poolable": 1
+  },
+  "status": "QUANTITATIVE_GATE_EXTERNALIZED_NO_STRICT_BALANCE_POOL_YET",
+  "claim_ceiling": "pattern recurrence and boundary structure only; no pooled shared-vs-alternative architecture fitness effect"
+}
