@@ -1,0 +1,91 @@
+name: Gymnadenia source recovery
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/gymnadenia-source-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover Ecological Archives Appendix A
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p recovery/gymnadenia
+          LOG=recovery/gymnadenia/recovery.log
+          : > "$LOG"
+          base='https://esapubs.org/archive/ecol/E096/022/'
+          echo '=== index ===' | tee -a "$LOG"
+          curl -fL --retry 3 --max-time 120 -A 'Mozilla/5.0' "$base" -o recovery/gymnadenia/index.html 2>>"$LOG" || true
+          grep -Eo 'href="[^"]+"' recovery/gymnadenia/index.html 2>/dev/null | tee recovery/gymnadenia/hrefs.txt | tee -a "$LOG" || true
+          python - <<'PY' >> "$LOG" 2>&1
+          import pathlib,re,urllib.parse,subprocess,os
+          root=pathlib.Path('recovery/gymnadenia')
+          html=(root/'index.html').read_text(errors='replace') if (root/'index.html').exists() else ''
+          hrefs=re.findall(r'href=["\']([^"\']+)',html,re.I)
+          base='https://esapubs.org/archive/ecol/E096/022/'
+          candidates=[]
+          for h in hrefs:
+              u=urllib.parse.urljoin(base,h)
+              if any(k in u.lower() for k in ['a1','append','e096-022']): candidates.append(u)
+          candidates += [
+            base+'E096-022-A1.pdf', base+'E096-022-A1.doc', base+'E096-022-A1.docx',
+            base+'E096-022-A1.htm', base+'E096-022-A1.html', base+'appendix-A.pdf',
+            base+'appendix-A.doc', base+'appendix-A.docx', base+'appendix-A.htm', base+'appendix-A.html'
+          ]
+          seen=set()
+          for i,u in enumerate(candidates):
+              if u in seen: continue
+              seen.add(u)
+              out=root/f'cand_{i:02d}_{os.path.basename(urllib.parse.urlparse(u).path) or "index"}'
+              print('GET',u,'->',out)
+              p=subprocess.run(['curl','-fL','--retry','2','--max-time','120','-A','Mozilla/5.0',u,'-o',str(out)],capture_output=True,text=True)
+              print('rc',p.returncode,'stderr',p.stderr[-500:])
+              if out.exists():
+                  print('size',out.stat().st_size)
+                  subprocess.run(['file',str(out)])
+          PY
+          echo '=== inventory ===' | tee -a "$LOG"
+          find recovery/gymnadenia -type f -printf '%p\t%s bytes\n' | sort | tee -a "$LOG"
+          echo '=== extract text ===' | tee -a "$LOG"
+          python - <<'PY' > recovery/gymnadenia/extracted.txt 2>&1
+          import pathlib,zipfile,re,html,subprocess,os
+          root=pathlib.Path('recovery/gymnadenia')
+          for p in root.iterdir():
+              if not p.is_file(): continue
+              print('\n###',p.name,p.stat().st_size)
+              b=p.read_bytes()[:8]
+              if p.suffix.lower()=='.pdf' or b.startswith(b'%PDF'):
+                  txt=p.with_suffix(p.suffix+'.txt')
+                  subprocess.run(['pdftotext','-layout',str(p),str(txt)],check=False)
+                  if txt.exists(): print(txt.read_text(errors='replace')[:30000])
+              elif zipfile.is_zipfile(p):
+                  with zipfile.ZipFile(p) as z:
+                      print('members',z.namelist()[:60])
+                      for n in z.namelist():
+                          if n.endswith('.xml'):
+                              s=z.read(n).decode('utf-8','replace')
+                              t=' '.join(html.unescape(x) for x in re.findall(r'<(?:w:t|t)[^>]*>(.*?)</(?:w:t|t)>',s,re.S))
+                              if any(k in t.lower() for k in ['table a2','selection gradient','flowering','spur']): print(t[:30000])
+              else:
+                  try:
+                      t=p.read_text(errors='replace')
+                  except Exception: continue
+                  if any(k in t.lower() for k in ['table a2','selection gradient','flowering','spur']): print(t[:30000])
+          PY
+          cat recovery/gymnadenia/extracted.txt >> "$LOG"
+      - name: Upload recovery artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gymnadenia-source-recovery
+          path: recovery/gymnadenia/
+          retention-days: 3
