@@ -69,6 +69,25 @@ def test_trifolium_source_is_registered_as_factorial_negative_control():
     assert "reproducible_R_script" in source["public_scope"]
 
 
+def test_primula_farinosa_source_is_registered_as_discrete_morph_estimand_boundary():
+    rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    source = rows["AGREN_PRIMULA_FARINOSA_2013"]
+    assert source["publication_doi"] == "10.1073/pnas.1301421110"
+    assert source["screening_role"] == "DISCRETE_MORPH_OPPOSED_AGENT_ESTIMAND"
+    assert source["current_status"] == "PRIMARY_SOURCE_AUDITED_STRICT_OPPOSITION_NONBETA_ESTIMAND"
+    assert "long_vs_short_scape_morph" in source["public_scope"]
+    assert "not_continuous_beta_or_Q1B_vector" in source["claim_ceiling"]
+
+
+def test_lythrum_source_is_registered_as_factorial_negative_control():
+    rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    source = rows["THOMSEN_SARGENT_LYTHRUM_2017"]
+    assert source["publication_doi"] == "10.1093/aob/mcx026"
+    assert source["screening_role"] == "FACTORIAL_NEGATIVE_CONTROL_REANALYSIS"
+    assert source["current_status"] == "PRIMARY_SOURCE_AUDITED_NO_POLLINATOR_MEDIATED_SELECTION_OR_AGENT_INTERACTION"
+    assert "ANCOVA_delta_beta" in source["public_scope"]
+
+
 def test_simple_q1_keeps_four_current_opposed_agent_pairs():
     rows = _rows(SCREENING)
     opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
@@ -108,13 +127,36 @@ def test_trifolium_is_design_matched_negative_control_not_positive_q1b():
     assert "Pollination did not independently alter selection on any trait" in tri["notes"]
 
 
+def test_lythrum_is_second_factorial_control_not_positive_q1b():
+    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
+    lyt = rows["Q1B_LYTHRUM_THOMSEN2017"]
+    assert lyt["second_agent_type"] == "simulated_meristem_damage"
+    assert lyt["same_trait_status"] == "no_opposing_same_trait_agent_pair"
+    assert lyt["screening_class"] == "FACTORIAL_NO_DIFFUSE_SAME_TRAIT_CONFLICT"
+    assert lyt["effect_size_status"] == "NEGATIVE_CONTROL_SOURCE_REPORTED"
+    assert lyt["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
+    assert "-0.01±0.05" in lyt["notes"]
+    assert "0.01±0.12" in lyt["notes"]
+
+
+def test_primula_strict_conflict_is_kept_outside_q1_and_q1b_estimands():
+    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
+    prim = rows["Q1M_PRIMULA_FARINOSA_AGREN2013"]
+    assert prim["trait_coordinate"] == "scape_morph_long_vs_short"
+    assert prim["same_trait_status"] == "yes_discrete_genetic_morph"
+    assert prim["directional_relation"] == "opposed_pollinators_long_grazers_short"
+    assert prim["screening_class"] == "OPPOSED_AGENT_PAIR_DISCRETE_MORPH"
+    assert prim["effect_size_status"] == "SEPARATE_DISCRETE_MORPH_ESTIMAND_REQUIRED"
+    assert prim["pattern_promotion_status"] == "NO_Q1_OR_Q1B_POOLING_PROMOTION"
+
+
 def test_only_fragaria_is_current_positive_diffuse_factorial_candidate():
     rows = _rows(SCREENING)
     diffuse_positive = [
         row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
     ]
     assert {row["system_taxon"] for row in diffuse_positive} == {"Fragaria vesca"}
-    assert all(row["system_taxon"] != "Trifolium repens" for row in diffuse_positive)
+    assert all(row["system_taxon"] not in {"Trifolium repens", "Lythrum salicaria", "Primula farinosa"} for row in diffuse_positive)
 
 
 def test_gymnadenia_factorial_pair_is_positive_but_not_effect_ready():
@@ -153,7 +195,7 @@ def test_gymnadenia_2019_methods_audit_still_excludes_antagonist_q1_promotion():
     assert gym["pattern_promotion_status"] == "NO_ANTAGONIST_PROMOTION"
 
 
-def test_irwin_and_primula_candidates_remain_below_positive_pair_promotion():
+def test_irwin_and_primula_veris_candidates_remain_below_positive_pair_promotion():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     irwin = rows["Q1_IPOMOPSIS_IRWIN2006"]
     assert irwin["screening_class"] == "SOURCE_REANALYSIS_REQUIRED"
@@ -188,4 +230,4 @@ def test_exactly_one_positive_screening_pair_is_effect_size_ready():
     assert len(ready) == 1
     assert ready[0]["screen_id"] == "Q1B_FRAGARIA_EGAN2021"
     assert ready[0]["system_taxon"] == "Fragaria vesca"
-    assert all(row["screen_id"] != "Q1B_TRIFOLIUM_SANTANGELO2018" for row in ready)
+    assert all(row["screen_id"] not in {"Q1B_TRIFOLIUM_SANTANGELO2018", "Q1B_LYTHRUM_THOMSEN2017", "Q1M_PRIMULA_FARINOSA_AGREN2013"} for row in ready)
