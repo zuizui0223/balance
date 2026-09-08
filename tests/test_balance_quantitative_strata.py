@@ -11,7 +11,7 @@ def _rows():
         return list(csv.DictReader(handle))
 
 
-def test_all_quantitative_strata_start_below_pooling_gate():
+def test_all_quantitative_strata_remain_below_pooling_gate():
     rows = _rows()
     assert len(rows) == 5
     assert all(row["pooling_status"].startswith("NOT_READY") for row in rows)
@@ -35,30 +35,30 @@ def test_simple_opposing_floral_selection_keeps_four_candidates_and_zero_ready_e
     assert "Gymnadenia_factorial_contrast_covariance" in floral["next_gate"]
 
 
-def test_diffuse_factorial_stratum_preserves_context_specific_dependence_and_negative_control():
+def test_diffuse_factorial_stratum_has_one_ready_positive_but_is_not_pool_ready():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
     assert diffuse["registered_pattern_candidates"] == "1"
     assert diffuse["reanalysis_candidates"] == "1"
-    assert diffuse["effect_size_ready_clusters"] == "0"
+    assert diffuse["effect_size_ready_clusters"] == "1"
     assert diffuse["min_independent_clusters"] == "3"
+    assert diffuse["pooling_status"] == "NOT_READY_ONLY_ONE_EFFECT_READY_POSITIVE_CLUSTER"
     assert "context_specific_agent_contrast_vector" in diffuse["estimand"]
-    assert "full_joint_covariance" in diffuse["variance_requirement"]
+    assert "reported_factorial_sufficient_statistics" in diffuse["variance_requirement"]
     assert "cherry_pick_one_context_pair" in diffuse["prohibited_pooling"]
     assert "treat_context_specific_contrasts_as_independent" in diffuse["prohibited_pooling"]
     assert "assume_zero_covariance" in diffuse["prohibited_pooling"]
-    assert "Fragaria_Table_S2_or_Dryad_joint_model_covariance" in diffuse["next_gate"]
-    assert "analyze_factorial_agent_selection" in diffuse["next_gate"]
-    assert "Trifolium_as_design_matched_negative_control" in diffuse["next_gate"]
+    assert "Fragaria_reported_covariance_receipt" in diffuse["next_gate"]
+    assert "two_independent_positive_factorial_replications" in diffuse["next_gate"]
 
 
-def test_negative_control_does_not_move_diffuse_positive_or_ready_numerators():
+def test_negative_control_is_separate_from_fragaria_ready_numerator():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
     assert int(diffuse["registered_pattern_candidates"]) == 1
     assert int(diffuse["reanalysis_candidates"]) == 1
-    assert int(diffuse["effect_size_ready_clusters"]) == 0
-    assert diffuse["pooling_status"] == "NOT_READY_FULL_MULTICONTRAST_COVARIANCE_REQUIRED"
+    assert int(diffuse["effect_size_ready_clusters"]) == 1
+    assert int(diffuse["effect_size_ready_clusters"]) < int(diffuse["min_independent_clusters"])
 
 
 def test_direct_balance_parameters_are_not_backfilled_from_pattern_studies():
