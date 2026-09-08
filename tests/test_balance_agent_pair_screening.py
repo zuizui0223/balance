@@ -57,6 +57,17 @@ def test_fragaria_source_is_registered_as_diffuse_factorial():
     assert "total_fertilized_seed_fitness" in source["public_scope"]
 
 
+def test_trifolium_source_is_registered_as_factorial_negative_control():
+    rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    source = rows["SANTANGELO_TRIFOLIUM_2018"]
+    assert source["publication_doi"] == "10.1111/jeb.13392"
+    assert source["data_doi"] == "10.5061/dryad.h6qg003"
+    assert source["screening_role"] == "FACTORIAL_NEGATIVE_CONTROL_REANALYSIS"
+    assert source["current_status"] == "AUTHOR_REPO_AND_TABLES_AUDITED_NO_SAME_TRAIT_OPPOSITION"
+    assert "clean_selection_data" in source["public_scope"]
+    assert "reproducible_R_script" in source["public_scope"]
+
+
 def test_simple_q1_keeps_four_current_opposed_agent_pairs():
     rows = _rows(SCREENING)
     opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
@@ -79,6 +90,28 @@ def test_fragaria_is_separate_diffuse_factorial_pair_not_cherry_picked_into_simp
     assert frag["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
     assert frag["effect_size_status"] == "TABLE_S2_OR_RAW_DATA_MULTICONTRAST_RECONSTRUCTION_PENDING"
     assert frag["pattern_promotion_status"] == "R_PATTERN_PROMOTION_SUPPORTED"
+
+
+def test_trifolium_is_design_matched_negative_control_not_positive_q1b():
+    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
+    tri = rows["Q1B_TRIFOLIUM_SANTANGELO2018"]
+    assert tri["second_agent_type"] == "herbivore"
+    assert tri["second_agent_identity_status"] == "identified"
+    assert tri["same_trait_status"] == "no_registered_same_trait_opposition"
+    assert tri["same_fitness_interpretation_status"] == "common_relative_seed_fitness_factorial"
+    assert tri["screening_class"] == "FACTORIAL_NO_SAME_TRAIT_OPPOSITION"
+    assert tri["effect_size_status"] == "NEGATIVE_CONTROL_REANALYSIS_READY"
+    assert tri["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
+    assert "Pollination did not independently alter selection on any trait" in tri["notes"]
+
+
+def test_only_fragaria_is_current_positive_diffuse_factorial_candidate():
+    rows = _rows(SCREENING)
+    diffuse_positive = [
+        row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
+    ]
+    assert {row["system_taxon"] for row in diffuse_positive} == {"Fragaria vesca"}
+    assert all(row["system_taxon"] != "Trifolium repens" for row in diffuse_positive)
 
 
 def test_gymnadenia_factorial_pair_is_positive_but_not_effect_ready():
