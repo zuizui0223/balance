@@ -1,0 +1,48 @@
+name: Fragaria PMC PoW inspection
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/fragaria-source-recovery-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch PMC PoW challenge and implementation
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p pow
+          TARGET='https://pmc.ncbi.nlm.nih.gov/articles/instance/8645195/bin/EVL3-5-636-s001.docx'
+          curl -fL --retry 2 -A 'Mozilla/5.0' "$TARGET" -o pow/challenge.html || true
+          python - <<'PY' > pow/challenge_meta.txt
+          import re, pathlib, html
+          s=pathlib.Path('pow/challenge.html').read_text(errors='replace')
+          for key in ['POW_CHALLENGE','POW_DIFFICULTY','POW_COOKIE_NAME','POW_COOKIE_PATH','POW_COOKIE_EXPIRATION']:
+              m=re.search(rf'{key}\s*=\s*"([^"]+)"',s)
+              print(key, m.group(1) if m else 'NOT_FOUND')
+          m=re.search(r'<script[^>]+src="([^"]*pow-[^"]+\.js)"',s)
+          print('POW_JS',html.unescape(m.group(1)) if m else 'NOT_FOUND')
+          PY
+          cat pow/challenge_meta.txt
+          JS=$(awk '$1=="POW_JS"{print $2}' pow/challenge_meta.txt)
+          if [ "$JS" != 'NOT_FOUND' ]; then
+            curl -fL --retry 2 -A 'Mozilla/5.0' "$JS" -o pow/pow.js || true
+          fi
+          wc -c pow/* || true
+          grep -oE '.{0,160}(sha|SHA|digest|difficulty|cookie|challenge|nonce|crypto).{0,260}' pow/pow.js | head -n 200 > pow/pow_fragments.txt || true
+          cat pow/pow_fragments.txt || true
+      - name: Upload PoW inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fragaria-pmc-pow-inspection
+          path: pow/
+          retention-days: 3
