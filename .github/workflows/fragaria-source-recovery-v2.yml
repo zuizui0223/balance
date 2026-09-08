@@ -1,0 +1,187 @@
+name: Fragaria public-source recovery v2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/fragaria-source-recovery-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve PMC supplement and Dryad internal resources
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p recovery2/pmc recovery2/dryad recovery2/downloads
+          : > recovery2/recovery.log
+          log() { printf '%s\n' "$*" | tee -a recovery2/recovery.log; }
+
+          log '=== PMC article/link crawl ==='
+          for url in \
+            'https://pmc.ncbi.nlm.nih.gov/articles/PMC8645195/' \
+            'https://pmc.ncbi.nlm.nih.gov/articles/PMC8645195/?report=xml' \
+            'https://pmc.ncbi.nlm.nih.gov/articles/PMC8645195/?report=xml&format=xml'
+          do
+            out="recovery2/pmc/page_$(printf '%s' "$url" | sha256sum | cut -c1-10).txt"
+            if curl -fL --retry 2 --max-time 120 -A 'Mozilla/5.0' "$url" -o "$out" 2>>recovery2/recovery.log; then
+              log "PMC fetched $url ($(stat -c%s "$out") bytes)"
+            else
+              log "PMC FAILED $url"
+              rm -f "$out"
+            fi
+          done
+
+          python - <<'PY' > recovery2/pmc/link_crawl.log 2>&1
+          import pathlib, re, html, urllib.parse, subprocess
+          base='https://pmc.ncbi.nlm.nih.gov/articles/PMC8645195/'
+          found=[]
+          for p in pathlib.Path('recovery2/pmc').glob('page_*.txt'):
+              text=p.read_text(errors='replace')
+              for raw in re.findall(r'(?:href|xlink:href)=["\']([^"\']+)', text, flags=re.I):
+                  href=html.unescape(raw)
+                  low=href.lower()
+                  if any(k in low for k in ['supp','suppl','.docx','.xlsx','.xls','.csv','/bin/']):
+                      url=urllib.parse.urljoin(base, href)
+                      if url not in found:
+                          found.append(url)
+          # Add high-probability canonical PMC bin paths explicitly.
+          for name in [
+              'evl3262-sup-0001-suppmat.docx',
+              'EVL3-5-636-s001.docx',
+              'evl3.262-sup-0001-suppmat.docx',
+          ]:
+              u=urllib.parse.urljoin(base,'bin/'+name)
+              if u not in found:
+                  found.append(u)
+          print('FOUND LINKS')
+          print('\n'.join(found))
+          for i,url in enumerate(found):
+              out=pathlib.Path('recovery2/downloads')/f'pmc_{i:02d}_{pathlib.Path(urllib.parse.urlparse(url).path).name or "file"}'
+              print('DOWNLOAD',url,'->',out)
+              cp=subprocess.run(['curl','-fL','--retry','2','--max-time','180','-A','Mozilla/5.0',url,'-o',str(out)])
+              if cp.returncode != 0:
+                  out.unlink(missing_ok=True)
+          PY
+          cat recovery2/pmc/link_crawl.log >> recovery2/recovery.log
+
+          log '=== Dryad id=78833 crawl ==='
+          python - <<'PY' > recovery2/dryad/crawl.log 2>&1
+          import json, pathlib, urllib.request, urllib.parse, re, subprocess
+          ROOT=pathlib.Path('recovery2/dryad'); ROOT.mkdir(exist_ok=True)
+          starts=[
+              'https://datadryad.org/api/v2/datasets/78833',
+              'https://datadryad.org/api/v2/datasets/78833/versions',
+              'https://datadryad.org/api/v2/datasets/78833/versions?per_page=100',
+          ]
+          seen=set(); queue=[(u,'start') for u in starts]; saved=[]
+          def absolute(h): return urllib.parse.urljoin('https://datadryad.org',h)
+          for step in range(80):
+              if not queue: break
+              url,label=queue.pop(0)
+              if url in seen: continue
+              seen.add(url)
+              print('\nGET',url)
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'application/json'})
+                  with urllib.request.urlopen(req,timeout=60) as r:
+                      body=r.read(); ctype=r.headers.get('content-type','')
+                      print('STATUS',r.status,'TYPE',ctype,'BYTES',len(body))
+              except Exception as e:
+                  print('ERROR',repr(e)); continue
+              path=ROOT/f'{len(saved)+1:02d}_{re.sub(r"[^A-Za-z0-9]+","_",label)[:50]}.json'
+              path.write_bytes(body); saved.append(path)
+              try: data=json.loads(body)
+              except Exception: continue
+              print(json.dumps(data,indent=2)[:24000])
+              # Follow any explicit API links.
+              def walk(obj,key='root'):
+                  if isinstance(obj,dict):
+                      for k,v in obj.items(): walk(v,f'{key}_{k}')
+                  elif isinstance(obj,list):
+                      for i,v in enumerate(obj): walk(v,f'{key}_{i}')
+                  elif isinstance(obj,str):
+                      if '/api/v2/' in obj:
+                          u=absolute(obj)
+                          if u not in seen and len(queue)<200: queue.append((u,key))
+              walk(data)
+              # Probe version/file ids found in structured responses.
+              def collect_ids(obj, parent='root'):
+                  vals=[]
+                  if isinstance(obj,dict):
+                      if isinstance(obj.get('id'),int): vals.append((parent,obj['id']))
+                      for k,v in obj.items(): vals.extend(collect_ids(v,f'{parent}_{k}'))
+                  elif isinstance(obj,list):
+                      for i,v in enumerate(obj): vals.extend(collect_ids(v,f'{parent}_{i}'))
+                  return vals
+              for context,ident in collect_ids(data):
+                  lc=context.lower()
+                  if 'version' in lc:
+                      for suffix in ['', '/files', '/files?per_page=100']:
+                          u=f'https://datadryad.org/api/v2/versions/{ident}{suffix}'
+                          if u not in seen and len(queue)<200: queue.append((u,f'version_{ident}{suffix}'))
+                  if 'file' in lc:
+                      for suffix in ['', '/download']:
+                          u=f'https://datadryad.org/api/v2/files/{ident}{suffix}'
+                          if u not in seen and len(queue)<200: queue.append((u,f'file_{ident}{suffix}'))
+          print('\nSEEN URLS')
+          print('\n'.join(sorted(seen)))
+          # Extract likely file/download URLs from all saved JSON and try them.
+          urls=[]
+          for p in saved:
+              text=p.read_text(errors='replace')
+              for u in re.findall(r'https?://[^"\\\s]+',text):
+                  u=u.rstrip('},]')
+                  if any(k in u.lower() for k in ['download','file','storage','s3','amazonaws']):
+                      urls.append(u)
+          for i,u in enumerate(dict.fromkeys(urls)):
+              out=pathlib.Path('recovery2/downloads')/f'dryad_{i:02d}'
+              print('DOWNLOAD-CANDIDATE',u)
+              cp=subprocess.run(['curl','-fL','--retry','2','--max-time','180','-A','Mozilla/5.0',u,'-o',str(out)])
+              if cp.returncode != 0: out.unlink(missing_ok=True)
+          PY
+          cat recovery2/dryad/crawl.log >> recovery2/recovery.log
+
+          log '=== File inventory ==='
+          find recovery2 -type f -printf '%p\t%s bytes\n' | sort | tee recovery2/file_inventory.txt | tee -a recovery2/recovery.log
+          file recovery2/downloads/* 2>/dev/null | tee -a recovery2/recovery.log || true
+
+          log '=== Extract Office text ==='
+          python - <<'PY' > recovery2/extracted_fragments.txt 2>&1
+          import pathlib, zipfile, re, html
+          for p in pathlib.Path('recovery2').rglob('*'):
+              if not p.is_file(): continue
+              try:
+                  if not zipfile.is_zipfile(p): continue
+                  with zipfile.ZipFile(p) as z:
+                      text=[]
+                      for n in z.namelist():
+                          if not n.endswith('.xml'): continue
+                          if not ('word/' in n or 'xl/' in n): continue
+                          s=z.read(n).decode('utf-8','replace')
+                          vals=[html.unescape(x) for x in re.findall(r'<(?:w:t|t)[^>]*>(.*?)</(?:w:t|t)>',s,flags=re.S)]
+                          if vals: text.extend(vals)
+                      joined=' '.join(text)
+                      print('\n###',p,'###')
+                      print(joined[:120000])
+              except Exception as e:
+                  print('ERROR',p,repr(e))
+          PY
+          grep -i -n -E 'Table S2|inflorescence|pollinator|herbiv|emmeans|selection gradient' recovery2/extracted_fragments.txt | head -n 300 > recovery2/key_hits.txt || true
+          cat recovery2/key_hits.txt >> recovery2/recovery.log
+
+      - name: Upload recovery artifact v2
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fragaria-public-source-recovery-v2
+          path: recovery2/
+          if-no-files-found: warn
+          retention-days: 3
