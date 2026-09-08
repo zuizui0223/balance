@@ -47,13 +47,14 @@ def test_gymnadenia_factorial_source_is_registered_as_identified_agent_pair():
     assert "2x2_pollination_x_herbivory_factorial" in source["public_scope"]
 
 
-def test_fragaria_source_is_registered_as_diffuse_factorial():
+def test_fragaria_source_is_registered_as_effect_ready_diffuse_factorial():
     rows = {row["source_key"]: row for row in _rows(SOURCES)}
     source = rows["EGAN_FRAGARIA_2021"]
     assert source["publication_doi"] == "10.1002/evl3.262"
     assert source["data_doi"] == "10.5061/dryad.1rn8pk0vn"
     assert source["screening_role"] == "DIFFUSE_OPPOSED_AGENT_FACTORIAL_SOURCE"
-    assert source["current_status"] == "TABLE_S2_OR_RAW_DATA_MULTICONTRAST_EXTRACTION_PENDING"
+    assert source["current_status"] == "TABLE_S2_S3_REPORTED_JOINT_COVARIANCE_RECONSTRUCTED_EFFECT_READY"
+    assert source["claim_ceiling"] == "Q1B_effect_ready_pattern_not_direct_BALANCE_occupancy"
     assert "total_fertilized_seed_fitness" in source["public_scope"]
 
 
@@ -79,7 +80,7 @@ def test_simple_q1_keeps_four_current_opposed_agent_pairs():
     }
 
 
-def test_fragaria_is_separate_diffuse_factorial_pair_not_cherry_picked_into_simple_q1():
+def test_fragaria_is_separate_diffuse_factorial_pair_and_now_effect_ready():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     frag = rows["Q1B_FRAGARIA_EGAN2021"]
     assert frag["trait_coordinate"] == "inflorescence_density"
@@ -88,8 +89,10 @@ def test_fragaria_is_separate_diffuse_factorial_pair_not_cherry_picked_into_simp
     assert frag["same_fitness_interpretation_status"] == "common_fertilized_seed_output_factorial"
     assert frag["directional_relation"] == "opposed_but_diffuse_context_dependent"
     assert frag["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
-    assert frag["effect_size_status"] == "TABLE_S2_OR_RAW_DATA_MULTICONTRAST_RECONSTRUCTION_PENDING"
+    assert frag["covariance_status"] == "reported_joint_covariance_reconstructed_from_Table_S2_S3"
+    assert frag["effect_size_status"] == "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION"
     assert frag["pattern_promotion_status"] == "R_PATTERN_PROMOTION_SUPPORTED"
+    assert "no zero-covariance assumption" in frag["notes"]
 
 
 def test_trifolium_is_design_matched_negative_control_not_positive_q1b():
@@ -176,6 +179,13 @@ def test_polemonium_supports_pattern_upgrade_but_not_q1_pooling():
     assert pole["effect_size_status"] == "NONSTANDARD_EFFECT_REANALYSIS_REQUIRED"
 
 
-def test_no_screening_pair_is_effect_size_ready_by_construction():
+def test_exactly_one_positive_screening_pair_is_effect_size_ready():
     rows = _rows(SCREENING)
-    assert all(row["effect_size_status"] != "EFFECT_SIZE_READY" for row in rows)
+    ready = [
+        row for row in rows
+        if row["effect_size_status"] == "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION"
+    ]
+    assert len(ready) == 1
+    assert ready[0]["screen_id"] == "Q1B_FRAGARIA_EGAN2021"
+    assert ready[0]["system_taxon"] == "Fragaria vesca"
+    assert all(row["screen_id"] != "Q1B_TRIFOLIUM_SANTANGELO2018" for row in ready)

@@ -1,0 +1,39 @@
+{
+  "analysis": "balance_fragaria_q1b_reported_factorial_receipt",
+  "source": "Egan_Muola_Parachnowitsch_Stenberg_2021",
+  "publication_doi": "10.1002/evl3.262",
+  "data_doi": "10.5061/dryad.1rn8pk0vn",
+  "supplement_file": "EVL3-5-636-s001.docx",
+  "trait": "inflorescence_density",
+  "fitness_scale": "total_fertilized_seed_output",
+  "contrast_order": [
+    "pollinator_given_antagonist_present",
+    "pollinator_given_antagonist_absent",
+    "antagonist_given_open_pollination",
+    "antagonist_given_supplemented_pollination"
+  ],
+  "mediated_contrasts": [-0.022, 0.572, -0.391, 0.203],
+  "contrast_standard_errors": [0.314, 0.224, 0.125, 0.365],
+  "combined_contrast": 0.181,
+  "combined_standard_error": 0.213,
+  "interaction_contrast": -0.594,
+  "interaction_f": 2.366,
+  "interaction_df_num": 1,
+  "interaction_standard_error": 0.3861704825451837,
+  "contrast_covariance": [
+    [0.098596, -0.000177820794590014, 0.005547820794590035, -0.093226],
+    [-0.000177820794590014, 0.050176, -0.010216, 0.040137820794590016],
+    [0.005547820794590035, -0.010216, 0.015625, -0.00013882079459003743],
+    [-0.093226, 0.040137820794590016, -0.00013882079459003743, 0.133225]
+  ],
+  "covariance_rank": 3,
+  "covariance_psd": true,
+  "covariance_source": "reported_contrasts_plus_combined_se_plus_interaction_f",
+  "factorial_identity": "a_plus_d_equals_b_plus_c_and_a_minus_b_equals_c_minus_d",
+  "effect_size_status": "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION",
+  "q1b_effect_size_ready_clusters": 1,
+  "q1b_min_independent_clusters": 3,
+  "pooling_ready": false,
+  "claim_ceiling": "joint_multicontrast_selection_pattern_not_direct_BALANCE_occupancy",
+  "not_identified": ["W_S_star", "W_D_star", "rho", "Phi", "xi", "d_B"]
+}

@@ -51,9 +51,7 @@ C = [ 1 -1  0  0 ]   pollinator | antagonist present
 
 The signs are treatment-difference conventions. Biological interpretation should therefore report the registered contrast label together with the estimate rather than relying on sign alone.
 
-The code freezes the output order as `CONTRAST_ORDER`.
-
-## Joint uncertainty
+## Joint uncertainty from a fitted model or bootstrap
 
 If the fitted model supplies the joint covariance matrix of the four treatment slopes,
 
@@ -61,7 +59,7 @@ If the fitted model supplies the joint covariance matrix of the four treatment s
 V = Var(b),
 ```
 
-then the correct multicontrast covariance is
+then
 
 ```text
 Var(theta) = C V C^T.
@@ -69,29 +67,48 @@ Var(theta) = C V C^T.
 
 The four mediated contrasts are statistically dependent. Their off-diagonal covariance is part of the estimand and must be retained in any synthesis.
 
-A set of four marginal standard errors is **not** sufficient to reconstruct `V`. In particular, the following shortcut is prohibited:
+A set of four marginal standard errors alone is **not** sufficient to reconstruct `V`. In particular, the shortcut
 
 ```text
 V := diag(SE_1^2, SE_2^2, SE_3^2, SE_4^2)
 ```
 
-unless the off-diagonal zeros are genuinely supplied by the fitted joint model. Missing covariance is never silently set to zero.
+is prohibited unless those off-diagonal zeros are actually supplied by the joint model.
 
-## Accepted covariance provenance
-
-`analyze_factorial_agent_selection` promotes a receipt to joint-multicontrast readiness only when the full covariance matrix is supplied with one of two registered provenance labels:
+`analyze_factorial_agent_selection` therefore accepts a full covariance only with registered provenance:
 
 ```text
 joint_model
 raw_bootstrap
 ```
 
-Interpretation:
+and rejects labels such as `independent_standard_errors`.
 
-- `joint_model`: covariance recovered from the same fitted model / contrast system that generated the treatment slopes;
-- `raw_bootstrap`: covariance estimated by refitting the registered analysis to raw-data bootstrap replicates.
+## Reported sufficient-statistics route
 
-A label such as `independent_standard_errors` is explicitly rejected.
+A separate fail-closed route is now available for publications that report linearly dependent factorial contrasts rather than the treatment-slope covariance itself.
+
+`reconstruct_reported_factorial_contrasts` in `balance_domain/reported_factorial.py` requires all of the following:
+
+1. all four registered mediated contrasts;
+2. all four marginal SEs;
+3. a shared factorial diagonal contrast and its SE;
+4. a positive one-degree-of-freedom interaction `F` statistic;
+5. exact closure of the reported point estimates under the 2×2 factorial identities;
+6. a reconstructed covariance that satisfies the factorial null direction and is positive semidefinite.
+
+For registered contrasts `a,b,c,d`, the identities are
+
+```text
+a + d = b + c = y
+a - b = c - d = q.
+```
+
+The four marginal variances, `Var(y)`, and `Var(q)=q^2/F` identify all pairwise covariances. This is algebraic identification from source-reported sufficient statistics, not an independence assumption.
+
+The returned state is
+
+`REPORTED_FACTORIAL_JOINT_COVARIANCE_READY`.
 
 ## Interaction contrast
 
@@ -111,54 +128,45 @@ I = (pollinator | H) - (pollinator | A)
   = (antagonist | open) - (antagonist | supplemented).
 ```
 
-Its uncertainty is propagated from the same joint covariance matrix. A non-zero interaction means that the mediated selection effect of one agent changes with the state of the other agent; that is exactly why such a study belongs in the diffuse-factorial Q1B stratum rather than being cherry-picked into one scalar simple-Q1 pair.
+A non-zero interaction means that the mediated selection effect of one agent changes with the state of the other agent; this is why diffuse-factorial studies remain separate from the simple scalar Q1 stratum.
 
 ## Receipt states
 
 ### `POINT_ESTIMATES_ONLY_NOT_READY`
 
-Returned when the four treatment slopes are available but no registered joint covariance is supplied.
-
-The receipt may support a qualitative or point-estimate pattern statement, but it is not an effect-size-ready multicontrast object.
+Four treatment slopes are available but no registered joint covariance is supplied.
 
 ### `JOINT_MULTICONTRAST_READY`
 
-Returned only when the treatment slopes and a valid full covariance matrix with registered provenance are supplied.
+Treatment slopes plus a valid full covariance from a joint model or raw bootstrap are supplied.
 
-The receipt then carries:
+### `REPORTED_FACTORIAL_JOINT_COVARIANCE_READY`
 
-```text
-four treatment slopes
-four mediated contrasts
-full 4 × 4 contrast covariance
-four contrast standard errors
-interaction contrast
-interaction standard error
-covariance provenance
-```
+A complete set of source-reported factorial sufficient statistics identifies the same dependent multicontrast covariance without raw-data covariance output.
 
-This state makes one study quantitatively usable inside the registered Q1B estimand. It does **not** make the Q1B meta-analytic stratum itself ready; the stratum separately requires independent replication according to `BALANCE_QUANTITATIVE_STRATA_V1.csv`.
+Both ready states make **one study** quantitatively usable inside the registered Q1B estimand. Neither makes the meta-analytic stratum pool-ready by itself.
 
 ## Fragaria current status
 
-The merged Fragaria evidence supplies a high-confidence `CONFLICT_WITHOUT_SPLITTING` pattern and motivates one Q1B candidate. The publication and public supplement/raw-data sources support a full factorial analysis, but the repository has not yet recovered the exact joint covariance needed by this receipt.
+The public supplement now closes the reported-statistics route for `Fragaria vesca` inflorescence density. Table S2 provides the four mediated contrasts, their SEs, and the shared diagonal `OP - HA`; Table S3 provides the one-df interaction `F` statistic. The reconstructed full covariance is PSD, rank 3 as expected from the exact factorial identity, and contains substantial nonzero off-diagonal terms.
 
-Therefore the current registered state remains:
+The frozen result is in:
+
+- `data/BALANCE_FRAGARIA_Q1B_RECEIPT_V1.json`;
+- `docs/BALANCE_FRAGARIA_Q1B_REPORTED_COVARIANCE_RECEIPT_V1.md`.
+
+Current registered state:
 
 ```text
 DIFFUSE_FACTORIAL_AGENT_SELECTION
 registered_pattern_candidates = 1
-effect_size_ready_clusters    = 0
-pooling_status                 = NOT_READY_FULL_MULTICONTRAST_COVARIANCE_REQUIRED
+reanalysis_candidates         = 1  # Trifolium negative control
+effect_size_ready_clusters    = 1  # Fragaria
+minimum positive clusters     = 3
+pooling_status                 = NOT_READY_ONLY_ONE_EFFECT_READY_POSITIVE_CLUSTER
 ```
 
-The next quantitative gate is:
-
-1. recover the exact treatment-slope estimates from the registered supplement or reproduce them from Dryad raw data;
-2. recover model-based joint covariance or estimate it by registered raw-data bootstrap;
-3. pass those objects through `analyze_factorial_agent_selection`;
-4. promote the study to effect-size-ready only if the returned state is `JOINT_MULTICONTRAST_READY`;
-5. retain the entire dependent contrast vector in synthesis.
+The next gate is independent positive factorial replication. A raw-data bootstrap of Fragaria remains useful as sensitivity analysis but is no longer a prerequisite for this source-reported receipt.
 
 ## Claim ceiling
 
