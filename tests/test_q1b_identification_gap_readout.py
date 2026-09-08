@@ -1,5 +1,8 @@
+import csv
 import json
 from pathlib import Path
+
+import pytest
 
 from scripts.build_q1b_identification_gap_readout import build
 
@@ -42,3 +45,49 @@ def test_claim_ceiling_is_design_coverage_not_prevalence():
         "targeted_design_coverage_audit_not_natural_prevalence_"
         "or_exhaustive_global_systematic_review"
     )
+
+
+def _write_rows(path: Path, rows: list[dict[str, str]]) -> None:
+    fields = [
+        "study_key",
+        "system_taxon",
+        "q1b_class",
+        "first_failed_gate",
+        "claim_ceiling",
+    ]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def test_duplicate_study_keys_fail_closed(tmp_path):
+    path = tmp_path / "duplicate.csv"
+    row = {
+        "study_key": "X",
+        "system_taxon": "taxon",
+        "q1b_class": "FACTORIAL_NEGATIVE_CONTROL",
+        "first_failed_gate": "same_trait_opposition_absent",
+        "claim_ceiling": "bounded",
+    }
+    _write_rows(path, [row, row])
+    with pytest.raises(ValueError, match="duplicate study_key"):
+        build(path)
+
+
+def test_pass_class_and_pass_gate_must_agree(tmp_path):
+    path = tmp_path / "mismatch.csv"
+    _write_rows(
+        path,
+        [
+            {
+                "study_key": "X",
+                "system_taxon": "taxon",
+                "q1b_class": "STRICT_Q1B_EFFECT_READY",
+                "first_failed_gate": "same_trait_opposition_absent",
+                "claim_ceiling": "bounded",
+            }
+        ],
+    )
+    with pytest.raises(ValueError, match="pass-state mismatch"):
+        build(path)
