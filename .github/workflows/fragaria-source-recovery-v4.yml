@@ -1,0 +1,86 @@
+name: Fragaria PMC PoW download
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/fragaria-source-recovery-v4.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Solve PMC PoW and fetch supplement
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p powdl
+          TARGET='https://pmc.ncbi.nlm.nih.gov/articles/instance/8645195/bin/EVL3-5-636-s001.docx'
+          curl -fL --retry 2 -A 'Mozilla/5.0' "$TARGET" -o powdl/challenge.html || true
+          python - <<'PY' > powdl/candidates.tsv
+          import re, pathlib, hashlib
+          s=pathlib.Path('powdl/challenge.html').read_text(errors='replace')
+          challenge=re.search(r'POW_CHALLENGE\s*=\s*"([^"]+)"',s).group(1)
+          difficulty=int(re.search(r'POW_DIFFICULTY\s*=\s*"([^"]+)"',s).group(1))
+          prefix='0'*difficulty
+          print('#challenge',challenge)
+          print('#difficulty',difficulty)
+          for alg in ['sha256','sha1','md5','sha224','sha384','sha512']:
+              n=0
+              while True:
+                  payload=(challenge+str(n)).encode()
+                  h=hashlib.new(alg,payload).hexdigest()
+                  if h.startswith(prefix):
+                      print(alg,n,h,challenge,sep='\t')
+                      break
+                  n+=1
+          PY
+          cat powdl/candidates.tsv
+          CHALLENGE=$(awk '$1=="#challenge"{print $2}' powdl/candidates.tsv)
+          tail -n +3 powdl/candidates.tsv | while IFS=$'\t' read -r ALG NONCE HASH CH; do
+            OUT="powdl/${ALG}.bin"
+            echo "TRY $ALG nonce=$NONCE hash=$HASH"
+            curl -fL --retry 2 --max-time 180 -A 'Mozilla/5.0' \
+              --cookie "cloudpmc-viewer-pow=${CHALLENGE},${NONCE}" \
+              "$TARGET" -o "$OUT" || true
+            [ -f "$OUT" ] || continue
+            file "$OUT" || true
+            head -c 8 "$OUT" | xxd || true
+            SIZE=$(stat -c%s "$OUT")
+            echo "SIZE $SIZE"
+            if python - "$OUT" <<'PY'
+          import sys, zipfile
+          p=sys.argv[1]
+          sys.exit(0 if zipfile.is_zipfile(p) else 1)
+          PY
+            then
+              echo "$ALG" > powdl/SUCCESS_ALGORITHM.txt
+              cp "$OUT" powdl/EVL3-5-636-s001.docx
+              break
+            fi
+          done
+          python - <<'PY' > powdl/supplement_text.txt 2>&1
+          import pathlib, zipfile, re, html
+          p=pathlib.Path('powdl/EVL3-5-636-s001.docx')
+          if not p.exists():
+              print('NO_DOCX'); raise SystemExit
+          with zipfile.ZipFile(p) as z:
+              s=z.read('word/document.xml').decode('utf-8','replace')
+          vals=[html.unescape(x) for x in re.findall(r'<w:t[^>]*>(.*?)</w:t>',s,flags=re.S)]
+          text=' '.join(vals)
+          print(text)
+          PY
+          grep -i -n -E 'Table S2|inflorescence|pollinator|herbiv|emmeans|selection gradient|density' powdl/supplement_text.txt | head -n 400 > powdl/key_hits.txt || true
+          cat powdl/key_hits.txt || true
+      - name: Upload recovered supplement
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fragaria-pmc-pow-download
+          path: powdl/
+          retention-days: 3
