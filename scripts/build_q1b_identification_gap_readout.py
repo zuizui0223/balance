@@ -15,6 +15,7 @@ REQUIRED = {
 }
 
 PASS_CLASS = "STRICT_Q1B_EFFECT_READY"
+PASS_GATE = "PASS_Q1B"
 
 
 def build(path: Path) -> dict:
@@ -25,6 +26,23 @@ def build(path: Path) -> dict:
         if missing:
             raise ValueError("missing required columns: " + ", ".join(missing))
         rows = list(reader)
+
+    study_keys = [row["study_key"] for row in rows]
+    empty = [i + 2 for i, key in enumerate(study_keys) if not key]
+    if empty:
+        raise ValueError("empty study_key at CSV line(s): " + ", ".join(map(str, empty)))
+    duplicated = sorted(key for key, n in Counter(study_keys).items() if n > 1)
+    if duplicated:
+        raise ValueError("duplicate study_key: " + ", ".join(duplicated))
+
+    for row in rows:
+        is_pass_class = row["q1b_class"] == PASS_CLASS
+        is_pass_gate = row["first_failed_gate"] == PASS_GATE
+        if is_pass_class != is_pass_gate:
+            raise ValueError(
+                f"pass-state mismatch for {row['study_key']}: "
+                f"q1b_class={row['q1b_class']} first_failed_gate={row['first_failed_gate']}"
+            )
 
     classes = Counter(row["q1b_class"] for row in rows if row["q1b_class"])
     failed = Counter(row["first_failed_gate"] for row in rows if row["first_failed_gate"])
