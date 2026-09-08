@@ -84,6 +84,12 @@ from .concave_domain import (
     strong_concave_bulge_bounds,
 )
 from .width_depth import WidthDepthBounds, constant_slope_depth, width_depth_bounds
+from .factorial_selection import (
+    CONTRAST_ORDER,
+    TREATMENT_ORDER,
+    FactorialSelectionReceipt,
+    analyze_factorial_agent_selection,
+)
 from .peucedanum_raw import (
     PLOT_ORDER,
     PUBLISHED_2025,
@@ -99,6 +105,7 @@ __all__ = [
     "BalanceDomainGeometry",
     "BalancePathResult",
     "BoundarySensitivity",
+    "CONTRAST_ORDER",
     "ConcaveSegmentCertificate",
     "ConflictHandoff",
     "ConstantSlopeCenters",
@@ -111,6 +118,7 @@ __all__ = [
     "EndpointReserveCertificate",
     "EnvelopeSegment",
     "EnvironmentalDepth",
+    "FactorialSelectionReceipt",
     "Interval",
     "IntervalChordClassification",
     "JensenAudit",
@@ -127,6 +135,7 @@ __all__ = [
     "ReproductionGate",
     "StrongConcaveChordAudit",
     "SwitchingCostResult",
+    "TREATMENT_ORDER",
     "ThreatStability",
     "WidthDepthBounds",
     "WorldlineComparison",
@@ -136,6 +145,7 @@ __all__ = [
     "alternative_reserve",
     "analyze_balance_path",
     "analyze_definitions",
+    "analyze_factorial_agent_selection",
     "analyze_worldline_path",
     "audit_concave_margin",
     "audit_strong_concave_chord",

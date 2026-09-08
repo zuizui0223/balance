@@ -46,7 +46,8 @@ def test_diffuse_factorial_stratum_preserves_context_specific_dependence():
     assert "cherry_pick_one_context_pair" in diffuse["prohibited_pooling"]
     assert "treat_context_specific_contrasts_as_independent" in diffuse["prohibited_pooling"]
     assert "assume_zero_covariance" in diffuse["prohibited_pooling"]
-    assert "Fragaria_Table_S2_or_Dryad_model" in diffuse["next_gate"]
+    assert "Fragaria_Table_S2_or_Dryad_joint_model_covariance" in diffuse["next_gate"]
+    assert "analyze_factorial_agent_selection" in diffuse["next_gate"]
 
 
 def test_direct_balance_parameters_are_not_backfilled_from_pattern_studies():
