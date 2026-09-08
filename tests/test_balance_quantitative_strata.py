@@ -35,10 +35,11 @@ def test_simple_opposing_floral_selection_keeps_four_candidates_and_zero_ready_e
     assert "Gymnadenia_factorial_contrast_covariance" in floral["next_gate"]
 
 
-def test_diffuse_factorial_stratum_preserves_context_specific_dependence():
+def test_diffuse_factorial_stratum_preserves_context_specific_dependence_and_negative_control():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
     assert diffuse["registered_pattern_candidates"] == "1"
+    assert diffuse["reanalysis_candidates"] == "1"
     assert diffuse["effect_size_ready_clusters"] == "0"
     assert diffuse["min_independent_clusters"] == "3"
     assert "context_specific_agent_contrast_vector" in diffuse["estimand"]
@@ -48,6 +49,16 @@ def test_diffuse_factorial_stratum_preserves_context_specific_dependence():
     assert "assume_zero_covariance" in diffuse["prohibited_pooling"]
     assert "Fragaria_Table_S2_or_Dryad_joint_model_covariance" in diffuse["next_gate"]
     assert "analyze_factorial_agent_selection" in diffuse["next_gate"]
+    assert "Trifolium_as_design_matched_negative_control" in diffuse["next_gate"]
+
+
+def test_negative_control_does_not_move_diffuse_positive_or_ready_numerators():
+    rows = {row["stratum_id"]: row for row in _rows()}
+    diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
+    assert int(diffuse["registered_pattern_candidates"]) == 1
+    assert int(diffuse["reanalysis_candidates"]) == 1
+    assert int(diffuse["effect_size_ready_clusters"]) == 0
+    assert diffuse["pooling_status"] == "NOT_READY_FULL_MULTICONTRAST_COVARIANCE_REQUIRED"
 
 
 def test_direct_balance_parameters_are_not_backfilled_from_pattern_studies():
