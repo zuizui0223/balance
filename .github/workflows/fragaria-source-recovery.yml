@@ -1,0 +1,177 @@
+name: Fragaria public-source recovery
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/fragaria-source-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Recover public Fragaria source files
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p recovery/pmc recovery/dryad recovery/direct
+          : > recovery/recovery.log
+
+          log() { printf '%s\n' "$*" | tee -a recovery/recovery.log; }
+
+          log '=== Direct supplementary endpoints ==='
+          for url in \
+            'https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/evlett/5/6/10.1002_evl3.262/4/evl3262-sup-0001-suppmat.docx' \
+            'https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fevl3.262&file=evl3262-sup-0001-suppmat.docx'
+          do
+            name="recovery/direct/$(printf '%s' "$url" | sha256sum | cut -c1-12).bin"
+            if curl -fL --retry 2 --connect-timeout 20 --max-time 120 -A 'Mozilla/5.0' "$url" -o "$name" 2>>recovery/recovery.log; then
+              log "downloaded $url -> $name ($(stat -c%s "$name") bytes)"
+              file "$name" | tee -a recovery/recovery.log
+            else
+              log "FAILED $url"
+              rm -f "$name"
+            fi
+          done
+
+          log '=== PMC OA package ==='
+          PMC_API='https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=PMC8645195'
+          if curl -fL --retry 2 --max-time 120 "$PMC_API" -o recovery/pmc/oa.xml 2>>recovery/recovery.log; then
+            cat recovery/pmc/oa.xml | tee -a recovery/recovery.log
+            python - <<'PY' >> recovery/recovery.log 2>&1
+          import re, pathlib, subprocess
+          xml = pathlib.Path('recovery/pmc/oa.xml').read_text(errors='replace')
+          links = re.findall(r'href="([^"]+)"', xml)
+          print('PMC links:', links)
+          for i, href in enumerate(links):
+              if href.startswith('ftp://ftp.ncbi.nlm.nih.gov/'):
+                  href = 'https://ftp.ncbi.nlm.nih.gov/' + href[len('ftp://ftp.ncbi.nlm.nih.gov/'):]
+              out = pathlib.Path('recovery/pmc') / f'package_{i}'
+              print('downloading', href)
+              subprocess.run(['curl','-fL','--retry','2','--max-time','180',href,'-o',str(out)], check=False)
+          PY
+          else
+            log 'PMC OA API failed'
+          fi
+
+          for f in recovery/pmc/package_*; do
+            [ -f "$f" ] || continue
+            file "$f" | tee -a recovery/recovery.log
+            if tar -tzf "$f" >/dev/null 2>&1; then
+              mkdir -p recovery/pmc/extracted
+              tar -xzf "$f" -C recovery/pmc/extracted
+            fi
+          done
+
+          log '=== Dryad API manifest ==='
+          python - <<'PY' > recovery/dryad/manifest_walk.log 2>&1
+          import json, pathlib, urllib.request, urllib.parse, re
+          ROOT = pathlib.Path('recovery/dryad')
+          ROOT.mkdir(parents=True, exist_ok=True)
+          start = 'https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.1rn8pk0vn'
+          seen = set()
+          queue = [(start, 'dataset')]
+          def absolute(href):
+              return urllib.parse.urljoin('https://datadryad.org', href)
+          for _ in range(20):
+              if not queue:
+                  break
+              url, label = queue.pop(0)
+              if url in seen:
+                  continue
+              seen.add(url)
+              print('GET', url)
+              try:
+                  req = urllib.request.Request(url, headers={'User-Agent':'Mozilla/5.0'})
+                  with urllib.request.urlopen(req, timeout=60) as r:
+                      body = r.read()
+                      print('STATUS', r.status, 'TYPE', r.headers.get('content-type'), 'BYTES', len(body))
+              except Exception as e:
+                  print('ERROR', repr(e))
+                  continue
+              safe = re.sub(r'[^A-Za-z0-9_.-]+','_',label)[:80]
+              path = ROOT / f'{len(seen):02d}_{safe}.json'
+              path.write_bytes(body)
+              try:
+                  data = json.loads(body)
+              except Exception:
+                  continue
+              print(json.dumps(data, indent=2)[:12000])
+              def walk(obj, key='root'):
+                  if isinstance(obj, dict):
+                      for k,v in obj.items():
+                          walk(v, f'{key}_{k}')
+                  elif isinstance(obj, list):
+                      for i,v in enumerate(obj):
+                          walk(v, f'{key}_{i}')
+                  elif isinstance(obj, str) and ('/api/v2/' in obj or obj.startswith('http')):
+                      u = absolute(obj)
+                      if 'datadryad.org' in u and u not in seen and len(queue) < 50:
+                          queue.append((u,key))
+              walk(data)
+          print('SEEN', *sorted(seen), sep='\n')
+          PY
+          cat recovery/dryad/manifest_walk.log >> recovery/recovery.log
+
+          log '=== Locate likely supplement/data files ==='
+          find recovery -type f -printf '%p\t%s bytes\n' | sort | tee recovery/file_inventory.txt | tee -a recovery/recovery.log
+          find recovery/pmc/extracted -type f \( -iname '*supp*' -o -iname '*sup*' -o -iname '*.docx' -o -iname '*.xlsx' -o -iname '*.csv' -o -iname '*.txt' \) -print 2>/dev/null | tee recovery/likely_files.txt | tee -a recovery/recovery.log || true
+
+          log '=== Extract text from any DOCX/XLSX-ish zip packages ==='
+          python - <<'PY' > recovery/extracted_fragments.txt 2>&1
+          import pathlib, zipfile, re, html
+          roots = [pathlib.Path('recovery')]
+          candidates = []
+          for root in roots:
+              for p in root.rglob('*'):
+                  if p.is_file():
+                      try:
+                          if zipfile.is_zipfile(p):
+                              candidates.append(p)
+                      except Exception:
+                          pass
+          print('ZIP candidates:', *map(str,candidates), sep='\n')
+          for p in candidates:
+              print('\n### FILE', p)
+              try:
+                  with zipfile.ZipFile(p) as z:
+                      names = z.namelist()
+                      print('members', names[:80])
+                      xml_names = [n for n in names if n.endswith('.xml') and ('word/' in n or 'xl/' in n)]
+                      chunks=[]
+                      for n in xml_names:
+                          try:
+                              s=z.read(n).decode('utf-8','replace')
+                          except Exception:
+                              continue
+                          text=' '.join(html.unescape(x) for x in re.findall(r'<(?:w:t|t)[^>]*>(.*?)</(?:w:t|t)>', s, flags=re.S))
+                          if text:
+                              chunks.append((n,text))
+                      for n,text in chunks:
+                          low=text.lower()
+                          if any(k in low for k in ['table s2','inflorescence','pollinator','herbiv','emmeans','selection gradient']):
+                              print('\n--',n,'--')
+                              for k in ['table s2','inflorescence','pollinator','herbiv','emmeans','selection gradient']:
+                                  pos=low.find(k)
+                                  if pos>=0:
+                                      print(text[max(0,pos-1800):pos+7000])
+              except Exception as e:
+                  print('ERROR',repr(e))
+          PY
+
+          cat recovery/extracted_fragments.txt >> recovery/recovery.log
+
+      - name: Upload recovery artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fragaria-public-source-recovery
+          path: recovery/
+          if-no-files-found: warn
+          retention-days: 3
