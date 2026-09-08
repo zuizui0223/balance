@@ -1,0 +1,135 @@
+name: Caruso floral DB recovery
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/caruso-floral-db-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and inspect public Dryad archive
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p recovery/caruso
+          URL='https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.2v8c5g0/download'
+          curl -fL --retry 3 --connect-timeout 30 --max-time 300 -A 'Mozilla/5.0' "$URL" -o recovery/caruso/dataset.zip
+          file recovery/caruso/dataset.zip
+          unzip -l recovery/caruso/dataset.zip | tee recovery/caruso/archive_inventory.txt
+          mkdir -p recovery/caruso/unpacked
+          unzip -o recovery/caruso/dataset.zip -d recovery/caruso/unpacked
+          find recovery/caruso/unpacked -type f -printf '%p\t%s bytes\n' | sort | tee recovery/caruso/file_inventory.txt
+
+      - name: Convert tabular files and screen schema
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python -m pip install --quiet pandas openpyxl xlrd
+          python - <<'PY'
+          from pathlib import Path
+          import json, re
+          import pandas as pd
+
+          root = Path('recovery/caruso/unpacked')
+          out = Path('recovery/caruso/parsed')
+          out.mkdir(parents=True, exist_ok=True)
+          summary = []
+
+          files = [p for p in root.rglob('*') if p.is_file()]
+          for p in files:
+              suffix = p.suffix.lower()
+              frames = []
+              try:
+                  if suffix in {'.xls', '.xlsx'}:
+                      sheets = pd.read_excel(p, sheet_name=None)
+                      frames = list(sheets.items())
+                  elif suffix == '.csv':
+                      frames = [('csv', pd.read_csv(p))]
+                  elif suffix in {'.tsv', '.txt'}:
+                      try:
+                          frames = [('table', pd.read_csv(p, sep=None, engine='python'))]
+                      except Exception:
+                          continue
+              except Exception as e:
+                  summary.append({'file': str(p), 'error': repr(e)})
+                  continue
+
+              for sheet, df in frames:
+                  clean = re.sub(r'[^A-Za-z0-9_.-]+','_', f'{p.stem}__{sheet}')[:120]
+                  csv_path = out / f'{clean}.csv'
+                  df.to_csv(csv_path, index=False)
+                  columns = [str(c) for c in df.columns]
+                  sample = df.head(5).astype(str).to_dict(orient='records')
+                  summary.append({
+                      'file': str(p), 'sheet': str(sheet), 'rows': len(df),
+                      'columns': columns, 'csv': str(csv_path), 'sample': sample
+                  })
+
+          Path('recovery/caruso/schema_summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
+
+          # Identify likely non-duplicated workbook/sheet and inventory fields useful for BALANCE screening.
+          keys = ['poll', 'herb', 'biotic', 'treatment', 'trait', 'fitness', 'beta', 'gradient', 'article', 'species', 'study']
+          with Path('recovery/caruso/screening_candidates.txt').open('w', encoding='utf-8') as handle:
+              for item in summary:
+                  if 'columns' not in item:
+                      continue
+                  joined = ' '.join(item['columns']).lower()
+                  score = sum(k in joined for k in keys)
+                  if score >= 3 or 'notdup' in item['file'].lower() or 'notdup' in str(item.get('sheet','')).lower():
+                      handle.write('\n### ' + item['file'] + ' :: ' + str(item.get('sheet')) + '\n')
+                      handle.write('rows=' + str(item['rows']) + '\n')
+                      handle.write('columns=' + repr(item['columns']) + '\n')
+                      handle.write('sample=' + json.dumps(item['sample'], ensure_ascii=False)[:12000] + '\n')
+          PY
+
+          cat recovery/caruso/screening_candidates.txt || true
+
+      - name: Screen for paired manipulation programmes
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd, re, json
+
+          parsed = Path('recovery/caruso/parsed')
+          report = []
+          patterns = [
+              ('pollination', re.compile(r'poll|pollen', re.I)),
+              ('herbivory', re.compile(r'herb|floriv|grazer|seed.?pred|antagon', re.I)),
+          ]
+          for p in parsed.glob('*.csv'):
+              try:
+                  df = pd.read_csv(p)
+              except Exception:
+                  continue
+              # Work on textized rows so we do not assume the original schema.
+              text = df.fillna('').astype(str).agg(' | '.join, axis=1)
+              mask_poll = text.str.contains(patterns[0][1])
+              mask_ant = text.str.contains(patterns[1][1])
+              both = df[mask_poll & mask_ant]
+              if len(both):
+                  out = Path('recovery/caruso') / ('paired_' + p.name)
+                  both.to_csv(out, index=False)
+                  report.append({'file': str(p), 'rows_total': len(df), 'rows_with_poll_and_ant_terms': len(both), 'output': str(out)})
+          Path('recovery/caruso/paired_screen_summary.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
+          print(json.dumps(report, indent=2))
+          PY
+
+      - name: Upload recovery artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: caruso-floral-db-recovery
+          path: recovery/caruso/
+          if-no-files-found: warn
+          retention-days: 3
