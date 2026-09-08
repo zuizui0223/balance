@@ -10,6 +10,7 @@ from scripts.build_q1b_identification_gap_readout import build
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "data" / "BALANCE_Q1B_IDENTIFICATION_GAP_LEDGER_V1.csv"
 READOUT = ROOT / "data" / "BALANCE_Q1B_IDENTIFICATION_GAP_READOUT_V1.json"
+STRATA = ROOT / "data" / "BALANCE_QUANTITATIVE_STRATA_V1.csv"
 
 
 def test_q1b_gap_readout_is_deterministic_and_synced():
@@ -45,6 +46,17 @@ def test_claim_ceiling_is_design_coverage_not_prevalence():
         "targeted_design_coverage_audit_not_natural_prevalence_"
         "or_exhaustive_global_systematic_review"
     )
+
+
+def test_q1b_stratum_routes_future_search_through_gap_ledger():
+    with STRATA.open(encoding="utf-8", newline="") as handle:
+        rows = {row["stratum_id"]: row for row in csv.DictReader(handle)}
+    q1b = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
+    assert q1b["registered_pattern_candidates"] == "1"
+    assert q1b["effect_size_ready_clusters"] == "1"
+    assert q1b["min_independent_clusters"] == "3"
+    assert "BALANCE_Q1B_IDENTIFICATION_GAP_LEDGER_V1" in q1b["next_gate"]
+    assert "without_relaxing_failed_gates" in q1b["next_gate"]
 
 
 def _write_rows(path: Path, rows: list[dict[str, str]]) -> None:
