@@ -1,0 +1,42 @@
+{
+  "analysis": "balance_q1b_identification_gap_readout",
+  "claim_ceiling": "targeted_design_coverage_audit_not_natural_prevalence_or_exhaustive_global_systematic_review",
+  "first_failed_gate_counts": {
+    "PASS_Q1B": 1,
+    "antagonist_manipulation_absent": 2,
+    "continuous_trait_estimand_absent": 1,
+    "continuous_trait_selection_estimand_absent": 1,
+    "continuous_trait_selection_gradient_absent": 1,
+    "diffuse_context_dependence_absent": 1,
+    "independent_antagonist_identity_absent": 1,
+    "independent_antagonist_selection_absent": 2,
+    "pollination_manipulation_absent": 1,
+    "same_trait_opposition_absent": 2,
+    "same_unit_crossed_design_absent": 1,
+    "within_generation_selection_estimand_absent": 1
+  },
+  "n_audited_programmes": 15,
+  "n_design_matched_negative_controls": 2,
+  "n_nonpass_programmes": 14,
+  "n_strict_q1b_effect_ready": 1,
+  "pooling_implication": "one_effect_ready_positive_is_below_three_cluster_pooling_gate",
+  "q1b_class_counts": {
+    "ADDITIVE_OPPOSITION_SIMPLE_Q1": 1,
+    "DISCRETE_MORPH_OPPOSITION": 1,
+    "DUAL_ROLE_AGENT_BOUNDARY": 1,
+    "EXPERIMENTAL_EVOLUTION_OUTCOME": 1,
+    "FACTORIAL_NEGATIVE_CONTROL": 2,
+    "HERBIVORY_CONTEXT_WITH_OBSERVED_POLLINATORS": 1,
+    "HERBIVORY_PLASTICITY_CONTEXT": 1,
+    "INDIRECT_PREDATOR_CONTEXT_REVERSAL": 1,
+    "MULTIAGENT_REPRODUCTION_EXPERIMENT": 1,
+    "NONCROSSED_DISCRETE_NEAR_MISS": 1,
+    "ONE_AGENT_EXPERIMENT_PLUS_ANTAGONIST_NULL": 1,
+    "ONE_AGENT_EXPERIMENT_PLUS_HERBIVORE_PATH": 1,
+    "STRICT_Q1B_EFFECT_READY": 1,
+    "TRAIT_INTERVENTION_BOUNDARY": 1
+  },
+  "strict_q1b_effect_ready_studies": [
+    "EGAN_FRAGARIA_2021"
+  ]
+}
