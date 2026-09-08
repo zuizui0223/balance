@@ -6,10 +6,16 @@
   "n_rows_with_uncertainty_bearing_architecture_effect": 0,
   "n_strata_with_at_least_3_compatible_independent_clusters": 0,
   "blocker_counts": {
-    "missing_common_fitness_scale": 2,
-    "effect_not_extracted_or_harmonized": 2,
+    "nonorganismal_dual_objective_not_BALANCE_fitness": 1,
+    "unmatched_shared_vs_differentiated_architecture_worldline": 1,
+    "missing_common_fitness_scale": 1,
+    "effect_not_harmonized": 1,
     "analogue_only_not_BALANCE_poolable": 1
   },
-  "status": "QUANTITATIVE_GATE_EXTERNALIZED_NO_STRICT_BALANCE_POOL_YET",
-  "claim_ceiling": "pattern recurrence and boundary structure only; no pooled shared-vs-alternative architecture fitness effect"
+  "adjudicated_examples": {
+    "coGFP": "differentiation route experimentally available but fluorescence objectives are not a common organismal BALANCE fitness scale",
+    "GAL1_GAL3": "organismal fitness was measured in precise replacements, but no single matched shared-vs-duplicated architecture worldline suitable for pooling is recovered"
+  },
+  "status": "STRICT_BALANCE_POOL_STRUCTURALLY_UNAVAILABLE_IN_CURRENT_CANDIDATES",
+  "claim_ceiling": "pattern recurrence, persistence and boundary structure only; no pooled shared-vs-alternative architecture fitness effect"
 }
