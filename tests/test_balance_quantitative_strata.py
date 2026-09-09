@@ -35,30 +35,30 @@ def test_simple_opposing_floral_selection_keeps_four_candidates_and_zero_ready_e
     assert "Gymnadenia_factorial_contrast_covariance" in floral["next_gate"]
 
 
-def test_diffuse_factorial_stratum_has_one_ready_positive_and_two_controls_but_is_not_pool_ready():
+def test_diffuse_factorial_stratum_has_two_ready_positives_and_remains_not_pool_ready():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
-    assert diffuse["registered_pattern_candidates"] == "1"
+    assert diffuse["registered_pattern_candidates"] == "2"
     assert diffuse["reanalysis_candidates"] == "2"
-    assert diffuse["effect_size_ready_clusters"] == "1"
+    assert diffuse["effect_size_ready_clusters"] == "2"
     assert diffuse["min_independent_clusters"] == "3"
-    assert diffuse["pooling_status"] == "NOT_READY_ONLY_ONE_EFFECT_READY_POSITIVE_CLUSTER"
+    assert diffuse["pooling_status"] == "NOT_READY_TWO_OF_THREE_EFFECT_READY_POSITIVE_CLUSTERS"
     assert "context_specific_agent_contrast_vector" in diffuse["estimand"]
     assert "reported_factorial_sufficient_statistics" in diffuse["variance_requirement"]
     assert "cherry_pick_one_context_pair" in diffuse["prohibited_pooling"]
     assert "treat_context_specific_contrasts_as_independent" in diffuse["prohibited_pooling"]
     assert "assume_zero_covariance" in diffuse["prohibited_pooling"]
-    assert "Fragaria_reported_covariance_receipt" in diffuse["next_gate"]
-    assert "Trifolium_and_Lythrum_as_negative_controls" in diffuse["next_gate"]
-    assert "two_independent_positive_factorial_replications" in diffuse["next_gate"]
+    assert "Fragaria_and_Impatiens_effect_ready_receipts" in diffuse["next_gate"]
+    assert "one_more_independent_positive" in diffuse["next_gate"]
+    assert "Gymnadenia_is_leading_candidate" in diffuse["next_gate"]
 
 
-def test_negative_controls_are_separate_from_fragaria_ready_numerator():
+def test_negative_controls_are_separate_from_two_positive_ready_clusters():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
-    assert int(diffuse["registered_pattern_candidates"]) == 1
+    assert int(diffuse["registered_pattern_candidates"]) == 2
     assert int(diffuse["reanalysis_candidates"]) == 2
-    assert int(diffuse["effect_size_ready_clusters"]) == 1
+    assert int(diffuse["effect_size_ready_clusters"]) == 2
     assert int(diffuse["effect_size_ready_clusters"]) < int(diffuse["min_independent_clusters"])
 
 
