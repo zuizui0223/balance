@@ -1,0 +1,42 @@
+{
+  "analysis": "balance_impatiens_q1b_preregistered_raw_bootstrap",
+  "study_doi": "10.1002/ajb2.1182",
+  "data_doi": "10.5061/dryad.0j96d17",
+  "subset": "Robbing == N; randomized Pollination x Florivory 2x2",
+  "outcome": "Average_CH_Fruits_Per_Day",
+  "fitness_contract": "common chasmogamous fruit-rate reproductive component; not lifetime fitness",
+  "traits_predeclared": ["Early_Season_Flower_Redness", "Early_Season_Condensed_Tannins"],
+  "n_complete": 85,
+  "n_by_cell": {"poll_N_flor_N": 19, "poll_N_flor_Y": 23, "poll_Y_flor_N": 23, "poll_Y_flor_Y": 20},
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260909,
+  "joint_uncertainty_provenance": "stratified_raw_plant_bootstrap",
+  "q1b_positive_point_pattern_any_predeclared_trait": true,
+  "effect_size_state": "JOINT_MULTICONTRAST_READY",
+  "traits": {
+    "Early_Season_Condensed_Tannins": {
+      "treatment_slopes": {"poll_N_flor_N": -0.39944855638478, "poll_N_flor_Y": -0.37983401225717683, "poll_Y_flor_N": 0.017000460645543065, "poll_Y_flor_Y": -0.1394271701458252},
+      "mediated_contrasts": {
+        "pollinator_given_florivory_present": {"estimate": -0.24040684211135163, "bootstrap_se": 0.2788770466744907, "ci95": [-0.842090340909088, 0.271019720992028]},
+        "pollinator_given_florivory_absent": {"estimate": -0.41644901703032305, "bootstrap_se": 0.28681044538574924, "ci95": [-0.9577228991024384, 0.22420676653687274]},
+        "florivory_given_open_pollination": {"estimate": 0.019614544127603162, "bootstrap_se": 0.3019170358995206, "ci95": [-0.5580851585945885, 0.6331498447448091]},
+        "florivory_given_supplemented_pollination": {"estimate": -0.15642763079136826, "bootstrap_se": 0.2582291151295459, "ci95": [-0.5465871020569615, 0.5052610272212811]}
+      },
+      "mediated_contrast_covariance": [[0.07777240716188606,0.0004465564932639757,0.03997158223052087,-0.037354268438101204],[0.0004465564932639757,0.08226023158237185,-0.0518339909812262,0.02997968410788171],[0.03997158223052087,-0.0518339909812262,0.09115389656635242,-0.0006516766453946491],[-0.037354268438101204,0.02997968410788171,-0.0006516766453946491,0.06668227590058826]],
+      "opposed_agent_point_pattern": true
+    },
+    "Early_Season_Flower_Redness": {
+      "treatment_slopes": {"poll_N_flor_N": 0.03232968886143689, "poll_N_flor_Y": 0.4867541612798718, "poll_Y_flor_N": 0.017874245014569468, "poll_Y_flor_Y": 0.0040220321729960914},
+      "mediated_contrasts": {
+        "pollinator_given_florivory_present": {"estimate": 0.48273212910687574, "bootstrap_se": 0.4061865976751807, "ci95": [-0.06268799666589003, 1.436917371605599]},
+        "pollinator_given_florivory_absent": {"estimate": 0.014455443846867422, "bootstrap_se": 0.3942172086564324, "ci95": [-0.48325286488046926, 0.6978319620031953]},
+        "florivory_given_open_pollination": {"estimate": 0.4544244724184349, "bootstrap_se": 0.5154617503386146, "ci95": [-0.3543951464031007, 1.4085188698714537]},
+        "florivory_given_supplemented_pollination": {"estimate": -0.013852212841573376, "bootstrap_se": 0.2283655276534711, "ci95": [-0.5148916390632334, 0.3671840759562571]}
+      },
+      "mediated_contrast_covariance": [[0.16498755213093913,-0.0027439105175105856,0.1379080060613145,-0.029823456587135155],[-0.0027439105175105856,0.15540720760086915,-0.13180828524295019,0.02634283287542955],[0.1379080060613145,-0.13180828524295019,0.2657008160621483,-0.004015475242116417],[-0.029823456587135155,0.02634283287542955,-0.004015475242116417,0.052150814220448274]],
+      "opposed_agent_point_pattern": true
+    }
+  },
+  "promotion_guard": "Positive status was determined from predeclared traits and a preregistered same-trait factorial opposition rule; all predeclared traits are retained and no trait was selected post hoc.",
+  "claim_ceiling": "Q1B R-layer factorial selection pattern on a reproductive component; not direct BALANCE occupancy or W_S*/W_D*"
+}
