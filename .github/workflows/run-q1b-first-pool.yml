@@ -1,0 +1,31 @@
+name: Run first allowed Q1B pool
+
+on:
+  pull_request:
+    paths:
+      - "scripts/run_q1b_first_pool.py"
+      - "data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json"
+      - ".github/workflows/run-q1b-first-pool.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pool:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install numeric dependency
+        run: python -m pip install numpy
+      - name: Run three-cluster Q1B pool
+        run: python scripts/run_q1b_first_pool.py artifacts/q1b_first_pool
+      - uses: actions/upload-artifact@v4
+        with:
+          name: balance-q1b-first-pool
+          path: artifacts/q1b_first_pool
+          if-no-files-found: error
