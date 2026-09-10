@@ -1,0 +1,15 @@
+{
+  "source": "Soper_Gorden_Adler_2018",
+  "study_doi": "10.1002/ajb2.1182",
+  "aggregation_rule": "equal_weight_mean_across_all_predeclared_traits",
+  "traits": ["Early_Season_Flower_Redness", "Early_Season_Condensed_Tannins"],
+  "contrast_order": ["pollinator_given_florivory_present", "pollinator_given_florivory_absent", "florivory_given_open_pollination", "florivory_given_supplemented_pollination"],
+  "mediated_contrasts": [0.12116264349776205, -0.20099678659172782, 0.23701950827301904, -0.08513992181647081],
+  "contrast_standard_errors": [0.24985989378742562, 0.2560356604659427, 0.3232235377316451, 0.150171821435899],
+  "contrast_covariance": [[0.06242996652346361,-0.00014442622249939233,0.050201954276844915,-0.012372438469118105],[-0.00014442622249939233,0.0655542594302315,-0.05489552461769438,0.010803161035036517],[0.050201954276844915,-0.05489552461769438,0.10447345534376021,-0.0006240235507790811],[-0.012372438469118105,0.010803161035036517,-0.0006240235507790811,0.022551575953375536]],
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260909,
+  "ci95_bootstrap": [[-0.2869256787715265,0.6549883686597492],[-0.6200918980342769,0.3440458823202375],[-0.3841204635414906,0.864482528163978],[-0.3549250503697342,0.22286596858096897]],
+  "effect_size_status": "EFFECT_SIZE_READY_CLUSTER_AGGREGATE",
+  "claim_ceiling": "equal-weight cluster summary of preregistered Q1B traits; not direct BALANCE occupancy"
+}
