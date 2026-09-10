@@ -21,11 +21,12 @@ def test_impatiens_q1b_receipt_is_joint_ready_and_predeclared():
         assert len(cov) == 4 and all(len(row) == 4 for row in cov)
 
 
-def test_q1b_pooling_gate_is_exactly_two_of_three_after_impatiens():
+def test_q1b_pooling_gate_is_open_at_three_of_three_after_gymnadenia():
     with (ROOT / "data" / "BALANCE_QUANTITATIVE_STRATA_V1.csv").open(newline="", encoding="utf-8") as fh:
         rows = {r["stratum_id"]: r for r in csv.DictReader(fh)}
     q1b = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
     assert int(q1b["min_independent_clusters"]) == 3
-    assert int(q1b["effect_size_ready_clusters"]) == 2
-    assert q1b["pooling_status"] == "NOT_READY_TWO_OF_THREE_EFFECT_READY_POSITIVE_CLUSTERS"
-    assert "one_more_independent_positive" in q1b["next_gate"]
+    assert int(q1b["effect_size_ready_clusters"]) == 3
+    assert q1b["pooling_status"] == "POOLING_OPEN_FIRST_THREE_CLUSTER_POOL_FROZEN"
+    assert "Fragaria_Impatiens_Gymnadenia" in q1b["next_gate"]
+    assert "expand_independent_replication" in q1b["next_gate"]
