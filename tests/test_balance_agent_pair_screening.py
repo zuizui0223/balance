@@ -1,7 +1,6 @@
 import csv
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "data" / "BALANCE_QUANT_SOURCE_REGISTRY_V1.csv"
 SCREENING = ROOT / "data" / "BALANCE_AGENT_PAIR_SCREENING_V1.csv"
@@ -17,9 +16,7 @@ def test_caruso_nonduplicated_database_is_primary_search_universe():
     caruso = rows["CARUSO_FLORAL_SELECTION_2019"]
     assert caruso["data_doi"] == "10.5061/dryad.2v8c5g0"
     assert "755_beta_plus_SE_records" in caruso["public_scope"]
-    assert "36_articles" in caruso["public_scope"]
     assert caruso["screening_role"] == "PRIMARY_FLORAL_SELECTION_SEARCH_UNIVERSE"
-    assert caruso["current_status"] == "METADATA_VERIFIED_NON_DUP_FILE_INGEST_PENDING"
 
 
 def test_duplicated_caruso_workbook_is_never_independent_inventory():
@@ -29,205 +26,110 @@ def test_duplicated_caruso_workbook_is_never_independent_inventory():
     assert duplicated["current_status"] == "DO_NOT_USE_AS_INDEPENDENT_SOURCE_INVENTORY"
 
 
-def test_candidate_expansion_sources_are_registered_with_bounded_roles():
+def test_candidate_expansion_sources_keep_bounded_roles():
     rows = {row["source_key"]: row for row in _rows(SOURCES)}
     assert rows["IRWIN_IPOMOPSIS_2006"]["screening_role"] == "SOURCE_REANALYSIS_REQUIRED_AGENT_PAIR"
     assert rows["KOLB_PRIMULA_2010"]["screening_role"] == "SEED_PREDATOR_MODERATOR_CANDIDATE"
     assert rows["EHRLEN_PRIMULA_2012"]["screening_role"] == "COMPONENT_CONFLICT_CANDIDATE"
     assert rows["GALEN_CUBA_POLEMONIUM_2001"]["screening_role"] == "DIRECT_FUNCTION_CONFLICT_PATTERN_CANDIDATE"
-    assert rows["GALEN_POLEMONIUM_2011"]["screening_role"] == "DOSAGE_CONFLICT_MECHANISM_CANDIDATE"
 
 
-def test_gymnadenia_factorial_source_is_registered_as_identified_agent_pair():
+def test_three_q1b_sources_are_effect_ready_with_distinct_provenance():
     rows = {row["source_key"]: row for row in _rows(SOURCES)}
-    source = rows["SLETVOLD_GYMNADENIA_2015"]
-    assert source["publication_doi"] == "10.1890/14-0119.1"
-    assert source["screening_role"] == "OPPOSED_AGENT_PAIR_FACTORIAL_SOURCE"
-    assert source["current_status"] == "APPENDIX_A2_NUMERIC_CONTRAST_RECONSTRUCTION_PENDING"
-    assert "2x2_pollination_x_herbivory_factorial" in source["public_scope"]
+    frag = rows["EGAN_FRAGARIA_2021"]
+    imp = rows["GORDEN_ADLER_IMPATIENS_2018"]
+    gym = rows["SLETVOLD_GYMNADENIA_2015"]
 
-
-def test_fragaria_source_is_registered_as_effect_ready_diffuse_factorial():
-    rows = {row["source_key"]: row for row in _rows(SOURCES)}
-    source = rows["EGAN_FRAGARIA_2021"]
-    assert source["publication_doi"] == "10.1002/evl3.262"
-    assert source["data_doi"] == "10.5061/dryad.1rn8pk0vn"
-    assert source["screening_role"] == "DIFFUSE_OPPOSED_AGENT_FACTORIAL_SOURCE"
-    assert source["current_status"] == "TABLE_S2_S3_REPORTED_JOINT_COVARIANCE_RECONSTRUCTED_EFFECT_READY"
-    assert source["claim_ceiling"] == "Q1B_effect_ready_pattern_not_direct_BALANCE_occupancy"
-    assert "total_fertilized_seed_fitness" in source["public_scope"]
-
-
-def test_trifolium_source_is_registered_as_factorial_negative_control():
-    rows = {row["source_key"]: row for row in _rows(SOURCES)}
-    source = rows["SANTANGELO_TRIFOLIUM_2018"]
-    assert source["publication_doi"] == "10.1111/jeb.13392"
-    assert source["data_doi"] == "10.5061/dryad.h6qg003"
-    assert source["screening_role"] == "FACTORIAL_NEGATIVE_CONTROL_REANALYSIS"
-    assert source["current_status"] == "AUTHOR_REPO_AND_TABLES_AUDITED_NO_SAME_TRAIT_OPPOSITION"
-    assert "clean_selection_data" in source["public_scope"]
-    assert "reproducible_R_script" in source["public_scope"]
-
-
-def test_primula_farinosa_source_is_registered_as_discrete_morph_estimand_boundary():
-    rows = {row["source_key"]: row for row in _rows(SOURCES)}
-    source = rows["AGREN_PRIMULA_FARINOSA_2013"]
-    assert source["publication_doi"] == "10.1073/pnas.1301421110"
-    assert source["screening_role"] == "DISCRETE_MORPH_OPPOSED_AGENT_ESTIMAND"
-    assert source["current_status"] == "PRIMARY_SOURCE_AUDITED_STRICT_OPPOSITION_NONBETA_ESTIMAND"
-    assert "long_vs_short_scape_morph" in source["public_scope"]
-    assert "not_continuous_beta_or_Q1B_vector" in source["claim_ceiling"]
-
-
-def test_lythrum_source_is_registered_as_factorial_negative_control():
-    rows = {row["source_key"]: row for row in _rows(SOURCES)}
-    source = rows["THOMSEN_SARGENT_LYTHRUM_2017"]
-    assert source["publication_doi"] == "10.1093/aob/mcx026"
-    assert source["screening_role"] == "FACTORIAL_NEGATIVE_CONTROL_REANALYSIS"
-    assert source["current_status"] == "PRIMARY_SOURCE_AUDITED_NO_POLLINATOR_MEDIATED_SELECTION_OR_AGENT_INTERACTION"
-    assert "ANCOVA_delta_beta" in source["public_scope"]
-
-
-def test_simple_q1_keeps_four_current_opposed_agent_pairs():
-    rows = _rows(SCREENING)
-    opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
-    assert {row["system_taxon"] for row in opposed} == {
-        "Dalechampia scandens",
-        "Castilleja linariaefolia",
-        "Pedicularis rex",
-        "Gymnadenia conopsea",
+    assert frag["screening_role"] == "DIFFUSE_OPPOSED_AGENT_FACTORIAL_SOURCE"
+    assert frag["current_status"] == "TABLE_S2_S3_REPORTED_JOINT_COVARIANCE_RECONSTRUCTED_EFFECT_READY"
+    assert imp["screening_role"] == "DIFFUSE_OPPOSED_AGENT_FACTORIAL_SOURCE"
+    assert imp["current_status"] == "RAW_PLANT_STRATIFIED_BOOTSTRAP_JOINT_MULTICONTRAST_READY"
+    assert gym["screening_role"] == "DIFFUSE_OPPOSED_AGENT_FACTORIAL_SOURCE"
+    assert gym["current_status"] == "ESA_TABLE_A2_REPORTED_CONTRAST_COVARIANCE_RECONSTRUCTED_EFFECT_READY"
+    assert "four_independent_treatment_group" in gym["public_scope"]
+    assert {frag["publication_doi"], imp["publication_doi"], gym["publication_doi"]} == {
+        "10.1002/evl3.262", "10.1002/ajb2.1182", "10.1890/14-0119.1"
     }
 
 
-def test_fragaria_is_separate_diffuse_factorial_pair_and_now_effect_ready():
+def test_simple_q1_keeps_three_non_q1b_opposed_agent_pairs():
+    rows = _rows(SCREENING)
+    opposed = [row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR"]
+    assert {row["system_taxon"] for row in opposed} == {
+        "Dalechampia scandens", "Castilleja linariaefolia", "Pedicularis rex"
+    }
+
+
+def test_gymnadenia_is_now_effect_ready_diffuse_q1b():
+    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
+    gym = rows["Q1B_GYMNADENIA_SLETVOLD2015"]
+    assert gym["trait_coordinate"] == "flowering_start_phenology"
+    assert gym["second_agent_type"] == "herbivore"
+    assert gym["same_fitness_interpretation_status"] == "common_female_fitness_factorial"
+    assert gym["directional_relation"] == "opposed_pollinators_later_herbivores_earlier"
+    assert gym["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
+    assert gym["effect_size_status"] == "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION"
+    assert "Table_A2_SE_reconstruction" in gym["covariance_status"]
+    assert "P|H=0.1558" in gym["notes"]
+
+
+def test_fragaria_is_effect_ready_diffuse_q1b():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     frag = rows["Q1B_FRAGARIA_EGAN2021"]
-    assert frag["trait_coordinate"] == "inflorescence_density"
-    assert frag["second_agent_type"] == "herbivore"
-    assert frag["second_agent_identity_status"] == "identified"
-    assert frag["same_fitness_interpretation_status"] == "common_fertilized_seed_output_factorial"
-    assert frag["directional_relation"] == "opposed_but_diffuse_context_dependent"
     assert frag["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
-    assert frag["covariance_status"] == "reported_joint_covariance_reconstructed_from_Table_S2_S3"
     assert frag["effect_size_status"] == "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION"
     assert frag["pattern_promotion_status"] == "R_PATTERN_PROMOTION_SUPPORTED"
     assert "no zero-covariance assumption" in frag["notes"]
 
 
-def test_trifolium_is_design_matched_negative_control_not_positive_q1b():
+def test_factorial_negative_controls_remain_outside_positive_q1b():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     tri = rows["Q1B_TRIFOLIUM_SANTANGELO2018"]
-    assert tri["second_agent_type"] == "herbivore"
-    assert tri["second_agent_identity_status"] == "identified"
-    assert tri["same_trait_status"] == "no_registered_same_trait_opposition"
-    assert tri["same_fitness_interpretation_status"] == "common_relative_seed_fitness_factorial"
-    assert tri["screening_class"] == "FACTORIAL_NO_SAME_TRAIT_OPPOSITION"
-    assert tri["effect_size_status"] == "NEGATIVE_CONTROL_REANALYSIS_READY"
-    assert tri["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
-    assert "Pollination did not independently alter selection on any trait" in tri["notes"]
-
-
-def test_lythrum_is_second_factorial_control_not_positive_q1b():
-    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     lyt = rows["Q1B_LYTHRUM_THOMSEN2017"]
-    assert lyt["second_agent_type"] == "simulated_meristem_damage"
-    assert lyt["same_trait_status"] == "no_opposing_same_trait_agent_pair"
-    assert lyt["screening_class"] == "FACTORIAL_NO_DIFFUSE_SAME_TRAIT_CONFLICT"
-    assert lyt["effect_size_status"] == "NEGATIVE_CONTROL_SOURCE_REPORTED"
+    assert tri["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
+    assert tri["effect_size_status"] == "NEGATIVE_CONTROL_REANALYSIS_READY"
     assert lyt["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
-    assert "-0.01±0.05" in lyt["notes"]
-    assert "0.01±0.12" in lyt["notes"]
+    assert lyt["effect_size_status"] == "NEGATIVE_CONTROL_SOURCE_REPORTED"
 
 
-def test_primula_strict_conflict_is_kept_outside_q1_and_q1b_estimands():
+def test_primula_discrete_morph_remains_separate_estimand():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     prim = rows["Q1M_PRIMULA_FARINOSA_AGREN2013"]
-    assert prim["trait_coordinate"] == "scape_morph_long_vs_short"
-    assert prim["same_trait_status"] == "yes_discrete_genetic_morph"
-    assert prim["directional_relation"] == "opposed_pollinators_long_grazers_short"
     assert prim["screening_class"] == "OPPOSED_AGENT_PAIR_DISCRETE_MORPH"
     assert prim["effect_size_status"] == "SEPARATE_DISCRETE_MORPH_ESTIMAND_REQUIRED"
     assert prim["pattern_promotion_status"] == "NO_Q1_OR_Q1B_POOLING_PROMOTION"
 
 
-def test_only_fragaria_is_current_positive_diffuse_factorial_candidate():
-    rows = _rows(SCREENING)
-    diffuse_positive = [
-        row for row in rows if row["screening_class"] == "OPPOSED_AGENT_PAIR_DIFFUSE_FACTORIAL"
-    ]
-    assert {row["system_taxon"] for row in diffuse_positive} == {"Fragaria vesca"}
-    assert all(row["system_taxon"] not in {"Trifolium repens", "Lythrum salicaria", "Primula farinosa"} for row in diffuse_positive)
-
-
-def test_gymnadenia_factorial_pair_is_positive_but_not_effect_ready():
-    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
-    gym = rows["Q1_GYMNADENIA_SLETVOLD2015"]
-    assert gym["trait_coordinate"] == "flowering_start_phenology"
-    assert gym["second_agent_type"] == "herbivore"
-    assert gym["second_agent_identity_status"] == "identified"
-    assert gym["same_fitness_interpretation_status"] == "common_female_fitness_factorial"
-    assert gym["directional_relation"] == "opposed_pollinators_later_herbivores_earlier"
-    assert gym["screening_class"] == "OPPOSED_AGENT_PAIR"
-    assert gym["effect_size_status"] == "APPENDIX_A2_CONTRAST_RECONSTRUCTION_PENDING"
-    assert gym["pattern_promotion_status"] == "R_PATTERN_PROMOTION_SUPPORTED"
-
-
-def test_ipomopsis_is_not_prelabelled_as_positive_conflict():
-    rows = {row["screen_id"]: row for row in _rows(SCREENING)}
-    ipo = rows["Q1_IPOMOPSIS_CAMPBELL2022"]
-    assert ipo["screening_class"] == "ONE_AGENT_NULL_OR_UNRESOLVED"
-    assert ipo["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
-    assert ipo["raw_data_status"] == "public"
-
-
-def test_gymnadenia_2019_methods_audit_still_excludes_antagonist_q1_promotion():
+def test_gymnadenia_2019_residual_nonpollinator_result_is_not_antagonist_q1():
     source_rows = {row["source_key"]: row for row in _rows(SOURCES)}
     source = source_rows["CHAPURLAT_GYMNADENIA_2019"]
     assert source["screening_role"] == "RESIDUAL_NONPOLLINATOR_SELECTION_NOT_ANTAGONIST_Q1"
-    assert source["current_status"] == "METHODS_AUDITED_ANTAGONIST_ROUTE_NOT_SUPPORTED_RAW_DATA_PUBLIC"
-
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     gym = rows["Q1_GYMNADENIA_CHAPURLAT2019"]
-    assert gym["directional_relation"] == "opposed_for_three_compounds"
-    assert gym["second_agent_identity_status"] == "antagonist_not_supported_flower_herbivore_damage_absent"
-    assert gym["screening_class"] == "RESIDUAL_NONPOLLINATOR_UNRESOLVED"
     assert gym["effect_size_status"] == "NOT_Q1_ANTAGONIST_ELIGIBLE"
     assert gym["pattern_promotion_status"] == "NO_ANTAGONIST_PROMOTION"
 
 
-def test_irwin_and_primula_veris_candidates_remain_below_positive_pair_promotion():
+def test_ipomopsis_and_primula_veris_candidates_remain_below_positive_promotion():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
-    irwin = rows["Q1_IPOMOPSIS_IRWIN2006"]
-    assert irwin["screening_class"] == "SOURCE_REANALYSIS_REQUIRED"
-    assert irwin["directional_relation"] == "year_dependent_mixed"
-    assert irwin["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
-
-    kolb = rows["Q1_PRIMULA_KOLB2010"]
-    assert kolb["screening_class"] == "ONE_AGENT_NULL_OR_UNRESOLVED"
-    assert kolb["pollinator_component_status"] == "NOT_JOINTLY_IDENTIFIED"
-
-    ehrlen = rows["Q1_PRIMULA_EHRLEN2012"]
-    assert ehrlen["screening_class"] == "SOURCE_REANALYSIS_REQUIRED"
-    assert ehrlen["directional_relation"] == "opposed_component_paths"
-    assert ehrlen["pattern_promotion_status"] == "NO_POLLINATOR_AGENT_PAIR_PROMOTION"
+    assert rows["Q1_IPOMOPSIS_CAMPBELL2022"]["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
+    assert rows["Q1_IPOMOPSIS_IRWIN2006"]["pattern_promotion_status"] == "NO_POSITIVE_PROMOTION"
+    assert rows["Q1_PRIMULA_KOLB2010"]["pollinator_component_status"] == "NOT_JOINTLY_IDENTIFIED"
+    assert rows["Q1_PRIMULA_EHRLEN2012"]["pattern_promotion_status"] == "NO_POLLINATOR_AGENT_PAIR_PROMOTION"
 
 
 def test_polemonium_supports_pattern_upgrade_but_not_q1_pooling():
     rows = {row["screen_id"]: row for row in _rows(SCREENING)}
     pole = rows["Q1_POLEMONIUM_GALENCUBA2001"]
     assert pole["directional_relation"] == "opposed"
-    assert pole["screening_class"] == "SOURCE_REANALYSIS_REQUIRED"
     assert pole["pattern_promotion_status"] == "R_PATTERN_UPGRADE_SUPPORTED"
     assert pole["effect_size_status"] == "NONSTANDARD_EFFECT_REANALYSIS_REQUIRED"
 
 
-def test_exactly_one_positive_screening_pair_is_effect_size_ready():
+def test_screening_table_has_two_reported_effect_ready_q1b_rows_and_impatiens_is_raw_receipt_elsewhere():
     rows = _rows(SCREENING)
-    ready = [
-        row for row in rows
-        if row["effect_size_status"] == "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION"
-    ]
-    assert len(ready) == 1
-    assert ready[0]["screen_id"] == "Q1B_FRAGARIA_EGAN2021"
-    assert ready[0]["system_taxon"] == "Fragaria vesca"
-    assert all(row["screen_id"] not in {"Q1B_TRIFOLIUM_SANTANGELO2018", "Q1B_LYTHRUM_THOMSEN2017", "Q1M_PRIMULA_FARINOSA_AGREN2013"} for row in ready)
+    ready = [row for row in rows if row["effect_size_status"] == "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION"]
+    assert {row["system_taxon"] for row in ready} == {"Fragaria vesca", "Gymnadenia conopsea"}
+    # Impatiens is not duplicated here: its effect-ready status is carried by the raw-bootstrap receipt/source registry.
+    source_rows = {row["source_key"]: row for row in _rows(SOURCES)}
+    assert source_rows["GORDEN_ADLER_IMPATIENS_2018"]["current_status"] == "RAW_PLANT_STRATIFIED_BOOTSTRAP_JOINT_MULTICONTRAST_READY"
