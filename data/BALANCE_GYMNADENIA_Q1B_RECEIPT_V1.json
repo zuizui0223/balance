@@ -1,0 +1,31 @@
+{
+  "analysis": "balance_gymnadenia_q1b_reported_factorial_receipt",
+  "source": "Sletvold_Moritz_Agren_2015",
+  "publication_doi": "10.1890/14-0119.1",
+  "archive": "Ecological Archives E096-022-A1",
+  "archive_url": "https://esapubs.org/archive/ecol/E096/022/appendix-A.php",
+  "trait": "flowering_start_DOY",
+  "fitness_scale": "female_fitness",
+  "treatment_order": ["C+H", "HP+H", "C+E", "HP+E"],
+  "treatment_slopes": [-0.0042, -0.16, 0.094, -0.066],
+  "treatment_standard_errors": [0.054, 0.056, 0.031, 0.028],
+  "treatment_group_independence": "distinct plants in four factorial treatment groups",
+  "contrast_order": [
+    "pollinator_given_antagonist_present",
+    "pollinator_given_antagonist_absent",
+    "antagonist_given_open_pollination",
+    "antagonist_given_supplemented_pollination"
+  ],
+  "mediated_contrasts": [0.1558, 0.16, -0.0982, -0.094],
+  "contrast_standard_errors": [0.07779460135510465, 0.041773197148410844, 0.06226556030423239, 0.06260990336999412],
+  "contrast_covariance": [
+    [0.006052, 0.0, 0.002916, -0.003136],
+    [0.0, 0.001745, -0.000961, 0.000784],
+    [0.002916, -0.000961, 0.003877, 0.0],
+    [-0.003136, 0.000784, 0.0, 0.00392]
+  ],
+  "covariance_source": "linear contrasts of four independent treatment-group beta estimates using reported Table A2 SEs",
+  "effect_size_status": "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION",
+  "q1b_positive_point_pattern": true,
+  "claim_ceiling": "Q1B R-layer factorial selection pattern; not direct BALANCE occupancy or W_S*/W_D*"
+}
