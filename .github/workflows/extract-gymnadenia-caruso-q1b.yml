@@ -11,20 +11,13 @@ permissions:
   contents: read
 
 jobs:
-  extract:
+  provenance:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install spreadsheet reader
-        run: python -m pip install openpyxl
-      - name: Extract focal rows
-        run: python scripts/extract_gymnadenia_from_caruso_dryad.py artifacts/q1b/BALANCE_GYMNADENIA_CARUSO_EXTRACT_V1.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: balance-gymnadenia-caruso-extract
-          path: artifacts/q1b/BALANCE_GYMNADENIA_CARUSO_EXTRACT_V1.json
-          if-no-files-found: error
+      - name: Confirm superseded access path is documented
+        run: |
+          test -f docs/BALANCE_GYMNADENIA_Q1B_EXTRACTION_BLOCKER_V1.md
+          test -f data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json
+          grep -q "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION" data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json
+          echo "Caruso/Dryad byte-download route is provenance-only; direct Ecological Archives Table A2 recovery is canonical."
