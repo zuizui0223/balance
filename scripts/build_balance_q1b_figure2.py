@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build Figure 2: strict Q1B study points, pooled intervals, and specificity controls."""
+"""Build Figure 2: positive-admitted Q1B study points, conditional summaries, and specificity controls."""
 from __future__ import annotations
 
 import csv
@@ -49,7 +49,6 @@ def build_svg() -> str:
     data = _load_points()
     negatives = _negative_summary()
     width, height = 1480, 760
-    panel_w = 290
     plot_w = 250
     panel_x = [70, 420, 770, 1120]
     row_y = {"Fragaria": 205, "Impatiens": 255, "Gymnadenia": 305, "Q1B pooled": 375}
@@ -68,14 +67,13 @@ def build_svg() -> str:
 .note-box {{ fill:#fafafa; stroke:#666; stroke-width:1.4; stroke-dasharray:6 5; }}
 </style>
 <rect class="bg" x="0" y="0" width="{width}" height="{height}"/>
-<text class="title" x="55" y="45">BALANCE Q1B: three independent positive clusters and the first allowed pool</text>
-<text class="small" x="55" y="72">Study points are cluster-level estimates; pooled intervals are modified Knapp–Hartung 95% CIs. Negative controls are shown separately and never enter the positive numerator.</text>''']
+<text class="title" x="55" y="45">BALANCE Q1B: conditional summary of three positive-admitted clusters</text>
+<text class="small" x="55" y="72">Admission required the registered positive conflict pattern; diamonds summarize admitted positives and are not a general-effect meta-analysis. Negative controls remain outside the numerator.</text>''']
 
     for idx, (key, label) in enumerate(CONTRASTS):
         x0 = panel_x[idx]
         plot_left = x0 + 20
         parts.append(f'<text class="panel-title" x="{x0}" y="118">{_esc(label)}</text>')
-        # axis and zero
         y_axis = 425
         parts.append(f'<line class="axis" x1="{plot_left}" y1="{y_axis}" x2="{plot_left+plot_w}" y2="{y_axis}"/>')
         zx = _x(0, plot_left, plot_w)
@@ -98,16 +96,17 @@ def build_svg() -> str:
             else:
                 parts.append(f'<circle class="point" cx="{px}" cy="{py}" r="5"/>')
             if idx == 0:
-                parts.append(f'<text class="label" x="{x0-5}" y="{py+5}" text-anchor="end">{_esc(cluster)}</text>')
+                display = "conditional summary" if cluster == "Q1B pooled" else cluster
+                parts.append(f'<text class="label" x="{x0-5}" y="{py+5}" text-anchor="end">{_esc(display)}</text>')
 
     parts.append('<rect class="note-box" x="55" y="500" width="1370" height="190" rx="14"/>')
-    parts.append('<text class="panel-title" x="78" y="532">Specificity controls kept outside the strict Q1B pool</text>')
+    parts.append('<text class="panel-title" x="78" y="532">Specificity controls kept outside the strict positive-admitted Q1B summary</text>')
     y = 562
     for r in negatives:
         parts.append(f'<text class="label" x="85" y="{y}">{_esc(r["system_taxon"])} — {_esc(r["effect_status"])}: {_esc(r["point_estimates"])}</text>')
         y += 34
-    parts.append('<text class="small" x="85" y="650">Boundary lanes (Ipomopsis sequential filter; Primula discrete morph) and the Gymnadenia 2019 attribution failure are reported in Figure 1 / the reality-boundary readout, not pooled here.</text>')
-    parts.append('<text class="small" x="55" y="735">Claim ceiling: pooled Q1B mediated-selection contrasts only; k=3 does not identify direct BALANCE occupancy, W*S, W*D, ρ, Φ, ξ, or dB.</text>')
+    parts.append('<text class="small" x="85" y="650">Boundary lanes (Ipomopsis sequential filter; Primula discrete morph) and the Gymnadenia 2019 attribution failure are reported in Figure 1 / the reality-boundary readout, not summarized here.</text>')
+    parts.append('<text class="small" x="55" y="735">Claim ceiling: conditional positive-case Q1B summary only; k=3 does not estimate a design-wide mean or identify direct BALANCE occupancy, W*S, W*D, ρ, Φ, ξ, or dB.</text>')
     parts.append('</svg>')
     return "\n".join(parts) + "\n"
 
