@@ -1,0 +1,17 @@
+contrast,entry_type,cluster,estimate,ci_low,ci_high,independent_unit,notes
+pollinator_given_antagonist_present,study,Fragaria,-0.022,,,biological_cluster,reported factorial reconstruction
+pollinator_given_antagonist_present,study,Impatiens,0.12116264349776205,,,biological_cluster,equal-weight mean across both predeclared traits; one cluster
+pollinator_given_antagonist_present,study,Gymnadenia,0.1558,,,biological_cluster,reported Table A2 reconstruction
+pollinator_given_antagonist_present,pooled,Q1B pooled,0.1434792067490525,-0.1675284081123839,0.4544868216104889,three_independent_clusters,DL random effects + modified Knapp-Hartung
+pollinator_given_antagonist_absent,study,Fragaria,0.572,,,biological_cluster,reported factorial reconstruction
+pollinator_given_antagonist_absent,study,Impatiens,-0.20099678659172782,,,biological_cluster,equal-weight mean across both predeclared traits; one cluster
+pollinator_given_antagonist_absent,study,Gymnadenia,0.16,,,biological_cluster,reported Table A2 reconstruction
+pollinator_given_antagonist_absent,pooled,Q1B pooled,0.18604433817039454,-0.6395287251354731,1.0116174014762622,three_independent_clusters,DL random effects + modified Knapp-Hartung
+antagonist_given_open_pollination,study,Fragaria,-0.391,,,biological_cluster,reported factorial reconstruction
+antagonist_given_open_pollination,study,Impatiens,0.23701950827301904,,,biological_cluster,equal-weight mean across both predeclared traits; one cluster
+antagonist_given_open_pollination,study,Gymnadenia,-0.0982,,,biological_cluster,reported Table A2 reconstruction
+antagonist_given_open_pollination,pooled,Q1B pooled,-0.16367146503702873,-0.791036455549903,0.4636935254758456,three_independent_clusters,DL random effects + modified Knapp-Hartung
+antagonist_given_supplemented_pollination,study,Fragaria,0.203,,,biological_cluster,reported factorial reconstruction
+antagonist_given_supplemented_pollination,study,Impatiens,-0.08513992181647081,,,biological_cluster,equal-weight mean across both predeclared traits; one cluster
+antagonist_given_supplemented_pollination,study,Gymnadenia,-0.094,,,biological_cluster,reported Table A2 reconstruction
+antagonist_given_supplemented_pollination,pooled,Q1B pooled,-0.08545729283612667,-0.33104227887843146,0.1601276932061781,three_independent_clusters,DL random effects + modified Knapp-Hartung
