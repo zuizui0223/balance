@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="850" viewBox="0 0 1500 850">
+<style>
+  .bg { fill: #ffffff; }
+  .theory { fill: #f2f2f2; stroke: #222; stroke-width: 2; }
+  .empirical { fill: #ffffff; stroke: #222; stroke-width: 2; }
+  .boundary { fill: #fafafa; stroke: #666; stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .gap { fill: #ffffff; stroke: #111; stroke-width: 2.5; stroke-dasharray: 10 6; }
+  .title { font: 700 27px sans-serif; fill: #111; }
+  .lane-title { font: 700 18px sans-serif; fill: #333; letter-spacing: 1px; }
+  .box-title { font: 700 18px sans-serif; fill: #111; }
+  .box-text { font: 15px sans-serif; fill: #222; }
+  .small { font: 13px sans-serif; fill: #444; }
+  .arrow { stroke: #222; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+  .thin-arrow { stroke: #666; stroke-width: 1.5; fill: none; marker-end: url(#arrowSmall); }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#222"/></marker>
+  <marker id="arrowSmall" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#666"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1500" height="850"/>
+<text class="title" x="60" y="52">BALANCE: theory → reality-pattern recovery → remaining identification gap</text>
+<text class="lane-title" x="60" y="105">THEORY</text>
+<text class="lane-title" x="60" y="405">EMPIRICAL RECOVERY</text>
+<rect class="theory" x="160" y="125" width="335" height="175" rx="14"/>
+<text class="box-title" x="178" y="155">1  Conflict active</text>
+<text class="box-text" x="178" y="183">Shared coordinate serves ≥2 functions</text>
+<text class="box-text" x="178" y="206">Opposing demands create L &gt; 0</text>
+<text class="box-text" x="178" y="229">Conflict is prerequisite, not BALANCE itself</text>
+<rect class="theory" x="590" y="125" width="335" height="175" rx="14"/>
+<text class="box-title" x="608" y="155">2  Sandwiched regime</text>
+<text class="box-text" x="608" y="183">Conflict remains active</text>
+<text class="box-text" x="608" y="206">Shared / integrated state persists</text>
+<text class="box-text" x="608" y="229">ρ = W*S − W*D &gt; 0 defines occupancy</text>
+<rect class="theory" x="1020" y="125" width="335" height="175" rx="14"/>
+<text class="box-title" x="1038" y="155">3  Boundary / differentiation</text>
+<text class="box-text" x="1038" y="183">Context shifts relative worldlines</text>
+<text class="box-text" x="1038" y="206">ρ approaches or crosses 0</text>
+<text class="box-text" x="1038" y="229">Differentiation becomes favoured</text>
+<path class="arrow" d="M495 212 L575 212"/>
+<path class="arrow" d="M925 212 L1005 212"/>
+<rect class="empirical" x="160" y="435" width="335" height="205" rx="14"/>
+<text class="box-title" x="178" y="465">R1  Q1B conflict layer</text>
+<text class="box-text" x="178" y="493">strict positives = 3</text>
+<text class="box-text" x="178" y="516">design-matched negatives = 2</text>
+<text class="box-text" x="178" y="539">recurrence = 3 independent positives</text>
+<text class="box-text" x="178" y="562">pool = conditional positive-case summary</text>
+<rect class="empirical" x="590" y="435" width="335" height="205" rx="14"/>
+<text class="box-title" x="608" y="465">R2–R3  Persistence geometry</text>
+<text class="box-text" x="608" y="493">pattern-ledger clusters = 17</text>
+<text class="box-text" x="608" y="516">middle-regime signatures = 9</text>
+<text class="box-text" x="608" y="539">conflict-without-splitting = 7</text>
+<text class="box-text" x="608" y="562">boundary-crossing clusters = 2</text>
+<rect class="gap" x="1020" y="435" width="335" height="205" rx="14"/>
+<text class="box-title" x="1038" y="465">R4  Direct worldline reserve</text>
+<text class="box-text" x="1038" y="493">0 direct matched receipts</text>
+<text class="box-text" x="1038" y="516">status = NOT_IDENTIFIED</text>
+<text class="box-text" x="1038" y="539">W*S, W*D, ρ, Φ, ξ, dB not identified</text>
+<text class="box-text" x="1038" y="562">final-stage empirical target</text>
+<path class="arrow" d="M495 537 L575 537"/>
+<path class="arrow" d="M925 537 L1005 537"/>
+<path class="thin-arrow" d="M327 300 L327 420"/>
+<path class="thin-arrow" d="M757 300 L757 420"/>
+<path class="thin-arrow" d="M1187 300 L1187 420"/>
+<rect class="boundary" x="160" y="690" width="765" height="105" rx="14"/>
+<text class="box-title" x="178" y="720">Application boundaries retained outside strict Q1B</text>
+<text class="box-text" x="178" y="748">estimand boundaries = 2  |  attribution failures = 1</text>
+<text class="box-text" x="178" y="771">Sequential-filter, discrete-morph, and attribution-failure cases constrain applicability rather than inflate k.</text>
+<rect class="boundary" x="1020" y="690" width="335" height="105" rx="14"/>
+<text class="box-title" x="1038" y="720">Claim ceiling</text>
+<text class="box-text" x="1038" y="748">Pattern recurrence ≠ natural prevalence</text>
+<text class="box-text" x="1038" y="771">Q1B pool ≠ design-wide mean or BALANCE occupancy</text>
+<text class="small" x="60" y="830">Frozen conditional positive-case summary: k=3; moderator meta-regression prohibited until k≥5 with ≥2 clusters per represented level.</text>
+</svg>

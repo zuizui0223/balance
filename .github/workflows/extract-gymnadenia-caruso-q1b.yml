@@ -1,0 +1,23 @@
+name: Extract Gymnadenia Caruso Q1B source
+
+on:
+  pull_request:
+    paths:
+      - "scripts/extract_gymnadenia_from_caruso_dryad.py"
+      - ".github/workflows/extract-gymnadenia-caruso-q1b.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm superseded access path is documented
+        run: |
+          test -f docs/BALANCE_GYMNADENIA_Q1B_EXTRACTION_BLOCKER_V1.md
+          test -f data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json
+          grep -q "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION" data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json
+          echo "Caruso/Dryad byte-download route is provenance-only; direct Ecological Archives Table A2 recovery is canonical."

@@ -1,0 +1,9 @@
+# Figure 2 caption — strict Q1B quantitative synthesis
+
+**Figure 2. Conditional quantitative summary of three positive-admitted Q1B systems.**
+
+Each panel shows one of the four preregistered context-specific Q1B contrasts. Filled points are the three independent biological clusters that satisfied the frozen positive Q1B admission rule (*Fragaria vesca*, *Impatiens capensis*, and *Gymnadenia conopsea*). *Impatiens* is represented once at the biological-cluster level by the equal-weight mean across both predeclared traits; the two traits are not counted as independent replications. Open diamonds and horizontal lines show the componentwise DerSimonian–Laird random-effects summary and modified Knapp–Hartung 95% interval **conditional on positive admission**. Because the focal conflict pattern was part of the admission rule, these diamonds do not estimate an unbiased general mean across all design-eligible systems and their sign is not an independent test of recurrence. At `k = 3`, all conditional pooled intervals include zero and two contrasts show moderate heterogeneity.
+
+The lower box retains design-matched specificity controls outside the strict positive numerator. *Trifolium repens* does not show the required independent same-trait opposition, and *Lythrum salicaria* shows null or near-null pollinator-mediated selection and no diffuse same-trait conflict despite a comparable factorial design. Recurrence is supported by the three independent admitted positives; specificity is constrained by these negative controls. Sequential-filter, discrete-morph, and antagonist-attribution boundary cases are excluded from the conditional quantitative summary and are summarized in Figure 1 / the reality-boundary readout.
+
+The figure reports Q1B mediated-selection contrasts only. It does not identify direct BALANCE occupancy or the matched shared-versus-differentiated worldline quantities `W_S*`, `W_D*`, `rho`, `Phi`, `xi`, or `d_B`.

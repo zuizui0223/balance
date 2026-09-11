@@ -1,0 +1,16 @@
+{
+  "analysis": "BALANCE_Q1B_FIRST_ALLOWED_POOL_V1",
+  "pool_gate": "OPEN_3_OF_3_EFFECT_SIZE_READY_POSITIVE_CLUSTERS",
+  "independent_clusters": 3,
+  "cluster_names": ["Fragaria", "Impatiens", "Gymnadenia"],
+  "method": "componentwise DerSimonian-Laird random effects with modified Knapp-Hartung t(df=2) intervals; full within-study covariance retained but not used to estimate an underidentified 4x4 between-study covariance with k=3",
+  "contrast_order": ["pollinator_given_antagonist_present", "pollinator_given_antagonist_absent", "antagonist_given_open_pollination", "antagonist_given_supplemented_pollination"],
+  "pooled": {
+    "pollinator_given_antagonist_present": {"k":3,"mu_random":0.1434792067490525,"se_mkh":0.0722827600515763,"ci95_mkh":[-0.1675284081123839,0.4544868216104889],"tau2_DL":0.0,"Q_fixed":0.3107933925025631,"I2_percent":0.0,"mu_fixed":0.1434792067490525},
+    "pollinator_given_antagonist_absent": {"k":3,"mu_random":0.18604433817039454,"se_mkh":0.1918753650664463,"ci95_mkh":[-0.6395287251354731,1.0116174014762622],"tau2_DL":0.049910900992997546,"Q_fixed":5.358900285482757,"I2_percent":62.678909973040675,"mu_fixed":0.16444596158758598},
+    "antagonist_given_open_pollination": {"k":3,"mu_random":-0.16367146503702873,"se_mkh":0.14580888347124665,"ci95_mkh":[-0.791036455549903,0.4636935254758456],"tau2_DL":0.032448353400247,"Q_fixed":5.834854234373123,"I2_percent":65.7232225576776,"mu_fixed":-0.1450488472600614},
+    "antagonist_given_supplemented_pollination": {"k":3,"mu_random":-0.08545729283612667,"se_mkh":0.0570775755001192,"ci95_mkh":[-0.33104227887843146,0.1601276932061781],"tau2_DL":0.0,"Q_fixed":0.6431857958794849,"I2_percent":0.0,"mu_fixed":-0.08545729283612667}
+  },
+  "claim_ceiling": "pooled Q1B mediated-selection contrasts only; does not identify direct BALANCE occupancy, W_S*, W_D*, rho, Phi, xi, or d_B",
+  "prohibited": "do not count Impatiens traits as independent clusters; do not infer full multivariate between-study covariance from k=3"
+}

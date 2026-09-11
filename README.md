@@ -241,3 +241,11 @@ Implemented with regression guards:
 - explicit functional-state versus structural-architecture claim ceiling.
 
 The main empirical target is now a matched same-context chain in `Pedicularis rex`: positive SCH conflict receipt → direct functional-state BALANCE worldline comparison → BITA dimensional-release/mechanism analysis → optional structural-architecture promotion. `Peucedanum` remains an observational critical-region anchor rather than a direct BALANCE worldline receipt.
+
+## Literature-synthesis milestone
+
+The manuscript programme now places literature-pattern recovery before the final focal experiment. The source-adjudicated pattern ledger contains 17 independent biological clusters, including 9 middle-regime signatures. A strict Q1B quantitative layer has three independent effect-size-ready positive-admitted systems (`Fragaria vesca`, `Impatiens capensis`, and `Gymnadenia conopsea` 2015), alongside two design-matched negative controls and explicit estimand/attribution boundaries.
+
+Because positive Q1B admission requires the preregistered same-coordinate conflict pattern, the three-cluster random-effects result is interpreted as a **conditional positive-case summary of magnitude and heterogeneity**. It is not an unbiased design-wide meta-analytic mean and its sign is not an independent test of recurrence. Recurrence is supported by recovery of the registered pattern in three independent biological systems; the matched negative controls show that comparable factorial designs do not inevitably produce the pattern.
+
+The literature synthesis still has zero matched direct shared-versus-differentiated worldline receipts. Therefore the final experimental task remains the same-context, common-fitness-scale comparison of `W_S*` and `W_D*` with joint uncertainty. The focal experiment stays last: it targets the quantity that remains structurally unidentified after theory and literature synthesis.

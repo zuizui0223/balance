@@ -11,14 +11,18 @@ def _rows():
         return list(csv.DictReader(handle))
 
 
-def test_all_quantitative_strata_remain_below_pooling_gate():
+def test_exactly_q1b_has_opened_the_pooling_gate():
     rows = _rows()
     assert len(rows) == 6
-    assert all(row["pooling_status"].startswith("NOT_READY") for row in rows)
-    assert all(
-        int(row["effect_size_ready_clusters"]) < int(row["min_independent_clusters"])
-        for row in rows
-    )
+    open_rows = [row for row in rows if row["pooling_status"].startswith("POOLING_OPEN")]
+    assert [row["stratum_id"] for row in open_rows] == ["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
+    for row in rows:
+        ready = int(row["effect_size_ready_clusters"])
+        minimum = int(row["min_independent_clusters"])
+        if row["stratum_id"] == "DIFFUSE_FACTORIAL_AGENT_SELECTION":
+            assert ready == minimum == 3
+        else:
+            assert ready < minimum
 
 
 def test_simple_opposing_floral_selection_keeps_four_candidates_and_zero_ready_effects():
@@ -32,34 +36,34 @@ def test_simple_opposing_floral_selection_keeps_four_candidates_and_zero_ready_e
     assert "assume_covariance_zero" in floral["prohibited_pooling"]
     assert "mix_path_coefficients" in floral["prohibited_pooling"]
     assert "count_populations_as_independent_studies" in floral["prohibited_pooling"]
-    assert "Gymnadenia_factorial_contrast_covariance" in floral["next_gate"]
+    assert "Dalechampia_Castilleja_Pedicularis" in floral["next_gate"]
 
 
-def test_diffuse_factorial_stratum_has_one_ready_positive_and_two_controls_but_is_not_pool_ready():
+def test_diffuse_factorial_stratum_has_three_ready_positives_and_pool_is_open():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
-    assert diffuse["registered_pattern_candidates"] == "1"
-    assert diffuse["reanalysis_candidates"] == "2"
-    assert diffuse["effect_size_ready_clusters"] == "1"
+    assert diffuse["registered_pattern_candidates"] == "3"
+    assert diffuse["reanalysis_candidates"] == "3"
+    assert diffuse["effect_size_ready_clusters"] == "3"
     assert diffuse["min_independent_clusters"] == "3"
-    assert diffuse["pooling_status"] == "NOT_READY_ONLY_ONE_EFFECT_READY_POSITIVE_CLUSTER"
+    assert diffuse["pooling_status"] == "POOLING_OPEN_FIRST_THREE_CLUSTER_POOL_FROZEN"
     assert "context_specific_agent_contrast_vector" in diffuse["estimand"]
     assert "reported_factorial_sufficient_statistics" in diffuse["variance_requirement"]
     assert "cherry_pick_one_context_pair" in diffuse["prohibited_pooling"]
     assert "treat_context_specific_contrasts_as_independent" in diffuse["prohibited_pooling"]
     assert "assume_zero_covariance" in diffuse["prohibited_pooling"]
-    assert "Fragaria_reported_covariance_receipt" in diffuse["next_gate"]
-    assert "Trifolium_and_Lythrum_as_negative_controls" in diffuse["next_gate"]
-    assert "two_independent_positive_factorial_replications" in diffuse["next_gate"]
+    assert "count_multiple_traits_within_one_cluster_as_independent" in diffuse["prohibited_pooling"]
+    assert "Fragaria_Impatiens_Gymnadenia" in diffuse["next_gate"]
+    assert "expand_independent_replication" in diffuse["next_gate"]
 
 
-def test_negative_controls_are_separate_from_fragaria_ready_numerator():
+def test_negative_controls_and_within_cluster_traits_do_not_inflate_numerator():
     rows = {row["stratum_id"]: row for row in _rows()}
     diffuse = rows["DIFFUSE_FACTORIAL_AGENT_SELECTION"]
-    assert int(diffuse["registered_pattern_candidates"]) == 1
-    assert int(diffuse["reanalysis_candidates"]) == 2
-    assert int(diffuse["effect_size_ready_clusters"]) == 1
-    assert int(diffuse["effect_size_ready_clusters"]) < int(diffuse["min_independent_clusters"])
+    assert int(diffuse["registered_pattern_candidates"]) == 3
+    assert int(diffuse["effect_size_ready_clusters"]) == 3
+    assert int(diffuse["effect_size_ready_clusters"]) == int(diffuse["min_independent_clusters"])
+    assert "count_multiple_traits_within_one_cluster_as_independent" in diffuse["prohibited_pooling"]
 
 
 def test_discrete_morph_stratum_keeps_primula_out_of_continuous_beta_pooling():

@@ -1,0 +1,28 @@
+name: Probe ESA Gymnadenia supplement
+
+on:
+  pull_request:
+    paths:
+      - "scripts/probe_esa_gymnadenia_archive.py"
+      - ".github/workflows/probe-esa-gymnadenia.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Probe archive endpoints
+        run: python scripts/probe_esa_gymnadenia_archive.py artifacts/q1b/esa_gymnadenia
+      - uses: actions/upload-artifact@v4
+        with:
+          name: balance-esa-gymnadenia-probe
+          path: artifacts/q1b/esa_gymnadenia
+          if-no-files-found: error
