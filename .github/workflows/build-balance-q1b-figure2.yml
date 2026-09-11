@@ -28,10 +28,11 @@ jobs:
           python-version: "3.11"
       - name: Build Figure 2
         run: python scripts/build_balance_q1b_figure2.py artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
-      - name: Verify strict numerator and specificity-control separation
+      - name: Verify conditional positive numerator and specificity-control separation
         run: |
-          grep -q "three independent positive clusters" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
-          grep -q "Specificity controls kept outside the strict Q1B pool" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          grep -q "conditional summary of three positive-admitted clusters" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          grep -q "not a general-effect meta-analysis" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          grep -q "Specificity controls kept outside the strict positive-admitted Q1B summary" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
           grep -q "Trifolium repens" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
           grep -q "Lythrum salicaria" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
       - name: Verify committed Figure 2 is regenerated exactly
