@@ -9,9 +9,15 @@ on:
       - "docs/BALANCE_EMPIRICAL_METHODS_MANUSCRIPT_TEXT_V1.md"
       - "docs/BALANCE_RESULTS_MANUSCRIPT_TEXT_V1.md"
       - "docs/BALANCE_DISCUSSION_SPINE_V1.md"
+      - "docs/BALANCE_FIGURE1_CAPTION_V1.md"
+      - "docs/BALANCE_FIGURE2_CAPTION_V1.md"
+      - "docs/BALANCE_FIGURE3_CAPTION_V1.md"
+      - "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv"
+      - "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv"
       - "manuscript/BALANCE_CANONICAL_MANUSCRIPT_MANIFEST_V1.json"
       - "scripts/assemble_balance_manuscript.py"
       - "tests/test_balance_manuscript_assembly.py"
+      - "tests/test_balance_canonical_manifest.py"
       - ".github/workflows/assemble-balance-manuscript.yml"
   workflow_dispatch:
 
@@ -28,20 +34,26 @@ jobs:
           python-version: "3.11"
       - name: Assemble canonical manuscript
         run: python scripts/assemble_balance_manuscript.py artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
-      - name: Verify manuscript ordering and claim ceiling
+      - name: Verify manuscript ordering, figures, captions and claim ceiling
         run: |
           grep -q "## Introduction" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "## Theory" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "## Empirical synthesis methods" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "## Results" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "## Discussion" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "## Figure captions" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "### Figure 1" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "### Figure 2" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "### Figure 3" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "direct-worldline reserve therefore remains empty" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
       - name: Verify frozen canonical digest and size
         run: |
-          echo "5c091c9bb2a46015b584478c9b1e0916e683a567fda7189ba86023616c670516  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
-          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 6100
-          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 434
+          echo "433d5f929fe5b1cf64f0ea193598de6b9b9e9056809679d74daf60f0e58618df  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
+          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 6735
+          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 465
       - uses: actions/upload-artifact@v4
         with:
           name: balance-canonical-manuscript
