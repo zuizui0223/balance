@@ -1,0 +1,37 @@
+name: Build BALANCE flagship figure
+
+on:
+  pull_request:
+    paths:
+      - "scripts/build_balance_theory_empirical_figure.py"
+      - "data/BALANCE_PATTERN_READOUT_V1.json"
+      - "data/BALANCE_REALITY_BOUNDARY_READOUT_V1.csv"
+      - "data/BALANCE_Q1B_FIRST_POOL_V1.json"
+      - "data/BALANCE_THEORY_EMPIRICAL_LAYER_MAP_V1.csv"
+      - "tests/test_balance_theory_empirical_figure.py"
+      - ".github/workflows/build-balance-flagship-figure.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build figure
+        run: python scripts/build_balance_theory_empirical_figure.py artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
+      - name: Verify key figure contracts
+        run: |
+          grep -q "strict positives = 3" artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
+          grep -q "pattern-ledger clusters = 17" artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
+          grep -q "0 direct matched receipts" artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: balance-flagship-figure
+          path: artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
+          if-no-files-found: error
