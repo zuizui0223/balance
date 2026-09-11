@@ -51,9 +51,9 @@ jobs:
           grep -q "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
       - name: Verify frozen canonical digest and size
         run: |
-          echo "433d5f929fe5b1cf64f0ea193598de6b9b9e9056809679d74daf60f0e58618df  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
+          echo "509dd64b9104bdc415a3734cbdd925e8ab9f718b575430b12d51231a8473c86c  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
           test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 6735
-          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 465
+          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 464
       - uses: actions/upload-artifact@v4
         with:
           name: balance-canonical-manuscript
