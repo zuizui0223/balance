@@ -2,7 +2,7 @@
 
 ## R1. Conflict-compatible shared-coordinate patterns recur, but are not inevitable
 
-The strict Q1B layer contains three independent effect-size-ready positive biological clusters (Fragaria vesca, Impatiens capensis, Gymnadenia conopsea 2015). The first allowed componentwise random-effects pool preserves the registered four-context contrast vector. Point estimates are directionally compatible with pollinator-favouring versus antagonist-opposing selection, but all modified Knapp-Hartung 95% intervals include zero at k=3. Two components show moderate heterogeneity (~63-66% I2). The inference is replicated directionally compatible conflict with context dependence, not a universal non-zero mean effect.
+The strict Q1B layer contains three independent effect-size-ready positive biological clusters (Fragaria vesca, Impatiens capensis, Gymnadenia conopsea 2015). Recovery of the preregistered positive conflict pattern in these three independent systems supports recurrence. The first allowed componentwise random-effects summary preserves the registered four-context contrast vector, but because positive admission used the focal conflict pattern, it is interpreted only as a conditional description of magnitude and heterogeneity among admitted positives. It is not an unbiased design-wide mean and its sign is not an independent recurrence test. All modified Knapp-Hartung 95% intervals include zero at k=3, and two components show moderate heterogeneity (~63-66% I2).
 
 Design-matched negative controls (Trifolium repens, Lythrum salicaria) show that comparable factorial designs do not inevitably produce same-trait opposition. These controls constrain the domain of the mechanism rather than counting as failed positives.
 
@@ -24,7 +24,7 @@ No current literature receipt directly compares an optimized shared architecture
 
 The empirical synthesis therefore has four nested levels:
 
-1. strict quantitative conflict recurrence (Q1B positives);
+1. strict conflict-pattern recurrence across three independent Q1B positives, with a conditional positive-case magnitude/heterogeneity summary;
 2. specificity controls and estimand/attribution boundaries;
 3. broader persistence-geometry recurrence in the pattern ledger;
 4. a still-empty direct worldline reserve.
