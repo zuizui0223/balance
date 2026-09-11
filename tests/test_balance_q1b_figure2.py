@@ -60,7 +60,7 @@ def test_study_points_match_frozen_receipts_without_inflating_impatiens_traits()
         assert rows[(contrast, "Impatiens")]["independent_unit"] == "biological_cluster"
 
 
-def test_figure2_script_keeps_negative_controls_outside_positive_points():
+def test_figure2_labels_pool_as_conditional_and_keeps_negative_controls_outside_positive_points():
     from importlib.util import module_from_spec, spec_from_file_location
 
     script = ROOT / "scripts" / "build_balance_q1b_figure2.py"
@@ -69,7 +69,11 @@ def test_figure2_script_keeps_negative_controls_outside_positive_points():
     assert spec.loader is not None
     spec.loader.exec_module(mod)
     svg = mod.build_svg()
-    assert "Specificity controls kept outside the strict Q1B pool" in svg
+    assert "conditional summary of three positive-admitted clusters" in svg
+    assert "not a general-effect meta-analysis" in svg
+    assert "conditional summary" in svg
+    assert "Specificity controls kept outside the strict positive-admitted Q1B summary" in svg
     assert "Trifolium repens" in svg
     assert "Lythrum salicaria" in svg
-    assert "k=3 does not identify direct BALANCE occupancy" in svg
+    assert "does not estimate a design-wide mean" in svg
+    assert "direct BALANCE occupancy" in svg
