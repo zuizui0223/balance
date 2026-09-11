@@ -9,11 +9,13 @@ def _text():
     return RESULTS.read_text(encoding="utf-8")
 
 
-def test_results_reports_frozen_q1b_pool_without_universal_mean_claim():
+def test_results_reports_q1b_recurrence_and_conditional_pool_without_general_mean_claim():
     text = _text()
     assert "three independent biological systems" in text
-    assert "all four pooled confidence intervals included zero" in text
-    assert "rather than a universal non-zero mean effect" in text
+    assert "conditional summaries of effect magnitude and heterogeneity among admitted positives" in text
+    assert "not an unbiased meta-analytic estimate across all design-eligible factorial systems" in text
+    assert "all four conditional pooled confidence intervals included zero" in text
+    assert "evidence that the conflict pattern recurs comes from recovery of the registered positive pattern in three independent biological clusters" in text
     assert "I2 = 62.7%" in text
     assert "I2 = 65.7%" in text
 
