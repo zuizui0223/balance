@@ -8,6 +8,7 @@ on:
       - "data/BALANCE_REALITY_BOUNDARY_READOUT_V1.csv"
       - "data/BALANCE_Q1B_FIRST_POOL_V1.json"
       - "data/BALANCE_THEORY_EMPIRICAL_LAYER_MAP_V1.csv"
+      - "figures/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg"
       - "tests/test_balance_theory_empirical_figure.py"
       - ".github/workflows/build-balance-flagship-figure.yml"
   workflow_dispatch:
@@ -30,6 +31,8 @@ jobs:
           grep -q "strict positives = 3" artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
           grep -q "pattern-ledger clusters = 17" artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
           grep -q "0 direct matched receipts" artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
+      - name: Verify committed figure is regenerated exactly
+        run: diff -u figures/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg artifacts/flagship/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg
       - uses: actions/upload-artifact@v4
         with:
           name: balance-flagship-figure
