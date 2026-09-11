@@ -6,6 +6,7 @@ on:
       - "scripts/build_balance_pattern_map_figure3.py"
       - "data/BALANCE_PATTERN_LEDGER_V1.csv"
       - "data/BALANCE_PATTERN_READOUT_V1.json"
+      - "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg"
       - "tests/test_balance_pattern_map_figure3.py"
       - ".github/workflows/build-balance-pattern-map-figure3.yml"
   workflow_dispatch:
@@ -28,6 +29,8 @@ jobs:
           grep -q "17 independent clusters; 9 middle-regime signatures" artifacts/figure3/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg
           grep -q "recurrence map, not an estimate of natural prevalence" artifacts/figure3/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg
           grep -q "do not estimate natural prevalence or direct BALANCE occupancy" artifacts/figure3/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg
+      - name: Verify committed Figure 3 is regenerated exactly
+        run: diff -u figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg artifacts/figure3/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg
       - uses: actions/upload-artifact@v4
         with:
           name: balance-reality-pattern-figure3
