@@ -57,4 +57,4 @@ def test_manuscript_exposes_all_three_current_figures():
     text = _module().build_manuscript()
     assert "BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg" in text
     assert "BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg" in text
-    assert "build_balance_pattern_map_figure3.py" in text
+    assert "BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg" in text
