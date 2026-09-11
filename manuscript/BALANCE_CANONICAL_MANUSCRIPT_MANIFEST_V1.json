@@ -1,0 +1,50 @@
+{
+  "canonical_manuscript": "BALANCE_MANUSCRIPT_V1.md",
+  "title": "Why conflict persists: a theory and evidence synthesis of the sandwiched regime between integration and differentiation",
+  "assembly_script": "scripts/assemble_balance_manuscript.py",
+  "expected_sha256": "5c091c9bb2a46015b584478c9b1e0916e683a567fda7189ba86023616c670516",
+  "expected_word_count": 6100,
+  "expected_line_count": 434,
+  "section_order": [
+    "Abstract",
+    "Introduction",
+    "Theory",
+    "Empirical synthesis methods",
+    "Results",
+    "Discussion"
+  ],
+  "section_sources": {
+    "Abstract": {
+      "path": "docs/BALANCE_ABSTRACT_V1.md",
+      "blob_sha": "bff5591ebdb6019fa01733d0f001a814b1d46ab5"
+    },
+    "Introduction": {
+      "path": "docs/BALANCE_INTRODUCTION_MANUSCRIPT_TEXT_V1.md",
+      "blob_sha": "ba93fc4537a304d54f32329d1887aecb4bcc7b2f"
+    },
+    "Theory": {
+      "path": "docs/BALANCE_THEORY_MANUSCRIPT_TEXT_V1.md",
+      "blob_sha": "4436b39a46dca0de26999c174b673a4e17f97299"
+    },
+    "Empirical synthesis methods": {
+      "path": "docs/BALANCE_EMPIRICAL_METHODS_MANUSCRIPT_TEXT_V1.md",
+      "blob_sha": "c2c961bfd2f9b1a183ed468163db546be28f7e7d"
+    },
+    "Results": {
+      "path": "docs/BALANCE_RESULTS_MANUSCRIPT_TEXT_V1.md",
+      "blob_sha": "2438368f6350dd01462adcf2923c7b306c0acf94"
+    },
+    "Discussion": {
+      "path": "docs/BALANCE_DISCUSSION_SPINE_V1.md",
+      "blob_sha": "ec59d5556636f3f0db29f62b89a47ee2b195ffa5"
+    }
+  },
+  "figure_set": [
+    "figures/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg",
+    "figures/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg",
+    "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg"
+  ],
+  "claim_ceiling": "theory_plus_literature_pattern_synthesis_not_direct_BALANCE_worldline_occupancy",
+  "direct_worldline_status": "0_direct_matched_receipts",
+  "final_empirical_layer": "same_context_common_fitness_scale_shared_vs_differentiated_worldline_validation"
+}
