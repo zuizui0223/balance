@@ -51,16 +51,16 @@ jobs:
           grep -q "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
-      - name: Report candidate canonical digest and size
+      - name: Report canonical digest and size
         run: |
           sha256sum artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           wc -w artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           wc -l artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
       - name: Verify frozen canonical digest and size
         run: |
-          echo "509dd64b9104bdc415a3734cbdd925e8ab9f718b575430b12d51231a8473c86c  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
-          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 6735
-          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 464
+          echo "ed0fede4ad71c48dbe3422b5cf72c2e46b9cf1192a1f89a7395de81943cc81cf  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
+          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 7336
+          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 470
       - uses: actions/upload-artifact@v4
         with:
           name: balance-canonical-manuscript
