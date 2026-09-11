@@ -45,10 +45,17 @@ jobs:
           grep -q "### Figure 1" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "### Figure 2" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "### Figure 3" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "conditional on positive admission" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "not an unbiased" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "direct-worldline reserve therefore remains empty" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+      - name: Report candidate canonical digest and size
+        run: |
+          sha256sum artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          wc -w artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          wc -l artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
       - name: Verify frozen canonical digest and size
         run: |
           echo "509dd64b9104bdc415a3734cbdd925e8ab9f718b575430b12d51231a8473c86c  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
