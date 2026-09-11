@@ -1,0 +1,41 @@
+# BALANCE manuscript Introduction text v1
+
+Biological traits commonly contribute to more than one function. When those functions favour different states of the same trait coordinate, the resulting conflict creates a compromise problem: improving performance for one function can move the phenotype away from the state preferred by another. A natural expectation is that such conflict should favour functional differentiation, because additional trait dimensions can allow formerly coupled functions to move toward separate optima. Yet differentiation is not free. New structural or regulatory dimensions can carry maintenance costs, developmental constraints, coordination losses, or accessibility limits. The existence of conflict therefore does not by itself determine whether a shared architecture should persist or split.
+
+This distinction creates a missing middle between theories of compromise and theories of differentiation. One class of theory asks where a shared coordinate settles when functions impose incompatible demands. Another asks when the gain from additional dimensionality exceeds the cost of creating or maintaining it. Between those endpoints lies a biologically important regime in which conflict is already real, but differentiation still does not pay. We call this intermediate state **BALANCE**: a conflict-active persistence domain in which the shared architecture remains favoured over the best currently accessible differentiated alternative.
+
+The distinction can be stated directly on a common fitness scale. Let `L>0` denote a genuine shared-axis conflict or compromise load. Let `W_S*` be the optimized fitness of the shared architecture and `W_D*` the optimized fitness of a registered differentiated-accessible alternative in the same context. A direct BALANCE receipt requires
+
+```text
+L > 0
+and
+W_D* - W_S* < 0.
+```
+
+Equivalently, under the decomposition used to connect the sister theories, let `s` be the fraction of conflict loss recoverable by extra dimensionality, `R=sL` the recoverable benefit, and `K` the added architecture cost. Then
+
+```text
+Phi = R-K = sL-K,
+```
+
+and the BALANCE domain is exactly
+
+```text
+L > 0
+and
+Phi < 0.
+```
+
+This formulation makes BALANCE a sandwiched regime rather than a third unrelated architecture model. The SCH-facing boundary is loss of conflict (`L=0`); the BITA-facing boundary is the architecture crossing (`Phi=0`, equivalently `W_D*=W_S*` on a concordant common fitness scale). Inside the middle world, conflict persists while the shared architecture still outranks the differentiated-accessible alternative.
+
+The middle-world formulation yields questions that are not answered by either boundary alone. How deep can a system sit inside the persistence domain? How broad is that domain across environmental contexts? Can a system leave and later re-enter it? How do accessibility and multiple alternatives alter the boundary? Can switching costs create path dependence around the static crossing? These questions concern the geometry, robustness, topology, and persistence of the conflict-active region itself rather than merely the existence of conflict or the eventual success of differentiation.
+
+A theory of persistence under conflict also changes what should count as empirical evidence. Observing opposed selection on one trait is not sufficient to establish BALANCE, because conflict is only the prerequisite. Observing a differentiated architecture is likewise insufficient, because it may represent a system already beyond the BALANCE boundary. The strongest direct evidence would compare optimized shared and differentiated-accessible worldlines on the same fitness scale and context while independently confirming that conflict is active. Such measurements are rare in existing studies. Requiring them at the outset, however, would make the general theory depend on one specially designed focal experiment before asking whether its predicted signatures recur in natural systems.
+
+We therefore separate **reality-pattern recovery** from **direct worldline identification**. After establishing the mathematical mechanism, we first ask whether the literature repeatedly contains the observable signatures expected near or inside the sandwiched regime. These include conflict without splitting, persistent integration despite an available alternative, transition mosaics, and boundary-crossing cases. We also retain design-matched negative controls, alternative estimands, and attribution failures rather than treating all superficially similar studies as positive evidence. Quantitative pooling is allowed only within compatible effect-size lanes with identified uncertainty; broader pattern recurrence is analysed at the level of independent biological clusters rather than papers, sites, traits, or years.
+
+This ordering produces two deliberately different empirical claims. The first concerns recurrence: do conflict-compatible and persistence signatures repeatedly occur across independent systems and domains? The second concerns identification: do existing studies directly establish the worldline inequality that defines BALANCE? The literature can support the former even if it cannot yet support the latter. Treating those claims separately prevents pattern recurrence from being overinterpreted as direct measurement of `W_S*`, `W_D*`, `rho`, `Phi`, `xi`, or `d_B`.
+
+Here we combine the middle-world theory with a source-adjudicated literature synthesis. We first establish BALANCE as the finite intersection of active conflict and negative differentiation payoff, derive its static and context-dependent geometry, and distinguish direct worldline identification from the decomposed `sL-K` route. We then translate those theoretical objects into literature-observable signatures. A strict quantitative lane tests whether opposing agent-mediated selection recurs on a shared coordinate under compatible factorial designs, while matched negative controls and boundary cases delimit the domain of the mechanism. A broader pattern ledger asks whether middle-regime persistence geometries recur across biological domains. Finally, we audit what the literature still does not identify.
+
+This strategy places the focal experiment last rather than first. If the literature recovers recurring prerequisite and persistence patterns but systematically lacks matched shared-versus-differentiated worldlines, then the remaining experimental target is no longer vague: it is the direct same-context comparison required to estimate strict BALANCE occupancy. In this way, theory first defines the mechanism, literature synthesis tests whether its signatures recur in reality, and focal validation is reserved for the specific quantities that remain structurally unidentified.
