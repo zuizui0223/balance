@@ -94,7 +94,7 @@ def build_svg() -> str:
     parts.append('<path class="arrow" d="M495 212 L575 212"/>')
     parts.append('<path class="arrow" d="M925 212 L1005 212"/>')
 
-    parts.append(_box(160, 435, 335, 205, "R1  Q1B conflict layer", [f"strict positives = {strict}", f"design-matched negatives = {negative}", "first random-effects pool completed", "all 95% CIs include 0 at k=3"], "empirical"))
+    parts.append(_box(160, 435, 335, 205, "R1  Q1B conflict layer", [f"strict positives = {strict}", f"design-matched negatives = {negative}", "recurrence = 3 independent positives", "pool = conditional positive-case summary"], "empirical"))
     parts.append(_box(590, 435, 335, 205, "R2–R3  Persistence geometry", [f"pattern-ledger clusters = {p['n_independent_clusters']}", f"middle-regime signatures = {p['n_middle_regime_signature_clusters']}", f"conflict-without-splitting = {p['n_conflict_without_splitting_clusters']}", f"boundary-crossing clusters = {p['n_boundary_crossing_clusters']}"], "empirical"))
     parts.append(_box(1020, 435, 335, 205, "R4  Direct worldline reserve", [d["direct_evidence"].replace("_", " "), f"status = {d['direct_status']}", "W*S, W*D, ρ, Φ, ξ, dB not identified", "final-stage empirical target"], "gap"))
     parts.append('<path class="arrow" d="M495 537 L575 537"/>')
@@ -105,9 +105,9 @@ def build_svg() -> str:
     parts.append('<path class="thin-arrow" d="M1187 300 L1187 420"/>')
 
     parts.append(_box(160, 690, 765, 105, "Application boundaries retained outside strict Q1B", [f"estimand boundaries = {boundary}  |  attribution failures = {attribution}", "Sequential-filter, discrete-morph, and attribution-failure cases constrain applicability rather than inflate k."], "boundary"))
-    parts.append(_box(1020, 690, 335, 105, "Claim ceiling", ["Pattern recurrence ≠ natural prevalence", "Q1B / ledger ≠ direct BALANCE occupancy"], "boundary"))
+    parts.append(_box(1020, 690, 335, 105, "Claim ceiling", ["Pattern recurrence ≠ natural prevalence", "Q1B pool ≠ design-wide mean or BALANCE occupancy"], "boundary"))
 
-    parts.append(f'<text class="small" x="60" y="830">Frozen first pool: k={pool["independent_clusters"]}; moderator meta-regression prohibited until k≥5 with ≥2 clusters per represented level.</text>')
+    parts.append(f'<text class="small" x="60" y="830">Frozen conditional positive-case summary: k={pool["independent_clusters"]}; moderator meta-regression prohibited until k≥5 with ≥2 clusters per represented level.</text>')
     parts.append('</svg>')
     return "\n".join(parts) + "\n"
 
