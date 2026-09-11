@@ -13,7 +13,7 @@ def test_discussion_keeps_conflict_separate_from_balance_occupancy():
     text = _text()
     assert "Conflict is a prerequisite; persistence is the BALANCE phenomenon" in text
     assert "Q1B layer only establishes the prerequisite" in text
-    assert "does not identify `rho` directly" in text
+    assert "does not identify `W_S*`, `W_D*`, `rho = W_S* - W_D*`, `Phi`, `xi`, or `d_B`" in text
 
 
 def test_discussion_places_focal_experiment_last():
@@ -32,5 +32,6 @@ def test_discussion_preserves_sch_balance_bita_sequence():
 def test_discussion_prohibits_overclaiming():
     text = _text()
     assert "natural prevalence from the screened literature counts" in text
+    assert "positive-selected Q1B pool is an unbiased meta-analysis" in text
     assert "a universal non-zero Q1B mean effect at `k = 3`" in text
     assert "literature recurrence alone proves a focal natural system occupies BALANCE" in text
