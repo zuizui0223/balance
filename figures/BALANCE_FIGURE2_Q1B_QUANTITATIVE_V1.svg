@@ -13,8 +13,8 @@
 .note-box { fill:#fafafa; stroke:#666; stroke-width:1.4; stroke-dasharray:6 5; }
 </style>
 <rect class="bg" x="0" y="0" width="1480" height="760"/>
-<text class="title" x="55" y="45">BALANCE Q1B: three independent positive clusters and the first allowed pool</text>
-<text class="small" x="55" y="72">Study points are cluster-level estimates; pooled intervals are modified Knapp–Hartung 95% CIs. Negative controls are shown separately and never enter the positive numerator.</text>
+<text class="title" x="55" y="45">BALANCE Q1B: conditional summary of three positive-admitted clusters</text>
+<text class="small" x="55" y="72">Admission required the registered positive conflict pattern; diamonds summarize admitted positives and are not a general-effect meta-analysis. Negative controls remain outside the numerator.</text>
 <text class="panel-title" x="70" y="118">Pollinator | antagonist present</text>
 <line class="axis" x1="90" y1="425" x2="340" y2="425"/>
 <line class="zero" x1="215.0" y1="145" x2="215.0" y2="425"/>
@@ -36,7 +36,7 @@
 <text class="label" x="65" y="310" text-anchor="end">Gymnadenia</text>
 <line class="ci" x1="197.54912415496" y1="375" x2="262.3423772510926" y2="375"/>
 <polygon class="pool" points="222.9457507030263,375 229.9457507030263,368 236.9457507030263,375 229.9457507030263,382"/>
-<text class="label" x="65" y="380" text-anchor="end">Q1B pooled</text>
+<text class="label" x="65" y="380" text-anchor="end">conditional summary</text>
 <text class="panel-title" x="420" y="118">Pollinator | antagonist absent</text>
 <line class="axis" x1="440" y1="425" x2="690" y2="425"/>
 <line class="zero" x1="565.0" y1="145" x2="565.0" y2="425"/>
@@ -92,9 +92,9 @@
 <line class="ci" x1="1230.5164292834968" y1="375" x2="1281.6799680423103" y2="375"/>
 <polygon class="pool" points="1249.0981986629035,375 1256.0981986629035,368 1263.0981986629035,375 1256.0981986629035,382"/>
 <rect class="note-box" x="55" y="500" width="1370" height="190" rx="14"/>
-<text class="panel-title" x="78" y="532">Specificity controls kept outside the strict Q1B pool</text>
+<text class="panel-title" x="78" y="532">Specificity controls kept outside the strict positive-admitted Q1B summary</text>
 <text class="label" x="85" y="562">Trifolium repens — NEGATIVE_CONTROL_REANALYSIS_READY: no_independent_same_trait_opposition</text>
 <text class="label" x="85" y="596">Lythrum salicaria — NEGATIVE_CONTROL_EFFECT_READY: pollinator_delta_beta=[-0.01,0.00,-0.07];three_way_delta_beta=[-0.12,0.11,0.01]</text>
-<text class="small" x="85" y="650">Boundary lanes (Ipomopsis sequential filter; Primula discrete morph) and the Gymnadenia 2019 attribution failure are reported in Figure 1 / the reality-boundary readout, not pooled here.</text>
-<text class="small" x="55" y="735">Claim ceiling: pooled Q1B mediated-selection contrasts only; k=3 does not identify direct BALANCE occupancy, W*S, W*D, ρ, Φ, ξ, or dB.</text>
+<text class="small" x="85" y="650">Boundary lanes (Ipomopsis sequential filter; Primula discrete morph) and the Gymnadenia 2019 attribution failure are reported in Figure 1 / the reality-boundary readout, not summarized here.</text>
+<text class="small" x="55" y="735">Claim ceiling: conditional positive-case Q1B summary only; k=3 does not estimate a design-wide mean or identify direct BALANCE occupancy, W*S, W*D, ρ, Φ, ξ, or dB.</text>
 </svg>
