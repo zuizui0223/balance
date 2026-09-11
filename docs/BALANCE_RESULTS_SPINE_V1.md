@@ -30,3 +30,7 @@ The empirical synthesis therefore has four nested levels:
 4. a still-empty direct worldline reserve.
 
 This ordering mirrors the theory: conflict is a prerequisite, persistence geometry is the target phenomenon, and direct BALANCE occupancy requires matched worldline evidence that the literature synthesis does not yet provide.
+
+## Figure 1 integration
+
+`BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg` is the graphical spine for these Results. The upper lane follows `conflict active -> sandwiched regime -> differentiation boundary`; the lower lane follows `strict Q1B positive/negative evidence -> broader persistence ledger -> direct-worldline reserve`. Counts are generated from the frozen machine-readable ledgers, and incompatible boundary or attribution cases are displayed outside the strict positive numerator. The caption is frozen in `docs/BALANCE_FIGURE1_CAPTION_V1.md`.
