@@ -2,9 +2,9 @@
   "canonical_manuscript": "BALANCE_MANUSCRIPT_V1.md",
   "title": "Why conflict persists: a theory and evidence synthesis of the sandwiched regime between integration and differentiation",
   "assembly_script": "scripts/assemble_balance_manuscript.py",
-  "expected_sha256": "5c091c9bb2a46015b584478c9b1e0916e683a567fda7189ba86023616c670516",
-  "expected_word_count": 6100,
-  "expected_line_count": 434,
+  "expected_sha256": "433d5f929fe5b1cf64f0ea193598de6b9b9e9056809679d74daf60f0e58618df",
+  "expected_word_count": 6735,
+  "expected_line_count": 465,
   "section_order": [
     "Abstract",
     "Introduction",
@@ -38,6 +38,25 @@
       "path": "docs/BALANCE_DISCUSSION_SPINE_V1.md",
       "blob_sha": "ec59d5556636f3f0db29f62b89a47ee2b195ffa5"
     }
+  },
+  "caption_sources": {
+    "Figure 1": {
+      "path": "docs/BALANCE_FIGURE1_CAPTION_V1.md",
+      "blob_sha": "0304a19ddb7f43ae34491f06843e8b8917c9b7a9"
+    },
+    "Figure 2": {
+      "path": "docs/BALANCE_FIGURE2_CAPTION_V1.md",
+      "blob_sha": "3de4cc16daedb3ef6ce8c6c12be6e8bca581f7d8"
+    },
+    "Figure 3": {
+      "path": "docs/BALANCE_FIGURE3_CAPTION_V1.md",
+      "blob_sha": "db43cab044c5983976f517d0abdabe9aad07b50b"
+    }
+  },
+  "citation_provenance": {
+    "study_ledger": "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv",
+    "pattern_cluster_map": "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv",
+    "pattern_cluster_coverage": "17_of_17"
   },
   "figure_set": [
     "figures/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg",
