@@ -1,0 +1,40 @@
+name: Build BALANCE Q1B Figure 2
+
+on:
+  pull_request:
+    paths:
+      - "scripts/build_balance_q1b_figure2.py"
+      - "data/BALANCE_Q1B_FIGURE2_POINTS_V1.csv"
+      - "data/BALANCE_Q1B_FIRST_POOL_V1.json"
+      - "data/BALANCE_ADJACENT_QUANTITATIVE_LANES_V1.csv"
+      - "data/BALANCE_FRAGARIA_Q1B_RECEIPT_V1.json"
+      - "data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json"
+      - "data/BALANCE_IMPATIENS_Q1B_RECEIPT_V1.json"
+      - "tests/test_balance_q1b_figure2.py"
+      - ".github/workflows/build-balance-q1b-figure2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build Figure 2
+        run: python scripts/build_balance_q1b_figure2.py artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+      - name: Verify strict numerator and specificity-control separation
+        run: |
+          grep -q "three independent positive clusters" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          grep -q "Specificity controls kept outside the strict Q1B pool" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          grep -q "Trifolium repens" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          grep -q "Lythrum salicaria" artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: balance-q1b-figure2
+          path: artifacts/figure2/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg
+          if-no-files-found: error
