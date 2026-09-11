@@ -9,6 +9,7 @@ on:
       - "docs/BALANCE_EMPIRICAL_METHODS_MANUSCRIPT_TEXT_V1.md"
       - "docs/BALANCE_RESULTS_MANUSCRIPT_TEXT_V1.md"
       - "docs/BALANCE_DISCUSSION_SPINE_V1.md"
+      - "manuscript/BALANCE_CANONICAL_MANUSCRIPT_MANIFEST_V1.json"
       - "scripts/assemble_balance_manuscript.py"
       - "tests/test_balance_manuscript_assembly.py"
       - ".github/workflows/assemble-balance-manuscript.yml"
@@ -35,6 +36,12 @@ jobs:
           grep -q "## Results" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "## Discussion" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
           grep -q "direct-worldline reserve therefore remains empty" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+          grep -q "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg" artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
+      - name: Verify frozen canonical digest and size
+        run: |
+          echo "5c091c9bb2a46015b584478c9b1e0916e683a567fda7189ba86023616c670516  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
+          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 6100
+          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 434
       - uses: actions/upload-artifact@v4
         with:
           name: balance-canonical-manuscript
