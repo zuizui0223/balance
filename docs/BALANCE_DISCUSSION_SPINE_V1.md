@@ -2,9 +2,9 @@
 
 ## D1. The empirical signal is recurrence of conflict, not a universal average effect
 
-The first quantitative Q1B pool should not be read as a search for one universal antagonistic-selection coefficient. Three independent positive systems reproduce the same qualitative conflict architecture, while the pooled confidence intervals remain wide and two components show substantial heterogeneity. At the same time, two design-matched negative controls fail to show the strict same-coordinate pattern. The strongest empirical conclusion is therefore that conflict-compatible selection recurs but is conditional, not inevitable.
+The first quantitative Q1B pool is **not** a meta-analysis of all design-eligible systems: entry into the positive numerator required the preregistered positive conflict pattern. Its random-effects mean therefore describes magnitude and heterogeneity conditional on positive admission; it cannot provide an unbiased general mean effect and its sign is not independent evidence that recurrence exists. Recurrence is instead supported by recovery of the registered pattern in three independent positive systems, while two design-matched negative controls show that comparable designs can fail to produce it. The strongest empirical conclusion is therefore that conflict-compatible selection recurs but is conditional, not inevitable.
 
-This distinction matters for BALANCE because the theory is explicitly contextual. The sandwiched regime is defined by relative worldline advantage under a given combination of functional demands, not by a fixed global selection coefficient. Variation among systems is therefore partly signal: changes in antagonist identity, focal trait class, reproductive fitness component, pollination manipulation, and evidence source can change the effective weighting of competing functions. The moderator set is frozen before further cluster expansion so that this context dependence can be examined without post hoc explanation of the present heterogeneity.
+This distinction matters for BALANCE because the theory is explicitly contextual. The sandwiched regime is defined by relative worldline advantage under a given combination of functional demands, not by a fixed global selection coefficient. Variation among admitted positive systems is therefore potentially informative, but it cannot be separated from sampling and admission effects at `k=3`. Changes in antagonist identity, focal trait class, reproductive fitness component, pollination manipulation, and evidence source are preregistered as candidate moderators for later expansion. The moderator set is frozen before further cluster addition so that context dependence can be examined without post hoc explanation of the present heterogeneity.
 
 ## D2. Conflict is a prerequisite; persistence is the BALANCE phenomenon
 
@@ -16,7 +16,7 @@ The broader pattern ledger addresses this second layer. Across 17 independent cl
 
 The synthesis gains information from systems that do not enter the positive numerator. Trifolium and Lythrum show that comparable factorial designs need not yield same-coordinate opposition. Ipomopsis shows that pollination and antagonism can act sequentially without producing the strict simultaneous Q1B estimand. Primula farinosa shows strong opposing selection on a discrete genetic morph, demonstrating that biologically relevant conflict can fall outside a continuous-gradient formulation. Gymnadenia 2019 shows that numerical opposition does not identify an antagonist when the second biological agent is unresolved.
 
-These cases are not failed positives. Together they define the empirical domain of the theory. They separate absence of the focal mechanism from changes in estimand, temporal ordering, or causal attribution. Keeping these layers explicit prevents apparent replication from being manufactured by pooling biologically different objects.
+These cases are not failed positives. Together they define the empirical domain of the theory. They separate absence of the focal mechanism from changes in estimand, temporal ordering, or causal attribution. Keeping these layers explicit prevents apparent replication from being manufactured by pooling biologically different objects and makes clear why the conditional positive-case pool is not a substitute for a design-wide estimate.
 
 ## D4. BALANCE occupies the middle between conflict theory and differentiation theory
 
@@ -41,6 +41,7 @@ The empirical strategy can mirror the same order. First recover recurring confli
 The Discussion may claim:
 
 - recurring same-coordinate conflict under compatible quantitative designs;
+- a conditional quantitative summary of magnitude and heterogeneity among positive-admitted Q1B systems;
 - design-matched negative cases showing that conflict is not inevitable;
 - recurrent middle-regime / persistence signatures in a source-adjudicated literature ledger;
 - context dependence as a biologically meaningful feature to be tested with preregistered moderators after sufficient independent replication;
@@ -49,6 +50,7 @@ The Discussion may claim:
 It must not claim:
 
 - natural prevalence from the screened literature counts;
+- that the positive-selected Q1B pool is an unbiased meta-analysis of all eligible systems;
 - a universal non-zero Q1B mean effect at `k = 3`;
 - direct empirical identification of `rho`, `Phi`, `xi`, `d_B`, `W_S*`, or `W_D*`;
 - that every boundary or sequential-filter case belongs to the strict Q1B estimand;
