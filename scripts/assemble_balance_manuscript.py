@@ -18,6 +18,12 @@ SECTIONS = [
     ("Discussion", ROOT / "docs" / "BALANCE_DISCUSSION_SPINE_V1.md"),
 ]
 
+CAPTIONS = [
+    ("Figure 1", ROOT / "docs" / "BALANCE_FIGURE1_CAPTION_V1.md"),
+    ("Figure 2", ROOT / "docs" / "BALANCE_FIGURE2_CAPTION_V1.md"),
+    ("Figure 3", ROOT / "docs" / "BALANCE_FIGURE3_CAPTION_V1.md"),
+]
+
 
 def _strip_source_heading(text: str) -> str:
     lines = text.strip().splitlines()
@@ -43,9 +49,18 @@ def build_manuscript() -> str:
         "- Figure 2: `figures/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg` — strict Q1B quantitative synthesis and specificity controls.",
         "- Figure 3: `figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg` — source-adjudicated recurrence map by pattern class and biological domain.",
         "",
+        "## Figure captions",
+    ])
+    for heading, path in CAPTIONS:
+        if not path.exists():
+            raise FileNotFoundError(path)
+        body = _strip_source_heading(path.read_text(encoding="utf-8"))
+        parts.extend(["", f"### {heading}", "", body])
+    parts.extend([
+        "",
         "## Current citation status",
         "",
-        "Primary-source identities and DOIs are frozen in the evidence registries and study receipts. Formal in-text citation formatting and the final Literature Cited section remain a manuscript-production task; no uncited general claim should be promoted beyond the source-adjudicated claim ceilings recorded in the repository.",
+        "Primary-source identities and DOIs are frozen in `data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv`; all 17 Figure 3 clusters are mapped to manuscript citation keys in `data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv`. Formal in-text citation formatting and the final Literature Cited section remain a manuscript-production task; no uncited general claim should be promoted beyond the source-adjudicated claim ceilings recorded in the repository.",
     ])
     return "\n".join(parts).rstrip() + "\n"
 
