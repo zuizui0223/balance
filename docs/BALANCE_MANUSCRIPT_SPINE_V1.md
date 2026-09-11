@@ -14,7 +14,7 @@ When one biological coordinate faces incompatible functional demands, conflict d
 
 ## Abstract draft
 
-Biological traits often serve multiple functions whose preferred states do not coincide, yet conflict does not always lead to functional differentiation. We develop a theory of this intermediate outcome. A shared architecture can remain favoured inside a finite **sandwiched regime** when functional conflict is active but the recoverable benefit of differentiation does not exceed the costs, constraints, or lost coordination associated with splitting functions. The theory separates three objects: conflict itself, persistence of an integrated state under conflict, and the boundary at which a differentiated alternative becomes favoured. We then ask whether the corresponding signatures recur in existing biological systems before designing a focal direct test. A source-adjudicated literature synthesis recovered 17 independent clusters, including nine middle-regime signatures. A stricter quantitative lane identified three independent factorial systems with effect-size-ready opposing agent-mediated selection on a shared coordinate. Their pooled point estimates were directionally compatible with pollinator-favouring and antagonist-opposing effects, although all modified Knapp–Hartung 95% intervals included zero at `k = 3`, with moderate heterogeneity in two contrasts. Two design-matched negative controls, two estimand boundaries, and one antagonist-attribution failure show that the conflict pattern is conditional rather than inevitable and that apparently similar cases can belong to different inferential objects. No current literature receipt directly compares optimized shared and differentiated architectures on a common fitness scale and context. The synthesis therefore supports recurrence of conflict-compatible and persistence geometry, but not direct BALANCE occupancy. It also identifies the final empirical target: matched shared-versus-differentiated worldlines measured only after the literature-defined pattern and identification gaps are established.
+Biological traits often serve multiple functions whose preferred states do not coincide, yet conflict does not always lead to functional differentiation. We develop a theory of this intermediate outcome. A shared architecture can remain favoured inside a finite **sandwiched regime** when functional conflict is active but the recoverable benefit of differentiation does not exceed the costs, constraints, or lost coordination associated with splitting functions. The theory separates three objects: conflict itself, persistence of an integrated state under conflict, and the boundary at which a differentiated alternative becomes favoured. We then ask whether the corresponding signatures recur in existing biological systems before designing a focal direct test. A source-adjudicated literature synthesis recovered 17 independent clusters, including nine middle-regime signatures. A stricter quantitative lane identified three independent factorial systems that met a preregistered positive Q1B admission rule for opposing agent-mediated selection on a shared coordinate. Because positive admission depended on the observed conflict pattern, the random-effects summary of these three systems is interpreted only as a conditional description of effect magnitude and heterogeneity among admitted positives, not as an unbiased estimate of a general mean effect or as an independent test of recurrence. All modified Knapp–Hartung 95% intervals included zero at `k = 3`, with moderate heterogeneity in two contrasts. Recurrence is instead supported by recovery of the registered pattern in three independent positive systems, while two design-matched negative controls, two estimand boundaries, and one antagonist-attribution failure show that the conflict pattern is conditional rather than inevitable and that apparently similar cases can belong to different inferential objects. No current literature receipt directly compares optimized shared and differentiated architectures on a common fitness scale and context. The synthesis therefore supports recurrence of conflict-compatible and persistence geometry, but not direct BALANCE occupancy. It also identifies the final empirical target: matched shared-versus-differentiated worldlines measured only after the literature-defined pattern and identification gaps are established.
 
 ## Paper architecture
 
@@ -87,7 +87,7 @@ This ledger estimates recurrence within a screened source-adjudicated universe, 
 
 #### 3.2 Strict Q1B quantitative lane
 
-Eligibility requires:
+Design compatibility requires:
 
 - independent biological cluster;
 - identified pollinator and antagonist manipulation/context;
@@ -96,7 +96,7 @@ Eligibility requires:
 - compatible factorial context-specific contrast vector;
 - identified full joint uncertainty from reported sufficient statistics or raw-data resampling.
 
-Current strict positives:
+Positive admission additionally requires the frozen same-coordinate conflict pattern. Current positive-admitted systems are:
 
 ```text
 Fragaria vesca
@@ -104,7 +104,7 @@ Impatiens capensis
 Gymnadenia conopsea 2015
 ```
 
-Design-matched negatives remain outside the positive numerator.
+Design-matched negatives remain outside the positive numerator. Consequently, the random-effects summary of the three positives is a **conditional positive-case summary**, not an unbiased design-wide meta-analytic mean and not an independent test of recurrence.
 
 #### 3.3 Boundary and attribution lanes
 
@@ -117,11 +117,11 @@ Keep separate:
 
 #### 3.4 Quantitative model
 
-First permitted pool:
+First permitted conditional positive-case summary:
 
 - componentwise DerSimonian–Laird random effects;
 - modified Knapp–Hartung intervals;
-- `k = 3` independent clusters;
+- `k = 3` independent positive-admitted clusters;
 - full within-study covariance retained;
 - no attempt to estimate an underidentified 4 × 4 between-study covariance at `k = 3`.
 
@@ -134,7 +134,7 @@ Use `docs/BALANCE_RESULTS_MANUSCRIPT_TEXT_V1.md` as the current Results draft.
 Results ordering:
 
 ```text
-R1 strict Q1B recurrence + negative controls
+R1 strict Q1B recurrence from independent positives + conditional positive-case magnitude summary + negative controls
 R2 estimand and attribution boundaries
 R3 broader middle-regime recurrence
 R4 direct-worldline reserve remains empty
@@ -155,7 +155,7 @@ Use `docs/BALANCE_DISCUSSION_SPINE_V1.md`.
 Discussion ordering:
 
 ```text
-D1 recurrence rather than universal mean
+D1 recurrence rather than a universal/design-wide mean
 D2 conflict prerequisite vs persistence phenomenon
 D3 negative/boundary cases define applicability
 D4 middle position between conflict and differentiation theories
@@ -195,7 +195,7 @@ Q1B positive/negative -> persistence ledger -> direct-worldline gap
 
 ### Figure 2 — Q1B quantitative contrasts
 
-Four registered context-specific contrasts, with each biological cluster shown once and the first random-effects pooled estimate plus modified Knapp–Hartung interval. Negative controls should be shown in an adjacent panel, not included in the positive pooled estimate.
+Four registered context-specific contrasts, with each positive-admitted biological cluster shown once and a conditional random-effects summary plus modified Knapp–Hartung interval. Negative controls are shown in an adjacent panel, not included in the positive numerator. The diamond is not interpreted as a design-wide mean or independent recurrence test.
 
 ### Figure 3 — reality-pattern map
 
@@ -215,13 +215,15 @@ Conceptual worldline panel showing the missing direct comparison `W_S*` versus `
 
 ### Supported empirically by literature synthesis
 
-- same-coordinate conflict can recur under compatible quantitative designs;
+- the registered same-coordinate conflict pattern recurs in three independent compatible quantitative systems;
 - comparable designs can also fail to show that conflict;
 - conflict-like patterns can live on different estimands or fail biological attribution;
-- middle-regime persistence signatures recur across independent systems and domains.
+- middle-regime persistence signatures recur across independent systems and domains;
+- effect magnitude and heterogeneity can be described conditionally within the current positive-admitted Q1B set.
 
 ### Not yet directly identified
 
+- a design-wide/population-average Q1B mean effect;
 - `W_S*` and `W_D*` on matched natural-system worldlines;
 - `rho`, `Phi`, `xi`, `d_B` in a focal natural system;
 - natural prevalence of BALANCE;
