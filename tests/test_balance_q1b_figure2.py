@@ -10,7 +10,7 @@ POINTS = ROOT / "data" / "BALANCE_Q1B_FIGURE2_POINTS_V1.csv"
 POOL = ROOT / "data" / "BALANCE_Q1B_FIRST_POOL_V1.json"
 FRAGARIA = ROOT / "data" / "BALANCE_FRAGARIA_Q1B_RECEIPT_V1.json"
 GYMNADENIA = ROOT / "data" / "BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json"
-IMPATIENS = ROOT / "data" / "BALANCE_IMPATIENS_Q1B_RECEIPT_V1.json"
+IMPATIENS_AGG = ROOT / "data" / "BALANCE_IMPATIENS_Q1B_CLUSTER_AGGREGATE_V1.json"
 
 
 def _rows():
@@ -44,20 +44,17 @@ def test_pooled_rows_match_frozen_first_pool():
 def test_study_points_match_frozen_receipts_without_inflating_impatiens_traits():
     frag = json.loads(FRAGARIA.read_text(encoding="utf-8"))
     gym = json.loads(GYMNADENIA.read_text(encoding="utf-8"))
-    imp = json.loads(IMPATIENS.read_text(encoding="utf-8"))
+    imp = json.loads(IMPATIENS_AGG.read_text(encoding="utf-8"))
     rows = {(r["contrast"], r["cluster"]): r for r in _rows()}
 
     for i, contrast in enumerate(frag["contrast_order"]):
         assert float(rows[(contrast, "Fragaria")]["estimate"]) == pytest.approx(frag["mediated_contrasts"][i])
         assert float(rows[(contrast, "Gymnadenia")]["estimate"]) == pytest.approx(gym["mediated_contrasts"][i])
-
-        trait_vals = [
-            imp["traits"][trait]["mediated_contrasts"][contrast]["estimate"]
-            for trait in imp["traits_predeclared"]
-        ]
-        expected = sum(trait_vals) / len(trait_vals)
-        assert float(rows[(contrast, "Impatiens")]["estimate"]) == pytest.approx(expected)
+        assert float(rows[(contrast, "Impatiens")]["estimate"]) == pytest.approx(imp["mediated_contrasts"][i])
         assert rows[(contrast, "Impatiens")]["independent_unit"] == "biological_cluster"
+
+    assert imp["aggregation_rule"] == "equal_weight_mean_across_all_predeclared_traits"
+    assert len(imp["traits"]) == 2
 
 
 def test_figure2_labels_pool_as_conditional_and_keeps_negative_controls_outside_positive_points():
