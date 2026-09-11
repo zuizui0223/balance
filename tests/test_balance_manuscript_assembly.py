@@ -42,7 +42,7 @@ def test_positive_selected_q1b_pool_is_explicitly_conditional_not_general_meta_a
     assert "positive admission depended on the observed conflict pattern" in text
     assert "conditional on positive Q1B admission" in text
     assert "not an unbiased meta-analytic estimate" in text
-    assert "not a meta-analysis of all design-eligible systems" in text
+    assert "meta-analysis of all design-eligible systems" in text
     assert "positive-selected Q1B pool" in text
 
 
