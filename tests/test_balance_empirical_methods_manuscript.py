@@ -21,7 +21,7 @@ def test_methods_uses_biological_cluster_as_replication_unit():
     text = _text()
     assert "independent biological cluster" in text
     assert "not the publication, population, site, year, treatment cell, or measured trait" in text
-    assert "Multiple traits from one cluster could not inflate" in text
+    assert "multiple traits from one cluster could not inflate the independent-cluster count" in text
 
 
 def test_methods_preserves_q1b_effect_ready_contract():
@@ -47,6 +47,6 @@ def test_methods_reports_first_pool_and_moderator_gate():
 
 def test_methods_explicitly_rejects_prevalence_and_direct_worldline_backfill():
     text = _text()
-    assert "not estimate natural prevalence" in text
+    assert "rather than an estimate of natural prevalence" in text
     assert "does not identify direct BALANCE occupancy from unmatched systems" in text
     assert "did not estimate `W_S*`, `W_D*`, `rho`, `Phi`, `xi`, or `d_B`" in text
