@@ -2,9 +2,9 @@
   "canonical_manuscript": "BALANCE_MANUSCRIPT_V1.md",
   "title": "Why conflict persists: a theory and evidence synthesis of the sandwiched regime between integration and differentiation",
   "assembly_script": "scripts/assemble_balance_manuscript.py",
-  "expected_sha256": "509dd64b9104bdc415a3734cbdd925e8ab9f718b575430b12d51231a8473c86c",
-  "expected_word_count": 6735,
-  "expected_line_count": 464,
+  "expected_sha256": "ed0fede4ad71c48dbe3422b5cf72c2e46b9cf1192a1f89a7395de81943cc81cf",
+  "expected_word_count": 7336,
+  "expected_line_count": 470,
   "section_order": [
     "Abstract",
     "Introduction",
@@ -14,16 +14,16 @@
     "Discussion"
   ],
   "section_sources": {
-    "Abstract": {"path": "docs/BALANCE_ABSTRACT_V1.md", "blob_sha": "bff5591ebdb6019fa01733d0f001a814b1d46ab5"},
-    "Introduction": {"path": "docs/BALANCE_INTRODUCTION_MANUSCRIPT_TEXT_V1.md", "blob_sha": "ba93fc4537a304d54f32329d1887aecb4bcc7b2f"},
+    "Abstract": {"path": "docs/BALANCE_ABSTRACT_V1.md", "blob_sha": "02a0cd066d72faab0fdad75d37c529433c581288"},
+    "Introduction": {"path": "docs/BALANCE_INTRODUCTION_MANUSCRIPT_TEXT_V1.md", "blob_sha": "fcaeb0e417926cce144d15ca3c9775225fcee4f6"},
     "Theory": {"path": "docs/BALANCE_THEORY_MANUSCRIPT_TEXT_V1.md", "blob_sha": "4436b39a46dca0de26999c174b673a4e17f97299"},
-    "Empirical synthesis methods": {"path": "docs/BALANCE_EMPIRICAL_METHODS_MANUSCRIPT_TEXT_V1.md", "blob_sha": "c2c961bfd2f9b1a183ed468163db546be28f7e7d"},
-    "Results": {"path": "docs/BALANCE_RESULTS_MANUSCRIPT_TEXT_V1.md", "blob_sha": "2438368f6350dd01462adcf2923c7b306c0acf94"},
-    "Discussion": {"path": "docs/BALANCE_DISCUSSION_SPINE_V1.md", "blob_sha": "ec59d5556636f3f0db29f62b89a47ee2b195ffa5"}
+    "Empirical synthesis methods": {"path": "docs/BALANCE_EMPIRICAL_METHODS_MANUSCRIPT_TEXT_V1.md", "blob_sha": "59b7e61323c5d0db8442eb98295060197d15a874"},
+    "Results": {"path": "docs/BALANCE_RESULTS_MANUSCRIPT_TEXT_V1.md", "blob_sha": "e35a0e661f87c864e5abab69fd13ec1ac71b3ad6"},
+    "Discussion": {"path": "docs/BALANCE_DISCUSSION_SPINE_V1.md", "blob_sha": "3ee43fa1b61a7ff681b6302acf9d751426562688"}
   },
   "caption_sources": {
-    "Figure 1": {"path": "docs/BALANCE_FIGURE1_CAPTION_V1.md", "blob_sha": "0304a19ddb7f43ae34491f06843e8b8917c9b7a9"},
-    "Figure 2": {"path": "docs/BALANCE_FIGURE2_CAPTION_V1.md", "blob_sha": "3de4cc16daedb3ef6ce8c6c12be6e8bca581f7d8"},
+    "Figure 1": {"path": "docs/BALANCE_FIGURE1_CAPTION_V1.md", "blob_sha": "70949425ba18eda1436099bfd3e9c9b55ced6628"},
+    "Figure 2": {"path": "docs/BALANCE_FIGURE2_CAPTION_V1.md", "blob_sha": "c2e85fec42766b1ce6d7d176a450a9fd03ab405e"},
     "Figure 3": {"path": "docs/BALANCE_FIGURE3_CAPTION_V1.md", "blob_sha": "db43cab044c5983976f517d0abdabe9aad07b50b"}
   },
   "citation_provenance": {
@@ -37,6 +37,7 @@
     "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg"
   ],
   "claim_ceiling": "theory_plus_literature_pattern_synthesis_not_direct_BALANCE_worldline_occupancy",
+  "q1b_pool_interpretation": "conditional_summary_among_positive_admitted_systems_not_design_wide_meta_analytic_mean",
   "direct_worldline_status": "0_direct_matched_receipts",
   "final_empirical_layer": "same_context_common_fitness_scale_shared_vs_differentiated_worldline_validation"
 }
