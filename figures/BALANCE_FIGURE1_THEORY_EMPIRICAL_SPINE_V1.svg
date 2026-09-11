@@ -42,8 +42,8 @@
 <text class="box-title" x="178" y="465">R1  Q1B conflict layer</text>
 <text class="box-text" x="178" y="493">strict positives = 3</text>
 <text class="box-text" x="178" y="516">design-matched negatives = 2</text>
-<text class="box-text" x="178" y="539">first random-effects pool completed</text>
-<text class="box-text" x="178" y="562">all 95% CIs include 0 at k=3</text>
+<text class="box-text" x="178" y="539">recurrence = 3 independent positives</text>
+<text class="box-text" x="178" y="562">pool = conditional positive-case summary</text>
 <rect class="empirical" x="590" y="435" width="335" height="205" rx="14"/>
 <text class="box-title" x="608" y="465">R2–R3  Persistence geometry</text>
 <text class="box-text" x="608" y="493">pattern-ledger clusters = 17</text>
@@ -68,6 +68,6 @@
 <rect class="boundary" x="1020" y="690" width="335" height="105" rx="14"/>
 <text class="box-title" x="1038" y="720">Claim ceiling</text>
 <text class="box-text" x="1038" y="748">Pattern recurrence ≠ natural prevalence</text>
-<text class="box-text" x="1038" y="771">Q1B / ledger ≠ direct BALANCE occupancy</text>
-<text class="small" x="60" y="830">Frozen first pool: k=3; moderator meta-regression prohibited until k≥5 with ≥2 clusters per represented level.</text>
+<text class="box-text" x="1038" y="771">Q1B pool ≠ design-wide mean or BALANCE occupancy</text>
+<text class="small" x="60" y="830">Frozen conditional positive-case summary: k=3; moderator meta-regression prohibited until k≥5 with ≥2 clusters per represented level.</text>
 </svg>
