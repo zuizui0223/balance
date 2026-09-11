@@ -17,52 +17,80 @@
 <text class="small" x="55" y="72">Study points are cluster-level estimates; pooled intervals are modified Knapp–Hartung 95% CIs. Negative controls are shown separately and never enter the positive numerator.</text>
 <text class="panel-title" x="70" y="118">Pollinator | antagonist present</text>
 <line class="axis" x1="90" y1="425" x2="340" y2="425"/>
-<line class="zero" x1="215" y1="145" x2="215" y2="425"/>
-<line class="axis" x1="110.83333333333333" y1="425" x2="110.83333333333333" y2="430"/><text class="small" x="100.83333333333333" y="447">-1</text>
-<line class="axis" x1="162.91666666666666" y1="425" x2="162.91666666666666" y2="430"/><text class="small" x="152.91666666666666" y="447">-0.5</text>
-<line class="axis" x1="215" y1="425" x2="215" y2="430"/><text class="small" x="205" y="447">0</text>
-<line class="axis" x1="267.0833333333333" y1="425" x2="267.0833333333333" y2="430"/><text class="small" x="257.0833333333333" y="447">0.5</text>
-<line class="axis" x1="319.1666666666667" y1="425" x2="319.1666666666667" y2="430"/><text class="small" x="309.1666666666667" y="447">1</text>
-<circle class="point" cx="212.70833333333331" cy="205" r="5"/><text class="label" x="65" y="210" text-anchor="end">Fragaria</text>
-<circle class="point" cx="227.62110869768355" cy="255" r="5"/><text class="label" x="65" y="260" text-anchor="end">Impatiens</text>
-<circle class="point" cx="231.22916666666666" cy="305" r="5"/><text class="label" x="65" y="310" text-anchor="end">Gymnadenia</text>
-<line class="ci" x1="197.54912415496002" y1="375" x2="262.342377250051" y2="375"/><polygon class="pool" points="222.9457507030263,375 229.9457507030263,368 236.9457507030263,375 229.9457507030263,382"/><text class="label" x="65" y="380" text-anchor="end">Q1B pooled</text>
+<line class="zero" x1="215.0" y1="145" x2="215.0" y2="425"/>
+<line class="axis" x1="110.83333333333333" y1="425" x2="110.83333333333333" y2="430"/>
+<text class="small" x="100.83333333333333" y="447">-1</text>
+<line class="axis" x1="162.91666666666669" y1="425" x2="162.91666666666669" y2="430"/>
+<text class="small" x="152.91666666666669" y="447">-0.5</text>
+<line class="axis" x1="215.0" y1="425" x2="215.0" y2="430"/>
+<text class="small" x="205.0" y="447">0</text>
+<line class="axis" x1="267.08333333333337" y1="425" x2="267.08333333333337" y2="430"/>
+<text class="small" x="257.08333333333337" y="447">0.5</text>
+<line class="axis" x1="319.1666666666667" y1="425" x2="319.1666666666667" y2="430"/>
+<text class="small" x="309.1666666666667" y="447">1</text>
+<circle class="point" cx="212.70833333333334" cy="205" r="5"/>
+<text class="label" x="65" y="210" text-anchor="end">Fragaria</text>
+<circle class="point" cx="227.62110869768355" cy="255" r="5"/>
+<text class="label" x="65" y="260" text-anchor="end">Impatiens</text>
+<circle class="point" cx="231.22916666666666" cy="305" r="5"/>
+<text class="label" x="65" y="310" text-anchor="end">Gymnadenia</text>
+<line class="ci" x1="197.54912415496" y1="375" x2="262.3423772510926" y2="375"/>
+<polygon class="pool" points="222.9457507030263,375 229.9457507030263,368 236.9457507030263,375 229.9457507030263,382"/>
+<text class="label" x="65" y="380" text-anchor="end">Q1B pooled</text>
 <text class="panel-title" x="420" y="118">Pollinator | antagonist absent</text>
 <line class="axis" x1="440" y1="425" x2="690" y2="425"/>
-<line class="zero" x1="565" y1="145" x2="565" y2="425"/>
-<line class="axis" x1="460.8333333333333" y1="425" x2="460.8333333333333" y2="430"/><text class="small" x="450.8333333333333" y="447">-1</text>
-<line class="axis" x1="512.9166666666666" y1="425" x2="512.9166666666666" y2="430"/><text class="small" x="502.91666666666663" y="447">-0.5</text>
-<line class="axis" x1="565" y1="425" x2="565" y2="430"/><text class="small" x="555" y="447">0</text>
-<line class="axis" x1="617.0833333333334" y1="425" x2="617.0833333333334" y2="430"/><text class="small" x="607.0833333333334" y="447">0.5</text>
-<line class="axis" x1="669.1666666666667" y1="425" x2="669.1666666666667" y2="430"/><text class="small" x="659.1666666666667" y="447">1</text>
-<circle class="point" cx="624.5833333333334" cy="205" r="5"/>
-<circle class="point" cx="544.0628347300283" cy="255" r="5"/>
+<line class="zero" x1="565.0" y1="145" x2="565.0" y2="425"/>
+<line class="axis" x1="460.8333333333333" y1="425" x2="460.8333333333333" y2="430"/>
+<text class="small" x="450.8333333333333" y="447">-1</text>
+<line class="axis" x1="512.9166666666666" y1="425" x2="512.9166666666666" y2="430"/>
+<text class="small" x="502.91666666666663" y="447">-0.5</text>
+<line class="axis" x1="565.0" y1="425" x2="565.0" y2="430"/>
+<text class="small" x="555.0" y="447">0</text>
+<line class="axis" x1="617.0833333333334" y1="425" x2="617.0833333333334" y2="430"/>
+<text class="small" x="607.0833333333334" y="447">0.5</text>
+<line class="axis" x1="669.1666666666667" y1="425" x2="669.1666666666667" y2="430"/>
+<text class="small" x="659.1666666666667" y="447">1</text>
+<circle class="point" cx="624.5833333333333" cy="205" r="5"/>
+<circle class="point" cx="544.0628347300284" cy="255" r="5"/>
 <circle class="point" cx="581.6666666666666" cy="305" r="5"/>
-<line class="ci" x1="498.382424465055" y1="375" x2="670.3768126537773" y2="375"/><polygon class="pool" points="577.3796185594161,375 584.3796185594161,368 591.3796185594161,375 584.3796185594161,382"/>
+<line class="ci" x1="498.3824244650549" y1="375" x2="670.3768126537774" y2="375"/>
+<polygon class="pool" points="577.379618559416,375 584.379618559416,368 591.379618559416,375 584.379618559416,382"/>
 <text class="panel-title" x="770" y="118">Antagonist | open pollination</text>
 <line class="axis" x1="790" y1="425" x2="1040" y2="425"/>
-<line class="zero" x1="915" y1="145" x2="915" y2="425"/>
-<line class="axis" x1="810.8333333333334" y1="425" x2="810.8333333333334" y2="430"/><text class="small" x="800.8333333333334" y="447">-1</text>
-<line class="axis" x1="862.9166666666666" y1="425" x2="862.9166666666666" y2="430"/><text class="small" x="852.9166666666666" y="447">-0.5</text>
-<line class="axis" x1="915" y1="425" x2="915" y2="430"/><text class="small" x="905" y="447">0</text>
-<line class="axis" x1="967.0833333333334" y1="425" x2="967.0833333333334" y2="430"/><text class="small" x="957.0833333333334" y="447">0.5</text>
-<line class="axis" x1="1019.1666666666667" y1="425" x2="1019.1666666666667" y2="430"/><text class="small" x="1009.1666666666667" y="447">1</text>
+<line class="zero" x1="915.0" y1="145" x2="915.0" y2="425"/>
+<line class="axis" x1="810.8333333333334" y1="425" x2="810.8333333333334" y2="430"/>
+<text class="small" x="800.8333333333334" y="447">-1</text>
+<line class="axis" x1="862.9166666666666" y1="425" x2="862.9166666666666" y2="430"/>
+<text class="small" x="852.9166666666666" y="447">-0.5</text>
+<line class="axis" x1="915.0" y1="425" x2="915.0" y2="430"/>
+<text class="small" x="905.0" y="447">0</text>
+<line class="axis" x1="967.0833333333334" y1="425" x2="967.0833333333334" y2="430"/>
+<text class="small" x="957.0833333333334" y="447">0.5</text>
+<line class="axis" x1="1019.1666666666667" y1="425" x2="1019.1666666666667" y2="430"/>
+<text class="small" x="1009.1666666666667" y="447">1</text>
 <circle class="point" cx="874.2708333333334" cy="205" r="5"/>
 <circle class="point" cx="939.6895321117728" cy="255" r="5"/>
 <circle class="point" cx="904.7708333333334" cy="305" r="5"/>
-<line class="ci" x1="832.6003692135518" y1="375" x2="963.3014089037338" y2="375"/><polygon class="pool" points="890.9519307253096,375 897.9519307253096,368 904.9519307253096,375 897.9519307253096,382"/>
+<line class="ci" x1="832.6003692135517" y1="375" x2="963.3014089037339" y2="375"/>
+<polygon class="pool" points="890.9508890586428,375 897.9508890586428,368 904.9508890586428,375 897.9508890586428,382"/>
 <text class="panel-title" x="1120" y="118">Antagonist | supplemented pollination</text>
 <line class="axis" x1="1140" y1="425" x2="1390" y2="425"/>
-<line class="zero" x1="1265" y1="145" x2="1265" y2="425"/>
-<line class="axis" x1="1160.8333333333333" y1="425" x2="1160.8333333333333" y2="430"/><text class="small" x="1150.8333333333333" y="447">-1</text>
-<line class="axis" x1="1212.9166666666667" y1="425" x2="1212.9166666666667" y2="430"/><text class="small" x="1202.9166666666667" y="447">-0.5</text>
-<line class="axis" x1="1265" y1="425" x2="1265" y2="430"/><text class="small" x="1255" y="447">0</text>
-<line class="axis" x1="1317.0833333333333" y1="425" x2="1317.0833333333333" y2="430"/><text class="small" x="1307.0833333333333" y="447">0.5</text>
-<line class="axis" x1="1369.1666666666667" y1="425" x2="1369.1666666666667" y2="430"/><text class="small" x="1359.1666666666667" y="447">1</text>
+<line class="zero" x1="1265.0" y1="145" x2="1265.0" y2="425"/>
+<line class="axis" x1="1160.8333333333333" y1="425" x2="1160.8333333333333" y2="430"/>
+<text class="small" x="1150.8333333333333" y="447">-1</text>
+<line class="axis" x1="1212.9166666666667" y1="425" x2="1212.9166666666667" y2="430"/>
+<text class="small" x="1202.9166666666667" y="447">-0.5</text>
+<line class="axis" x1="1265.0" y1="425" x2="1265.0" y2="430"/>
+<text class="small" x="1255.0" y="447">0</text>
+<line class="axis" x1="1317.0833333333333" y1="425" x2="1317.0833333333333" y2="430"/>
+<text class="small" x="1307.0833333333333" y="447">0.5</text>
+<line class="axis" x1="1369.1666666666667" y1="425" x2="1369.1666666666667" y2="430"/>
+<text class="small" x="1359.1666666666667" y="447">1</text>
 <circle class="point" cx="1286.1458333333333" cy="205" r="5"/>
-<circle class="point" cx="1256.1312581441176" cy="255" r="5"/>
+<circle class="point" cx="1256.1312581441175" cy="255" r="5"/>
 <circle class="point" cx="1255.2083333333333" cy="305" r="5"/>
-<line class="ci" x1="1230.5164292834968" y1="375" x2="1281.6799670006435" y2="375"/><polygon class="pool" points="1249.0981986629034,375 1256.0981986629034,368 1263.0981986629034,375 1256.0981986629034,382"/>
+<line class="ci" x1="1230.5164292834968" y1="375" x2="1281.6799680423103" y2="375"/>
+<polygon class="pool" points="1249.0981986629035,375 1256.0981986629035,368 1263.0981986629035,375 1256.0981986629035,382"/>
 <rect class="note-box" x="55" y="500" width="1370" height="190" rx="14"/>
 <text class="panel-title" x="78" y="532">Specificity controls kept outside the strict Q1B pool</text>
 <text class="label" x="85" y="562">Trifolium repens — NEGATIVE_CONTROL_REANALYSIS_READY: no_independent_same_trait_opposition</text>
