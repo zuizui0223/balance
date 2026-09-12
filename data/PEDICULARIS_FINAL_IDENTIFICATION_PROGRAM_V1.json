@@ -1,0 +1,139 @@
+{
+  "program": "PEDICULARIS_FINAL_IDENTIFICATION_PROGRAM_V1",
+  "system": "Pedicularis rex",
+  "status": "DESIGN_REGISTERED_EXECUTION_NOT_STARTED",
+  "purpose": "Final direct-identification layer after literature-first synthesis in SCH, BALANCE, and BITA.",
+  "context_contract": {
+    "context_id": "population_x_season_x_protocol_version_TO_BE_FROZEN",
+    "fitness_scale_id": "undamaged_mature_viable_seeds_per_focal_flower",
+    "experimental_unit": "focal_flower_or_blossom_with_plant_id_retained_for_dependence",
+    "cluster_unit_for_uncertainty": "plant_id_or_higher_registered_block",
+    "sample_size_status": "POWER_CALIBRATED_AFTER_STAGE0_VARIANCE_PILOT"
+  },
+  "factors": {
+    "z": {
+      "role": "shared attraction-facing coordinate / corolla exsertion",
+      "levels": 5,
+      "level_values": "TO_BE_FROZEN_AFTER_MANIPULATION_VALIDATION",
+      "posthoc_outcome_based_level_selection_forbidden": true
+    },
+    "D": {
+      "role": "water-bract defence contrast",
+      "levels": 2,
+      "level_values": ["D0_LOW_OR_DISABLED", "D1_HIGH_OR_ENABLED"],
+      "must_preserve_z_and_pollinator_channel_as_far_as_registered": true
+    },
+    "G": {
+      "role": "selective seed-predator access",
+      "levels": 2,
+      "level_values": ["excluded", "present"],
+      "must_be_independent_of_D": true
+    },
+    "P": {
+      "role": "selective pollinator access/state",
+      "levels": 2,
+      "level_values": ["excluded_or_standardized_baseline", "present"],
+      "must_not_silently_toggle_G": true
+    }
+  },
+  "stage0_hard_gates": [
+    "qualify_conflict_active_population_season",
+    "validate_at_least_five_reversible_z_levels",
+    "validate_selective_G_intervention",
+    "validate_selective_P_intervention",
+    "validate_D_manipulation_without_material_z_or_reward_shift",
+    "freeze_common_fitness_measurement_protocol",
+    "freeze_randomization_and_plant_level_dependence_plan",
+    "freeze_BITA_low_high_A_contrast_before_target_interaction_analysis",
+    "qualify_BALANCE_D_world_as_a_prospectively_registered_accessible_architecture_not_merely_a_posthoc_best_treatment"
+  ],
+  "preferred_integrated_ecological_design": {
+    "formula": "z(5) x D(2) x G(2) x P(2)",
+    "nominal_cells": 40,
+    "execution_rule": "One randomized super-factorial may be used only if all selectivity and architecture-qualification gates pass.",
+    "independence_rule": "Shared raw infrastructure is allowed; inferential receipts remain paper-specific and dependence is retained."
+  },
+  "paper_receipts": {
+    "SCH": {
+      "slice": "D_fixed_at_preregistered_baseline; all_5_z x G2 x P2",
+      "nominal_cells_used": 20,
+      "primary_estimands": [
+        "z_P_star",
+        "z_G_star",
+        "z_C_star",
+        "optimum_shift_remove_G",
+        "optimum_shift_remove_P",
+        "opposed_functional_component_gradients"
+      ],
+      "positive_gate": "distinct_state_optima_plus_interior_combined_optimum_plus_opposing_shifts_plus_opposed_component_gradients",
+      "prohibited_promotion": "state_specific_optima_are_not_pure_function_optima_without_context_stability_gate"
+    },
+    "BALANCE": {
+      "slice": "full_ecological_state_G_present_P_present; registered_shared_world_vs_registered_z_by_D_accessible_world",
+      "nominal_cells_used_if_D_binary": 10,
+      "primary_estimands": [
+        "W_S_star",
+        "W_D_star",
+        "Delta_W_equals_W_D_star_minus_W_S_star"
+      ],
+      "prerequisite": "independent_SCH_receipt_conflict_active",
+      "positive_gate": "Delta_W_below_zero_with_joint_uncertainty",
+      "hard_stop": "if_D_world_is_not_a_biologically_defensible_accessible_architecture_BALANCE_must_use_another_system_or_design",
+      "historical_differentiation_not_inferred": true
+    },
+    "BITA": {
+      "slice": "two_prospectively_frozen_z_levels_as_A x D2 x G2 x P2",
+      "nominal_cells_used": 16,
+      "primary_estimands": [
+        "A0",
+        "A1",
+        "Delta_AD_W",
+        "antagonist_relief_at_P0_and_P1",
+        "pollinator_increment_at_G0_and_G1",
+        "m0_delta_or_justified_zero_baseline",
+        "A_x_D_x_G_x_P_four_way_separability"
+      ],
+      "positive_gate": "mechanism_allocation_only_if_consumer_interventions_selective_and_separability_supported",
+      "residual_name_before_independent_assay": "U_delta",
+      "prohibited_label": "do_not_call_residual_kappa_or_cost_by_subtraction"
+    }
+  },
+  "independent_remaining_channel_assay": {
+    "formula": "A(2) x D(2) under consumer-suppressed_or_standardized_conditions",
+    "nominal_cells": 4,
+    "example_condition": "standardized_hand_pollination_plus_predator_exclusion_if_biologically_valid",
+    "purpose": "Independent assay of direct physiological/allocation/joint channel after consumer-mediated channels are controlled.",
+    "scale_rule": "Sign comparison is allowed on a noncommensurate endpoint; magnitude comparison to U_delta requires a commensurate scale."
+  },
+  "reuse_rules": {
+    "allowed": [
+      "same_context_id",
+      "same_fitness_scale_id",
+      "shared_manipulation_validation",
+      "shared_environmental_covariates",
+      "declared_randomization_blocks",
+      "nested_slices_of_one_preregistered_superfactorial"
+    ],
+    "forbidden": [
+      "reuse_same_contrast_as_both_independent_prerequisite_and_outcome_proof_without_declared_dependency",
+      "choose_BITA_A_or_D_levels_after_viewing_Delta_AD_W",
+      "use_D_as_SCH_antagonist_G",
+      "call_BALANCE_worldline_difference_a_BITA_mechanism",
+      "call_BITA_residual_an_architecture_cost_without_independent_assay"
+    ]
+  },
+  "stop_rules": [
+    "SCH_no_conflict_stop_inheritance_to_BALANCE_or_BITA_conflict_claim",
+    "nonselective_P_or_G_intervention_stop_mechanism_allocation",
+    "invalid_z_or_D_manipulation_stop_full_program",
+    "BALANCE_architecture_qualification_failure_route_BALANCE_to_other_system_without_blocking_SCH_or_BITA",
+    "nonzero_four_way_beyond_equivalence_margin_retain_partial_identification",
+    "remaining_channel_assay_mismatch_report_omitted_channel_or_intervention_leakage"
+  ],
+  "ownership": {
+    "SCH": "shared_coordinate_conflict_identification",
+    "BALANCE": "matched_shared_vs_accessible_alternative_worldline_order",
+    "BITA": "trait_interaction_mechanism_allocation",
+    "SLK": "architecture_value_transport_R_K_Phi_accessibility_invasion_fixation_occupancy"
+  }
+}
