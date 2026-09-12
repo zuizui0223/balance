@@ -1,0 +1,33 @@
+{
+  "analysis": "PEDICULARIS_POWER_TARGETS_V1",
+  "status": "DO_NOT_RUN_POWER_UNTIL_ALL_REQUIRED_TARGETS_ARE_FROZEN",
+  "target_power": 0.8,
+  "alpha_two_sided": 0.05,
+  "target_source_rule": "Targets must be prospectively justified by biological relevance, theory, or independent prior information. Stage-0 observed treatment effects must not be used to select the minimum detectable effect.",
+  "nuisance_parameter_source": "PEDICULARIS_STAGE0_NUISANCE_RECEIPT_V1.json",
+  "SCH": {
+    "min_state_optimum_separation_z_units": "REQUIRED_BEFORE_USE",
+    "min_optimum_shift_z_units": "REQUIRED_BEFORE_USE",
+    "min_abs_component_gradient_seed_units_per_z": "REQUIRED_BEFORE_USE",
+    "minimum_combined_surface_curvature_seed_units_per_z2": "REQUIRED_BEFORE_USE",
+    "minimum_interior_distance_from_tested_boundary_z_units": "REQUIRED_BEFORE_USE"
+  },
+  "BALANCE": {
+    "min_abs_Delta_W_seed_units_per_flower": "REQUIRED_BEFORE_USE",
+    "decision_direction": "W_D_star_minus_W_S_star_below_zero",
+    "architecture_qualification_must_pass_before_powering": true
+  },
+  "BITA": {
+    "min_abs_Delta_AD_W_seed_units_per_flower": "REQUIRED_BEFORE_USE",
+    "min_positive_A1_seed_units_per_flower": "REQUIRED_BEFORE_USE",
+    "functional_release_A0_upper_boundary": 0.0,
+    "four_way_equivalence_margin_seed_units_per_flower": "REQUIRED_BEFORE_USE",
+    "m0_equivalence_margin_seed_units_per_flower_if_zero_baseline_claimed": "REQUIRED_BEFORE_USE"
+  },
+  "design": {
+    "candidate_plants": "REQUIRED_BEFORE_USE",
+    "candidate_flowers_per_plant": "REQUIRED_BEFORE_USE",
+    "allocation_rule": "REQUIRED_BEFORE_USE",
+    "attrition_inflation_rule": "REQUIRED_BEFORE_USE"
+  }
+}
