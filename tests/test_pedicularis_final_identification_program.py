@@ -1,3 +1,4 @@
+import csv
 import json
 from pathlib import Path
 
@@ -5,6 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "data" / "PEDICULARIS_FINAL_IDENTIFICATION_PROGRAM_V1.json"
 CHAIN = ROOT / "docs" / "PEDICULARIS_THREE_WORLD_CHAIN_V1.md"
+STAGE0 = ROOT / "docs" / "PEDICULARIS_THREE_PAPER_STAGE0_OVERLAY_V1.md"
+PILOT_TEMPLATE = ROOT / "data" / "PEDICULARIS_STAGE0_PILOT_TEMPLATE_V1.csv"
 
 
 def _manifest():
@@ -60,3 +63,40 @@ def test_bita_levels_are_frozen_before_target_interaction_analysis():
     assert "freeze_BITA_low_high_A_contrast_before_target_interaction_analysis" in m["stage0_hard_gates"]
     chain = CHAIN.read_text(encoding="utf-8")
     assert "not chosen post hoc to maximize `Delta_AD W`" in chain
+
+
+def test_stage0_overlay_is_qualification_only_and_sample_size_remains_unfrozen():
+    text = STAGE0.read_text(encoding="utf-8")
+    assert "SAMPLE_SIZE = NOT FROZEN" in text
+    assert "Stage-0 is **not** used to claim positive SCH conflict, BALANCE occupancy, or BITA mechanism allocation" in text
+    assert "BALANCE_PEDICULARIS_ARCHITECTURE_GATE = FAIL" in text
+    assert "Do **not** use water retained/drained as `G`" in text
+
+
+def test_stage0_template_preserves_manipulation_checks_dependence_and_fitness_fields():
+    with PILOT_TEMPLATE.open(encoding="utf-8", newline="") as handle:
+        header = next(csv.reader(handle))
+    required = {
+        "context_id",
+        "plant_id",
+        "flower_id",
+        "block_id",
+        "stage0_module",
+        "assigned_z_level",
+        "target_z",
+        "realized_z",
+        "D_state",
+        "G_state",
+        "P_state",
+        "water_defence_measure",
+        "seed_predator_attack_indicator",
+        "predation_damage_measure",
+        "pollinator_visit_count",
+        "pollen_receipt_measure",
+        "nectar_or_reward_measure",
+        "flower_geometry_check",
+        "mechanical_damage_check",
+        "undamaged_mature_viable_seed_count",
+        "missing_or_loss_reason",
+    }
+    assert required.issubset(set(header))
