@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Sequence
 
 
@@ -53,6 +54,8 @@ def analyze_worldline_path(
 
     if n < 2 or not (len(Ws) == len(Wd) == len(L) == n):
         raise ValueError("all paths must have equal length >= 2")
+    if not all(math.isfinite(x) for values in (e, Ws, Wd, L) for x in values) or not math.isfinite(tol):
+        raise ValueError("all path values and tolerance must be finite")
     if any(e[i + 1] <= e[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if any(x < 0 for x in L):
