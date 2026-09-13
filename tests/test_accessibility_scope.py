@@ -44,7 +44,7 @@ def test_robust_non_balance_returns_no_depth():
     assert result.depth_upper is None
 
 
-def test_no_positive_conflict_fails_before_architecture_scope():
+def test_zero_conflict_is_the_only_no_positive_conflict_state():
     result = accessibility_scope_bounds(
         conflict_load=0.0,
         reserve_definite=0.5,
@@ -53,6 +53,13 @@ def test_no_positive_conflict_fails_before_architecture_scope():
     assert result.classification == "NO_POSITIVE_CONFLICT"
     assert result.depth_lower is None
     assert result.depth_upper is None
+
+    with pytest.raises(ValueError, match="conflict_load must be non-negative"):
+        accessibility_scope_bounds(
+            conflict_load=-0.1,
+            reserve_definite=0.5,
+            reserve_possible=0.2,
+        )
 
 
 def test_sch_facing_margin_can_make_depth_scope_invariant():
@@ -64,6 +71,15 @@ def test_sch_facing_margin_can_make_depth_scope_invariant():
     assert result.scope_fragility == pytest.approx(0.5)
     assert result.depth_lower == pytest.approx(0.1)
     assert result.depth_upper == pytest.approx(0.1)
+
+
+def test_unrepresentable_scope_fragility_fails_closed():
+    with pytest.raises(ValueError, match="scope fragility must remain finite"):
+        accessibility_scope_bounds(
+            conflict_load=1.0,
+            reserve_definite=1.0e308,
+            reserve_possible=-1.0e308,
+        )
 
 
 def test_invalid_nested_reserve_order_fails_closed():
