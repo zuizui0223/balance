@@ -53,6 +53,23 @@ SLK-facing boundary = Phi=0
 
 Legacy occurrences of `BITA-facing boundary` refer historically to the same architecture-value surface but are deprecated terminology after the SLK split.
 
+## Legacy API compatibility
+
+Existing public code may still contain identifiers such as
+
+```text
+bita_differentiation_favoured
+bita_boundary_distance
+finite_bita_boundary
+bita_limited_width
+BITA_DIFFERENTIATION_WORLD
+BALANCE_BITA_INTERFACE
+```
+
+These names are retained temporarily as **backward-compatible API aliases only**. They do not assign scientific ownership of the `Phi=0` boundary to BITA. New prose, new theory objects, and new public APIs should use `slk_*` or neutral `architecture_*` terminology.
+
+Do not bulk-rename legacy fields unless compatibility tests and downstream users are migrated together. Semantic closure takes precedence over cosmetic renaming.
+
 ## General versus model-specific statements
 
 The general architecture margin is
@@ -120,4 +137,4 @@ SLK: value and realization hierarchy
 BITA: mechanism identification for trait interactions
 ```
 
-No additional focal experimental design is required to close this theoretical ownership structure.
+No additional focal experimental design or new theorem is required to close this theoretical ownership structure. Remaining work is editorial synchronization, empirical testing, or optional extension beyond the registered model classes.
