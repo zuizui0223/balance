@@ -1,6 +1,8 @@
 import math
 import random
 
+import pytest
+
 from balance_domain import analyze_balance_path, switching_cost_state
 
 
@@ -115,3 +117,15 @@ def test_longer_context_shrinks_hysteresis_band():
     short = switching_cost_state(0.0, horizon=5, cost_shared_to_diff=1, cost_diff_to_shared=1)
     long = switching_cost_state(0.0, horizon=20, cost_shared_to_diff=1, cost_diff_to_shared=1)
     assert long.hysteresis_width < short.hysteresis_width
+
+
+def test_switching_state_rejects_nonfinite_inputs_in_finite_horizon_model():
+    bad_cases = (
+        dict(phi=math.nan, horizon=10, cost_shared_to_diff=1, cost_diff_to_shared=1),
+        dict(phi=0.0, horizon=math.inf, cost_shared_to_diff=1, cost_diff_to_shared=1),
+        dict(phi=0.0, horizon=10, cost_shared_to_diff=math.nan, cost_diff_to_shared=1),
+        dict(phi=0.0, horizon=10, cost_shared_to_diff=1, cost_diff_to_shared=math.inf),
+    )
+    for kwargs in bad_cases:
+        with pytest.raises(ValueError):
+            switching_cost_state(**kwargs)

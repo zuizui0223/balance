@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 
 @dataclass(frozen=True)
@@ -39,6 +40,8 @@ def switching_cost_state(
     csd = float(cost_shared_to_diff)
     cds = float(cost_diff_to_shared)
     p = float(phi)
+    if not all(math.isfinite(value) for value in (p, T, csd, cds)):
+        raise ValueError("phi, horizon, and switching costs must be finite")
     if T <= 0:
         raise ValueError("horizon must be positive")
     if csd < 0 or cds < 0:
