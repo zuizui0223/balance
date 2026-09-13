@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,8 @@ def _validate(environment, conflict, reserve) -> None:
         raise ValueError("environment, conflict and reserve must have equal length")
     if len(environment) < 2:
         raise ValueError("at least two path points are required")
+    if not all(math.isfinite(value) for values in (environment, conflict, reserve) for value in values):
+        raise ValueError("environment, conflict and reserve must be finite")
     if any(environment[i + 1] <= environment[i] for i in range(len(environment) - 1)):
         raise ValueError("environment must be strictly increasing")
     if any(value < 0 for value in conflict):
@@ -48,7 +51,6 @@ def deepest_middle_point(environment, conflict, reserve) -> DeepestMiddleWorldPo
         if len(exact) > 1:
             raise ValueError("equal-margin point is not unique on the sampled path")
         i = exact[0]
-        value = conflict[i]
         total = conflict[i] + reserve[i]
         if total <= 0:
             raise ValueError("equal-margin point must have positive total margin")
