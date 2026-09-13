@@ -43,6 +43,34 @@ def test_decomposed_bridge_must_match_direct_worldline_gap_and_position():
     assert math.isclose(result.decomposed_middle_position, result.direct_middle_position)
 
 
+def test_extreme_direct_and_decomposed_reserves_share_canonical_half_position():
+    result = compare_worldlines(
+        shared_optimum_fitness=1.0e308,
+        differentiated_optimum_fitness=0.0,
+        conflict_load=1.0e308,
+        decoupling=0.0,
+        architecture_cost=1.0e308,
+    )
+    assert result.state == "BALANCE_MIDDLE_WORLD"
+    assert result.bridge_consistent is True
+    assert result.direct_reserve == pytest.approx(1.0e308)
+    assert result.decomposed_reserve == pytest.approx(1.0e308)
+    assert result.direct_middle_position == pytest.approx(0.5)
+    assert result.decomposed_middle_position == pytest.approx(0.5)
+    assert result.parallel_world_residual == pytest.approx(0.0)
+
+
+def test_unrepresentable_parallel_world_residual_fails_closed():
+    with pytest.raises(ValueError, match="parallel-world residual"):
+        compare_worldlines(
+            shared_optimum_fitness=0.0,
+            differentiated_optimum_fitness=1.0e308,
+            conflict_load=1.0e308,
+            decoupling=0.0,
+            architecture_cost=1.0e308,
+        )
+
+
 def test_scale_or_model_mismatch_is_exposed_as_parallel_world_residual_and_coordinate_mismatch():
     result = compare_worldlines(
         10.0,

@@ -16,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
-from .boundary import classify_two_margin_point
+from .boundary import classify_two_margin_point, two_margin_middle_position
 
 
 @dataclass(frozen=True)
@@ -124,7 +124,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     bita_width = Lcrit - Lequal
     fraction = Lequal / Lcrit
     rho_equal = K - s * Lequal
-    xi_equal = Lequal / (Lequal + rho_equal)
+    xi_equal = two_margin_middle_position(Lequal, rho_equal)
     pressure_equal = s * Lequal / K
     skew = bita_width / sch_width
     return BalanceDomainGeometry(
@@ -205,8 +205,7 @@ def classify_middle_world(
         state = "BITA_DIFFERENTIATION_WORLD"
 
     if state == "BALANCE_MIDDLE_WORLD":
-        denom = L + rho
-        xi = L / denom if denom > 0 else None
+        xi = two_margin_middle_position(L, rho)
         depth = min(L, rho)
         sch_distance = L
         bita_distance = rho

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
-from .boundary import classify_two_margin_point
+from .boundary import classify_two_margin_point, two_margin_middle_position
 
 
 @dataclass(frozen=True)
@@ -79,8 +79,8 @@ def normalized_phase_point(
         subregion = None
     elif point.reserve_position == "POSITIVE":
         state = "BALANCE_MIDDLE_WORLD"
-        # xi = L/(L+K-sL); divide numerator and denominator by K.
-        xi = c / (c + normalized_reserve)
+        # xi = L/(L+K-sL); divide both margins by K.
+        xi = two_margin_middle_position(c, normalized_reserve)
         if abs(c - ridge) <= tol:
             subregion = "DEEPEST_BALANCE_RIDGE"
         elif c < ridge:

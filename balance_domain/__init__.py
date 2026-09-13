@@ -7,6 +7,7 @@ from .boundary import (
     analyze_two_margin_path,
     classify_two_margin_point,
     positive_support_monotone,
+    two_margin_middle_position,
 )
 from .static import BalancePathResult, BalancePathTopologyError, analyze_balance_path
 from .dynamics import SwitchingCostResult, switching_cost_state
@@ -205,6 +206,7 @@ __all__ = [
     "switching_cost_state",
     "threat_fragility_index",
     "threat_switch_bound",
+    "two_margin_middle_position",
     "validate_normalized_rows",
     "width_depth_bounds",
 ]
