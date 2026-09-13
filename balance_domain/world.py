@@ -43,6 +43,7 @@ class BalanceDomainGeometry:
     max_two_sided_depth: float | None
     equal_margin_fraction_of_conflict_width: float | None
     criticality_index_at_equal_margin: float | None
+    architecture_pressure_ratio_at_equal_margin: float | None
     sch_limited_width: float | None
     bita_limited_width: float | None
     bita_to_sch_width_ratio: float | None
@@ -76,6 +77,10 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     and therefore ``W_B/W_S = 1/s``.  Architecture cost ``K`` scales the whole
     interval, whereas decoupling ``s`` controls its normalized skew/shape.
 
+    ``criticality_index_at_equal_margin`` is the manuscript coordinate
+    ``xi=L/(L+rho)``.  The distinct ratio ``sL/K`` is reported separately as
+    ``architecture_pressure_ratio_at_equal_margin``.
+
     When ``s=0`` no finite BITA-facing boundary exists: added dimensionality
     recovers none of the conflict load. The equal-margin point is therefore not
     treated as a unique finite domain centre.
@@ -99,6 +104,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
             max_two_sided_depth=None,
             equal_margin_fraction_of_conflict_width=None,
             criticality_index_at_equal_margin=None,
+            architecture_pressure_ratio_at_equal_margin=None,
             sch_limited_width=None,
             bita_limited_width=None,
             bita_to_sch_width_ratio=None,
@@ -109,7 +115,9 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     sch_width = Lequal
     bita_width = Lcrit - Lequal
     fraction = None if Lcrit == 0 else Lequal / Lcrit
-    q_equal = None if K == 0 else s * Lequal / K
+    rho_equal = K - s * Lequal
+    xi_equal = None if Lequal + rho_equal == 0 else Lequal / (Lequal + rho_equal)
+    pressure_equal = None if K == 0 else s * Lequal / K
     skew = None if sch_width == 0 else bita_width / sch_width
     return BalanceDomainGeometry(
         decoupling=s,
@@ -119,7 +127,8 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         equal_margin_conflict_load=Lequal,
         max_two_sided_depth=Lequal,
         equal_margin_fraction_of_conflict_width=fraction,
-        criticality_index_at_equal_margin=q_equal,
+        criticality_index_at_equal_margin=xi_equal,
+        architecture_pressure_ratio_at_equal_margin=pressure_equal,
         sch_limited_width=sch_width,
         bita_limited_width=bita_width,
         bita_to_sch_width_ratio=skew,
