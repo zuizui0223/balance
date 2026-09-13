@@ -81,9 +81,13 @@ def test_extreme_opposite_affines_recover_switch_missed_by_float_overflow():
         start=0.0,
         end=2.0,
     )
-    assert [(s.start, s.end, s.active_alternative) for s in segments] == pytest.approx(
-        [(0.0, 1.0, 1), (1.0, 2.0, 0)]
-    )
+    assert len(segments) == 2
+    assert segments[0].start == pytest.approx(0.0)
+    assert segments[0].end == pytest.approx(1.0)
+    assert segments[0].active_alternative == 1
+    assert segments[1].start == pytest.approx(1.0)
+    assert segments[1].end == pytest.approx(2.0)
+    assert segments[1].active_alternative == 0
 
 
 def test_same_sign_huge_interval_midpoint_does_not_overflow_active_identity():
