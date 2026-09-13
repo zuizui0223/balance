@@ -1,5 +1,7 @@
 import math
 
+import pytest
+
 from balance_domain.sensitivity import boundary_sensitivity, deepest_point_sensitivity
 
 
@@ -32,17 +34,54 @@ def test_equal_margin_shift_changes_depth_not_location():
     assert math.isclose(result.depth_shift, 0.7)
 
 
-def test_singular_slopes_fail_closed():
-    try:
-        boundary_sensitivity(a0=1.0, L_prime0=0.0, b2=1.0, rho_prime2=-1.0)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("zero boundary slope should fail")
+def test_large_finite_coefficients_with_finite_true_sensitivity_are_preserved():
+    # Naive floating algebra forms both 2e308/2e308 and inf-inf here.
+    # The exact sensitivity is nevertheless finite and simple.
+    result = deepest_point_sensitivity(
+        a=1.0e308,
+        b=-1.0e308,
+        L_prime=1.0e308,
+        rho_prime=-1.0e308,
+    )
+    assert result.location_shift == pytest.approx(-1.0)
+    assert result.depth_shift == pytest.approx(0.0)
 
-    try:
+
+def test_unrepresentable_boundary_sensitivity_fails_closed():
+    with pytest.raises(ValueError, match="remain finite"):
+        boundary_sensitivity(
+            a0=1.0e308,
+            L_prime0=1.0e-308,
+            b2=1.0,
+            rho_prime2=-1.0,
+        )
+
+
+def test_unrepresentable_width_shift_fails_even_when_individual_shifts_are_finite():
+    # de0=-1e308 and de2=+1e308 are individually representable, while their
+    # width derivative is +2e308 and therefore is not.
+    with pytest.raises(ValueError, match="width sensitivity must remain finite"):
+        boundary_sensitivity(
+            a0=1.0e308,
+            L_prime0=1.0,
+            b2=1.0e308,
+            rho_prime2=-1.0,
+        )
+
+
+def test_unrepresentable_deepest_location_sensitivity_fails_closed():
+    with pytest.raises(ValueError, match="location sensitivity must remain finite"):
+        deepest_point_sensitivity(
+            a=1.0e308,
+            b=-1.0e308,
+            L_prime=1.0e-308,
+            rho_prime=-1.0e-308,
+        )
+
+
+def test_singular_slopes_fail_closed():
+    with pytest.raises(ValueError):
+        boundary_sensitivity(a0=1.0, L_prime0=0.0, b2=1.0, rho_prime2=-1.0)
+
+    with pytest.raises(ValueError):
         deepest_point_sensitivity(a=1.0, b=0.0, L_prime=1.0, rho_prime=1.0)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("zero deepest-point denominator should fail")
