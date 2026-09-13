@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import math
 from typing import Sequence
 
-from .boundary import analyze_two_margin_path
+from .boundary import DEFAULT_BOUNDARY_TOLERANCE, analyze_two_margin_path
 
 
 @dataclass(frozen=True)
@@ -34,7 +34,7 @@ def analyze_worldline_path(
     differentiated_optimum_fitness: Sequence[float],
     conflict_load: Sequence[float],
     *,
-    tolerance: float = 1e-9,
+    tolerance: float = DEFAULT_BOUNDARY_TOLERANCE,
 ) -> WorldlinePathResult:
     """Identify BALANCE directly from two matched optimized worldlines.
 
