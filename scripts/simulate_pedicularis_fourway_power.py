@@ -8,8 +8,19 @@ contributes one observation to every factorial cell. This is a qualification
 scaffold, not a final analysis model. Dry-run estimates should replace all
 placeholder values before use for design decisions.
 
-The simulation works on plant-level factorial contrasts, preserving plant-level
-shared random variation without pretending flowers are independent plants.
+Important limitation
+--------------------
+Under a perfectly balanced complete 16-cell within-plant contrast, a pure plant
+random intercept cancels algebraically because the signed four-way coefficients
+sum to zero. Therefore ``plant_sd`` does not materially affect power in this
+complete-case scaffold. It is retained only to make the data-generating process
+explicit. In a realistic incomplete or unequal-replication hierarchical design,
+plant-level variance and covariance matter and must be estimated from the dry run.
+
+Likewise, the current implementation discards a plant if any of its 16 cells is
+missing. This is intentionally conservative and can make attrition look extremely
+costly. It should be replaced by a hierarchical partial-data simulation before
+final field sample-size decisions.
 """
 
 from __future__ import annotations
@@ -81,7 +92,6 @@ def simulate_one(cfg: Config, rng: random.Random) -> tuple[float, float, int] | 
 
 
 def normal_critical(alpha: float) -> float:
-    # Two-sided normal critical value via statistics.NormalDist (stdlib).
     return statistics.NormalDist().inv_cdf(1.0 - alpha / 2.0)
 
 
