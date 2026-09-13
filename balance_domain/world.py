@@ -67,7 +67,9 @@ def _positive_fraction_to_float(value: F, name: str) -> float:
             f"{name} is finite mathematically but not representable as float; rescale fitness units"
         )
     if out == 0.0:
-        raise ValueError(f"{name} underflows float precision; rescale fitness units")
+        raise ValueError(
+            f"{name} underflows float precision; rescale fitness units"
+        )
     return out
 
 
@@ -80,12 +82,44 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     but they have no positive-width BALANCE interval and must not be promoted to
     an interior deepest-point geometry.
 
-    For ``s>0`` and ``K>0`` the static middle world is ``0 < L < K/s``. The
-    equal-margin point is ``K/(1+s)``. All finite-interval quantities are
-    evaluated exactly at the supplied-float level before conversion back to
-    float. A mathematically finite positive boundary/width/ratio that cannot be
-    represented by the float-valued API fails closed rather than appearing as
-    ``inf`` or ``0`` while ``finite_bita_boundary`` remains true.
+    For ``s>0`` and ``K>0`` the static middle world is
+
+        0 < L < K/s.
+
+    In the common fitness-margin coordinates used by :func:`classify_middle_world`,
+    the point equally far from the SCH boundary and the BITA boundary satisfies
+
+        L = K-sL,
+
+    hence
+
+        L_equal = K/(1+s).
+
+    At this point ``xi=1/2`` and the two-sided depth ``min(L, K-sL)`` is maximal.
+    It is *not* generally halfway along the conflict-load interval ``(0, K/s)``.
+
+    The interval can be split into a SCH-boundary-limited segment and a
+    BITA-boundary-limited segment. Their widths are
+
+        W_S = K/(1+s)
+        W_B = K/[s(1+s)]
+
+    and therefore ``W_B/W_S = 1/s``. Architecture cost ``K`` scales the whole
+    interval, whereas decoupling ``s`` controls its normalized skew/shape.
+
+    ``criticality_index_at_equal_margin`` is the manuscript coordinate
+    ``xi=L/(L+rho)``. The distinct ratio ``sL/K`` is reported separately as
+    ``architecture_pressure_ratio_at_equal_margin``.
+
+    When ``s=0`` (with ``K>0``) no finite BITA-facing boundary exists: added
+    dimensionality recovers none of the conflict load. The finite-interval
+    centre quantities are therefore left undefined.
+
+    For ``s>0``, all finite-interval quantities are evaluated exactly at the
+    supplied-float level before conversion back to float. If a mathematically
+    finite boundary/width/ratio cannot be represented as a finite positive
+    float, the helper fails closed rather than returning ``inf`` or ``0`` while
+    still claiming ``finite_bita_boundary=True``.
     """
     s = float(decoupling)
     K = float(architecture_cost)
@@ -115,6 +149,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     s_q = F.from_float(s)
     k_q = F.from_float(K)
     one = F(1, 1)
+
     lcrit_q = k_q / s_q
     lequal_q = k_q / (one + s_q)
     sch_width_q = lequal_q
@@ -127,8 +162,12 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     Lequal = _positive_fraction_to_float(lequal_q, "equal-margin conflict load")
     sch_width = _positive_fraction_to_float(sch_width_q, "SCH-limited width")
     bita_width = _positive_fraction_to_float(bita_width_q, "BITA-limited width")
-    fraction = _positive_fraction_to_float(fraction_q, "equal-margin fraction of conflict width")
-    pressure_equal = _positive_fraction_to_float(pressure_q, "architecture-pressure ratio at equal margin")
+    fraction = _positive_fraction_to_float(
+        fraction_q, "equal-margin fraction of conflict width"
+    )
+    pressure_equal = _positive_fraction_to_float(
+        pressure_q, "architecture-pressure ratio at equal margin"
+    )
     skew = _positive_fraction_to_float(skew_q, "BITA-to-SCH width ratio")
 
     return BalanceDomainGeometry(
@@ -154,7 +193,30 @@ def classify_middle_world(
     *,
     tolerance: float = 1e-12,
 ) -> MiddleWorldCertificate:
-    """Classify one context in the three-world programme."""
+    """Classify one context in the three-world programme.
+
+    Parameters
+    ----------
+    conflict_load
+        Fitness-scale loss created by forcing the functions onto one shared
+        coordinate. ``L = 0`` is the SCH-facing no-conflict boundary.
+    decoupling
+        Fraction ``s`` of the conflict load recoverable by adding dimensionality.
+    architecture_cost
+        Additional architecture cost ``K`` on the same fitness scale.
+
+    Returns
+    -------
+    MiddleWorldCertificate
+        In the BALANCE state, ``middle_position`` is
+
+            xi = L / (L + rho),  rho = K - sL,
+
+        so xi -> 0 approaches the SCH-facing boundary and xi -> 1 approaches
+        the BITA-facing differentiation boundary. ``two_sided_depth`` is
+        ``min(L, rho)`` and measures how deeply the context lies inside the
+        middle world in the common fitness units.
+    """
     L = float(conflict_load)
     s = float(decoupling)
     K = float(architecture_cost)
