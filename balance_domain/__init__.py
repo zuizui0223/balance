@@ -1,6 +1,6 @@
 """Core API for Chapter 2 BALANCE-domain analysis."""
 
-from .static import BalancePathResult, analyze_balance_path
+from .static import BalancePathResult, BalancePathTopologyError, analyze_balance_path
 from .dynamics import SwitchingCostResult, switching_cost_state
 from .world import (
     BalanceDomainGeometry,
@@ -104,6 +104,7 @@ __all__ = [
     "AccessibilityScopeBounds",
     "BalanceDomainGeometry",
     "BalancePathResult",
+    "BalancePathTopologyError",
     "BoundarySensitivity",
     "CONTRAST_ORDER",
     "ConcaveSegmentCertificate",
