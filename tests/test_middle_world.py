@@ -63,6 +63,18 @@ def test_middle_coordinates_are_only_defined_on_common_fitness_scale_middle_worl
         assert result.two_sided_depth is None
 
 
+def test_positive_recoverable_loss_cannot_underflow_into_false_interface():
+    # L is above the registered conflict tolerance and s is strictly positive,
+    # so with K=0 the exact architecture margin is positive. The old float
+    # product underflowed sL to zero and mislabeled this as the interface.
+    with pytest.raises(ValueError, match="recoverable loss underflows"):
+        classify_middle_world(
+            conflict_load=1.0e-11,
+            decoupling=5.0e-324,
+            architecture_cost=0.0,
+        )
+
+
 def test_invalid_inputs_fail_closed():
     with pytest.raises(ValueError):
         classify_middle_world(-0.1, 0.5, 0.2)

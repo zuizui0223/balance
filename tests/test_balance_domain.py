@@ -85,6 +85,52 @@ def test_integrated_reserve_is_clipped_to_balance_interval():
     assert math.isclose(result.integrated_reserve, 0.25, abs_tol=1e-9)
 
 
+def test_static_path_uses_canonical_middle_position_at_extreme_equal_margins():
+    result = analyze_balance_path(
+        environment=[0.0, 1.0],
+        conflict_load=[1.0e308, 1.0e308],
+        decoupling=[0.0, 0.0],
+        architecture_cost=[1.0e308, 1.0e308],
+    )
+    assert result.states == ("BALANCE", "BALANCE")
+    assert result.criticality_index == pytest.approx((0.5, 0.5))
+    assert result.integrated_reserve == pytest.approx(1.0e308)
+
+
+def test_extreme_phi_crossing_is_recovered_without_inf_over_inf():
+    result = analyze_balance_path(
+        environment=[0.0, 1.0],
+        conflict_load=[1.0e308, 1.0e308],
+        decoupling=[0.0, 1.0],
+        architecture_cost=[1.0e308, 0.0],
+    )
+    assert result.margin == pytest.approx((-1.0e308, 1.0e308))
+    assert result.zero_crossings == pytest.approx((0.5,))
+    assert result.balance_intervals[0][0] == pytest.approx(0.0)
+    assert result.balance_intervals[0][1] == pytest.approx(0.5)
+    assert result.integrated_reserve == pytest.approx(2.5e307)
+
+
+def test_positive_path_recoverable_loss_cannot_underflow_to_interface():
+    with pytest.raises(ValueError, match="recoverable loss underflows"):
+        analyze_balance_path(
+            environment=[0.0, 1.0],
+            conflict_load=[1.0e-11, 1.0e-11],
+            decoupling=[5.0e-324, 5.0e-324],
+            architecture_cost=[0.0, 0.0],
+        )
+
+
+def test_unrepresentable_integrated_reserve_fails_closed():
+    with pytest.raises(ValueError, match="integrated reserve.*not representable"):
+        analyze_balance_path(
+            environment=[0.0, 2.0],
+            conflict_load=[1.0e308, 1.0e308],
+            decoupling=[0.0, 0.0],
+            architecture_cost=[1.0e308, 1.0e308],
+        )
+
+
 def test_balance_width_is_always_bounded_by_environment_span():
     rng = random.Random(20260913)
     environment = [0, 1, 2, 3, 4]
