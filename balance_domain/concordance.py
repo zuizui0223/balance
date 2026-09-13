@@ -16,9 +16,19 @@ class CriticalConcordanceResult:
 
 
 def _crossing(e0: float, e1: float, y0: float, y1: float) -> float:
+    """Interpolate an opposite-sign crossing without overflowing y1-y0."""
     if y1 == y0:
-        return (e0 + e1) / 2.0
-    return e0 + (-y0) * (e1 - e0) / (y1 - y0)
+        return 0.5 * e0 + 0.5 * e1
+    scale = max(abs(y0), abs(y1))
+    if scale == 0.0:
+        return 0.5 * e0 + 0.5 * e1
+    sy0 = y0 / scale
+    sy1 = y1 / scale
+    fraction = -sy0 / (sy1 - sy0)
+    crossing = (1.0 - fraction) * e0 + fraction * e1
+    if not math.isfinite(crossing):
+        raise ValueError("interpolated critical point must remain finite")
+    return crossing
 
 
 def _zero_crossings(
@@ -32,16 +42,19 @@ def _zero_crossings(
         y0, y1 = values[i], values[i + 1]
         if abs(y0) <= tolerance:
             out.append(environment[i])
-        elif y0 * y1 < 0:
+        elif (
+            (y0 < -tolerance and y1 > tolerance)
+            or (y0 > tolerance and y1 < -tolerance)
+        ):
             out.append(_crossing(environment[i], environment[i + 1], y0, y1))
     if abs(values[-1]) <= tolerance:
         out.append(environment[-1])
 
-    deduped: list[float] = []
-    for x in out:
-        if not deduped or abs(x - deduped[-1]) > tolerance:
-            deduped.append(x)
-    return tuple(deduped)
+    # Do not deduplicate environmental coordinates with a tolerance expressed in
+    # gap/fitness units. Exact-zero nodes and interpolated crossings are emitted
+    # once by construction; distinct environmental critical points remain
+    # distinct regardless of the numerical value tolerance used for the gaps.
+    return tuple(out)
 
 
 def compare_critical_paths(
@@ -59,7 +72,9 @@ def compare_critical_paths(
 
     A common critical point is claimed only when each path has exactly one
     zero crossing and their environmental locations agree within the
-    prospectively supplied ``critical_point_tolerance``.
+    prospectively supplied ``critical_point_tolerance``. ``value_tolerance``
+    applies only to the gap values; it is never reused as an environmental
+    coordinate tolerance.
     """
     e = tuple(float(x) for x in environment)
     direct = tuple(float(x) for x in direct_worldline_gap)
@@ -87,6 +102,8 @@ def compare_critical_paths(
         return CriticalConcordanceResult(dc, mc, None, "MULTIPLE_OR_UNMATCHED_CRITICAL_POINTS")
 
     delta = dc[0] - mc[0]
+    if not math.isfinite(delta):
+        raise ValueError("critical-point difference overflowed; rescale environmental units")
     if abs(delta) <= critical_point_tolerance:
         status = "SAME_CRITICAL_POINT"
     else:

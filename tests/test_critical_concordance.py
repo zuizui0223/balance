@@ -1,5 +1,7 @@
 import math
 
+import pytest
+
 from balance_domain.concordance import compare_critical_paths
 
 
@@ -46,3 +48,36 @@ def test_no_crossing_is_not_forced_into_a_critical_point():
     )
     assert result.status == "NO_CRITICAL_CROSSING"
     assert result.critical_point_difference is None
+
+
+def test_extreme_finite_gap_magnitudes_recover_midpoint_crossing():
+    result = compare_critical_paths(
+        environment=[0.0, 10.0],
+        direct_worldline_gap=[-1.0e308, 1.0e308],
+        decomposed_gap=[-5.0e307, 5.0e307],
+    )
+    assert result.status == "SAME_CRITICAL_POINT"
+    assert result.direct_crossings == pytest.approx((5.0,))
+    assert result.decomposed_crossings == pytest.approx((5.0,))
+
+
+def test_gap_value_tolerance_does_not_merge_distinct_environmental_zero_nodes():
+    result = compare_critical_paths(
+        environment=[0.0, 1.0e-12, 2.0e-12],
+        direct_worldline_gap=[0.0, 0.0, 1.0],
+        decomposed_gap=[0.0, 1.0, 1.0],
+        value_tolerance=1.0e-9,
+        critical_point_tolerance=1.0e-15,
+    )
+    assert result.direct_crossings == (0.0, 1.0e-12)
+    assert result.decomposed_crossings == (0.0,)
+    assert result.status == "MULTIPLE_OR_UNMATCHED_CRITICAL_POINTS"
+
+
+def test_unrepresentable_critical_point_difference_fails_closed():
+    with pytest.raises(ValueError, match="difference overflowed"):
+        compare_critical_paths(
+            environment=[-1.0e308, 0.0, 1.0e308],
+            direct_worldline_gap=[-1.0, 9.0, 9.0],
+            decomposed_gap=[-9.0, -9.0, 1.0],
+        )
