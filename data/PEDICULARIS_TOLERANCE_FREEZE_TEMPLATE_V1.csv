@@ -1,0 +1,18 @@
+endpoint,role,raw_unit,mandatory,repeatability_error,untreated_short_interval_variation,nv_floor_fraction,nv_floor,biologically_negligible_change,registered_lower_bound,registered_upper_bound,resolvable,efficacy_threshold_if_applicable,rationale,source_or_stage0_reference,status
+realized_exsertion_mm,Q1 intended efficacy,mm,yes,,,,,,,,,eta_A,,,OPEN
+bract_water_volume_uL,Q1 protected D,uL,yes,,,,,,,,,,,OPEN
+corolla_aperture_mm,Q1 protected geometry,mm,yes,,,,,,,,,,,OPEN
+flower_orientation_deg,Q1 protected geometry,degree,yes,,,,,,,,,,,OPEN
+visible_damage_score,Q1 protected condition,ordinal,yes,,,,,,,,,,,OPEN
+flower_longevity_hours,Q1 protected condition,hour,yes,,,,,,,,,,,OPEN
+nectar_volume_uL,Q1 conditional protected reward,uL,conditional,,,,,,,,,,,OPEN
+predator_attack_or_oviposition,Q3 intended efficacy,registered rate or binary,yes,,,,,,,,,eta_G,,,OPEN
+pollinator_access_validated,Q3 protected pollinator access,binary,yes,,,,,,,,,,,OPEN
+pollinator_visitation_rate,Q3 conditional protected pollinator response,visits per flower-hour,conditional,,,,,,,,,,,OPEN
+legitimate_handling_time_or_success,Q3 conditional protected pollinator response,registered unit,conditional,,,,,,,,,,,OPEN
+realized_exsertion_mm,Q3 protected A,mm,yes,,,,,,,,,,,OPEN
+bract_water_volume_uL,Q3 protected D,uL,yes,,,,,,,,,,,OPEN
+corolla_aperture_mm,Q3 protected geometry,mm,yes,,,,,,,,,,,OPEN
+flower_orientation_deg,Q3 protected geometry,degree,yes,,,,,,,,,,,OPEN
+visible_damage_score,Q3 protected condition,ordinal,yes,,,,,,,,,,,OPEN
+flower_longevity_hours,Q3 protected condition,hour,yes,,,,,,,,,,,OPEN

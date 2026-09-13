@@ -1,0 +1,62 @@
+{
+  "protocol_version": "PEDICULARIS_Q1_Q3_PILOT_PROTOCOL_V1",
+  "context_id": null,
+  "fitness_scale_id": "undamaged mature viable seeds per focal flower",
+  "equivalence_margins_frozen_before_outcomes": false,
+  "Q1_A_manipulation": {
+    "status": "OPEN",
+    "method_id": null,
+    "intended_contrast_established": null,
+    "sham_pass": null,
+    "off_target_equivalence_pass": null,
+    "notes": null
+  },
+  "Q2_pollinator_intervention": {
+    "status": "PARTIAL",
+    "method_id": null,
+    "selectivity_pass": null,
+    "notes": null
+  },
+  "Q3_antagonist_intervention": {
+    "status": "OPEN",
+    "method_id": null,
+    "predator_contrast_established": null,
+    "pollinator_access_equivalence_pass": null,
+    "A_D_preservation_pass": null,
+    "sham_pass": null,
+    "notes": null
+  },
+  "Q4_common_fitness_currency": {
+    "status": "PASS_IN_PRINCIPLE",
+    "frozen": false
+  },
+  "Q5_pollinator_independent_baseline": {
+    "status": "PASS_IN_PRINCIPLE",
+    "feasible": null
+  },
+  "Q6_full_16_cell_dry_run": {
+    "status": "OPEN",
+    "all_cells_realized": null,
+    "combined_selectivity_pass": null,
+    "notes": null
+  },
+  "Q7_four_way_diagnostic": {
+    "status": "OPEN",
+    "estimable": null
+  },
+  "Q8_remaining_channel_assay": {
+    "status": "OPEN",
+    "consumer_standardized_block_feasible": null
+  },
+  "Q9_BALANCE_worldlines": {
+    "status": "PARTIAL",
+    "prospectively_frozen": false
+  },
+  "Q10_SLK_governance": {
+    "status": "PASS"
+  },
+  "execution_qualified": false,
+  "decision_rule": "execution_qualified may become true only if Q1,Q2,Q3,Q4,Q5,Q6 pass and Q7-Q9 are prospectively executable; failures are not overridden by favorable outcome effects",
+  "fallback_triggered": false,
+  "fallback_system": "Fragaria vesca"
+}
