@@ -55,6 +55,29 @@ def test_gain_shape_definition_is_less_sign_stable_than_selection_definitions():
     assert 0.65 < gain < 0.85
 
 
+def test_extreme_opposite_proxy_margins_recover_midpoint_without_overflow():
+    config = _config()
+    config["registered_sensitivity_model"]["draws"] = 1000
+    config["proxy_axis"]["left_value"] = 0.0
+    config["proxy_axis"]["right_value"] = 1.0
+    config["definitions"] = {
+        "extreme_definition": {
+            "left_mean": -1.0e308,
+            "left_se": 0.0,
+            "right_mean": 1.0e308,
+            "right_se": 0.0,
+            "zero_semantics": "synthetic numeric regression only",
+        }
+    }
+    result = analyze_peucedanum_proxy_criticality(config)
+    definition = result["definitions"]["extreme_definition"]
+    assert definition["point_critical_proxy"] == pytest.approx(0.5)
+    assert definition["conditional_median_critical_proxy"] == pytest.approx(0.5)
+    assert definition["conditional_95_interval"] == pytest.approx([0.5, 0.5])
+    assert result["point_estimate_spread"] == 0.0
+    assert result["point_estimate_spread_fraction_of_observed_bracket"] == 0.0
+
+
 def test_monte_carlo_draw_count_and_seed_must_be_exact_finite_integers():
     config = _config()
     config["registered_sensitivity_model"]["draws"] = 5000.5
