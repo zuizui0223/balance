@@ -1,7 +1,10 @@
 from fractions import Fraction as F
 import random
 
-from balance_domain.adaptivity_budget_profile import balance_adaptivity_budget_profile
+from balance_domain.adaptivity_budget_profile import (
+    _adaptive_direction_value,
+    balance_adaptivity_budget_profile,
+)
 from balance_domain.bounded_switching_design import BoundedSwitchingReceipt, _band
 
 
@@ -9,8 +12,14 @@ def _receipt(wf, wr):
     f = _band(F(1), F(1) + wf)
     r = _band(F(1), F(1) + wr)
     return BoundedSwitchingReceipt(
-        f, r, _band(F(2), F(2) + wf + wr), True, True,
-        None, "synthetic units", "synthetic fixed context",
+        f,
+        r,
+        _band(F(2), F(2) + wf + wr),
+        True,
+        True,
+        None,
+        "synthetic units",
+        "synthetic fixed context",
     )
 
 
@@ -42,13 +51,33 @@ def test_zero_gap_profile_matches_seeded_unequal_cost_contracts():
         if not budgets:
             budgets = (0,)
         profile = balance_adaptivity_budget_profile(
-            _receipt(wf, wr), budgets=budgets,
-            forward_query_error=ef, reverse_query_error=er,
-            forward_cost=cf, reverse_cost=cr,
+            _receipt(wf, wr),
+            budgets=budgets,
+            forward_query_error=ef,
+            reverse_query_error=er,
+            forward_cost=cf,
+            reverse_cost=cr,
             matched_reset_available_declared=True,
         )
         assert profile.positive_adaptive_gain_budgets == ()
         assert all(F(row.fixed_minus_adaptive_span_exact) == 0 for row in profile.rows)
+
+
+def test_independent_bellman_has_no_python_recursion_depth_ceiling():
+    # At these errors both spans are already at their query-error floors, so the
+    # Bellman value is unchanged by any query. The point of the large budget is
+    # to lock in iterative evaluation: the old recursive implementation would
+    # exceed Python's recursion depth long before reaching 5000 units.
+    value = _adaptive_direction_value(
+        F(3, 100),
+        F(4, 100),
+        F(1),
+        F(1),
+        1,
+        1,
+        5000,
+    )
+    assert value == F(7, 100)
 
 
 def test_profile_rejects_invalid_budget_vocabulary():
