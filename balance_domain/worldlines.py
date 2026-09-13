@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 import math
 
-from .boundary import DEFAULT_BOUNDARY_TOLERANCE, classify_two_margin_point
+from .boundary import (
+    DEFAULT_BOUNDARY_TOLERANCE,
+    classify_two_margin_point,
+    two_margin_middle_position,
+)
 
 
 @dataclass(frozen=True)
@@ -23,6 +28,18 @@ class WorldlineComparison:
     parallel_world_residual: float | None
     bridge_consistent: bool | None
     state: str
+
+
+def _finite_fraction_output(value: Fraction, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} is not float-representable; rescale fitness units") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} is not float-representable; rescale fitness units")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale fitness units")
+    return out
 
 
 def compare_worldlines(
@@ -81,7 +98,12 @@ def compare_worldlines(
     if tol <= 0:
         raise ValueError("tolerance must be positive")
 
-    direct = Wd - Ws
+    ws_q = Fraction.from_float(Ws)
+    wd_q = Fraction.from_float(Wd)
+    l_q = Fraction.from_float(L)
+    tol_q = Fraction.from_float(tol)
+    direct_q = wd_q - ws_q
+    direct = _finite_fraction_output(direct_q, "direct worldline gap")
     direct_reserve_margin = -direct
     direct_point = classify_two_margin_point(L, direct_reserve_margin, tolerance=tol)
 
@@ -102,14 +124,16 @@ def compare_worldlines(
             raise ValueError("decoupling must lie in [0,1]")
         if K < 0:
             raise ValueError("architecture_cost must be non-negative")
-        decomposed = s * L - K
-        residual = direct - decomposed
-        consistent = abs(residual) <= tol
-        decomposed_margin = -decomposed
+        decomposed_q = Fraction.from_float(s) * l_q - Fraction.from_float(K)
+        decomposed = _finite_fraction_output(decomposed_q, "decomposed worldline gap")
+        residual_q = direct_q - decomposed_q
+        residual = _finite_fraction_output(residual_q, "parallel-world residual")
+        consistent = abs(residual_q) <= tol_q
+        decomposed_margin = _finite_fraction_output(-decomposed_q, "decomposed reserve")
         decomposed_point = classify_two_margin_point(L, decomposed_margin, tolerance=tol)
         if decomposed_point.middle_active:
             decomposed_reserve = decomposed_margin
-            decomposed_position = L / (L + decomposed_reserve)
+            decomposed_position = two_margin_middle_position(L, decomposed_reserve)
 
     if not direct_point.conflict_active:
         if direct_point.reserve_position == "NEGATIVE":
@@ -125,7 +149,7 @@ def compare_worldlines(
 
     if direct_point.middle_active:
         direct_reserve = direct_reserve_margin
-        direct_position = L / (L + direct_reserve)
+        direct_position = two_margin_middle_position(L, direct_reserve)
         direct_depth = min(L, direct_reserve)
     else:
         direct_reserve = None
