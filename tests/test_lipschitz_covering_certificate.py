@@ -47,6 +47,21 @@ def test_constant_boundaries_allow_infinite_radius_when_target_already_met():
     assert math.isinf(h)
 
 
+def test_impossible_target_depth_does_not_return_negative_radius():
+    with pytest.raises(ValueError, match="no non-negative covering radius"):
+        maximum_covering_radius_for_target_depth(
+            sampled_min_margins=(0.10, 0.30),
+            lipschitz_constants=(0.0, 0.5),
+            target_depth=0.20,
+        )
+    with pytest.raises(ValueError, match="no non-negative covering radius"):
+        maximum_covering_radius_for_target_depth(
+            sampled_min_margins=(0.10, 0.30),
+            lipschitz_constants=(0.5, 0.5),
+            target_depth=0.20,
+        )
+
+
 def test_invalid_inputs_fail_closed():
     with pytest.raises(ValueError):
         lipschitz_covering_certificate(
