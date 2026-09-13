@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from math import isfinite
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,12 @@ class DeepestPointSensitivity:
 
 
 def boundary_sensitivity(*, a0: float, L_prime0: float, b2: float, rho_prime2: float) -> BoundarySensitivity:
+    a0 = float(a0)
+    L_prime0 = float(L_prime0)
+    b2 = float(b2)
+    rho_prime2 = float(rho_prime2)
+    if not all(isfinite(v) for v in (a0, L_prime0, b2, rho_prime2)):
+        raise ValueError("sensitivity inputs must be finite")
     if L_prime0 == 0:
         raise ValueError("L_prime0 must be nonzero")
     if rho_prime2 == 0:
@@ -35,6 +42,12 @@ def deepest_point_sensitivity(
     L_prime: float,
     rho_prime: float,
 ) -> DeepestPointSensitivity:
+    a = float(a)
+    b = float(b)
+    L_prime = float(L_prime)
+    rho_prime = float(rho_prime)
+    if not all(isfinite(v) for v in (a, b, L_prime, rho_prime)):
+        raise ValueError("sensitivity inputs must be finite")
     denom = L_prime - rho_prime
     if denom == 0:
         raise ValueError("L_prime-rho_prime must be nonzero")
