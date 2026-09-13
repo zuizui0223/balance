@@ -72,6 +72,29 @@ def test_incompatible_decomposition_is_not_silently_reconciled():
     assert not result.bridge_residual.contains(0.0)
 
 
+def test_bounded_receipt_requires_frozen_string_identifiers():
+    kwargs = dict(
+        conflict_load=Interval(0.2, 0.3),
+        shared_optimum_fitness=Interval(9.9, 10.1),
+        differentiated_optimum_fitness=Interval(9.4, 9.6),
+    )
+    for context_id, scale in ((None, "seed_set"), ("None", "seed_set"), ("ctx", "nan")):
+        with pytest.raises(ValueError):
+            classify_bounded_receipt(
+                context_id=context_id,
+                fitness_scale_id=scale,
+                **kwargs,
+            )
+
+    normalized = classify_bounded_receipt(
+        context_id="  ctx-6  ",
+        fitness_scale_id=" seed_set ",
+        **kwargs,
+    )
+    assert normalized.context_id == "ctx-6"
+    assert normalized.fitness_scale_id == "seed_set"
+
+
 def test_bounded_interval_rejects_nonfinite_and_reversed_bounds():
     with pytest.raises(ValueError):
         Interval(math.nan, 1.0)
@@ -79,6 +102,8 @@ def test_bounded_interval_rejects_nonfinite_and_reversed_bounds():
         Interval(0.0, math.inf)
     with pytest.raises(ValueError):
         Interval(2.0, 1.0)
+    with pytest.raises(ValueError):
+        Interval(10**10000, 10**10000)
 
 
 def test_bounded_interval_normalizes_numeric_inputs_to_float():
@@ -95,3 +120,5 @@ def test_interval_membership_rejects_nonfinite_or_nonnumeric_queries():
         interval.contains(math.nan)
     with pytest.raises(ValueError):
         interval.contains("not-a-number")
+    with pytest.raises(ValueError):
+        interval.contains(10**10000)

@@ -6,6 +6,18 @@ from dataclasses import dataclass
 import math
 
 
+_MISSING_IDENTIFIERS = {"none", "null", "nan", "required_before_use"}
+
+
+def _required_identifier(value: object, name: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{name} must be a non-empty string identifier")
+    out = value.strip()
+    if not out or out.casefold() in _MISSING_IDENTIFIERS:
+        raise ValueError(f"{name} must be a frozen non-missing identifier")
+    return out
+
+
 @dataclass(frozen=True)
 class Interval:
     lower: float
@@ -15,8 +27,8 @@ class Interval:
         try:
             lower = float(self.lower)
             upper = float(self.upper)
-        except (TypeError, ValueError) as exc:
-            raise ValueError("interval bounds must be numeric") from exc
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("interval bounds must be numeric and float-representable") from exc
         if not math.isfinite(lower) or not math.isfinite(upper):
             raise ValueError("bounded empirical interval endpoints must be finite")
         if lower > upper:
@@ -27,8 +39,8 @@ class Interval:
     def contains(self, value: float) -> bool:
         try:
             value = float(value)
-        except (TypeError, ValueError) as exc:
-            raise ValueError("interval membership value must be numeric") from exc
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("interval membership value must be numeric and float-representable") from exc
         if not math.isfinite(value):
             raise ValueError("interval membership value must be finite")
         return self.lower <= value <= self.upper
@@ -85,8 +97,8 @@ def classify_bounded_receipt(
     they generate an interval for ``sL-K`` and an interval bridge residual
     ``Delta_W-(sL-K)``.
     """
-    if not context_id.strip() or not fitness_scale_id.strip():
-        raise ValueError("context_id and fitness_scale_id are required")
+    context_id = _required_identifier(context_id, "context_id")
+    fitness_scale_id = _required_identifier(fitness_scale_id, "fitness_scale_id")
     if conflict_load.lower < 0:
         raise ValueError("conflict-load interval must be non-negative")
 
