@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import inf, isfinite, isnan, sqrt
+from decimal import Decimal, localcontext
+from fractions import Fraction
+from math import inf, isfinite, isnan
 from typing import Sequence
 
 
@@ -9,6 +11,31 @@ from typing import Sequence
 class ThreatStability:
     radius: float
     limiting_competitor: int
+
+
+def _fraction(value: float) -> Fraction:
+    return Fraction.from_float(value)
+
+
+def _finite_fraction_result(value: Fraction, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} must remain finite; rescale units") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} must remain finite; rescale units")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflowed to zero; rescale units")
+    return out
+
+
+def _finite_decimal_result(value: Decimal, name: str) -> float:
+    out = float(value)
+    if not isfinite(out):
+        raise ValueError(f"{name} must remain finite; rescale units")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflowed to zero; rescale units")
+    return out
 
 
 def lipschitz_threat_radius(
@@ -20,6 +47,10 @@ def lipschitz_threat_radius(
     ``gaps[k]`` is current best-alternative fitness minus competitor-k fitness.
     All gaps must be strictly positive. ``pairwise_lipschitz[k]`` bounds the
     environmental change of that pairwise fitness difference per unit norm.
+
+    An exact zero Lipschitz constant gives a structural ``+inf`` radius.  A
+    finite nonzero ratio that merely overflows binary float is not the same
+    statement and fails closed if it is the limiting radius.
     """
     gaps = tuple(float(g) for g in gaps)
     constants = tuple(float(value) for value in pairwise_lipschitz)
@@ -32,9 +63,19 @@ def lipschitz_threat_radius(
     if any(value < 0 for value in constants):
         raise ValueError("Lipschitz constants must be nonnegative")
 
-    radii = [inf if value == 0 else gap / value for gap, value in zip(gaps, constants)]
-    idx = min(range(len(radii)), key=radii.__getitem__)
-    return ThreatStability(radius=radii[idx], limiting_competitor=idx)
+    finite_candidates = [
+        (_fraction(gap) / _fraction(value), idx)
+        for idx, (gap, value) in enumerate(zip(gaps, constants))
+        if value > 0.0
+    ]
+    if not finite_candidates:
+        return ThreatStability(radius=inf, limiting_competitor=0)
+
+    radius_exact, idx = min(finite_candidates, key=lambda item: (item[0], item[1]))
+    radius = _finite_fraction_result(radius_exact, "limiting threat radius")
+    if radius <= 0.0:
+        raise ValueError("limiting threat radius must remain positive")
+    return ThreatStability(radius=radius, limiting_competitor=idx)
 
 
 def diagonal_affine_threat_distance(
@@ -60,10 +101,27 @@ def diagonal_affine_threat_distance(
     if any(q <= 0 for q in metric):
         raise ValueError("metric diagonal must be positive")
 
-    denom_sq = sum((a * a) / q for a, q in zip(gradient, metric))
-    if denom_sq == 0:
-        return inf if gap > 0 else 0.0
-    return gap / sqrt(denom_sq)
+    if all(value == 0.0 for value in gradient):
+        return inf if gap > 0.0 else 0.0
+    if gap == 0.0:
+        return 0.0
+
+    with localcontext() as ctx:
+        ctx.prec = 80
+        g_dec = tuple(Decimal.from_float(value) for value in gradient)
+        q_dec = tuple(Decimal.from_float(value) for value in metric)
+        denom_sq = sum(
+            ((a * a) / q for a, q in zip(g_dec, q_dec)),
+            Decimal(0),
+        )
+        if denom_sq <= 0:
+            raise RuntimeError("nonzero affine threat gradient lost positive dual norm")
+        distance = Decimal.from_float(gap) / ctx.sqrt(denom_sq)
+
+    out = _finite_decimal_result(distance, "affine threat distance")
+    if out <= 0.0:
+        raise ValueError("positive affine threat distance must remain positive")
+    return out
 
 
 def diagonal_affine_gradient_from_minimum_switch(
@@ -92,22 +150,43 @@ def diagonal_affine_gradient_from_minimum_switch(
     if any(q <= 0 for q in metric):
         raise ValueError("metric diagonal must be positive")
 
-    radius_sq = sum(q * d * d for d, q in zip(switch, metric))
+    gap_exact = _fraction(gap)
+    switch_exact = tuple(_fraction(value) for value in switch)
+    metric_exact = tuple(_fraction(value) for value in metric)
+    radius_sq = sum(
+        (q * d * d for d, q in zip(switch_exact, metric_exact)),
+        Fraction(0),
+    )
     if radius_sq <= 0:
         raise ValueError("switch_vector must be nonzero")
+
+    recovered = tuple(
+        -gap_exact * q * d / radius_sq
+        for d, q in zip(switch_exact, metric_exact)
+    )
     return tuple(
-        -gap * q * d / radius_sq
-        for d, q in zip(switch, metric)
+        _finite_fraction_result(value, f"recovered threat gradient[{i}]")
+        for i, value in enumerate(recovered)
     )
 
 
 def threat_fragility_index(*, threat_radius: float, state_depth: float) -> float:
     radius = float(threat_radius)
     depth = float(state_depth)
-    # +inf is a meaningful certified radius when the pairwise difference is
-    # constant, so allow it here while still failing closed on NaN/-inf.
+    # +inf is meaningful only as the structural certificate produced by a
+    # constant pairwise difference.  Finite radii are divided exactly below so
+    # numerical overflow cannot manufacture the same sentinel.
     if isnan(radius) or radius == -inf or not isfinite(depth):
         raise ValueError("threat_radius must not be NaN/-inf and state_depth must be finite")
     if radius < 0 or depth <= 0:
         raise ValueError("threat_radius must be nonnegative and state_depth positive")
-    return radius / depth
+    if radius == inf:
+        return inf
+    if radius == 0.0:
+        return 0.0
+
+    ratio = _fraction(radius) / _fraction(depth)
+    out = _finite_fraction_result(ratio, "threat fragility index")
+    if out <= 0.0:
+        raise ValueError("positive threat fragility index must remain positive")
+    return out
