@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from math import isfinite
 
 
 @dataclass(frozen=True)
@@ -18,7 +19,17 @@ def width_depth_bounds(
     right_slope_min: float,
     right_slope_max: float,
 ) -> WidthDepthBounds:
-    values = [depth, width, left_slope_min, left_slope_max, right_slope_min, right_slope_max]
+    values = [
+        float(depth),
+        float(width),
+        float(left_slope_min),
+        float(left_slope_max),
+        float(right_slope_min),
+        float(right_slope_max),
+    ]
+    if not all(isfinite(v) for v in values):
+        raise ValueError("depth, width, and all slope bounds must be finite")
+    depth, width, left_slope_min, left_slope_max, right_slope_min, right_slope_max = values
     if any(v <= 0 for v in values):
         raise ValueError("depth, width, and all slope bounds must be positive")
     if left_slope_min > left_slope_max:
@@ -39,6 +50,11 @@ def width_depth_bounds(
 
 
 def constant_slope_depth(*, width: float, left_slope: float, right_slope: float) -> float:
+    width = float(width)
+    left_slope = float(left_slope)
+    right_slope = float(right_slope)
+    if not all(isfinite(v) for v in (width, left_slope, right_slope)):
+        raise ValueError("width and slopes must be finite")
     if width <= 0 or left_slope <= 0 or right_slope <= 0:
         raise ValueError("width and slopes must be positive")
     return width * left_slope * right_slope / (left_slope + right_slope)

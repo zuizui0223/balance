@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import isfinite
 from typing import Sequence
 
 
@@ -18,23 +19,37 @@ class LipschitzZeroBracket:
     width: float
 
 
+def _finite_scalar(value: float, name: str) -> float:
+    out = float(value)
+    if not isfinite(out):
+        raise ValueError(f"{name} must be finite")
+    return out
+
+
+def _finite_tuple(values: Sequence[float], name: str) -> tuple[float, ...]:
+    out = tuple(float(value) for value in values)
+    if not all(isfinite(value) for value in out):
+        raise ValueError(f"{name} must contain only finite values")
+    return out
+
+
 def lipschitz_covering_certificate(
     *,
     sampled_min_margins: Sequence[float],
     lipschitz_constants: Sequence[float],
     covering_radius: float,
 ) -> CoveringCertificate:
-    if covering_radius < 0:
+    margins = _finite_tuple(sampled_min_margins, "sampled_min_margins")
+    constants = _finite_tuple(lipschitz_constants, "lipschitz_constants")
+    radius = _finite_scalar(covering_radius, "covering_radius")
+    if radius < 0:
         raise ValueError("covering_radius must be nonnegative")
-    if len(sampled_min_margins) != len(lipschitz_constants) or not sampled_min_margins:
+    if len(margins) != len(constants) or not margins:
         raise ValueError("sampled_min_margins and lipschitz_constants must have the same nonzero length")
-    if any(k < 0 for k in lipschitz_constants):
+    if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
 
-    lowers = tuple(
-        float(m) - float(k) * covering_radius
-        for m, k in zip(sampled_min_margins, lipschitz_constants)
-    )
+    lowers = tuple(m - k * radius for m, k in zip(margins, constants))
     depth = min(lowers)
     return CoveringCertificate(
         boundary_lower_bounds=lowers,
@@ -55,21 +70,24 @@ def maximum_covering_radius_for_target_depth(
     non-negative covering radius can certify that target, so the request fails
     closed instead of returning a physically meaningless negative radius.
     """
-    if len(sampled_min_margins) != len(lipschitz_constants) or not sampled_min_margins:
+    margins = _finite_tuple(sampled_min_margins, "sampled_min_margins")
+    constants = _finite_tuple(lipschitz_constants, "lipschitz_constants")
+    target = _finite_scalar(target_depth, "target_depth")
+    if len(margins) != len(constants) or not margins:
         raise ValueError("sampled_min_margins and lipschitz_constants must have the same nonzero length")
-    if any(k < 0 for k in lipschitz_constants):
+    if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
 
     radii: list[float] = []
-    for margin, k in zip(sampled_min_margins, lipschitz_constants):
-        slack = float(margin) - target_depth
+    for margin, k in zip(margins, constants):
+        slack = margin - target
         if slack < 0.0:
             raise ValueError(
                 "target_depth exceeds a sampled minimum margin; no non-negative covering radius can certify it"
             )
         if k == 0.0:
             continue
-        radii.append(slack / float(k))
+        radii.append(slack / k)
 
     return min(radii) if radii else float("inf")
 
@@ -80,15 +98,17 @@ def lipschitz_lower_envelope(
     distances_to_query: Sequence[float],
     lipschitz_constant: float,
 ) -> float:
-    if len(sampled_values) != len(distances_to_query) or not sampled_values:
+    values = _finite_tuple(sampled_values, "sampled_values")
+    distances = _finite_tuple(distances_to_query, "distances_to_query")
+    k = _finite_scalar(lipschitz_constant, "lipschitz_constant")
+    if len(values) != len(distances) or not values:
         raise ValueError("sampled_values and distances_to_query must have the same nonzero length")
-    if lipschitz_constant < 0:
+    if k < 0:
         raise ValueError("lipschitz_constant must be nonnegative")
-    if any(d < 0 for d in distances_to_query):
+    if any(d < 0 for d in distances):
         raise ValueError("distances must be nonnegative")
 
-    k = float(lipschitz_constant)
-    return max(float(v) - k * float(d) for v, d in zip(sampled_values, distances_to_query))
+    return max(v - k * d for v, d in zip(values, distances))
 
 
 def multi_margin_lower_depth(
@@ -97,7 +117,8 @@ def multi_margin_lower_depth(
     distances_to_query: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    if len(sampled_values_by_margin) != len(lipschitz_constants) or not sampled_values_by_margin:
+    constants = _finite_tuple(lipschitz_constants, "lipschitz_constants")
+    if len(sampled_values_by_margin) != len(constants) or not sampled_values_by_margin:
         raise ValueError("one Lipschitz constant is required per margin")
 
     lowers = [
@@ -106,7 +127,7 @@ def multi_margin_lower_depth(
             distances_to_query=distances_to_query,
             lipschitz_constant=k,
         )
-        for values, k in zip(sampled_values_by_margin, lipschitz_constants)
+        for values, k in zip(sampled_values_by_margin, constants)
     ]
     return min(lowers)
 
@@ -116,14 +137,16 @@ def certified_balance_ball_radius(
     margins: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    if len(margins) != len(lipschitz_constants) or not margins:
+    margins = _finite_tuple(margins, "margins")
+    constants = _finite_tuple(lipschitz_constants, "lipschitz_constants")
+    if len(margins) != len(constants) or not margins:
         raise ValueError("margins and lipschitz_constants must have the same nonzero length")
-    if any(k < 0 for k in lipschitz_constants):
+    if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
     if any(m <= 0 for m in margins):
         return 0.0
 
-    radii = [float(m) / float(k) for m, k in zip(margins, lipschitz_constants) if k > 0]
+    radii = [m / k for m, k in zip(margins, constants) if k > 0]
     return min(radii) if radii else float("inf")
 
 
@@ -132,18 +155,20 @@ def certified_outside_ball_radius(
     margins: Sequence[float],
     lipschitz_constants: Sequence[float],
 ) -> float:
-    if len(margins) != len(lipschitz_constants) or not margins:
+    margins = _finite_tuple(margins, "margins")
+    constants = _finite_tuple(lipschitz_constants, "lipschitz_constants")
+    if len(margins) != len(constants) or not margins:
         raise ValueError("margins and lipschitz_constants must have the same nonzero length")
-    if any(k < 0 for k in lipschitz_constants):
+    if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
 
     radii: list[float] = []
-    for margin, k in zip(margins, lipschitz_constants):
+    for margin, k in zip(margins, constants):
         if margin >= 0:
             continue
         if k == 0.0:
             return float("inf")
-        radii.append(-float(margin) / float(k))
+        radii.append(-margin / k)
     return max(radii) if radii else 0.0
 
 
@@ -162,10 +187,11 @@ def lipschitz_zero_bracket(
     forces any zero t* to satisfy ``p/K <= t* <= D-|n|/K``.
     """
 
-    p = float(positive_margin)
-    n = float(negative_margin)
-    d = float(path_length)
-    k = float(lipschitz_constant)
+    p = _finite_scalar(positive_margin, "positive_margin")
+    n = _finite_scalar(negative_margin, "negative_margin")
+    d = _finite_scalar(path_length, "path_length")
+    k = _finite_scalar(lipschitz_constant, "lipschitz_constant")
+    tol = _finite_scalar(tolerance, "tolerance")
     if p <= 0:
         raise ValueError("positive_margin must be strictly positive")
     if n >= 0:
@@ -174,7 +200,9 @@ def lipschitz_zero_bracket(
         raise ValueError("path_length must be strictly positive")
     if k <= 0:
         raise ValueError("lipschitz_constant must be strictly positive")
-    if p + abs(n) > k * d + tolerance:
+    if tol < 0:
+        raise ValueError("tolerance must be nonnegative")
+    if p + abs(n) > k * d + tol:
         raise ValueError("endpoint margins are inconsistent with the registered Lipschitz constant")
 
     lower = p / k

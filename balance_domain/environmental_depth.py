@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from math import sqrt
+from math import isfinite, sqrt
 from typing import Iterable
 
 
@@ -13,6 +13,8 @@ class EnvironmentalDepth:
 
 def _norm(values: Iterable[float]) -> float:
     vals = tuple(float(v) for v in values)
+    if not vals or not all(isfinite(v) for v in vals):
+        raise ValueError("boundary gradient must contain finite values")
     value = sqrt(sum(v * v for v in vals))
     if value == 0:
         raise ValueError("boundary gradient norm must be nonzero")
@@ -26,6 +28,10 @@ def environmental_depth(
     conflict_gradient: Iterable[float],
     reserve_gradient: Iterable[float],
 ) -> EnvironmentalDepth:
+    conflict_margin = float(conflict_margin)
+    reserve_margin = float(reserve_margin)
+    if not isfinite(conflict_margin) or not isfinite(reserve_margin):
+        raise ValueError("margins must be finite")
     if conflict_margin <= 0:
         raise ValueError("conflict_margin must be positive inside BALANCE")
     if reserve_margin <= 0:
