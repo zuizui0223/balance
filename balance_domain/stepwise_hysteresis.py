@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Literal, Sequence
 
 from balance_domain.dynamics import switching_cost_state
@@ -35,10 +36,17 @@ def _validate_state(state: str) -> ArchitectureState:
     return state  # type: ignore[return-value]
 
 
-def max_path_jump(phi_path: Sequence[float]) -> float:
+def _finite_path(phi_path: Sequence[float]) -> tuple[float, ...]:
     values = tuple(float(x) for x in phi_path)
     if not values:
         raise ValueError("phi_path must be non-empty")
+    if not all(math.isfinite(value) for value in values):
+        raise ValueError("phi_path values must be finite")
+    return values
+
+
+def max_path_jump(phi_path: Sequence[float]) -> float:
+    values = _finite_path(phi_path)
     if len(values) == 1:
         return 0.0
     return max(abs(b - a) for a, b in zip(values, values[1:]))
@@ -57,19 +65,21 @@ def follow_switching_path(
 
     ``max_phi_jump`` is an optional fail-closed declaration of the forcing
     small-step assumption. It constrains the *external phi path*, not mutation
-    size in architecture space.
+    size in architecture space. A declared resolution bound must itself be a
+    finite non-negative number; NaN/Inf do not represent an auditable sampling
+    resolution.
     """
-    values = tuple(float(x) for x in phi_path)
-    if not values:
-        raise ValueError("phi_path must be non-empty")
+    values = _finite_path(phi_path)
     state = _validate_state(initial_state)
     observed = max_path_jump(values)
+    declared = None
     if max_phi_jump is not None:
-        if max_phi_jump < 0.0:
-            raise ValueError("max_phi_jump must be non-negative or None")
-        if observed > max_phi_jump + 1e-15:
+        declared = float(max_phi_jump)
+        if not math.isfinite(declared) or declared < 0.0:
+            raise ValueError("max_phi_jump must be finite and non-negative or None")
+        if observed > declared + 1e-15:
             raise ValueError(
-                f"forcing path violates declared max_phi_jump: {observed} > {max_phi_jump}"
+                f"forcing path violates declared max_phi_jump: {observed} > {declared}"
             )
 
     steps: list[PathStep] = []
@@ -102,21 +112,24 @@ def follow_switching_path(
         final_state=state,
         steps=tuple(steps),
         max_observed_phi_jump=observed,
-        declared_max_phi_jump=max_phi_jump,
+        declared_max_phi_jump=declared,
     )
 
 
 def linear_small_step_path(start: float, stop: float, *, max_phi_jump: float) -> tuple[float, ...]:
-    """Construct a linear path whose consecutive forcing jumps are <= bound."""
-    if max_phi_jump <= 0.0:
-        raise ValueError("max_phi_jump must be positive")
+    """Construct a finite linear path whose consecutive forcing jumps are <= bound."""
     a = float(start)
     b = float(stop)
+    jump = float(max_phi_jump)
+    if not all(math.isfinite(value) for value in (a, b, jump)):
+        raise ValueError("start, stop, and max_phi_jump must be finite")
+    if jump <= 0.0:
+        raise ValueError("max_phi_jump must be positive")
     distance = abs(b - a)
     if distance == 0.0:
         return (a,)
-    intervals = max(1, int(distance / max_phi_jump))
-    if distance / intervals > max_phi_jump + 1e-15:
+    intervals = max(1, int(distance / jump))
+    if distance / intervals > jump + 1e-15:
         intervals += 1
     return tuple(a + (b - a) * i / intervals for i in range(intervals + 1))
 
