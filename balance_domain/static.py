@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 import math
 from typing import Sequence
 
-from .boundary import analyze_two_margin_path
+from .boundary import analyze_two_margin_path, two_margin_middle_position
 
 
 class BalancePathTopologyError(ValueError):
@@ -33,19 +34,52 @@ class BalancePathResult:
     topology: str
 
 
+def _fraction_to_float(value: F, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale units"
+        ) from exc
+    if not math.isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale units"
+        )
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale units")
+    return out
+
+
 def _crossing(e0: float, e1: float, y0: float, y1: float) -> float:
-    if y1 == y0:
-        return (e0 + e1) / 2.0
-    return e0 + (-y0) * (e1 - e0) / (y1 - y0)
+    e0_q = F.from_float(e0)
+    e1_q = F.from_float(e1)
+    y0_q = F.from_float(y0)
+    y1_q = F.from_float(y1)
+    if y1_q == y0_q:
+        crossing_q = (e0_q + e1_q) / 2
+    else:
+        crossing_q = e0_q + (-y0_q) * (e1_q - e0_q) / (y1_q - y0_q)
+    return _fraction_to_float(crossing_q, "critical crossing coordinate")
 
 
-def _linear_value(e0: float, e1: float, y0: float, y1: float, x: float) -> float:
+def _linear_value_fraction(
+    e0: float,
+    e1: float,
+    y0: float,
+    y1: float,
+    x: float,
+) -> F:
     if x <= e0:
-        return y0
+        return F.from_float(y0)
     if x >= e1:
-        return y1
-    t = (x - e0) / (e1 - e0)
-    return y0 + t * (y1 - y0)
+        return F.from_float(y1)
+    e0_q = F.from_float(e0)
+    e1_q = F.from_float(e1)
+    y0_q = F.from_float(y0)
+    y1_q = F.from_float(y1)
+    x_q = F.from_float(x)
+    t_q = (x_q - e0_q) / (e1_q - e0_q)
+    return y0_q + t_q * (y1_q - y0_q)
 
 
 def analyze_balance_path(
@@ -84,11 +118,21 @@ def analyze_balance_path(
     if any(x < 0 or x > 1 for x in s):
         raise ValueError("decoupling must lie in [0,1]")
 
-    R = tuple(si * li for si, li in zip(s, L))
-    phi = tuple(ri - ki for ri, ki in zip(R, K))
+    l_q = tuple(F.from_float(value) for value in L)
+    s_q = tuple(F.from_float(value) for value in s)
+    k_q = tuple(F.from_float(value) for value in K)
+    r_q = tuple(si * li for si, li in zip(s_q, l_q))
+    phi_q = tuple(ri - ki for ri, ki in zip(r_q, k_q))
+    reserve_q = tuple(ki - ri for ri, ki in zip(r_q, k_q))
+
+    R = tuple(_fraction_to_float(value, "recoverable loss") for value in r_q)
+    phi = tuple(_fraction_to_float(value, "architecture margin") for value in phi_q)
+    reserve = tuple(_fraction_to_float(value, "architecture reserve") for value in reserve_q)
     tol = 1e-12
-    pressure_ratio = tuple(None if ki == 0 else ri / ki for ri, ki in zip(R, K))
-    reserve = tuple(ki - ri for ri, ki in zip(R, K))
+    pressure_ratio = tuple(
+        None if ki == 0 else _fraction_to_float(ri / ki, "architecture pressure ratio")
+        for ri, ki in zip(r_q, k_q)
+    )
 
     boundary = analyze_two_margin_path(e, L, reserve, tolerance=tol)
     states = []
@@ -103,7 +147,7 @@ def analyze_balance_path(
             states.append("DIFFERENTIATION")
 
     criticality = tuple(
-        li / (li + rho) if state == "BALANCE" else None
+        two_margin_middle_position(li, rho) if state == "BALANCE" else None
         for li, rho, state in zip(L, reserve, states)
     )
 
@@ -112,7 +156,7 @@ def analyze_balance_path(
         p0, p1 = phi[i], phi[i + 1]
         if abs(p0) <= tol:
             crossings.append(e[i])
-        elif p0 * p1 < 0:
+        elif (p0 < 0 < p1) or (p1 < 0 < p0):
             crossings.append(_crossing(e[i], e[i + 1], p0, p1))
     if abs(phi[-1]) <= tol:
         crossings.append(e[-1])
@@ -123,16 +167,21 @@ def analyze_balance_path(
     # Integrate rho on exactly the same clipped BALANCE intervals used for the
     # width estimand. Linear interpolation makes the clipped trapezoids exact
     # for the sampled reserve path and avoids integrating outside the domain.
-    area = 0.0
+    area_q = F(0, 1)
+    zero = F(0, 1)
     for a, b in intervals:
         for i in range(n - 1):
             left = max(a, e[i])
             right = min(b, e[i + 1])
             if right <= left:
                 continue
-            r0 = _linear_value(e[i], e[i + 1], reserve[i], reserve[i + 1], left)
-            r1 = _linear_value(e[i], e[i + 1], reserve[i], reserve[i + 1], right)
-            area += 0.5 * (max(r0, 0.0) + max(r1, 0.0)) * (right - left)
+            r0_q = _linear_value_fraction(e[i], e[i + 1], reserve[i], reserve[i + 1], left)
+            r1_q = _linear_value_fraction(e[i], e[i + 1], reserve[i], reserve[i + 1], right)
+            clipped0_q = max(r0_q, zero)
+            clipped1_q = max(r1_q, zero)
+            width_q = F.from_float(right) - F.from_float(left)
+            area_q += (clipped0_q + clipped1_q) * width_q / 2
+    area = _fraction_to_float(area_q, "integrated reserve")
 
     L_nondec = all(L[i + 1] >= L[i] - tol for i in range(n - 1))
     s_nondec = all(s[i + 1] >= s[i] - tol for i in range(n - 1))
