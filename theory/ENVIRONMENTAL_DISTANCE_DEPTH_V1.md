@@ -9,37 +9,19 @@ Separate two different meanings of being "deep" inside BALANCE:
 
 These are not generally the same.
 
-Let environmental context be a vector
-
-\[
-e\in\mathbb R^m.
-\]
-
-Define the BALANCE margins
-
-\[
-L(e)>0
-\]
-
-and
+Let environmental context be `e in R^m` and define the BALANCE margins `L(e)>0` and
 
 \[
 \rho(e)=W_S^*(e)-W_D^*(e)>0.
 \]
 
-The SCH-facing boundary is `L=0`; the BITA-facing boundary is `rho=0`.
+The SCH-facing boundary is `L=0`; the SLK-facing architecture-value boundary is `rho=0`.
 
 ## Fitness-margin depth
 
-The existing direct BALANCE depth is
-
 \[
-d_F(e)=\min\{L(e),\rho(e)\}.
-\]
-
-Its normalized coordinate is
-
-\[
+d_F(e)=\min\{L(e),\rho(e)\},
+\qquad
 \xi_F(e)=\frac{L}{L+\rho}.
 \]
 
@@ -47,22 +29,13 @@ This requires the two margins to be expressed on a common fitness scale.
 
 ## Local environmental distance to a regular boundary
 
-For a smooth scalar field `f(e)` with regular boundary `f=0`, linearization gives
+For a smooth scalar field `f(e)` with regular boundary `f=0`, linearization gives `f(e+delta e) approximately f(e)+grad f(e)^T delta e`. Under the declared Euclidean environmental metric, the smallest first-order displacement needed to reach the boundary has magnitude
 
 \[
-f(e+\delta e)\approx f(e)+\nabla f(e)^T\delta e.
+\boxed{d_{\rm env}(f)=\frac{|f(e)|}{\|\nabla f(e)\|_2}}.
 \]
 
-Under the declared Euclidean environmental metric, the smallest first-order displacement needed to reach the boundary has magnitude
-
-\[
-\boxed{
-d_{\rm env}(f)
-=\frac{|f(e)|}{\|\nabla f(e)\|_2}.
-}
-\]
-
-Therefore, inside BALANCE,
+Therefore inside BALANCE,
 
 \[
 d_0(e)=\frac{L(e)}{\|\nabla L(e)\|_2}
@@ -74,160 +47,69 @@ is the local environmental distance to the SCH-facing boundary and
 d_2(e)=\frac{\rho(e)}{\|\nabla\rho(e)\|_2}
 \]
 
-is the local environmental distance to the BITA-facing boundary.
-
-Define
+is the local environmental distance to the SLK-facing architecture-value boundary. Define
 
 \[
-\boxed{
-d_E(e)=\min\{d_0(e),d_2(e)\}}
-\]
-
-and the environmental-position coordinate
-
-\[
-\boxed{
+d_E(e)=\min\{d_0(e),d_2(e)\},
+\qquad
 \xi_E(e)=\frac{d_0(e)}{d_0(e)+d_2(e)}.
-}
 \]
 
 ## Theorem 1 — environmental depth is invariant to separate positive margin rescalings
 
-Let
+Let `L_tilde=aL` and `rho_tilde=b rho` with `a,b>0`. Then each margin and its gradient scale by the same factor, so `d_0` and `d_2` are unchanged. Therefore
 
 \[
-\widetilde L=aL,
-\qquad
-\widetilde\rho=b\rho,
-\qquad a,b>0.
-\]
-
-Then
-
-\[
-\frac{\widetilde L}{\|\nabla\widetilde L\|}
-=
-\frac{aL}{a\|\nabla L\|}
-=d_0,
-\]
-
-and likewise `d_2` is unchanged. Therefore
-
-\[
-\boxed{
-d_E\text{ and }\xi_E\text{ are invariant to separate positive rescalings of the two margins}.}
+\boxed{d_E\text{ and }\xi_E\text{ are invariant to separate positive rescalings of the two margins}.}
 \]
 
 This is stronger than fitness-coordinate `xi_F`, which requires the margins to share a meaningful common scale before they are added.
 
 ## Theorem 2 — equal fitness margins need not imply equal environmental distances
 
-The fitness-deep condition is
+The fitness-deep condition is `L=rho`. The environmental equal-distance condition is
 
 \[
-L=\rho.
+\boxed{\frac{L}{\|\nabla L\|}=\frac{\rho}{\|\nabla\rho\|}}.
 \]
 
-The environmental equal-distance condition is instead
-
-\[
-\boxed{
-\frac{L}{\|\nabla L\|}
-=
-\frac{\rho}{\|\nabla\rho\|}.
-}
-\]
-
-These conditions coincide only when the two boundary gradients have equal norm at that context.
-
-Thus the previously derived `xi_F=1/2` deepest state is deepest on the **fitness-margin scale**, not automatically deepest in physical environmental distance.
+These conditions coincide only when the two boundary gradients have equal norm at that context. Thus `xi_F=1/2` identifies the deepest state on the fitness-margin scale, not automatically in physical environmental distance.
 
 ## Scalar environmental path
 
-For a one-dimensional ordered environment `e`,
+For one-dimensional `e`,
 
 \[
-d_0=\frac{L}{|L'|},
-\qquad
- d_2=\frac{\rho}{|\rho'|}.
+d_0=\frac{L}{|L'|},\qquad d_2=\frac{\rho}{|\rho'|}.
 \]
 
-If `d_0` increases continuously, `d_2` decreases continuously, and they straddle, then the unique local environmental deepest point satisfies
-
-\[
-\boxed{
-d_0=d_2}
-\]
-
-and
-
-\[
-\boxed{\xi_E=1/2.}
-\]
-
-This can occur at a different environmental context from the fitness-deep point `L=rho`.
+If `d_0` increases continuously, `d_2` decreases continuously, and they straddle, then the unique local environmental deepest point satisfies `d_0=d_2` and `xi_E=1/2`. This can occur at a different environmental context from the fitness-deep point `L=rho`.
 
 ## Example
 
-Suppose along one environmental axis
-
-\[
-L(e)=e,
-\qquad
-\rho(e)=4-2e,
-\]
-
-inside `0<e<2`.
-
-Fitness-margin equality gives
-
-\[
-e=4-2e
-\Rightarrow
- e_F=4/3.
-\]
-
-But environmental distances are
-
-\[
-d_0=e,
-\qquad
- d_2=\frac{4-2e}{2}=2-e,
-\]
-
-so equal environmental distances give
-
-\[
-e=2-e
-\Rightarrow
- e_E=1.
-\]
-
-The two notions of middle-world center are therefore distinct.
+If `L(e)=e` and `rho(e)=4-2e` inside `0<e<2`, fitness-margin equality gives `e_F=4/3`, whereas environmental distances are `d_0=e` and `d_2=2-e`, giving `e_E=1`. The two notions of middle-world center are therefore distinct.
 
 ## Metric dependence
 
-In multiple environmental dimensions, Euclidean distance depends on coordinate scaling. A preregistered environmental metric should therefore be used when coordinates have different units or ecological meaning.
-
-For a positive-definite metric matrix `G`, the corresponding first-order distance is
+In multiple environmental dimensions, Euclidean distance depends on coordinate scaling. Under a positive-definite metric matrix `G`, the corresponding first-order distance is
 
 \[
 \frac{|f|}{\sqrt{\nabla f^T G^{-1}\nabla f}}.
 \]
 
-The conceptual result is unchanged: distance to a boundary is margin divided by the gradient magnitude under the chosen metric.
+The conceptual result is unchanged: distance to a boundary is margin divided by gradient magnitude under the chosen metric.
 
 ## Empirical consequence
 
-BALANCE can report two complementary robustness quantities:
+BALANCE can report complementary robustness quantities:
 
 ```text
 fitness robustness       d_F = min(L,rho)
 environmental robustness d_E = min(distance to C0, distance to C2)
 ```
 
-A system can have a large fitness reserve but sit close to a boundary in environmental space if the relevant margin changes steeply with environment. Conversely, a small fitness reserve can correspond to a broad environmental buffer when the margin changes slowly.
+A system can have a large fitness reserve but sit close to a boundary in environmental space if the relevant margin changes steeply with environment, or the reverse when it changes slowly.
 
 ## Claim ceiling
 
-`d_E` is a local first-order boundary-distance approximation. Strong curvature, folds, multiple nearby boundary branches, or topology changes require explicit nearest-boundary calculations rather than the gradient approximation.
+`d_E` is a local first-order boundary-distance approximation. Strong curvature, folds, multiple nearby boundary branches, or topology changes require explicit nearest-boundary calculations. The `rho=0` surface is the SLK-facing architecture-value boundary; no BITA mechanism follows from this geometric distance.
