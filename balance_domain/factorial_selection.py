@@ -99,11 +99,13 @@ def _finite_vector(values: Sequence[float], *, name: str) -> tuple[float, ...]:
 def _require_positive_semidefinite(
     covariance: tuple[tuple[float, float, float, float], ...], *, tolerance: float
 ) -> None:
-    """Validate PSD using a tolerance-aware Cholesky-style factorization.
+    """Validate PSD on a dimensionless covariance matrix.
 
     Symmetry plus non-negative diagonal entries are necessary but not sufficient
-    for a covariance matrix. This decomposition additionally rejects indefinite
-    matrices without adding a numerical dependency such as NumPy.
+    for a covariance matrix. This tolerance-aware Cholesky-style decomposition
+    additionally rejects indefinite matrices without adding a numerical
+    dependency such as NumPy. Callers normalize the covariance first so the
+    decision is invariant to a common positive change of measurement scale.
     """
 
     factor = [[0.0] * 4 for _ in range(4)]
@@ -124,21 +126,36 @@ def _require_positive_semidefinite(
 
 def _validate_covariance(
     covariance: Sequence[Sequence[float]], *, tolerance: float
-) -> tuple[tuple[float, float, float, float], ...]:
+) -> tuple[tuple[tuple[float, float, float, float], ...], float]:
+    """Return a validated covariance and its absolute element scale.
+
+    ``tolerance`` is interpreted relatively. The matrix is divided by its
+    maximum absolute entry before symmetry/PSD checks, so multiplying a
+    covariance by any positive scalar cannot change whether it is accepted as a
+    covariance matrix. The all-zero covariance is a valid singular PSD case.
+    """
     rows = tuple(tuple(float(value) for value in row) for row in covariance)
     if len(rows) != 4 or any(len(row) != 4 for row in rows):
         raise ValueError("slope_covariance must be a 4x4 matrix")
     if not all(math.isfinite(value) for row in rows for value in row):
         raise ValueError("slope_covariance values must be finite")
+
+    scale = max(abs(value) for row in rows for value in row)
+    if scale == 0.0:
+        return rows, scale  # type: ignore[return-value]
+
+    normalized = tuple(
+        tuple(value / scale for value in row)
+        for row in rows
+    )
     for i in range(4):
-        if rows[i][i] < -tolerance:
+        if normalized[i][i] < -tolerance:
             raise ValueError("slope_covariance diagonal entries must be non-negative")
         for j in range(4):
-            if abs(rows[i][j] - rows[j][i]) > tolerance:
+            if abs(normalized[i][j] - normalized[j][i]) > tolerance:
                 raise ValueError("slope_covariance must be symmetric")
-    typed_rows = rows  # shape has been validated above
-    _require_positive_semidefinite(typed_rows, tolerance=tolerance)  # type: ignore[arg-type]
-    return typed_rows  # type: ignore[return-value]
+    _require_positive_semidefinite(normalized, tolerance=tolerance)  # type: ignore[arg-type]
+    return rows, scale  # type: ignore[return-value]
 
 
 def _linear_transform(
@@ -162,6 +179,19 @@ def _quadratic_cross(
     )
 
 
+def _quadratic_roundoff_tolerance(
+    weights: Sequence[float], *, covariance_scale: float, relative_tolerance: float
+) -> float:
+    """Scale a relative matrix tolerance to one quadratic form.
+
+    ``|w' E w| <= max|E_ij| (sum |w_i|)^2`` gives a conservative conversion
+    from an elementwise covariance tolerance to the units of a derived
+    variance.
+    """
+    l1 = sum(abs(float(weight)) for weight in weights)
+    return relative_tolerance * covariance_scale * l1 * l1
+
+
 def analyze_factorial_agent_selection(
     treatment_slopes: Sequence[float],
     *,
@@ -175,6 +205,10 @@ def analyze_factorial_agent_selection(
     can always be computed. Joint uncertainty, however, is calculated only
     when a full 4x4 covariance matrix is supplied with provenance
     ``joint_model`` or ``raw_bootstrap``.
+
+    ``tolerance`` is a dimensionless relative numerical tolerance for covariance
+    validation. PSD readiness is therefore invariant to a common positive
+    rescaling of the covariance matrix.
 
     Supplying four standard errors as a diagonal matrix merely to assume zero
     covariance is outside the registered analysis contract; this function does
@@ -209,7 +243,9 @@ def analyze_factorial_agent_selection(
         allowed = ", ".join(sorted(_ALLOWED_COVARIANCE_SOURCES))
         raise ValueError(f"covariance_source must be one of: {allowed}")
 
-    covariance = _validate_covariance(slope_covariance, tolerance=tol)
+    covariance, covariance_scale = _validate_covariance(
+        slope_covariance, tolerance=tol
+    )
     transformed = tuple(
         tuple(
             _quadratic_cross(left, covariance, right)
@@ -219,9 +255,14 @@ def analyze_factorial_agent_selection(
     )
 
     variances = []
-    for i in range(4):
+    for i, weights in enumerate(_CONTRAST_MATRIX):
         variance = transformed[i][i]
-        if variance < -tol:
+        variance_tol = _quadratic_roundoff_tolerance(
+            weights,
+            covariance_scale=covariance_scale,
+            relative_tolerance=tol,
+        )
+        if variance < -variance_tol:
             raise ValueError("transformed contrast variance is negative")
         variances.append(max(0.0, variance))
     standard_errors = tuple(math.sqrt(value) for value in variances)
@@ -229,7 +270,12 @@ def analyze_factorial_agent_selection(
     interaction_variance = _quadratic_cross(
         _INTERACTION_VECTOR, covariance, _INTERACTION_VECTOR
     )
-    if interaction_variance < -tol:
+    interaction_tol = _quadratic_roundoff_tolerance(
+        _INTERACTION_VECTOR,
+        covariance_scale=covariance_scale,
+        relative_tolerance=tol,
+    )
+    if interaction_variance < -interaction_tol:
         raise ValueError("interaction contrast variance is negative")
     interaction_se = math.sqrt(max(0.0, interaction_variance))
 

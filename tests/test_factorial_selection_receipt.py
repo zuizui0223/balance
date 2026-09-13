@@ -144,6 +144,57 @@ def test_invalid_covariance_shapes_asymmetry_and_indefiniteness_are_rejected():
         )
 
 
+def test_indefinite_covariance_rejection_is_invariant_to_positive_rescaling():
+    base = (
+        (1.0, 2.0, 0.0, 0.0),
+        (2.0, 1.0, 0.0, 0.0),
+        (0.0, 0.0, 1.0, 0.0),
+        (0.0, 0.0, 0.0, 1.0),
+    )
+    for scale in (1e-12, 1.0, 1e12):
+        scaled = tuple(tuple(scale * value for value in row) for row in base)
+        with pytest.raises(ValueError, match="positive semidefinite"):
+            analyze_factorial_agent_selection(
+                (0.1, 0.2, 0.3, 0.4),
+                slope_covariance=scaled,
+                covariance_source="joint_model",
+            )
+
+
+def test_psd_covariance_readiness_and_standard_errors_scale_consistently():
+    identity = (
+        (1.0, 0.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0, 0.0),
+        (0.0, 0.0, 1.0, 0.0),
+        (0.0, 0.0, 0.0, 1.0),
+    )
+    base = analyze_factorial_agent_selection(
+        (0.1, 0.2, 0.3, 0.4),
+        slope_covariance=identity,
+        covariance_source="joint_model",
+    )
+    for scale in (1e-12, 1e12):
+        scaled_covariance = tuple(
+            tuple(scale * value for value in row)
+            for row in identity
+        )
+        scaled = analyze_factorial_agent_selection(
+            (0.1, 0.2, 0.3, 0.4),
+            slope_covariance=scaled_covariance,
+            covariance_source="joint_model",
+        )
+        assert scaled.effect_size_ready
+        assert scaled.contrast_standard_errors is not None
+        assert base.contrast_standard_errors is not None
+        expected_factor = math.sqrt(scale)
+        assert scaled.contrast_standard_errors == pytest.approx(
+            tuple(expected_factor * value for value in base.contrast_standard_errors)
+        )
+        assert scaled.interaction_standard_error == pytest.approx(
+            expected_factor * base.interaction_standard_error
+        )
+
+
 def test_singular_positive_semidefinite_covariance_is_allowed():
     singular = (
         (1.0, 1.0, 0.0, 0.0),
@@ -159,6 +210,18 @@ def test_singular_positive_semidefinite_covariance_is_allowed():
     assert receipt.effect_size_ready
     assert receipt.contrast_standard_errors is not None
     assert all(value >= 0 for value in receipt.contrast_standard_errors)
+
+
+def test_zero_covariance_is_a_valid_singular_psd_receipt():
+    zero = tuple((0.0, 0.0, 0.0, 0.0) for _ in range(4))
+    receipt = analyze_factorial_agent_selection(
+        (0.1, 0.2, 0.3, 0.4),
+        slope_covariance=zero,
+        covariance_source="raw_bootstrap",
+    )
+    assert receipt.effect_size_ready
+    assert receipt.contrast_standard_errors == (0.0, 0.0, 0.0, 0.0)
+    assert receipt.interaction_standard_error == 0.0
 
 
 def test_nonfinite_inputs_are_rejected():
