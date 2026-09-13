@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 
 @dataclass(frozen=True)
@@ -11,10 +12,25 @@ class Interval:
     upper: float
 
     def __post_init__(self) -> None:
-        if self.lower > self.upper:
+        try:
+            lower = float(self.lower)
+            upper = float(self.upper)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("interval bounds must be numeric") from exc
+        if not math.isfinite(lower) or not math.isfinite(upper):
+            raise ValueError("bounded empirical interval endpoints must be finite")
+        if lower > upper:
             raise ValueError("interval lower bound must not exceed upper bound")
+        object.__setattr__(self, "lower", lower)
+        object.__setattr__(self, "upper", upper)
 
     def contains(self, value: float) -> bool:
+        try:
+            value = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("interval membership value must be numeric") from exc
+        if not math.isfinite(value):
+            raise ValueError("interval membership value must be finite")
         return self.lower <= value <= self.upper
 
 
