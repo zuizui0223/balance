@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Sequence
 
 
@@ -63,9 +64,15 @@ def compare_critical_paths(
     e = tuple(float(x) for x in environment)
     direct = tuple(float(x) for x in direct_worldline_gap)
     decomposed = tuple(float(x) for x in decomposed_gap)
+    value_tolerance = float(value_tolerance)
+    critical_point_tolerance = float(critical_point_tolerance)
     n = len(e)
     if n < 2 or not (len(direct) == len(decomposed) == n):
         raise ValueError("all paths must have equal length >= 2")
+    if not all(math.isfinite(x) for values in (e, direct, decomposed) for x in values):
+        raise ValueError("all path values must be finite")
+    if not math.isfinite(value_tolerance) or not math.isfinite(critical_point_tolerance):
+        raise ValueError("tolerances must be finite")
     if any(e[i + 1] <= e[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if value_tolerance <= 0 or critical_point_tolerance < 0:
