@@ -1,4 +1,3 @@
-import math
 import random
 
 import pytest
@@ -13,6 +12,13 @@ from balance_domain.static import analyze_balance_path
 from balance_domain.worldline_path import analyze_worldline_path
 
 
+def _assert_intervals_close(left, right):
+    assert len(left) == len(right)
+    for (la, lb), (ra, rb) in zip(left, right):
+        assert la == pytest.approx(ra)
+        assert lb == pytest.approx(rb)
+
+
 def test_canonical_path_uses_later_entry_and_earlier_exit():
     # Entry segment: L becomes positive before rho does -> rho crossing controls.
     # Exit segment: L is lost before rho -> L crossing controls.
@@ -22,7 +28,7 @@ def test_canonical_path_uses_later_entry_and_earlier_exit():
         reserve_margin=[-1.0, 1.0, 1.0, 1.0],
         tolerance=0.0,
     )
-    assert result.middle_intervals == pytest.approx(((0.5, 3.0),))
+    _assert_intervals_close(result.middle_intervals, ((0.5, 3.0),))
     assert result.middle_width == pytest.approx(2.5)
 
 
@@ -69,7 +75,7 @@ def test_static_direct_and_sampled_routes_share_canonical_node_occupancy_randomi
         sampled_active = tuple(i in sampled.balance_indices for i in range(len(environment)))
 
         assert static_active == direct_active == sampled_active
-        assert static.balance_intervals == pytest.approx(direct.balance_intervals)
+        _assert_intervals_close(static.balance_intervals, direct.balance_intervals)
         assert static.balance_width == pytest.approx(direct.balance_width)
         assert 0.0 <= static.balance_width <= environment[-1] - environment[0]
 
