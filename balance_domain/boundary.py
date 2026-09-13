@@ -17,6 +17,10 @@ import math
 from typing import Literal, Sequence
 
 
+# Purely numerical boundary band for point-estimate APIs. Measurement or
+# inferential uncertainty belongs in the interval/receipt layer, not here.
+DEFAULT_BOUNDARY_TOLERANCE = 1e-12
+
 ReservePosition = Literal["POSITIVE", "INTERFACE", "NEGATIVE"]
 
 
@@ -52,12 +56,12 @@ def classify_two_margin_point(
     conflict_margin: float,
     reserve_margin: float,
     *,
-    tolerance: float = 0.0,
+    tolerance: float = DEFAULT_BOUNDARY_TOLERANCE,
 ) -> TwoMarginPoint:
     """Classify one context from the two BALANCE-defining margins.
 
-    ``tolerance`` defines the numerical interface band.  Conflict is active
-    only when ``L > tolerance``.  The architecture reserve is positive only
+    ``tolerance`` defines the numerical interface band. Conflict is active
+    only when ``L > tolerance``. The architecture reserve is positive only
     when ``rho > tolerance`` and negative only when ``rho < -tolerance``.
     """
     L = float(conflict_margin)
@@ -90,11 +94,11 @@ def classify_two_margin_point(
 def positive_support_monotone(
     values: Sequence[float],
     *,
-    tolerance: float = 0.0,
+    tolerance: float = DEFAULT_BOUNDARY_TOLERANCE,
 ) -> bool:
     """Return whether positive support, once entered, never disappears.
 
-    The magnitude may rise or fall.  Only the support pattern relative to the
+    The magnitude may rise or fall. Only the support pattern relative to the
     registered tolerance is constrained.
     """
     vals = tuple(float(value) for value in values)
@@ -116,12 +120,12 @@ def analyze_two_margin_path(
     conflict_margin: Sequence[float],
     reserve_margin: Sequence[float],
     *,
-    tolerance: float = 0.0,
+    tolerance: float = DEFAULT_BOUNDARY_TOLERANCE,
 ) -> TwoMarginPath:
     """Find piecewise-linear intervals where both BALANCE margins are positive.
 
     Entry into the intersection occurs at the later of the two boundary
-    crossings; exit occurs at the earlier one.  This handles simultaneous
+    crossings; exit occurs at the earlier one. This handles simultaneous
     changes in conflict support and architecture reserve symmetrically.
     """
     x = tuple(float(value) for value in environment)

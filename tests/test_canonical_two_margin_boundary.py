@@ -3,6 +3,7 @@ import random
 import pytest
 
 from balance_domain.boundary import (
+    DEFAULT_BOUNDARY_TOLERANCE,
     analyze_two_margin_path,
     classify_two_margin_point,
     positive_support_monotone,
@@ -65,27 +66,20 @@ def test_all_fitness_scale_routes_share_canonical_node_occupancy_randomized():
         # rho_direct = W_S* - W_D* = reserve.
         Ws = [10.0] * len(environment)
         Wd = [10.0 - rho for rho in reserve]
-        direct = analyze_worldline_path(
-            environment,
-            Ws,
-            Wd,
-            L,
-            tolerance=1e-12,
-        )
+        direct = analyze_worldline_path(environment, Ws, Wd, L)
         sampled = classify_domain_path(L, [-rho for rho in reserve])
 
         static_active = tuple(state == "BALANCE" for state in static.states)
         direct_active = tuple(state == "BALANCE_MIDDLE_WORLD" for state in direct.states)
         sampled_active = tuple(i in sampled.balance_indices for i in range(len(environment)))
         scalar_active = tuple(
-            classify_middle_world(li, si, ki, tolerance=1e-12).state == "BALANCE_MIDDLE_WORLD"
+            classify_middle_world(li, si, ki).state == "BALANCE_MIDDLE_WORLD"
             for li, si, ki in zip(L, s, K)
         )
         multi_active = tuple(
             classify_multi_alternative_middle_world(
                 li,
                 (rho, rho + 0.5),
-                atol=1e-12,
             ).state == "MULTI_ALTERNATIVE_BALANCE"
             for li, rho in zip(L, reserve)
         )
@@ -96,7 +90,6 @@ def test_all_fitness_scale_routes_share_canonical_node_occupancy_randomized():
                 li,
                 decoupling=si,
                 architecture_cost=ki,
-                tolerance=1e-12,
             )
             for ws, wd, li, si, ki in zip(Ws, Wd, L, s, K)
         )
@@ -126,6 +119,50 @@ def test_all_fitness_scale_routes_share_canonical_node_occupancy_randomized():
             else:
                 assert result.direct_reserve is None
                 assert result.decomposed_reserve is None
+
+
+def test_default_tolerance_agrees_on_near_sch_boundary_across_routes():
+    tol = DEFAULT_BOUNDARY_TOLERANCE
+    tiny_L = 0.5 * tol
+    L = [tiny_L, tiny_L]
+    rho = 1.0
+    environment = [0.0, 1.0]
+
+    static = analyze_balance_path(environment, L, [0.0, 0.0], [rho, rho])
+    direct = analyze_worldline_path(environment, [1.0, 1.0], [0.0, 0.0], L)
+    sampled = classify_domain_path(L, [-rho, -rho])
+    scalar = classify_middle_world(tiny_L, 0.0, rho)
+    multi = classify_multi_alternative_middle_world(tiny_L, (rho, rho + 1.0))
+    scalar_direct = compare_worldlines(1.0, 0.0, tiny_L)
+
+    assert static.states == ("NO_CONFLICT", "NO_CONFLICT")
+    assert direct.states == ("SCH_NO_CONFLICT_WORLD", "SCH_NO_CONFLICT_WORLD")
+    assert sampled.balance_indices == ()
+    assert scalar.state == "SCH_NO_CONFLICT_WORLD"
+    assert multi.state == "NO_SHARED_CONFLICT"
+    assert scalar_direct.state == "SCH_NO_CONFLICT_WORLD"
+
+
+def test_default_tolerance_agrees_on_near_architecture_boundary_across_routes():
+    tol = DEFAULT_BOUNDARY_TOLERANCE
+    rho = 0.5 * tol
+    L = [1.0, 1.0]
+    environment = [0.0, 1.0]
+    wd = 1.0 - rho
+
+    static = analyze_balance_path(environment, L, [0.0, 0.0], [rho, rho])
+    direct = analyze_worldline_path(environment, [1.0, 1.0], [wd, wd], L)
+    sampled = classify_domain_path(L, [-rho, -rho])
+    scalar = classify_middle_world(1.0, 0.0, rho)
+    multi = classify_multi_alternative_middle_world(1.0, (rho, rho + 1.0))
+    scalar_direct = compare_worldlines(1.0, wd, 1.0)
+
+    assert static.states == ("CRITICAL", "CRITICAL")
+    assert direct.states == ("ARCHITECTURE_CRITICAL_INTERFACE",) * 2
+    assert sampled.balance_indices == ()
+    assert scalar.state == "BALANCE_BITA_INTERFACE"
+    assert multi.state == "ARCHITECTURE_ENVELOPE_BOUNDARY"
+    assert scalar_direct.state == "ARCHITECTURE_CRITICAL_INTERFACE"
 
 
 def test_normalized_phase_near_boundary_is_invariant_to_fitness_unit_rescaling():

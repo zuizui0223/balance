@@ -1,6 +1,7 @@
 """Core API for Chapter 2 BALANCE-domain analysis."""
 
 from .boundary import (
+    DEFAULT_BOUNDARY_TOLERANCE,
     TwoMarginPath,
     TwoMarginPoint,
     analyze_two_margin_path,
@@ -120,6 +121,7 @@ __all__ = [
     "CoveringCertificate",
     "CriticalConcordanceResult",
     "CrossingBracket",
+    "DEFAULT_BOUNDARY_TOLERANCE",
     "DeepestMiddleWorldPoint",
     "DeepestPointSensitivity",
     "DefinitionConcordance",

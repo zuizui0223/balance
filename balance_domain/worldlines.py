@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
-from .boundary import classify_two_margin_point
+from .boundary import DEFAULT_BOUNDARY_TOLERANCE, classify_two_margin_point
 
 
 @dataclass(frozen=True)
@@ -32,7 +32,7 @@ def compare_worldlines(
     *,
     decoupling: float | None = None,
     architecture_cost: float | None = None,
-    tolerance: float = 1e-9,
+    tolerance: float = DEFAULT_BOUNDARY_TOLERANCE,
 ) -> WorldlineComparison:
     """Compare the two optimized worldlines on one fitness scale.
 

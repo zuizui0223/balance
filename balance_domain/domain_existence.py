@@ -4,7 +4,11 @@ from dataclasses import dataclass
 from math import isfinite
 from typing import Sequence
 
-from .boundary import classify_two_margin_point, positive_support_monotone
+from .boundary import (
+    DEFAULT_BOUNDARY_TOLERANCE,
+    classify_two_margin_point,
+    positive_support_monotone,
+)
 
 
 @dataclass(frozen=True)
@@ -17,7 +21,12 @@ class DomainExistenceResult:
     conflict_support_monotone: bool
 
 
-def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequence[float]) -> DomainExistenceResult:
+def classify_domain_path(
+    conflict_load: Sequence[float],
+    delta_worldline: Sequence[float],
+    *,
+    tolerance: float = DEFAULT_BOUNDARY_TOLERANCE,
+) -> DomainExistenceResult:
     """Classify sampled BALANCE-domain topology without interpolating hidden crossings.
 
     `conflict_load[i]` is L(e_i); `delta_worldline[i]` is W_D*(e_i)-W_S*(e_i)
@@ -25,13 +34,17 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
     observed ordering and does not invent a continuous crossing location.
 
     Sampled BALANCE occupancy is delegated to the same two-margin primitive as
-    the continuous path analyzers, using ``rho_direct=-Delta`` and zero numerical
-    tolerance. The monotone trichotomy additionally requires Delta to be
-    nondecreasing and positive conflict support, once entered, never to disappear.
+    the continuous path analyzers, using ``rho_direct=-Delta`` and the canonical
+    numerical boundary tolerance. The monotone trichotomy additionally requires
+    Delta to be nondecreasing (up to that numerical tolerance) and positive
+    conflict support, once entered, never to disappear.
     """
 
     if len(conflict_load) != len(delta_worldline) or len(conflict_load) < 2:
         raise ValueError("conflict_load and delta_worldline must have equal length >= 2")
+    tol = float(tolerance)
+    if not isfinite(tol) or tol < 0:
+        raise ValueError("tolerance must be finite and non-negative")
     if not all(isfinite(float(x)) for x in (*conflict_load, *delta_worldline)):
         raise ValueError("all path values must be finite")
     if any(float(x) < 0 for x in conflict_load):
@@ -40,14 +53,17 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
     L = [float(x) for x in conflict_load]
     D = [float(x) for x in delta_worldline]
     points = [
-        classify_two_margin_point(li, -di, tolerance=0.0)
+        classify_two_margin_point(li, -di, tolerance=tol)
         for li, di in zip(L, D)
     ]
     conflict = tuple(i for i, point in enumerate(points) if point.conflict_active)
     balance = tuple(i for i, point in enumerate(points) if point.middle_active)
-    crossings = tuple(i for i in range(1, len(D)) if D[i - 1] < 0 <= D[i])
-    delta_nondecreasing = all(D[i] >= D[i - 1] for i in range(1, len(D)))
-    conflict_support_monotone = positive_support_monotone(L, tolerance=0.0)
+    crossings = tuple(
+        i for i in range(1, len(D))
+        if D[i - 1] < -tol <= D[i]
+    )
+    delta_nondecreasing = all(D[i] >= D[i - 1] - tol for i in range(1, len(D)))
+    conflict_support_monotone = positive_support_monotone(L, tolerance=tol)
 
     if not conflict:
         classification = "NO_CONFLICT_ACTIVE_CONTEXT"
@@ -60,7 +76,7 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
         later_crossing = [i for i in crossings if i > first_conflict]
         if later_crossing:
             classification = "FINITE_BALANCE_DOMAIN_OBSERVED_ON_SAMPLED_PATH"
-        elif all(D[i] < 0 for i in conflict):
+        elif all(points[i].middle_active for i in conflict):
             classification = "PERSISTENT_BALANCE_OVER_OBSERVED_PATH"
         else:
             classification = "BOUNDARY_OR_UNRESOLVED_SAMPLED_TOPOLOGY"
