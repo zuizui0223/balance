@@ -69,6 +69,55 @@ def test_strong_concavity_preserves_unbounded_upper_curvature_but_rejects_bad_nu
         )
 
 
+def test_finite_curvature_overflow_cannot_masquerade_as_structural_infinity():
+    with pytest.raises(ValueError, match="upper bulge"):
+        strong_concave_bulge_bounds(
+            curvature_lower=0.0,
+            curvature_upper=1.0e308,
+            t=0.5,
+            metric_distance_sq=16.0,
+        )
+
+
+def test_jensen_residual_overflow_fails_closed_instead_of_returning_infinity():
+    with pytest.raises(ValueError, match="Jensen residual"):
+        audit_concave_margin(
+            left=1.0e308,
+            right=1.0e308,
+            observed=-1.0e308,
+            t=0.5,
+        )
+
+
+def test_interval_bulge_overflow_fails_closed():
+    with pytest.raises(ValueError, match="possible concavity bulge"):
+        interval_concave_bulge_bounds(
+            left_lower=1.0e308,
+            left_upper=1.0e308,
+            right_lower=1.0e308,
+            right_upper=1.0e308,
+            interior_lower=-1.0e308,
+            interior_upper=-1.0e308,
+            t=0.5,
+        )
+
+
+def test_structural_unbounded_curvature_remains_an_unbounded_interval_constraint():
+    result = classify_interval_concave_chord(
+        left_lower=0.0,
+        left_upper=0.0,
+        right_lower=0.0,
+        right_upper=0.0,
+        interior_lower=1.0,
+        interior_upper=2.0,
+        t=0.5,
+        curvature_lower=0.0,
+        curvature_upper=math.inf,
+    )
+    assert result.classification == "IDENTIFIED_WITHIN_INTERVALS"
+    assert math.isinf(result.required_bulge_upper)
+
+
 def test_interval_audit_rejects_nonfinite_observation_bounds():
     with pytest.raises(ValueError):
         interval_concave_bulge_bounds(
