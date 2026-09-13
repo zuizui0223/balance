@@ -1,0 +1,17 @@
+parameter,value,status,notes
+context_id,,OPEN,population x season x protocol version
+fitness_scale_id,undamaged_mature_viable_seeds_per_focal_flower,FROZEN,common reproductive currency
+n_candidate_plants,,OPEN,grid for simulation
+flowers_per_plant,,OPEN,registered allocation scheme
+cells,16,FROZEN,A x D x E_G x E_P
+plant_random_effect_sd,,OPEN,estimated from dry run
+residual_or_dispersion_parameter,,OPEN,estimated from dry run
+zero_inflation_probability,,OPEN,set zero if unsupported
+cell_attrition_probability,,OPEN,estimated from manipulation failure/loss
+minimum_meaningful_four_way_effect,,OPEN,biological scale before power evaluation
+minimum_meaningful_allocation_effect,,OPEN,change in Delta_AD_W across consumer state
+alpha_or_interval_rule,,OPEN,freeze with analysis framework
+target_power_P1,,OPEN,four-way separability target
+target_power_P2,,OPEN,consumer-allocation target
+blocking_structure,plant_or_inflorescence,PROVISIONAL,finalize after field logistics
+outcome_family,,OPEN,choose from dry-run distribution before focal outcome testing
