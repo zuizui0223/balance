@@ -25,6 +25,10 @@ def _crossing(e0: float, e1: float, y0: float, y1: float) -> float:
     return e0 + (-y0) * (e1 - e0) / (y1 - y0)
 
 
+def _level_crossing(e0: float, e1: float, y0: float, y1: float, level: float) -> float:
+    return _crossing(e0, e1, y0 - level, y1 - level)
+
+
 def analyze_worldline_path(
     environment: Sequence[float],
     shared_optimum_fitness: Sequence[float],
@@ -80,19 +84,34 @@ def analyze_worldline_path(
     if abs(gap[-1]) <= tol and L[-1] > tol:
         crossings.append(e[-1])
 
+    # BALANCE requires both L>tol and direct_gap<-tol.  Interpolate only a
+    # boundary actually bracketed by the segment, then use the later entry or
+    # earlier exit when both conditions change together.
     intervals = []
     in_balance = False
     start = None
     for i, state in enumerate(states):
         if state == "BALANCE_MIDDLE_WORLD" and not in_balance:
             start = e[i]
-            if i > 0 and gap[i - 1] >= 0 and L[i - 1] > tol:
-                start = _crossing(e[i - 1], e[i], gap[i - 1], gap[i])
+            if i > 0:
+                candidates = []
+                if L[i - 1] <= tol < L[i]:
+                    candidates.append(_level_crossing(e[i - 1], e[i], L[i - 1], L[i], tol))
+                if gap[i - 1] >= -tol and gap[i] < -tol:
+                    candidates.append(_level_crossing(e[i - 1], e[i], gap[i - 1], gap[i], -tol))
+                if candidates:
+                    start = max(candidates)
             in_balance = True
         if in_balance and state != "BALANCE_MIDDLE_WORLD":
             end = e[i]
-            if i > 0 and gap[i - 1] < 0 and L[i - 1] > tol:
-                end = _crossing(e[i - 1], e[i], gap[i - 1], gap[i])
+            if i > 0:
+                candidates = []
+                if L[i - 1] > tol >= L[i]:
+                    candidates.append(_level_crossing(e[i - 1], e[i], L[i - 1], L[i], tol))
+                if gap[i - 1] < -tol and gap[i] >= -tol:
+                    candidates.append(_level_crossing(e[i - 1], e[i], gap[i - 1], gap[i], -tol))
+                if candidates:
+                    end = min(candidates)
             intervals.append((float(start), float(end)))
             in_balance = False
             start = None
@@ -100,6 +119,10 @@ def analyze_worldline_path(
         intervals.append((float(start), e[-1]))
 
     width = sum(b - a for a, b in intervals)
+    path_width = e[-1] - e[0]
+    if width < -tol or width > path_width + tol:
+        raise ValueError("BALANCE width lies outside the registered environmental path")
+
     return WorldlinePathResult(
         environment=e,
         shared_optimum_fitness=Ws,
