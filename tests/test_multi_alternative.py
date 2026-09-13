@@ -1,5 +1,7 @@
 import math
 
+import pytest
+
 from balance_domain.multi_alternative import classify_multi_alternative_middle_world
 
 
@@ -30,3 +32,34 @@ def test_tied_best_alternatives_are_all_reported():
     )
     assert result.threatening_alternatives == (0, 1)
     assert result.state == "MULTI_ALTERNATIVE_BALANCE"
+
+
+def test_near_zero_envelope_uses_same_tolerance_as_threat_ties():
+    tol = 1e-6
+    for reserve in (0.5e-6, -0.5e-6, 0.0):
+        result = classify_multi_alternative_middle_world(
+            conflict_margin=1.0,
+            alternative_reserves=(reserve, 0.2),
+            atol=tol,
+        )
+        assert result.state == "ARCHITECTURE_ENVELOPE_BOUNDARY"
+        assert result.fitness_depth == 0.0
+
+
+def test_near_zero_conflict_is_not_called_multi_alternative_balance():
+    result = classify_multi_alternative_middle_world(
+        conflict_margin=0.5e-6,
+        alternative_reserves=(0.3, 0.4),
+        atol=1e-6,
+    )
+    assert result.state == "NO_SHARED_CONFLICT"
+    assert result.fitness_depth == 0.0
+
+
+def test_multi_alternative_inputs_fail_closed_on_bad_tolerance_or_nonfinite_values():
+    with pytest.raises(ValueError):
+        classify_multi_alternative_middle_world(1.0, (0.3, 0.4), atol=-1e-6)
+    with pytest.raises(ValueError):
+        classify_multi_alternative_middle_world(1.0, (0.3, math.nan))
+    with pytest.raises(ValueError):
+        classify_multi_alternative_middle_world(math.inf, (0.3, 0.4))
