@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from fractions import Fraction
 from math import isfinite
 
 
@@ -8,6 +9,24 @@ class WidthDepthBounds:
     width_upper: float
     depth_lower_from_width: float
     depth_upper_from_width: float
+
+
+def _fraction(value: float) -> Fraction:
+    return Fraction.from_float(value)
+
+
+def _positive_result(value: Fraction, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} must remain finite; rescale width/depth units") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} must remain finite; rescale width/depth units")
+    if value > 0 and out == 0.0:
+        raise ValueError(f"{name} underflowed to zero; rescale width/depth units")
+    if out <= 0.0:
+        raise ValueError(f"{name} must remain positive")
+    return out
 
 
 def width_depth_bounds(
@@ -37,15 +56,23 @@ def width_depth_bounds(
     if right_slope_min > right_slope_max:
         raise ValueError("right slope bounds are reversed")
 
-    width_lower = depth * (1.0 / left_slope_max + 1.0 / right_slope_max)
-    width_upper = depth * (1.0 / left_slope_min + 1.0 / right_slope_min)
-    depth_lower = width / (1.0 / left_slope_min + 1.0 / right_slope_min)
-    depth_upper = width / (1.0 / left_slope_max + 1.0 / right_slope_max)
+    d = _fraction(depth)
+    w = _fraction(width)
+    lmin = _fraction(left_slope_min)
+    lmax = _fraction(left_slope_max)
+    rmin = _fraction(right_slope_min)
+    rmax = _fraction(right_slope_max)
+
+    width_lower_exact = d * (1 / lmax + 1 / rmax)
+    width_upper_exact = d * (1 / lmin + 1 / rmin)
+    depth_lower_exact = w / (1 / lmin + 1 / rmin)
+    depth_upper_exact = w / (1 / lmax + 1 / rmax)
+
     return WidthDepthBounds(
-        width_lower=width_lower,
-        width_upper=width_upper,
-        depth_lower_from_width=depth_lower,
-        depth_upper_from_width=depth_upper,
+        width_lower=_positive_result(width_lower_exact, "width lower bound"),
+        width_upper=_positive_result(width_upper_exact, "width upper bound"),
+        depth_lower_from_width=_positive_result(depth_lower_exact, "depth lower bound"),
+        depth_upper_from_width=_positive_result(depth_upper_exact, "depth upper bound"),
     )
 
 
@@ -57,4 +84,9 @@ def constant_slope_depth(*, width: float, left_slope: float, right_slope: float)
         raise ValueError("width and slopes must be finite")
     if width <= 0 or left_slope <= 0 or right_slope <= 0:
         raise ValueError("width and slopes must be positive")
-    return width * left_slope * right_slope / (left_slope + right_slope)
+
+    w = _fraction(width)
+    left = _fraction(left_slope)
+    right = _fraction(right_slope)
+    depth_exact = w * left * right / (left + right)
+    return _positive_result(depth_exact, "constant-slope depth")
