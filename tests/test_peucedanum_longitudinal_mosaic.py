@@ -7,7 +7,7 @@ from balance_domain.longitudinal_mosaic import classify_longitudinal_mosaic
 
 
 ROOT = Path(__file__).resolve().parents[1]
-INPUT = ROOT / "empirical" / "peucedanum" / "PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V1.json"
+INPUT = ROOT / "empirical" / "peucedanum" / "PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V2.json"
 
 
 def _inputs():
