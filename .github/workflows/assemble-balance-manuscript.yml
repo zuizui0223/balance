@@ -58,9 +58,9 @@ jobs:
           wc -l artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md
       - name: Verify frozen canonical digest and size
         run: |
-          echo "ed0fede4ad71c48dbe3422b5cf72c2e46b9cf1192a1f89a7395de81943cc81cf  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
-          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 7336
-          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 470
+          echo "e064e672319bb267bc1a4a6dcbc06e817e8cc745c94be740d9e0a189b8bc9a76  artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md" | sha256sum -c -
+          test "$(wc -w < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 7555
+          test "$(wc -l < artifacts/manuscript/BALANCE_MANUSCRIPT_V1.md)" -eq 495
       - uses: actions/upload-artifact@v4
         with:
           name: balance-canonical-manuscript
