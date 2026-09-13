@@ -16,7 +16,10 @@ def _fraction(value: float) -> Fraction:
 
 
 def _positive_result(value: Fraction, name: str) -> float:
-    out = float(value)
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} must remain finite; rescale width/depth units") from exc
     if not isfinite(out):
         raise ValueError(f"{name} must remain finite; rescale width/depth units")
     if value > 0 and out == 0.0:
