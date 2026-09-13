@@ -1,6 +1,11 @@
 {
   "canonical_manuscript": "BALANCE_MANUSCRIPT_V1.md",
   "title": "Why conflict persists: a theory and evidence synthesis of the sandwiched regime between integration and differentiation",
+  "publication_status": "DORMANT_PAPER_BRANCH",
+  "current_programme_role": "DOI_TECHNICAL_MODULE_SUPPORTING_SLK",
+  "active_publication_queue": false,
+  "reactivation_policy": "see docs/PUBLICATION_STATUS.md",
+  "asset_policy": "retain canonical assembled manuscript and provenance as frozen reusable assets; do not interpret canonical as active submission status",
   "assembly_script": "scripts/assemble_balance_manuscript.py",
   "expected_sha256": "ed0fede4ad71c48dbe3422b5cf72c2e46b9cf1192a1f89a7395de81943cc81cf",
   "expected_word_count": 7336,
