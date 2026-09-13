@@ -74,6 +74,23 @@ def test_zero_decoupling_has_no_finite_bita_boundary():
     assert geometry.bita_to_sch_width_ratio is None
 
 
+def test_zero_architecture_cost_is_valid_for_state_but_not_positive_width_geometry():
+    # Proposition 4/5 geometry assumes K>0. With s>0 and K=0 the putative
+    # interval is 0<L<0, so L=0 must not be returned as an interior deepest point.
+    with pytest.raises(ValueError):
+        balance_domain_geometry(decoupling=0.5, architecture_cost=0.0)
+
+    differentiated = classify_middle_world(1.0, 0.5, 0.0)
+    assert differentiated.state == "BITA_DIFFERENTIATION_WORLD"
+    assert differentiated.middle_position is None
+    assert differentiated.two_sided_depth is None
+
+    interface = classify_middle_world(1.0, 0.0, 0.0)
+    assert interface.state == "BALANCE_BITA_INTERFACE"
+    assert interface.middle_position is None
+    assert interface.two_sided_depth is None
+
+
 def test_positive_rescaling_preserves_middle_position():
     base = classify_middle_world(0.2, 0.5, 0.3)
     scaled = classify_middle_world(2.0, 0.5, 3.0)
@@ -89,3 +106,5 @@ def test_invalid_geometry_inputs_fail_closed():
         balance_domain_geometry(1.1, 0.3)
     with pytest.raises(ValueError):
         balance_domain_geometry(0.5, -0.1)
+    with pytest.raises(ValueError):
+        balance_domain_geometry(0.5, 0.0)

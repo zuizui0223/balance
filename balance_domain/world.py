@@ -52,9 +52,15 @@ class BalanceDomainGeometry:
 
 
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
-    """Return the one-dimensional BALANCE geometry when ``s`` and ``K`` are fixed.
+    """Return the one-dimensional BALANCE geometry on its theorem domain.
 
-    For ``s>0`` the static middle world is
+    This helper implements the positive-cost geometry of Propositions 4--5 in
+    ``theory/MIDDLE_WORLD_RESULTS_V1.md`` and therefore requires ``K>0``.
+    Degenerate ``K=0`` contexts remain valid inputs to :func:`classify_middle_world`,
+    but they have no positive-width BALANCE interval and must not be promoted to
+    an interior deepest-point geometry.
+
+    For ``s>0`` and ``K>0`` the static middle world is
 
         0 < L < K/s.
 
@@ -76,16 +82,16 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         W_S = K/(1+s)
         W_B = K/[s(1+s)]
 
-    and therefore ``W_B/W_S = 1/s``.  Architecture cost ``K`` scales the whole
+    and therefore ``W_B/W_S = 1/s``. Architecture cost ``K`` scales the whole
     interval, whereas decoupling ``s`` controls its normalized skew/shape.
 
     ``criticality_index_at_equal_margin`` is the manuscript coordinate
-    ``xi=L/(L+rho)``.  The distinct ratio ``sL/K`` is reported separately as
+    ``xi=L/(L+rho)``. The distinct ratio ``sL/K`` is reported separately as
     ``architecture_pressure_ratio_at_equal_margin``.
 
-    When ``s=0`` no finite BITA-facing boundary exists: added dimensionality
-    recovers none of the conflict load. The equal-margin point is therefore not
-    treated as a unique finite domain centre.
+    When ``s=0`` (with ``K>0``) no finite BITA-facing boundary exists: added
+    dimensionality recovers none of the conflict load. The finite-interval
+    centre quantities are therefore left undefined.
     """
     s = float(decoupling)
     K = float(architecture_cost)
@@ -93,8 +99,8 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         raise ValueError("inputs must be finite")
     if not 0 <= s <= 1:
         raise ValueError("decoupling must lie in [0,1]")
-    if K < 0:
-        raise ValueError("architecture_cost must be non-negative")
+    if K <= 0:
+        raise ValueError("architecture_cost must be positive for BALANCE domain geometry")
 
     if s == 0:
         return BalanceDomainGeometry(
@@ -116,11 +122,11 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     Lequal = K / (1.0 + s)
     sch_width = Lequal
     bita_width = Lcrit - Lequal
-    fraction = None if Lcrit == 0 else Lequal / Lcrit
+    fraction = Lequal / Lcrit
     rho_equal = K - s * Lequal
-    xi_equal = None if Lequal + rho_equal == 0 else Lequal / (Lequal + rho_equal)
-    pressure_equal = None if K == 0 else s * Lequal / K
-    skew = None if sch_width == 0 else bita_width / sch_width
+    xi_equal = Lequal / (Lequal + rho_equal)
+    pressure_equal = s * Lequal / K
+    skew = bita_width / sch_width
     return BalanceDomainGeometry(
         decoupling=s,
         architecture_cost=K,
