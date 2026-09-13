@@ -1,7 +1,7 @@
 """Executable budget profile for the BALANCE branch-invariance control.
 
 This module promotes the independent Bellman check from the regression test into
-an optional diagnostic API.  It compares outcome-dependent choices of the next
+an optional diagnostic API. It compares outcome-dependent choices of the next
 DIRECTION with the existing exact allocation of forward/reverse query counts.
 Midpoint query LOCATIONS remain adaptive in both classes.
 """
@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction as F
-from functools import lru_cache
 from typing import Sequence
 
 from .bounded_switching_design import BoundedSwitchingReceipt, _q
@@ -41,23 +40,63 @@ def _count(value: int, name: str, minimum: int = 0) -> int:
     return value
 
 
-def _adaptive_direction_value(wf: F, wr: F, ef: F, er: F,
-                              cf: int, cr: int, budget: int) -> F:
+def _adaptive_direction_value(
+    wf: F,
+    wr: F,
+    ef: F,
+    er: F,
+    cf: int,
+    cr: int,
+    budget: int,
+) -> F:
     """Exact Bellman value when next direction may depend on prior outcomes.
 
     At a minimax midpoint query, stay and switch outcomes have different interval
-    locations but the SAME future span ``min(w, w/2+e)``.  Therefore the future
+    locations but the SAME future span ``min(w, w/2+e)``. Therefore the future
     value state is only ``(wf,wr,budget)`` under the declared fixed errors/costs.
+
+    The Bellman recurrence is evaluated with an explicit post-order stack rather
+    than Python recursion. This keeps the diagnostic independent of the closed
+    count-allocation solver while avoiding an artificial recursion-depth ceiling
+    for large declared budgets.
     """
-    @lru_cache(None)
-    def value(f: F, r: F, b: int) -> F:
-        choices = [f + r]
+    if cf <= 0 or cr <= 0 or budget < 0:
+        raise ValueError("query costs must be positive and budget nonnegative")
+
+    State = tuple[F, F, int]
+    start: State = (wf, wr, budget)
+    memo: dict[State, F] = {}
+    stack: list[tuple[State, bool]] = [(start, False)]
+
+    while stack:
+        state, expanded = stack.pop()
+        if state in memo:
+            continue
+        f, r, b = state
+
+        children: list[State] = []
         if cf <= b:
-            choices.append(value(min(f, f/2 + ef), r, b-cf))
+            children.append((min(f, f / 2 + ef), r, b - cf))
         if cr <= b:
-            choices.append(value(f, min(r, r/2 + er), b-cr))
-        return min(choices)
-    return value(wf, wr, budget)
+            children.append((f, min(r, r / 2 + er), b - cr))
+
+        if not expanded:
+            stack.append((state, True))
+            # Deduplicate equal children (for example when both spans are already
+            # at their error floors) without changing the Bellman recurrence.
+            for child in dict.fromkeys(children):
+                if child not in memo:
+                    stack.append((child, False))
+            continue
+
+        choices = [f + r]
+        for child in children:
+            if child not in memo:
+                raise RuntimeError("internal Bellman evaluation order is incomplete")
+            choices.append(memo[child])
+        memo[state] = min(choices)
+
+    return memo[start]
 
 
 def balance_adaptivity_budget_profile(
@@ -73,7 +112,7 @@ def balance_adaptivity_budget_profile(
     """Compare adaptive direction choice with the existing allocation optimum.
 
     A positive ``fixed_minus_adaptive_span`` would mean outcome-contingent
-    direction choice improved the worst-case width-span objective.  Under this
+    direction choice improved the worst-case width-span objective. Under this
     declared Cartesian midpoint model the exact Bellman and count-allocation
     solutions must coincide; a mismatch raises rather than being described as a
     scientific discovery.
@@ -120,9 +159,14 @@ def balance_adaptivity_budget_profile(
             raise ArithmeticError("adaptive direction Bellman is worse than the feasible fixed allocation")
         if gain != 0:
             positive.append(budget)
-        rows.append(BalanceAdaptivityBudgetRow(
-            budget, str(fixed_value), str(adaptive), str(gain)
-        ))
+        rows.append(
+            BalanceAdaptivityBudgetRow(
+                budget,
+                str(fixed_value),
+                str(adaptive),
+                str(gain),
+            )
+        )
     if positive:
         raise ArithmeticError(
             "branch-invariant BALANCE control produced an unexpected adaptive direction gain"
