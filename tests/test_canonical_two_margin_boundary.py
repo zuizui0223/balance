@@ -190,6 +190,38 @@ def test_phi_and_direct_gap_sign_conventions_collapse_to_same_reserve_margin():
     assert from_phi.middle_active
 
 
+def test_extreme_reserve_crossing_recovers_midpoint_without_overflow():
+    result = analyze_two_margin_path(
+        environment=[0.0, 10.0],
+        conflict_margin=[1.0, 1.0],
+        reserve_margin=[-1.0e308, 1.0e308],
+        tolerance=0.0,
+    )
+    _assert_intervals_close(result.middle_intervals, ((5.0, 10.0),))
+    assert result.middle_width == pytest.approx(5.0)
+
+
+def test_extreme_environment_span_can_still_return_finite_middle_interval():
+    result = analyze_two_margin_path(
+        environment=[-1.0e308, 1.0e308],
+        conflict_margin=[0.0, 1.0e308],
+        reserve_margin=[1.0e308, 1.0e308],
+        tolerance=5.0e307,
+    )
+    _assert_intervals_close(result.middle_intervals, ((0.0, 1.0e308),))
+    assert result.middle_width == pytest.approx(1.0e308)
+
+
+def test_unrepresentable_middle_width_fails_closed():
+    with pytest.raises(ValueError, match="width must remain finite"):
+        analyze_two_margin_path(
+            environment=[-1.0e308, 1.0e308],
+            conflict_margin=[1.0, 1.0],
+            reserve_margin=[1.0, 1.0],
+            tolerance=0.0,
+        )
+
+
 def test_negative_conflict_is_invalid_across_canonical_scalar_routes():
     with pytest.raises(ValueError):
         classify_two_margin_point(-0.1, 1.0)

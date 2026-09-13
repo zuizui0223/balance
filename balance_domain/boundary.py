@@ -47,9 +47,24 @@ def _level_crossing(
     y1: float,
     level: float,
 ) -> float:
+    """Interpolate a finite level crossing without overflow-prone differences."""
     if y1 == y0:
-        return 0.5 * (x0 + x1)
-    return x0 + (level - y0) * (x1 - x0) / (y1 - y0)
+        crossing = 0.5 * x0 + 0.5 * x1
+    else:
+        scale = max(abs(y0), abs(y1), abs(level))
+        if scale == 0.0:
+            crossing = 0.5 * x0 + 0.5 * x1
+        else:
+            sy0 = y0 / scale
+            sy1 = y1 / scale
+            slevel = level / scale
+            fraction = (slevel - sy0) / (sy1 - sy0)
+            if not math.isfinite(fraction):
+                raise ValueError("boundary crossing fraction must remain finite")
+            crossing = (1.0 - fraction) * x0 + fraction * x1
+    if not math.isfinite(crossing):
+        raise ValueError("boundary crossing coordinate must remain finite; rescale environment units")
+    return crossing
 
 
 def classify_two_margin_point(
@@ -127,6 +142,11 @@ def analyze_two_margin_path(
     Entry into the intersection occurs at the later of the two boundary
     crossings; exit occurs at the earlier one. This handles simultaneous
     changes in conflict support and architecture reserve symmetrically.
+
+    All returned environmental coordinates and the total middle width are
+    required to remain finite. Extremely wide but finite input coordinates may
+    therefore still be analyzed when the identified BALANCE interval itself is
+    representable; only an unrepresentable derived width fails closed.
     """
     x = tuple(float(value) for value in environment)
     L = tuple(float(value) for value in conflict_margin)
@@ -194,12 +214,19 @@ def analyze_two_margin_path(
             raise RuntimeError("internal two-margin path state lost interval start")
         intervals.append((float(start), x[-1]))
 
-    width = sum(end - begin for begin, end in intervals)
-    span = x[-1] - x[0]
-    if width < -tol or width > span + tol:
-        raise ValueError("middle-world width lies outside the registered path")
-    if any(begin < x[0] - tol or end > x[-1] + tol or end < begin for begin, end in intervals):
-        raise ValueError("middle-world interval lies outside the registered path")
+    lengths = []
+    for begin, end in intervals:
+        if begin < x[0] - tol or end > x[-1] + tol or end < begin:
+            raise ValueError("middle-world interval lies outside the registered path")
+        length = end - begin
+        if not math.isfinite(length):
+            raise ValueError("middle-world interval width must remain finite; rescale environment units")
+        lengths.append(length)
+    width = sum(lengths)
+    if not math.isfinite(width):
+        raise ValueError("middle-world width must remain finite; rescale environment units")
+    if width < -tol:
+        raise ValueError("middle-world width must be non-negative")
 
     return TwoMarginPath(
         points=points,
