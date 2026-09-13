@@ -13,6 +13,7 @@ geometry should be decided only once, here.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 import math
 from typing import Literal, Sequence
 
@@ -104,6 +105,31 @@ def classify_two_margin_point(
         reserve_position=reserve_position,
         middle_active=conflict_active and reserve_position == "POSITIVE",
     )
+
+
+def two_margin_middle_position(conflict_margin: float, reserve_margin: float) -> float:
+    """Return ``L/(L+rho)`` for two strictly positive BALANCE margins.
+
+    The ratio is evaluated exactly at the supplied-float level so a finite pair
+    such as ``L=rho=1e308`` cannot overflow the denominator and collapse an
+    interior coordinate to zero. If the true strict-interior coordinate cannot
+    itself be represented strictly inside ``(0,1)`` as a float, the routine
+    fails closed rather than returning a boundary value.
+    """
+    L = float(conflict_margin)
+    rho = float(reserve_margin)
+    if not all(math.isfinite(value) for value in (L, rho)):
+        raise ValueError("middle-position margins must be finite")
+    if L <= 0 or rho <= 0:
+        raise ValueError("middle-position margins must be strictly positive")
+
+    lq = Fraction.from_float(L)
+    rq = Fraction.from_float(rho)
+    exact = lq / (lq + rq)
+    out = float(exact)
+    if not math.isfinite(out) or not 0.0 < out < 1.0:
+        raise ValueError("middle position is not representable strictly inside (0,1); rescale units")
+    return out
 
 
 def positive_support_monotone(
