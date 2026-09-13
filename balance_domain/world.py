@@ -14,6 +14,7 @@ bounding surfaces.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 import math
 
 from .boundary import classify_two_margin_point, two_margin_middle_position
@@ -51,6 +52,25 @@ class BalanceDomainGeometry:
     bita_to_sch_width_ratio: float | None
 
 
+def _positive_fraction_to_float(value: F, name: str) -> float:
+    """Convert a positive exact geometry quantity without inventing 0/inf."""
+    if value <= 0:
+        raise ValueError(f"{name} must be positive")
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale fitness units"
+        ) from exc
+    if not math.isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale fitness units"
+        )
+    if out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale fitness units")
+    return out
+
+
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
     """Return the one-dimensional BALANCE geometry on its theorem domain.
 
@@ -60,38 +80,12 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     but they have no positive-width BALANCE interval and must not be promoted to
     an interior deepest-point geometry.
 
-    For ``s>0`` and ``K>0`` the static middle world is
-
-        0 < L < K/s.
-
-    In the common fitness-margin coordinates used by :func:`classify_middle_world`,
-    the point equally far from the SCH boundary and the BITA boundary satisfies
-
-        L = K-sL,
-
-    hence
-
-        L_equal = K/(1+s).
-
-    At this point ``xi=1/2`` and the two-sided depth ``min(L, K-sL)`` is maximal.
-    It is *not* generally halfway along the conflict-load interval ``(0, K/s)``.
-
-    The interval can be split into a SCH-boundary-limited segment and a
-    BITA-boundary-limited segment. Their widths are
-
-        W_S = K/(1+s)
-        W_B = K/[s(1+s)]
-
-    and therefore ``W_B/W_S = 1/s``. Architecture cost ``K`` scales the whole
-    interval, whereas decoupling ``s`` controls its normalized skew/shape.
-
-    ``criticality_index_at_equal_margin`` is the manuscript coordinate
-    ``xi=L/(L+rho)``. The distinct ratio ``sL/K`` is reported separately as
-    ``architecture_pressure_ratio_at_equal_margin``.
-
-    When ``s=0`` (with ``K>0``) no finite BITA-facing boundary exists: added
-    dimensionality recovers none of the conflict load. The finite-interval
-    centre quantities are therefore left undefined.
+    For ``s>0`` and ``K>0`` the static middle world is ``0 < L < K/s``. The
+    equal-margin point is ``K/(1+s)``. All finite-interval quantities are
+    evaluated exactly at the supplied-float level before conversion back to
+    float. A mathematically finite positive boundary/width/ratio that cannot be
+    represented by the float-valued API fails closed rather than appearing as
+    ``inf`` or ``0`` while ``finite_bita_boundary`` remains true.
     """
     s = float(decoupling)
     K = float(architecture_cost)
@@ -118,15 +112,25 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
             bita_to_sch_width_ratio=None,
         )
 
-    Lcrit = K / s
-    Lequal = K / (1.0 + s)
-    sch_width = Lequal
-    bita_width = Lcrit - Lequal
-    fraction = Lequal / Lcrit
-    rho_equal = K - s * Lequal
-    xi_equal = two_margin_middle_position(Lequal, rho_equal)
-    pressure_equal = s * Lequal / K
-    skew = bita_width / sch_width
+    s_q = F.from_float(s)
+    k_q = F.from_float(K)
+    one = F(1, 1)
+    lcrit_q = k_q / s_q
+    lequal_q = k_q / (one + s_q)
+    sch_width_q = lequal_q
+    bita_width_q = k_q / (s_q * (one + s_q))
+    fraction_q = s_q / (one + s_q)
+    pressure_q = fraction_q
+    skew_q = one / s_q
+
+    Lcrit = _positive_fraction_to_float(lcrit_q, "critical conflict load")
+    Lequal = _positive_fraction_to_float(lequal_q, "equal-margin conflict load")
+    sch_width = _positive_fraction_to_float(sch_width_q, "SCH-limited width")
+    bita_width = _positive_fraction_to_float(bita_width_q, "BITA-limited width")
+    fraction = _positive_fraction_to_float(fraction_q, "equal-margin fraction of conflict width")
+    pressure_equal = _positive_fraction_to_float(pressure_q, "architecture-pressure ratio at equal margin")
+    skew = _positive_fraction_to_float(skew_q, "BITA-to-SCH width ratio")
+
     return BalanceDomainGeometry(
         decoupling=s,
         architecture_cost=K,
@@ -135,7 +139,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         equal_margin_conflict_load=Lequal,
         max_two_sided_depth=Lequal,
         equal_margin_fraction_of_conflict_width=fraction,
-        criticality_index_at_equal_margin=xi_equal,
+        criticality_index_at_equal_margin=0.5,
         architecture_pressure_ratio_at_equal_margin=pressure_equal,
         sch_limited_width=sch_width,
         bita_limited_width=bita_width,
@@ -150,30 +154,7 @@ def classify_middle_world(
     *,
     tolerance: float = 1e-12,
 ) -> MiddleWorldCertificate:
-    """Classify one context in the three-world programme.
-
-    Parameters
-    ----------
-    conflict_load
-        Fitness-scale loss created by forcing the functions onto one shared
-        coordinate. ``L = 0`` is the SCH-facing no-conflict boundary.
-    decoupling
-        Fraction ``s`` of the conflict load recoverable by adding dimensionality.
-    architecture_cost
-        Additional architecture cost ``K`` on the same fitness scale.
-
-    Returns
-    -------
-    MiddleWorldCertificate
-        In the BALANCE state, ``middle_position`` is
-
-            xi = L / (L + rho),  rho = K - sL,
-
-        so xi -> 0 approaches the SCH-facing boundary and xi -> 1 approaches
-        the BITA-facing differentiation boundary. ``two_sided_depth`` is
-        ``min(L, rho)`` and measures how deeply the context lies inside the
-        middle world in the common fitness units.
-    """
+    """Classify one context in the three-world programme."""
     L = float(conflict_load)
     s = float(decoupling)
     K = float(architecture_cost)
