@@ -65,7 +65,10 @@ def diagonal_metric_boundary_depth(
         m = _decimal(margin)
         g_dec = tuple(_decimal(g) for g in gradient)
         q_dec = tuple(_decimal(q) for q in metric_diag)
-        dual_sq = sum((g * g) / q for g, q in zip(g_dec, q_dec), Decimal(0))
+        dual_sq = sum(
+            ((g * g) / q for g, q in zip(g_dec, q_dec)),
+            Decimal(0),
+        )
         if dual_sq <= 0:
             raise ValueError("gradient must be nonzero")
 
