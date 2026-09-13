@@ -21,6 +21,17 @@ def _finite(value: float, name: str) -> float:
     return value
 
 
+def _ordered_contexts(contexts: Sequence[str]) -> tuple[str, ...]:
+    values = tuple(contexts)
+    if len(values) < 2:
+        raise ValueError("at least two ordered contexts are required")
+    if any(not isinstance(context, str) or not context.strip() for context in values):
+        raise ValueError("context labels must be non-empty strings")
+    if len(set(values)) != len(values):
+        raise ValueError("context labels must be unique")
+    return values
+
+
 @dataclass(frozen=True)
 class CrossingBracket:
     definition: str
@@ -64,10 +75,9 @@ def crossing_bracket(
     context_values: Mapping[str, float] | None = None,
     tolerance: float = 1e-12,
 ) -> CrossingBracket:
-    if len(contexts) < 2:
-        raise ValueError("at least two ordered contexts are required")
-    if len(set(contexts)) != len(contexts):
-        raise ValueError("context labels must be unique")
+    if not isinstance(definition, str) or not definition.strip():
+        raise ValueError("definition label must be a non-empty string")
+    contexts = _ordered_contexts(contexts)
     tol = _finite(tolerance, "tolerance")
     if tol < 0:
         raise ValueError("tolerance must be >= 0")
@@ -123,8 +133,19 @@ def crossing_bracket(
         e1 = _finite(context_values[contexts[j]], f"context_values[{contexts[j]}]")
         if e1 == e0:
             raise ValueError("crossing endpoints must have distinct numeric context values")
+
+        # Scale margins before forming the crossing fraction. The naive
+        # denominator m1-m0 can overflow for finite opposite-sign values such as
+        # -1e308 and +1e308, incorrectly collapsing the crossing toward e0.
         m0, m1 = values[i], values[j]
-        numeric = e0 + (0.0 - m0) * (e1 - e0) / (m1 - m0)
+        margin_scale = max(abs(m0), abs(m1))
+        sm0 = m0 / margin_scale
+        sm1 = m1 / margin_scale
+        fraction = _finite(-sm0 / (sm1 - sm0), "crossing fraction")
+        numeric = _finite(
+            (1.0 - fraction) * e0 + fraction * e1,
+            "interpolated numeric critical context",
+        )
 
     return CrossingBracket(
         definition=definition,
@@ -140,6 +161,31 @@ def crossing_bracket(
     )
 
 
+def _validate_bracket_against_contexts(
+    bracket: CrossingBracket,
+    contexts: tuple[str, ...],
+) -> None:
+    if not isinstance(bracket.definition, str) or not bracket.definition.strip():
+        raise ValueError("bracket definition label must be non-empty")
+    if type(bracket.left_index) is not int or type(bracket.right_index) is not int:
+        raise ValueError("bracket indices must be integers")
+    if not 0 <= bracket.left_index <= bracket.right_index < len(contexts):
+        raise ValueError("bracket indices lie outside the supplied ordered contexts")
+    if bracket.left_context != contexts[bracket.left_index]:
+        raise ValueError("bracket left_context does not match supplied ordered contexts")
+    if bracket.right_context != contexts[bracket.right_index]:
+        raise ValueError("bracket right_context does not match supplied ordered contexts")
+    if bracket.exact_context:
+        if bracket.left_index != bracket.right_index:
+            raise ValueError("exact-context bracket must occupy one context index")
+    elif bracket.right_index != bracket.left_index + 1:
+        raise ValueError("non-exact crossing bracket must span adjacent contexts")
+    _finite(bracket.left_margin, "bracket left_margin")
+    _finite(bracket.right_margin, "bracket right_margin")
+    if bracket.numeric_critical_context is not None:
+        _finite(bracket.numeric_critical_context, "numeric_critical_context")
+
+
 def compare_definition_brackets(
     brackets: Sequence[CrossingBracket],
     contexts: Sequence[str],
@@ -148,24 +194,37 @@ def compare_definition_brackets(
 ) -> DefinitionConcordance:
     if len(brackets) < 2:
         raise ValueError("at least two definitions are required for concordance")
-    if len(set(contexts)) != len(contexts):
-        raise ValueError("context labels must be unique")
+    contexts = _ordered_contexts(contexts)
+    for bracket in brackets:
+        _validate_bracket_against_contexts(bracket, contexts)
+
+    numeric_tol = None
+    if numeric_tolerance is not None:
+        numeric_tol = _finite(numeric_tolerance, "numeric_tolerance")
+        if numeric_tol < 0:
+            raise ValueError("numeric_tolerance must be >= 0")
 
     left = max(bracket.left_index for bracket in brackets)
     right = min(bracket.right_index for bracket in brackets)
     overlap = left <= right
     identical = len({bracket.index_interval for bracket in brackets}) == 1
 
-    numeric = [b.numeric_critical_context for b in brackets if b.numeric_critical_context is not None]
+    numeric = [
+        bracket.numeric_critical_context
+        for bracket in brackets
+        if bracket.numeric_critical_context is not None
+    ]
+    if numeric_tol is not None and len(numeric) != len(brackets):
+        raise ValueError(
+            "numeric_tolerance requires a numeric critical context for every definition"
+        )
+
     max_gap = None
     numeric_agreement = None
     if len(numeric) == len(brackets):
-        max_gap = max(numeric) - min(numeric)
-        if numeric_tolerance is not None:
-            tol = _finite(numeric_tolerance, "numeric_tolerance")
-            if tol < 0:
-                raise ValueError("numeric_tolerance must be >= 0")
-            numeric_agreement = max_gap <= tol
+        max_gap = _finite(max(numeric) - min(numeric), "max_pairwise_numeric_gap")
+        if numeric_tol is not None:
+            numeric_agreement = max_gap <= numeric_tol
 
     if identical:
         classification = "SAME_COARSE_CRITICAL_BRACKET"
@@ -213,4 +272,8 @@ def analyze_definitions(
         )
         for name, margins in definitions.items()
     ]
-    return compare_definition_brackets(brackets, contexts, numeric_tolerance=numeric_tolerance)
+    return compare_definition_brackets(
+        brackets,
+        contexts,
+        numeric_tolerance=numeric_tolerance,
+    )
