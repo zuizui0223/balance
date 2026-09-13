@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 from math import isfinite
 from typing import Sequence
 
@@ -33,6 +34,22 @@ def _finite_tuple(values: Sequence[float], name: str) -> tuple[float, ...]:
     return out
 
 
+def _fraction(value: float) -> Fraction:
+    return Fraction.from_float(value)
+
+
+def _finite_exact_result(value: Fraction, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} must remain finite; rescale units") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} must remain finite; rescale units")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflowed to zero; rescale units")
+    return out
+
+
 def lipschitz_covering_certificate(
     *,
     sampled_min_margins: Sequence[float],
@@ -49,12 +66,21 @@ def lipschitz_covering_certificate(
     if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
 
-    lowers = tuple(m - k * radius for m, k in zip(margins, constants))
-    depth = min(lowers)
+    r = _fraction(radius)
+    lowers_exact = tuple(
+        _fraction(m) - _fraction(k) * r
+        for m, k in zip(margins, constants)
+    )
+    depth_exact = min(lowers_exact)
+    lowers = tuple(
+        _finite_exact_result(value, f"boundary lower bound[{i}]")
+        for i, value in enumerate(lowers_exact)
+    )
+    depth = _finite_exact_result(depth_exact, "certified global depth")
     return CoveringCertificate(
         boundary_lower_bounds=lowers,
         certified_global_depth=depth,
-        whole_domain_balance_certified=depth > 0.0,
+        whole_domain_balance_certified=depth_exact > 0,
     )
 
 
@@ -78,18 +104,21 @@ def maximum_covering_radius_for_target_depth(
     if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
 
-    radii: list[float] = []
+    target_exact = _fraction(target)
+    radii: list[Fraction] = []
     for margin, k in zip(margins, constants):
-        slack = margin - target
-        if slack < 0.0:
+        slack = _fraction(margin) - target_exact
+        if slack < 0:
             raise ValueError(
                 "target_depth exceeds a sampled minimum margin; no non-negative covering radius can certify it"
             )
         if k == 0.0:
             continue
-        radii.append(slack / k)
+        radii.append(slack / _fraction(k))
 
-    return min(radii) if radii else float("inf")
+    if not radii:
+        return float("inf")
+    return _finite_exact_result(min(radii), "maximum covering radius")
 
 
 def lipschitz_lower_envelope(
@@ -108,7 +137,12 @@ def lipschitz_lower_envelope(
     if any(d < 0 for d in distances):
         raise ValueError("distances must be nonnegative")
 
-    return max(v - k * d for v, d in zip(values, distances))
+    k_exact = _fraction(k)
+    candidates = tuple(
+        _fraction(v) - k_exact * _fraction(d)
+        for v, d in zip(values, distances)
+    )
+    return _finite_exact_result(max(candidates), "Lipschitz lower envelope")
 
 
 def multi_margin_lower_depth(
@@ -146,8 +180,14 @@ def certified_balance_ball_radius(
     if any(m <= 0 for m in margins):
         return 0.0
 
-    radii = [m / k for m, k in zip(margins, constants) if k > 0]
-    return min(radii) if radii else float("inf")
+    radii = [
+        _fraction(m) / _fraction(k)
+        for m, k in zip(margins, constants)
+        if k > 0.0
+    ]
+    if not radii:
+        return float("inf")
+    return _finite_exact_result(min(radii), "certified BALANCE ball radius")
 
 
 def certified_outside_ball_radius(
@@ -162,14 +202,16 @@ def certified_outside_ball_radius(
     if any(k < 0 for k in constants):
         raise ValueError("lipschitz constants must be nonnegative")
 
-    radii: list[float] = []
+    radii: list[Fraction] = []
     for margin, k in zip(margins, constants):
         if margin >= 0:
             continue
         if k == 0.0:
             return float("inf")
-        radii.append(-margin / k)
-    return max(radii) if radii else 0.0
+        radii.append(-_fraction(margin) / _fraction(k))
+    if not radii:
+        return 0.0
+    return _finite_exact_result(max(radii), "certified outside-ball radius")
 
 
 def lipschitz_zero_bracket(
@@ -202,13 +244,20 @@ def lipschitz_zero_bracket(
         raise ValueError("lipschitz_constant must be strictly positive")
     if tol < 0:
         raise ValueError("tolerance must be nonnegative")
-    if p + abs(n) > k * d + tol:
+
+    p_exact = _fraction(p)
+    n_abs = abs(_fraction(n))
+    d_exact = _fraction(d)
+    k_exact = _fraction(k)
+    tol_exact = _fraction(tol)
+    if p_exact + n_abs > k_exact * d_exact + tol_exact:
         raise ValueError("endpoint margins are inconsistent with the registered Lipschitz constant")
 
-    lower = p / k
-    upper = d - abs(n) / k
+    lower_exact = p_exact / k_exact
+    upper_exact = d_exact - n_abs / k_exact
+    width_exact = max(Fraction(0), upper_exact - lower_exact)
     return LipschitzZeroBracket(
-        lower_distance_from_positive=lower,
-        upper_distance_from_positive=upper,
-        width=max(0.0, upper - lower),
+        lower_distance_from_positive=_finite_exact_result(lower_exact, "zero-bracket lower distance"),
+        upper_distance_from_positive=_finite_exact_result(upper_exact, "zero-bracket upper distance"),
+        width=_finite_exact_result(width_exact, "zero-bracket width"),
     )
