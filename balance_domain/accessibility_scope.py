@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 import math
 
 
@@ -15,6 +16,17 @@ class AccessibilityScopeBounds:
     signed_margin_upper: float
     depth_lower: float | None
     depth_upper: float | None
+
+
+def _finite_difference(upper: float, lower: float, name: str) -> float:
+    exact = Fraction.from_float(upper) - Fraction.from_float(lower)
+    try:
+        out = float(exact)
+    except OverflowError as exc:
+        raise ValueError(f"{name} must remain finite; rescale fitness units") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must remain finite; rescale fitness units")
+    return out
 
 
 def accessibility_scope_bounds(
@@ -38,14 +50,16 @@ def accessibility_scope_bounds(
     possible = float(reserve_possible)
     if not all(math.isfinite(value) for value in (conflict, definite, possible)):
         raise ValueError("conflict and reserve bounds must be finite")
+    if conflict < 0:
+        raise ValueError("conflict_load must be non-negative")
     if possible > definite:
         raise ValueError("reserve_possible cannot exceed reserve_definite")
 
-    fragility = definite - possible
+    fragility = _finite_difference(definite, possible, "scope fragility")
     signed_lower = min(conflict, possible)
     signed_upper = min(conflict, definite)
 
-    if conflict <= 0:
+    if conflict == 0:
         classification = "NO_POSITIVE_CONFLICT"
         depth_lower = None
         depth_upper = None
