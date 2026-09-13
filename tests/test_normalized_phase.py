@@ -39,6 +39,43 @@ def test_zero_decoupling_never_reaches_bita_boundary_at_finite_conflict():
     point = normalized_phase_point(100.0, 0.0, 0.3)
     assert point.state == "BALANCE_MIDDLE_WORLD"
     assert point.critical_conflict_ratio is None
+    assert point.deepest_ridge_ratio == 1.0
+
+
+def test_nonzero_decoupling_boundary_overflow_cannot_masquerade_as_unbounded_case():
+    with pytest.raises(ValueError, match="critical conflict ratio.*not representable"):
+        normalized_phase_point(
+            conflict_load=1.0,
+            decoupling=5.0e-324,
+            architecture_cost=1.0,
+        )
+
+
+def test_normalized_conflict_overflow_fails_closed():
+    with pytest.raises(ValueError, match="normalized conflict ratio.*not representable"):
+        normalized_phase_point(
+            conflict_load=1.0e308,
+            decoupling=0.0,
+            architecture_cost=1.0e-308,
+        )
+
+
+def test_positive_normalized_conflict_underflow_fails_closed():
+    with pytest.raises(ValueError, match="normalized conflict ratio underflows"):
+        normalized_phase_point(
+            conflict_load=5.0e-324,
+            decoupling=0.0,
+            architecture_cost=2.0,
+        )
+
+
+def test_nonzero_decoupling_ridge_cannot_round_to_zero_decoupling_geometry():
+    with pytest.raises(ValueError, match="deepest ridge ratio collapses"):
+        normalized_phase_point(
+            conflict_load=0.5,
+            decoupling=1.0e-308,
+            architecture_cost=1.0,
+        )
 
 
 def test_normalized_phase_requires_positive_architecture_cost():
