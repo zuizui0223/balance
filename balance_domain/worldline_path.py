@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 import math
 from typing import Sequence
 
@@ -22,10 +23,32 @@ class WorldlinePathResult:
     balance_width: float
 
 
+def _fraction_to_float(value: F, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale fitness units"
+        ) from exc
+    if not math.isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale fitness units"
+        )
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale fitness units")
+    return out
+
+
 def _crossing(e0: float, e1: float, y0: float, y1: float) -> float:
-    if y1 == y0:
-        return (e0 + e1) / 2.0
-    return e0 + (-y0) * (e1 - e0) / (y1 - y0)
+    e0_q = F.from_float(e0)
+    e1_q = F.from_float(e1)
+    y0_q = F.from_float(y0)
+    y1_q = F.from_float(y1)
+    if y1_q == y0_q:
+        crossing_q = (e0_q + e1_q) / 2
+    else:
+        crossing_q = e0_q + (-y0_q) * (e1_q - e0_q) / (y1_q - y0_q)
+    return _fraction_to_float(crossing_q, "direct worldline crossing coordinate")
 
 
 def analyze_worldline_path(
@@ -64,8 +87,12 @@ def analyze_worldline_path(
     if tol <= 0:
         raise ValueError("tolerance must be positive")
 
-    gap = tuple(d - s for s, d in zip(Ws, Wd))
-    reserve = tuple(-value for value in gap)
+    ws_q = tuple(F.from_float(value) for value in Ws)
+    wd_q = tuple(F.from_float(value) for value in Wd)
+    gap_q = tuple(d - s for s, d in zip(ws_q, wd_q))
+    reserve_q = tuple(-value for value in gap_q)
+    gap = tuple(_fraction_to_float(value, "direct worldline gap") for value in gap_q)
+    reserve = tuple(_fraction_to_float(value, "direct worldline reserve") for value in reserve_q)
     boundary = analyze_two_margin_path(e, L, reserve, tolerance=tol)
 
     states = []
@@ -89,7 +116,7 @@ def analyze_worldline_path(
         g0, g1 = gap[i], gap[i + 1]
         if abs(g0) <= tol and L[i] > tol:
             crossings.append(e[i])
-        elif g0 * g1 < 0 and (L[i] > tol or L[i + 1] > tol):
+        elif ((g0 < 0 < g1) or (g1 < 0 < g0)) and (L[i] > tol or L[i + 1] > tol):
             crossings.append(_crossing(e[i], e[i + 1], g0, g1))
     if abs(gap[-1]) <= tol and L[-1] > tol:
         crossings.append(e[-1])
