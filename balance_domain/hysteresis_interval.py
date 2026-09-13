@@ -1,7 +1,7 @@
 """Inverse identification of BALANCE hysteresis from finite forcing resolution.
 
 The forward and reverse architecture-switch thresholds are not observed exactly
-when the forcing variable Phi is sampled on a finite monotone grid.  This module
+when the forcing variable Phi is sampled on a finite monotone grid. This module
 turns the declared maximum forcing increments into conservative identification
 intervals for the true thresholds and hysteresis width.
 """
@@ -43,17 +43,20 @@ def identify_hysteresis_interval(
 
         F_hat - delta_up <= F < F_hat,
 
-    where ``F`` is the exact shared->differentiated threshold.
+    where ``F=C_SD/T >= 0`` is the exact shared->differentiated threshold.
 
     For a decreasing path, the observed first switching point ``R_hat`` obeys
 
         R_hat < R <= R_hat + delta_down,
 
-    where ``R`` is the exact differentiated->shared threshold.
+    where ``R=-C_DS/T <= 0`` is the exact differentiated->shared threshold.
 
-    The returned closed intervals are conservative envelopes that include the
-    strict endpoints.  Since BALANCE switching costs are non-negative, the true
-    hysteresis width is additionally truncated below at zero.
+    Because a switch is actually observed under a strict threshold rule, both
+    crossing-step bounds must be strictly positive: a zero jump would imply an
+    empty set such as ``F_hat <= F < F_hat``. Likewise, an observed forward
+    switch must occur at positive Phi and an observed reverse switch at negative
+    Phi. The returned closed intervals are conservative envelopes of the strict
+    sets after intersecting them with ``F>=0`` and ``R<=0``.
     """
     fhat = float(observed_forward_switch)
     rhat = float(observed_reverse_switch)
@@ -61,17 +64,28 @@ def identify_hysteresis_interval(
     dd = float(max_down_step)
     if not all(isfinite(x) for x in (fhat, rhat, du, dd)):
         raise ValueError("switch points and step bounds must be finite")
-    if du < 0.0 or dd < 0.0:
-        raise ValueError("step bounds must be non-negative")
+    if du <= 0.0 or dd <= 0.0:
+        raise ValueError("observed strict switches require strictly positive step bounds")
+    if fhat <= 0.0:
+        raise ValueError("observed forward switch must be positive under non-negative switching cost")
+    if rhat >= 0.0:
+        raise ValueError("observed reverse switch must be negative under non-negative switching cost")
     if fhat < rhat:
         raise ValueError("observed forward switch must not lie below reverse switch")
 
-    forward_lower = fhat - du
+    # Intersect the finite-resolution brackets with the model constraints
+    # F>=0 and R<=0. The intervals are closed conservative envelopes; the true
+    # threshold sets retain their strict side at F_hat / R_hat.
+    forward_lower = max(0.0, fhat - du)
     forward_upper = fhat
     reverse_lower = rhat
-    reverse_upper = rhat + dd
+    reverse_upper = min(0.0, rhat + dd)
     observed_width = fhat - rhat
-    width_lower = max(0.0, observed_width - du - dd)
+
+    # Minimum feasible width uses the smallest forward threshold and largest
+    # reverse threshold after sign intersection. Maximum is approached by the
+    # two observed outer switch points and is returned as a closed envelope.
+    width_lower = forward_lower - reverse_upper
     width_upper = observed_width
 
     cost_lower = cost_upper = None
