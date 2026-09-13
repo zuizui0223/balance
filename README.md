@@ -1,42 +1,47 @@
-# BALANCE — Chapter 2: persistence inside the compromise domain
+# BALANCE — persistence inside the compromise domain
 
-`balance` is the middle chapter between [`sch`](https://github.com/zuizui0223/sch) and [`bita`](https://github.com/zuizui0223/bita).
+`balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
-## Three-chapter programme
+## Programme structure
 
 ```text
-Chapter 1 / SCH
+SCH
 shared trait coordinate
--> where does compromise settle?
+-> is there a real functional conflict, and what is its load L?
 
-Chapter 2 / BALANCE
+BALANCE
 conflict is real, but differentiation still does not pay
--> how broad, deep, resilient, connected, and persistent is the compromise domain?
+-> how broad, deep, resilient, connected, and persistent is this compromise domain?
 
-Chapter 3 / BITA
-additional trait dimensions become worthwhile
--> when does differentiation win, and through which mechanism?
+SLK
+architecture value and evolutionary transport
+-> Phi = R-K -> accessibility -> invasion -> fixation -> occupancy
+
+BITA (orthogonal)
+trait interaction -> identified set -> mechanism allocation
 ```
 
-The chapter ordering is therefore:
+The value hierarchy is therefore
 
 ```text
-SCH -> BALANCE -> BITA
-where to compromise -> why compromise persists -> when/how to differentiate
+SCH -> BALANCE -> SLK
+conflict -> persistent compromise -> architecture value and realization
 ```
+
+while BITA asks a different question: what ecological mechanism is identified by a measured trait interaction?
 
 ## BALANCE as a middle world
 
-SCH and BITA supply complementary boundary definitions.
+SCH and SLK supply the two theoretical boundaries.
 
 ```text
 SCH-facing certificate
 L > 0
 = a real shared-axis conflict exists
 
-BITA-facing certificate
-Phi = sL-K > 0
-= recovered conflict loss exceeds extra architecture cost
+SLK-facing architecture-value certificate
+Phi = R-K > 0
+= recoverable benefit exceeds extra architecture cost
 ```
 
 BALANCE is their sandwiched intersection:
@@ -47,25 +52,32 @@ and
 Phi < 0.
 ```
 
-It is therefore not a third unrelated fitness model or a third architecture. It is the world in which the SCH conflict is already real while the BITA architecture switch is still not worth paying for.
+Under the registered quadratic bridge only,
+
+```text
+R = sL,  s in [0,1],
+Phi = sL-K.
+```
+
+`R=sL` is not a universal identity for arbitrary landscapes.
 
 On a common fitness scale define
 
 ```text
-rho = K-sL
+rho = K-R
 xi  = L / (L+rho)
 d_B = min(L,rho).
 ```
 
-Inside BALANCE, `0 < xi < 1`. `xi -> 0` approaches the SCH-facing no-conflict boundary, `xi -> 1` approaches the BITA-facing differentiation boundary, and `d_B` measures two-sided depth inside the middle world.
+Inside BALANCE, `0 < xi < 1`. `xi -> 0` approaches the SCH-facing no-conflict boundary, `xi -> 1` approaches the SLK-facing architecture-value boundary, and `d_B` measures two-sided depth inside the middle world.
 
-See `docs/MIDDLE_WORLD_DEFINITION.md` and `balance_domain/world.py`.
+See `docs/MIDDLE_WORLD_DEFINITION.md`, `docs/THEORY_OWNERSHIP_CLOSURE_V1.md`, and `balance_domain/world.py`.
 
 ## Direct empirical two-worldline route
 
-Chapter 2 does **not** require the full Chapter-3 decomposition before it can be tested.
+BALANCE does **not** require the decomposed `R,K` representation before it can be tested.
 
-If the two worldlines can be optimized on one matched reproductive fitness scale, define
+If the two worldlines can be optimized on one matched reproductive-fitness scale, define
 
 ```text
 W_S*(e) = optimized shared-coordinate fitness
@@ -73,7 +85,7 @@ W_D*(e) = optimized differentiated-accessible fitness
 Delta_W(e) = W_D*(e)-W_S*(e).
 ```
 
-Then a direct middle-world receipt can be obtained from
+Then a direct middle-world receipt is
 
 ```text
 L(e) > 0
@@ -81,15 +93,19 @@ and
 Delta_W(e) < 0.
 ```
 
-This makes the chapter logically independent: SCH supplies evidence that the shared world is genuinely conflicted, BALANCE compares the optimized worldlines, and BITA may later decompose the observed gap into
+This makes BALANCE logically independent: SCH supplies evidence that the shared world is genuinely conflicted, BALANCE compares the optimized worldlines, and SLK supplies the architecture-value decomposition
 
 ```text
-Delta_W = sL-K
+Delta_W = Phi = R-K
 ```
 
-and identify its mechanism.
+when the direct and decomposed descriptions share a valid bridge. Under the registered quadratic bridge this becomes
 
-When both the direct and decomposed routes are available, they must agree on the registered common fitness scale. A mismatch is exposed as a bridge residual rather than averaged away.
+```text
+Delta_W = sL-K.
+```
+
+BITA does not own this decomposition. BITA separately asks what a measured `A x D` interaction identifies about ecological channel allocation. A bridge residual is retained as a diagnostic mismatch rather than automatically assigned to a BITA mechanism or an SLK cost.
 
 See `docs/TWO_WORLDLINE_CONCORDANCE.md`, `balance_domain/worldlines.py`, and `balance_domain/worldline_path.py`.
 
@@ -98,38 +114,37 @@ See `docs/TWO_WORLDLINE_CONCORDANCE.md`, `balance_domain/worldlines.py`, and `ba
 Let
 
 ```text
-L(e) = one-axis conflict / compromise load
-s(e) = fraction of that load recoverable by extra dimensionality
+L(e) = shared-coordinate conflict / compromise load
+R(e) = recoverable conflict loss for the registered differentiated architecture
 K(e) = added architecture cost
-R(e) = s(e)L(e)
 Phi(e) = R(e)-K(e)
 ```
 
 Then
 
 ```text
-L = 0              no shared-axis conflict
+L = 0              no identified shared-axis conflict
 L > 0, Phi < 0     BALANCE domain
-Phi = 0            architecture critical surface
-Phi > 0            DIFFERENTIATION domain
+Phi = 0            architecture-value critical surface
+Phi > 0            positive global architecture margin
 ```
 
-For the quadratic bridge used by SCH and BITA,
+For the registered quadratic bridge `R=sL`,
 
 ```text
-0 < L_S* < K/s
+0 < L < K/s
 ```
 
-is the BALANCE-only region.
+is the BALANCE-only region when `s>0`.
 
-## Chapter-2 estimands
+## BALANCE estimands
 
 This repository studies properties of the *interior* of that region rather than either boundary alone:
 
 ```text
-xi                        position between SCH- and BITA-facing boundaries
+xi                        position between SCH- and SLK-facing boundaries
 d_B                       two-sided depth inside BALANCE
-q = R/K                   dimensionless proximity to differentiation
+q = R/K                   dimensionless proximity to the architecture crossing
 rho = K-R                 critical reserve
 W_e                       environmental width of BALANCE occupancy
 A_rho                     integrated reserve across environment
@@ -140,112 +155,21 @@ N_0                       number of Phi=0 crossings
 ## Current theoretical results
 
 1. **Two-sided world certificate.** BALANCE is exactly the intersection `L>0` and `Phi<0`; `xi` and `d_B` locate a context inside that sandwiched region on a common fitness scale.
-
-2. **Direct worldline route.** `L>0` and `W_D*-W_S*<0` identify the middle world without requiring a prior `s,K` decomposition. This removes circular dependence on Chapter 3.
-
-3. **Deepest BALANCE point.** For fixed `s>0` and `K>0`, the BALANCE interval is `0<L<K/s`, but its deepest point in the two-margin fitness geometry is not generally halfway along that interval. It occurs at
-
-```text
-L_deep = K/(1+s)
-rho_deep = K/(1+s)
-xi_deep = 1/2.
-```
-
-Relative to the full conflict-load width, the deepest point lies at `s/(1+s)`. Weak decoupling therefore displaces the most robust BALANCE state toward the SCH-facing side.
-
-4. **Positive affine-scale invariance.** Applying the same positive affine transformation to the common fitness scale leaves the BALANCE state, `xi`, and `q` unchanged. Dimensional quantities such as `rho` and `d_B` rescale.
-
-5. **No-reentry sufficient condition.** If along an ordered environment `L` and `s` are nondecreasing and `K` is nonincreasing, then `Phi=sL-K` is nondecreasing. BALANCE can therefore form at most one connected interval before differentiation; a BALANCE→DIFFERENTIATION→BALANCE sequence requires at least one monotonicity condition or the common-world mapping to fail.
-
-6. **Switching-cost persistence.** If moving shared→differentiated costs `C_SD`, moving differentiated→shared costs `C_DS`, and a context persists for horizon `T`, then history dependence occurs for
-
-```text
--C_DS/T <= Phi <= C_SD/T
-```
-
-with hysteresis-band width
-
-```text
-Delta_Phi_hyst = (C_SD + C_DS)/T.
-```
-
-Thus shared and differentiated states can both persist around the static crossing depending on history.
+2. **Direct worldline route.** `L>0` and `W_D*-W_S*<0` identify the middle world without requiring a prior `R,K` decomposition.
+3. **Deepest BALANCE point under the quadratic bridge.** For fixed `s>0` and `K>0`, maximum two-sided depth occurs at `L_deep=K/(1+s)`, `rho_deep=K/(1+s)`, `xi_deep=1/2`.
+4. **Positive affine-scale invariance.** Common positive affine transformations preserve BALANCE state and dimensionless coordinates.
+5. **No-reentry sufficient condition under the quadratic bridge.** Nondecreasing `L,s` with nonincreasing `K` makes `Phi=sL-K` nondecreasing.
+6. **Switching-cost persistence.** Switching costs create a history-dependent halo around the static crossing; this does not identify accessibility, invasion, fixation, or occupancy.
 
 See `theory/MIDDLE_WORLD_RESULTS_V1.md`.
 
-## Empirical claim levels
+## Separation from sister repositories
 
-Chapter 2 separates two empirical levels.
+- **SCH owns** conflict identification and, when admissible, export of a fitness-scale conflict load `L`.
+- **BALANCE owns** direct ordering of shared and differentiated-accessible worldlines and the geometry, depth, reserve, topology, and persistence of the region `L>0, Phi<0`.
+- **SLK owns** the architecture-value object `Phi=R-K`, the quadratic bridge `R=sL`, and the subsequent accessibility → invasion → fixation → occupancy hierarchy.
+- **BITA owns** `trait interaction != ecological mechanism`, identified sets, partial identification, selective interventions, separability diagnostics, and mechanism allocation.
 
-```text
-FUNCTIONAL_STATE_MIDDLE_WORLD
-second functional state/axis is experimentally enabled or disabled
-but the structural architecture itself is not removed or costed
+Legacy code identifiers containing `bita_*` are retained temporarily for backward compatibility only; they no longer define scientific ownership of the `Phi=0` boundary.
 
-STRUCTURAL_ARCHITECTURE_MIDDLE_WORLD
-repeatable structural/performance y is established
-and matched architecture/maintenance cost is on the same fitness scale
-```
-
-For `Pedicularis rex`, the current water retained/drained intervention belongs first to the **functional-state** level. It does not by itself establish a structural-architecture middle world because the cupulate bract architecture is still present.
-
-The empirical gate is tracked in issue #3 and `empirical/BALANCE_EXECUTION_RECOVERY_LEDGER_V1.csv`.
-
-## Current observational anchor: Peucedanum
-
-Published `Peucedanum multivittatum` results provide an external critical-region anchor. Three operational definitions—final fruit-set selection gradient, selection differential, and female-gain shape—each cross their threshold between the same ordered contexts `HL` and `HC`.
-
-Registered result:
-
-```text
-SAME_COARSE_CRITICAL_BRACKET = HL--HC.
-```
-
-This does **not** establish `L`, `W_S*`, `W_D*`, or the common architecture boundary. It shows only that multiple definitions independently locate one observational transition region.
-
-See `docs/PEUCEDANUM_CRITICAL_REGION_ANCHOR_V1.md` and `empirical/peucedanum/PEUCEDANUM_CRITICAL_DEFINITIONS_V1.json`.
-
-## Separation from the sister chapters
-
-- **SCH supplies** the shared-coordinate compromise geometry and, when identified, a fitness-scale conflict budget `L`.
-- **BALANCE studies** the direct ordering of the shared and differentiated-accessible worldlines and the geometry, two-sided depth, reserve, topology, and persistence of the region where conflict exists but the shared world still wins.
-- **BITA supplies** the mechanistic decomposition into recoverability `s`, architecture cost `K`, dimensional release, and ecological mechanism identification once differentiated axes become relevant.
-
-The definitions intentionally complement one another:
-
-```text
-SCH says:      conflict exists.
-BALANCE says:  the shared world still outranks the differentiated-accessible world despite that conflict.
-BITA says:     the differentiated world has crossed above it, and asks why.
-```
-
-Do not claim historical trait splitting from this repository without independent historical evidence.
-
-## Current status
-
-Implemented with regression guards:
-
-- static BALANCE path analysis,
-- critical reserve and topology,
-- switching-cost hysteresis,
-- middle-world certificate,
-- middle-world position `xi`,
-- two-sided depth `d_B`,
-- deepest-point geometry,
-- direct shared-vs-differentiated worldline comparison,
-- direct empirical worldline-path mapping,
-- direct-versus-decomposed bridge concordance checks,
-- same-critical-point versus parallel-critical-points classification,
-- bounded cross-repository receipts that preserve uncertainty,
-- Peucedanum multi-definition critical-region fixture,
-- explicit functional-state versus structural-architecture claim ceiling.
-
-The main empirical target is now a matched same-context chain in `Pedicularis rex`: positive SCH conflict receipt → direct functional-state BALANCE worldline comparison → BITA dimensional-release/mechanism analysis → optional structural-architecture promotion. `Peucedanum` remains an observational critical-region anchor rather than a direct BALANCE worldline receipt.
-
-## Literature-synthesis milestone
-
-The manuscript programme now places literature-pattern recovery before the final focal experiment. The source-adjudicated pattern ledger contains 17 independent biological clusters, including 9 middle-regime signatures. A strict Q1B quantitative layer has three independent effect-size-ready positive-admitted systems (`Fragaria vesca`, `Impatiens capensis`, and `Gymnadenia conopsea` 2015), alongside two design-matched negative controls and explicit estimand/attribution boundaries.
-
-Because positive Q1B admission requires the preregistered same-coordinate conflict pattern, the three-cluster random-effects result is interpreted as a **conditional positive-case summary of magnitude and heterogeneity**. It is not an unbiased design-wide meta-analytic mean and its sign is not an independent test of recurrence. Recurrence is supported by recovery of the registered pattern in three independent biological systems; the matched negative controls show that comparable factorial designs do not inevitably produce the pattern.
-
-The literature synthesis still has zero matched direct shared-versus-differentiated worldline receipts. Therefore the final experimental task remains the same-context, common-fitness-scale comparison of `W_S*` and `W_D*` with joint uncertainty. The focal experiment stays last: it targets the quantity that remains structurally unidentified after theory and literature synthesis.
+The literature synthesis still has zero matched direct shared-versus-differentiated worldline receipts. That empirical gap does not prevent the theoretical ownership structure from being closed.
