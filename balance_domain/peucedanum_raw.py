@@ -58,11 +58,35 @@ def _finite_nonnegative(value: object, name: str) -> float:
     return x
 
 
+def _required_identifier(value: object, name: str) -> str:
+    if value is None:
+        raise ValueError(f"{name} must be a non-empty identifier")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        numeric = float(value)
+        if not math.isfinite(numeric):
+            raise ValueError(f"{name} must be a non-empty identifier")
+    text = str(value).strip()
+    if not text:
+        raise ValueError(f"{name} must be a non-empty identifier")
+    return text
+
+
+def _integer_year(value: object, name: str) -> int:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be an integer-valued finite year")
+    numeric = float(value)
+    if not math.isfinite(numeric) or not numeric.is_integer():
+        raise ValueError(f"{name} must be an integer-valued finite year")
+    return int(numeric)
+
+
 def validate_normalized_rows(rows: Iterable[Mapping[str, object]]) -> RawInventory:
     """Validate rows after source-specific columns have been mapped.
 
-    This does not guess column meanings.  It only validates the normalized
-    semantic contract and preserves missing optional values.
+    This does not guess column meanings. It only validates the normalized
+    semantic contract and preserves missing optional values. Core provenance
+    identifiers must be present and non-empty, and ``year`` must be genuinely
+    integer-valued rather than silently truncated by ``int()``.
     """
     records = list(rows)
     if not records:
@@ -79,12 +103,11 @@ def validate_normalized_rows(rows: Iterable[Mapping[str, object]]) -> RawInvento
         if missing:
             raise ValueError(f"row {i} missing normalized fields: {missing}")
 
-        year = int(row["year"])
-        population = str(row["population_id"]).strip()
-        dataset = str(row["dataset_id"]).strip()
-        plant = str(row["plant_id"]).strip()
-        if not population or not dataset or not plant:
-            raise ValueError(f"row {i} has an empty identifier")
+        year = _integer_year(row["year"], f"row {i} year")
+        population = _required_identifier(row["population_id"], f"row {i} population_id")
+        dataset = _required_identifier(row["dataset_id"], f"row {i} dataset_id")
+        _required_identifier(row["source_doi"], f"row {i} source_doi")
+        plant = _required_identifier(row["plant_id"], f"row {i} plant_id")
 
         flowering_day = float(row["flowering_day"])
         if not math.isfinite(flowering_day):
@@ -107,6 +130,8 @@ def validate_normalized_rows(rows: Iterable[Mapping[str, object]]) -> RawInvento
 
         if row.get("male_fraction") not in (None, ""):
             observed = float(row["male_fraction"])
+            if not math.isfinite(observed):
+                raise ValueError(f"row {i} male_fraction must be finite when provided")
             expected = male / total
             if not math.isclose(observed, expected, rel_tol=1e-9, abs_tol=1e-9):
                 raise ValueError(f"row {i} male_fraction is inconsistent with flower counts")
@@ -131,39 +156,43 @@ def published_regime_reproduction_gate(
     """Check the source-paper regime before allowing new criticality analyses.
 
     ``estimates`` must contain ``S``, ``beta`` and ``female_gain_b`` for all
-    five registered plots.  Numeric closeness is reported but is *not* used as
+    five registered plots. Numeric closeness is reported but is *not* used as
     a pass/fail gate until the archived source model/code is reproduced and a
     prospective numeric tolerance is registered.
     """
     failed: list[str] = []
     diffs: list[float] = []
+    normalized: dict[str, dict[str, float]] = {}
 
     for metric, published in PUBLISHED_2025.items():
         if metric not in estimates:
             raise ValueError(f"missing metric {metric!r}")
+        normalized_metric: dict[str, float] = {}
         for plot in PLOT_ORDER:
             if plot not in estimates[metric]:
                 raise ValueError(f"metric {metric!r} missing plot {plot!r}")
             value = float(estimates[metric][plot])
             if not math.isfinite(value):
                 raise ValueError(f"estimate {metric}/{plot} must be finite")
+            normalized_metric[plot] = value
             diffs.append(abs(value - published[plot]))
+        normalized[metric] = normalized_metric
 
     # Published critical-region regime: HA/HL on the early/high-predation side,
     # HC/KD/HD on the later/lower-predation side.
     for metric in ("S", "beta"):
         for plot in ("HA", "HL"):
-            if not estimates[metric][plot] < 0:
+            if not normalized[metric][plot] < 0:
                 failed.append(f"{metric}:{plot}:expected_negative")
         for plot in ("HC", "KD", "HD"):
-            if not estimates[metric][plot] > 0:
+            if not normalized[metric][plot] > 0:
                 failed.append(f"{metric}:{plot}:expected_positive")
 
     for plot in ("HA", "HL"):
-        if not estimates["female_gain_b"][plot] < 1:
+        if not normalized["female_gain_b"][plot] < 1:
             failed.append(f"female_gain_b:{plot}:expected_below_1")
     for plot in ("HC", "KD", "HD"):
-        if not estimates["female_gain_b"][plot] > 1:
+        if not normalized["female_gain_b"][plot] > 1:
             failed.append(f"female_gain_b:{plot}:expected_above_1")
 
     status = (
