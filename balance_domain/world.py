@@ -14,6 +14,7 @@ bounding surfaces.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 import math
 
 from .boundary import classify_two_margin_point, two_margin_middle_position
@@ -49,6 +50,27 @@ class BalanceDomainGeometry:
     sch_limited_width: float | None
     bita_limited_width: float | None
     bita_to_sch_width_ratio: float | None
+
+
+def _positive_fraction_to_float(value: F, name: str) -> float:
+    """Convert a positive exact geometry quantity without inventing 0/inf."""
+    if value <= 0:
+        raise ValueError(f"{name} must be positive")
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale fitness units"
+        ) from exc
+    if not math.isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale fitness units"
+        )
+    if out == 0.0:
+        raise ValueError(
+            f"{name} underflows float precision; rescale fitness units"
+        )
+    return out
 
 
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
@@ -92,6 +114,12 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     When ``s=0`` (with ``K>0``) no finite BITA-facing boundary exists: added
     dimensionality recovers none of the conflict load. The finite-interval
     centre quantities are therefore left undefined.
+
+    For ``s>0``, all finite-interval quantities are evaluated exactly at the
+    supplied-float level before conversion back to float. If a mathematically
+    finite boundary/width/ratio cannot be represented as a finite positive
+    float, the helper fails closed rather than returning ``inf`` or ``0`` while
+    still claiming ``finite_bita_boundary=True``.
     """
     s = float(decoupling)
     K = float(architecture_cost)
@@ -118,15 +146,30 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
             bita_to_sch_width_ratio=None,
         )
 
-    Lcrit = K / s
-    Lequal = K / (1.0 + s)
-    sch_width = Lequal
-    bita_width = Lcrit - Lequal
-    fraction = Lequal / Lcrit
-    rho_equal = K - s * Lequal
-    xi_equal = two_margin_middle_position(Lequal, rho_equal)
-    pressure_equal = s * Lequal / K
-    skew = bita_width / sch_width
+    s_q = F.from_float(s)
+    k_q = F.from_float(K)
+    one = F(1, 1)
+
+    lcrit_q = k_q / s_q
+    lequal_q = k_q / (one + s_q)
+    sch_width_q = lequal_q
+    bita_width_q = k_q / (s_q * (one + s_q))
+    fraction_q = s_q / (one + s_q)
+    pressure_q = fraction_q
+    skew_q = one / s_q
+
+    Lcrit = _positive_fraction_to_float(lcrit_q, "critical conflict load")
+    Lequal = _positive_fraction_to_float(lequal_q, "equal-margin conflict load")
+    sch_width = _positive_fraction_to_float(sch_width_q, "SCH-limited width")
+    bita_width = _positive_fraction_to_float(bita_width_q, "BITA-limited width")
+    fraction = _positive_fraction_to_float(
+        fraction_q, "equal-margin fraction of conflict width"
+    )
+    pressure_equal = _positive_fraction_to_float(
+        pressure_q, "architecture-pressure ratio at equal margin"
+    )
+    skew = _positive_fraction_to_float(skew_q, "BITA-to-SCH width ratio")
+
     return BalanceDomainGeometry(
         decoupling=s,
         architecture_cost=K,
@@ -135,7 +178,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         equal_margin_conflict_load=Lequal,
         max_two_sided_depth=Lequal,
         equal_margin_fraction_of_conflict_width=fraction,
-        criticality_index_at_equal_margin=xi_equal,
+        criticality_index_at_equal_margin=0.5,
         architecture_pressure_ratio_at_equal_margin=pressure_equal,
         sch_limited_width=sch_width,
         bita_limited_width=bita_width,
