@@ -7,6 +7,7 @@ from balance_domain.boundary import (
     analyze_two_margin_path,
     classify_two_margin_point,
     positive_support_monotone,
+    two_margin_middle_position,
 )
 from balance_domain.domain_existence import classify_domain_path
 from balance_domain.multi_alternative import classify_multi_alternative_middle_world
@@ -43,6 +44,20 @@ def test_point_classifier_uses_one_registered_tolerance_for_both_boundaries():
     assert classify_two_margin_point(2 * tol, 2 * tol, tolerance=tol).middle_active
     assert classify_two_margin_point(1.0, 0.5 * tol, tolerance=tol).reserve_position == "INTERFACE"
     assert classify_two_margin_point(1.0, -2 * tol, tolerance=tol).reserve_position == "NEGATIVE"
+
+
+def test_middle_position_is_overflow_safe_and_strictly_interior():
+    assert two_margin_middle_position(2.0, 1.0) == pytest.approx(2.0 / 3.0)
+    assert two_margin_middle_position(1.0e308, 1.0e308) == pytest.approx(0.5)
+
+    for L, rho in ((0.0, 1.0), (1.0, 0.0), (-1.0, 1.0), (float("inf"), 1.0)):
+        with pytest.raises(ValueError):
+            two_margin_middle_position(L, rho)
+
+    # The exact ratio is positive, but too small to represent strictly inside
+    # (0,1) as a float.  Do not silently return the SCH boundary coordinate 0.
+    with pytest.raises(ValueError, match="strictly inside"):
+        two_margin_middle_position(5e-324, 1.0e308)
 
 
 def test_positive_support_monotone_tracks_support_not_magnitude():
