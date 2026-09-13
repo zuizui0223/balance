@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Sequence
 
 
@@ -75,6 +76,8 @@ def analyze_balance_path(
     n = len(e)
     if n < 2 or not (len(L) == len(s) == len(K) == n):
         raise ValueError("all paths must have equal length >= 2")
+    if not all(math.isfinite(x) for values in (e, L, s, K) for x in values):
+        raise ValueError("all path values must be finite")
     if any(e[i + 1] <= e[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if any(x < 0 for x in L) or any(x < 0 for x in K):
