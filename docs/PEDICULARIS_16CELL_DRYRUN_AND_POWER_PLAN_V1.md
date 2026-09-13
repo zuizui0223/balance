@@ -55,7 +55,9 @@ A conventional non-significant difference is not evidence of selectivity.
 
 ### Cell-retention rule
 
-Every one of the 16 cells must preserve the intended A and D contrast and the intended consumer state. If one or more cells collapse the registered contrast, the full crossed architecture is not execution-qualified.
+Every one of the 16 cells must preserve the intended A and D contrast and the intended consumer state at the design level. A treatment combination that systematically collapses a registered contrast fails technical qualification.
+
+Missing observations are handled separately from manipulation failure. A plant is **not** discarded merely because one or more assigned cells are missing. Preserve the randomization record and all observed cells for the hierarchical analysis unless a preregistered exclusion criterion applies.
 
 ### Dry-run sample size
 
@@ -97,6 +99,14 @@ W ~ A * D * E_G * E_P + preregistered block/random effects
 Use a distribution appropriate to the registered fitness variable and its dispersion/zero structure. Model choice is frozen before testing the focal contrasts after pilot dispersion information is available.
 
 Blocked randomization within plant or inflorescence is used when feasible, with plant identity retained as a grouping factor rather than treating flowers as independent biological replicates.
+
+### Partial-data rule
+
+The powered analysis uses all valid observed cells. Complete-case analysis is retained only as a sensitivity analysis because requiring all 16 cells from one plant creates an avoidable attrition penalty.
+
+The pre-dry-run working model for design calculations uses generalized least squares with compound-symmetric plant covariance. The final analysis may use a GLMM or another registered hierarchical model after the dry run identifies the outcome distribution, dispersion, zero structure, and missingness pattern.
+
+If missingness depends on treatment, manipulation damage, consumer attack, or latent reproductive outcome, that mechanism must be represented in the final design simulation and sensitivity analysis rather than treated as random cell loss.
 
 ## Registered estimands
 
@@ -181,24 +191,34 @@ candidate n plants
 flowers per plant per cell or allocation scheme
 dispersion / zero inflation if present
 plant-level random-effect variance
-cell attrition rate
+cell-specific attrition pattern
 registered minimum meaningful four-way magnitude
+registered four-way separability tolerance
 registered minimum meaningful allocation-face magnitude
 ```
 
-Choose the smallest design meeting the preregistered power criterion for P1 while retaining sufficient power for P2. Do not compute sample size from a simple independent-cell ANOVA if the final design is blocked/hierarchical.
+Choose the smallest design meeting the preregistered P1 criterion while retaining sufficient power/precision for P2. Do not compute sample size from a simple independent-cell ANOVA if the final design is blocked/hierarchical.
+
+The current pre-dry-run envelopes are documented separately:
+
+```text
+PEDICULARIS_FOURWAY_SENSITIVITY_GRID_V1.md
+PEDICULARIS_PARTIAL_DATA_POWER_ENVELOPE_V1.md
+```
+
+The complete-case envelope is a conservative feasibility bound. The partial-data hierarchical envelope is the preferred pre-dry-run approximation.
 
 ## Promotion states
 
 ```text
 TECHNICALLY_QUALIFIED
 = Q1/Q2/Q3 pass
-+ all 16 cells preserve factor states
++ all 16 assigned treatment combinations preserve factor states
 + leakage equivalence passes
 
 POWER_QUALIFIED
 = technically qualified
-+ simulation-based design meets P1/P2 target
++ final dry-run-informed hierarchical simulation meets P1/P2 target
 
 MECHANISM_ALLOCATION_ELIGIBLE
 = powered experiment completed
