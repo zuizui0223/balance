@@ -7,6 +7,7 @@ causal calibration of the architecture boundary.
 
 from __future__ import annotations
 
+from fractions import Fraction as F
 import math
 import random
 
@@ -27,6 +28,20 @@ def _integer_value(value: object, name: str) -> int:
     if not math.isfinite(numeric) or not numeric.is_integer():
         raise ValueError(f"{name} must be an integer-valued finite number")
     return int(numeric)
+
+
+def _fraction_to_float(value: F, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float"
+        ) from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} is finite mathematically but not representable as float")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision")
+    return out
 
 
 def _quantile(values: list[float], q: float) -> float:
@@ -52,10 +67,12 @@ def _crossing(e_left: float, e_right: float, m_left: float, m_right: float) -> f
         raise ValueError("crossing inputs must be finite")
     if not (m_left < 0.0 < m_right):
         raise ValueError("registered crossing requires left margin < 0 < right margin")
-    crossing = e_left + (0.0 - m_left) * (e_right - e_left) / (m_right - m_left)
-    if not math.isfinite(crossing):
-        raise ValueError("interpolated proxy crossing must be finite")
-    return crossing
+    e_left_q = F.from_float(e_left)
+    e_right_q = F.from_float(e_right)
+    m_left_q = F.from_float(m_left)
+    m_right_q = F.from_float(m_right)
+    crossing_q = e_left_q + (-m_left_q) * (e_right_q - e_left_q) / (m_right_q - m_left_q)
+    return _fraction_to_float(crossing_q, "interpolated proxy crossing")
 
 
 def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
@@ -81,9 +98,13 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
     e_right = float(axis["right_value"])
     if not all(math.isfinite(value) for value in (e_left, e_right)):
         raise ValueError("proxy-axis endpoints must be finite")
-    axis_span = e_right - e_left
-    if not math.isfinite(axis_span) or axis_span == 0.0:
+    axis_span_q = F.from_float(e_right) - F.from_float(e_left)
+    if axis_span_q == 0:
         raise ValueError("proxy-axis endpoints must define a finite nonzero span")
+    try:
+        axis_span = _fraction_to_float(axis_span_q, "proxy-axis span")
+    except ValueError as exc:
+        raise ValueError("proxy-axis endpoints must define a finite nonzero span") from exc
 
     registered = config["registered_sensitivity_model"]
     draws = _integer_value(registered["draws"], "draws")
@@ -142,8 +163,13 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
     common_lo = max(interval[0] for interval in ci_intervals)
     common_hi = min(interval[1] for interval in ci_intervals)
     common_overlap = common_lo <= common_hi
-    spread = max(point_estimates) - min(point_estimates)
+    spread_q = F.from_float(max(point_estimates)) - F.from_float(min(point_estimates))
+    spread = _fraction_to_float(spread_q, "point-estimate spread")
     bracket_width = abs(axis_span)
+    spread_fraction = _fraction_to_float(
+        spread_q / abs(axis_span_q),
+        "point-estimate spread fraction of observed bracket",
+    )
 
     return {
         "analysis": "balance_peucedanum_antagonist_proxy_criticality",
@@ -160,7 +186,7 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
         },
         "definitions": definitions_out,
         "point_estimate_spread": spread,
-        "point_estimate_spread_fraction_of_observed_bracket": spread / bracket_width,
+        "point_estimate_spread_fraction_of_observed_bracket": spread_fraction,
         "common_conditional_95_interval": [common_lo, common_hi] if common_overlap else None,
         "classification": (
             "SAME_NUMERIC_PROXY_CRITICAL_CONTEXT_COMPATIBLE"
