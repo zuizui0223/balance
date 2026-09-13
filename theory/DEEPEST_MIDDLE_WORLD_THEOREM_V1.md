@@ -16,7 +16,7 @@ for distance from the SCH conflict-onset boundary, and
 \rho(e)=W_S^*(e)-W_D^*(e)>0
 \]
 
-for distance from the architecture crossing on the BITA-facing side.
+for distance from the SLK-facing architecture-value crossing.
 
 Inside BALANCE,
 
@@ -70,56 +70,24 @@ By continuity there is exactly one point `e_dagger` such that
 
 ## Theorem 2 — this point uniquely maximizes BALANCE depth
 
-For `e<e_dagger`,
-
-\[
-L(e)<\rho(e)
-\]
-
-so
-
-\[
-d_B(e)=L(e),
-\]
-
-which strictly increases toward `e_dagger`.
-
-For `e>e_dagger`,
-
-\[
-L(e)>\rho(e)
-\]
-
-so
-
-\[
-d_B(e)=\rho(e),
-\]
-
-which strictly decreases away from `e_dagger`.
+For `e<e_dagger`, `L(e)<rho(e)` and therefore `d_B(e)=L(e)`, which strictly increases toward `e_dagger`. For `e>e_dagger`, `L(e)>rho(e)` and therefore `d_B(e)=rho(e)`, which strictly decreases away from `e_dagger`.
 
 Therefore
 
 \[
-\boxed{
-\operatorname*{arg\,max}_e d_B(e)=e_\dagger
-}
+\boxed{\operatorname*{arg\,max}_e d_B(e)=e_\dagger}
 \]
 
 and the maximizer is unique.
 
-This gives a general definition of the **deepest BALANCE state**: the point equally far, on the common fitness-margin scale, from the SCH-facing and BITA-facing boundaries.
+This gives a general definition of the **deepest BALANCE state**: the point equally far, on the common fitness-margin scale, from the SCH-facing and SLK-facing architecture-value boundaries.
 
 ## Corollary 2a — the deepest point has xi = 1/2
 
 At the equal-margin point,
 
 \[
-\xi(e_\dagger)
-=
-\frac{L}{L+\rho}
-=
-\boxed{\frac12}.
+\xi(e_\dagger)=\frac{L}{L+\rho}=\boxed{\frac12}.
 \]
 
 Thus `xi=1/2` is not an arbitrary visual midpoint. Under the declared monotone-margin assumptions it identifies the unique maximum of the two-sided depth.
@@ -129,55 +97,24 @@ Thus `xi=1/2` is not an arbitrary visual midpoint. Under the declared monotone-m
 Where the margins are differentiable,
 
 \[
-\xi'(e)
-=
-\frac{L'(e)\rho(e)-L(e)\rho'(e)}{[L(e)+\rho(e)]^2}.
+\xi'(e)=\frac{L'(e)\rho(e)-L(e)\rho'(e)}{[L(e)+\rho(e)]^2}.
 \]
 
-With
-
-\[
-L'(e)\ge0,
-\qquad
-\rho'(e)\le0,
-\]
-
-and at least one strict inequality, the numerator is positive. Hence
+With `L'(e)>=0`, `rho'(e)<=0`, and at least one strict inequality, the numerator is positive. Hence
 
 \[
 \boxed{\xi'(e)>0}.
 \]
 
-So the normalized coordinate moves monotonically from the SCH-facing side toward the BITA-facing side along such an environmental path.
+So the normalized coordinate moves monotonically from the SCH-facing side toward the SLK-facing architecture-value side along such an environmental path.
 
 ## Corollary 3a — positive fitness-scale invariance
 
-Under a common positive rescaling of the fitness margin,
-
-\[
-L'(e)=aL(e),
-\qquad
-\rho'(e)=a\rho(e),
-\qquad a>0,
-\]
-
-we have
-
-\[
-\xi'_{\rm coord}(e)=\xi(e),
-\]
-
-and the equal-margin location `e_dagger` is unchanged, while
-
-\[
-d_B'(e)=a d_B(e).
-\]
-
-Thus the location and normalized position of the deepest state are invariant to common choice of positive fitness units; its absolute depth retains fitness units.
+Under a common positive rescaling of the fitness margins, `L_new=aL` and `rho_new=a rho` with `a>0`, the coordinate `xi` and equal-margin location `e_dagger` are unchanged, while `d_B` is multiplied by `a`. Thus location and normalized position are invariant to common positive fitness units; absolute depth retains fitness units.
 
 ## Quadratic special case
 
-Under the registered quadratic decomposition with fixed `s` and `K`,
+Under the registered quadratic bridge with fixed `s` and `K`,
 
 \[
 \rho=K-sL.
@@ -186,29 +123,17 @@ Under the registered quadratic decomposition with fixed `s` and `K`,
 The deepest-point condition `L=rho` gives
 
 \[
-L=K-sL
-\]
-
-and therefore
-
-\[
 \boxed{L_{\rm deep}=\frac{K}{1+s}}.
 \]
 
-So the previously derived quadratic deepest ridge is a special case of the direct worldline theorem.
+So the quadratic deepest ridge is a special case of the direct worldline theorem; the direct theorem itself does not require `R=sL`.
 
 ## Boundary cases
 
-If `L-rho` never crosses zero on the observed interval, no interior equal-margin point is identified there. The observed maximum of `d_B` may then lie at the edge of the sampled range. Do not extrapolate an unobserved deepest state without an explicit path model.
-
-If either margin is nonmonotone, multiple local depth maxima are possible. That is a topology/re-entry problem rather than a failure of the BALANCE definition.
+If `L-rho` never crosses zero on the observed interval, no interior equal-margin point is identified there. The observed maximum of `d_B` may lie at the sampled edge; do not extrapolate an unobserved deepest state without an explicit path model. If either margin is nonmonotone, multiple local depth maxima are possible; that is a topology/re-entry problem rather than a failure of the BALANCE definition.
 
 ## Empirical consequence
 
-Across ordered environments, Chapter 2 can estimate `L(e)` and direct `rho(e)=W_S^*-W_D^*`. A finite connected BALANCE domain with monotone opposing margins predicts:
+Across ordered environments, BALANCE can estimate `L(e)` and direct `rho(e)=W_S^*-W_D^*`. A finite connected BALANCE domain with monotone opposing margins predicts a unique equal-margin context, `xi` increasing through `1/2` there, and two-sided depth increasing before and decreasing after it.
 
-- a unique equal-margin context;
-- `xi` increasing through `1/2` at that context;
-- two-sided depth increasing before and decreasing after it.
-
-This is a BALANCE-domain prediction. PAYOFF frequency dependence is not required.
+This is a static BALANCE-domain prediction. It does not require SLK invasion or frequency-dependent realization assumptions.
