@@ -17,8 +17,9 @@ def test_direct_worldline_path_maps_middle_world_without_s_k_decomposition():
         "BITA_DIFFERENTIATION_WORLD",
     )
     assert result.critical_crossings == (2.0,)
-    assert result.balance_intervals == ((1.0, 2.0),)
-    assert math.isclose(result.balance_width, 1.0)
+    assert math.isclose(result.balance_intervals[0][0], 0.0, abs_tol=1e-8)
+    assert math.isclose(result.balance_intervals[0][1], 2.0, abs_tol=1e-8)
+    assert math.isclose(result.balance_width, 2.0, abs_tol=1e-8)
 
 
 def test_multiple_middle_world_intervals_are_visible_in_direct_worldlines():
@@ -41,3 +42,35 @@ def test_no_conflict_positive_diff_gap_is_not_called_balance():
     )
     assert all(state == "OUTSIDE_REGISTERED_SCH_CONFLICT" for state in result.states)
     assert result.balance_intervals == ()
+
+
+def test_direct_worldline_conflict_loss_exit_stays_inside_path():
+    result = analyze_worldline_path(
+        environment=[0, 1, 2],
+        shared_optimum_fitness=[10, 10, 10],
+        differentiated_optimum_fitness=[9, 9.5, 9.75],
+        conflict_load=[2, 1, 0],
+    )
+    assert result.states == (
+        "BALANCE_MIDDLE_WORLD",
+        "BALANCE_MIDDLE_WORLD",
+        "SCH_NO_CONFLICT_WORLD",
+    )
+    assert math.isclose(result.balance_intervals[0][1], 2.0, abs_tol=1e-8)
+    assert math.isclose(result.balance_width, 2.0, abs_tol=1e-8)
+
+
+def test_direct_worldline_no_conflict_entry_uses_conflict_boundary():
+    result = analyze_worldline_path(
+        environment=[0, 1, 2],
+        shared_optimum_fitness=[10, 10, 10],
+        differentiated_optimum_fitness=[9.5, 9.5, 9.5],
+        conflict_load=[0, 1, 1],
+    )
+    assert result.states == (
+        "SCH_NO_CONFLICT_WORLD",
+        "BALANCE_MIDDLE_WORLD",
+        "BALANCE_MIDDLE_WORLD",
+    )
+    assert result.balance_intervals[0][0] < 1e-8
+    assert math.isclose(result.balance_width, 2.0, abs_tol=1e-8)
