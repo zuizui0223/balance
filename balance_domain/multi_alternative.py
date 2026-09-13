@@ -4,6 +4,8 @@ from dataclasses import dataclass
 import math
 from typing import Sequence
 
+from .boundary import classify_two_margin_point
+
 
 @dataclass(frozen=True)
 class MultiAlternativeState:
@@ -25,9 +27,12 @@ def classify_multi_alternative_middle_world(
 
     ``atol`` defines the numerical boundary band consistently for both status
     margins and for ties among the alternatives that attain the reserve
-    envelope.  A margin whose absolute value is at most ``atol`` is therefore
+    envelope. A margin whose absolute value is at most ``atol`` is therefore
     treated as lying on its registered boundary rather than as signed evidence
     for one side.
+
+    The envelope reserve is passed to the same two-margin classifier used by
+    the single-alternative BALANCE routes.
     """
     if not alternative_reserves:
         raise ValueError("at least one alternative architecture is required")
@@ -45,14 +50,15 @@ def classify_multi_alternative_middle_world(
         i for i, value in enumerate(reserves)
         if abs(value - envelope_reserve) <= tol
     )
+    point = classify_two_margin_point(conflict, envelope_reserve, tolerance=tol)
 
-    if conflict <= tol:
+    if not point.conflict_active:
         state = "NO_SHARED_CONFLICT"
         fitness_depth = 0.0
-    elif envelope_reserve > tol:
+    elif point.reserve_position == "POSITIVE":
         state = "MULTI_ALTERNATIVE_BALANCE"
         fitness_depth = min(conflict, envelope_reserve)
-    elif envelope_reserve < -tol:
+    elif point.reserve_position == "NEGATIVE":
         state = "ALTERNATIVE_ARCHITECTURE_SIDE"
         fitness_depth = 0.0
     else:

@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
+from .boundary import classify_two_margin_point
+
 
 @dataclass(frozen=True)
 class NormalizedPhasePoint:
@@ -30,16 +32,20 @@ def normalized_phase_point(
     ``K`` must be positive for this normalized representation. Let
 
         c = L/K
-        q = sL/K = sc.
+        q = sL/K = sc
+        rho/K = 1-q.
 
     The static architecture boundary is ``q=1`` or ``c=1/s`` when ``s>0``.
     Inside BALANCE, the equal-margin/deepest ridge is
 
         c = 1/(1+s).
 
-    Contexts below that ridge are closer to the SCH-facing conflict boundary;
-    contexts above it are closer to the BITA-facing architecture boundary in
-    the common fitness-margin geometry.
+    ``tolerance`` is dimensionless and is applied to the normalized conflict
+    margin ``c`` and normalized reserve margin ``1-q``. This preserves the
+    defining scale invariance of the phase representation even near a boundary.
+    Contexts below the deepest ridge are closer to the SCH-facing conflict
+    boundary; contexts above it are closer to the BITA-facing architecture
+    boundary in the common fitness-margin geometry.
     """
     L = float(conflict_load)
     s = float(decoupling)
@@ -58,21 +64,23 @@ def normalized_phase_point(
 
     c = L / K
     q = s * c
+    normalized_reserve = 1.0 - q
     critical = None if s == 0 else 1.0 / s
     ridge = 1.0 / (1.0 + s)
+    point = classify_two_margin_point(c, normalized_reserve, tolerance=tol)
 
-    if L <= tol:
+    if not point.conflict_active:
         state = "SCH_NO_CONFLICT_WORLD"
         xi = None
         subregion = None
-    elif abs(q - 1.0) <= tol:
+    elif point.reserve_position == "INTERFACE":
         state = "BALANCE_BITA_INTERFACE"
         xi = None
         subregion = None
-    elif q < 1.0:
+    elif point.reserve_position == "POSITIVE":
         state = "BALANCE_MIDDLE_WORLD"
         # xi = L/(L+K-sL); divide numerator and denominator by K.
-        xi = c / (c + 1.0 - s * c)
+        xi = c / (c + normalized_reserve)
         if abs(c - ridge) <= tol:
             subregion = "DEEPEST_BALANCE_RIDGE"
         elif c < ridge:
