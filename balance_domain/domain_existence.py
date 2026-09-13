@@ -12,6 +12,7 @@ class DomainExistenceResult:
     balance_indices: tuple[int, ...]
     crossing_indices: tuple[int, ...]
     delta_nondecreasing: bool
+    conflict_support_monotone: bool
 
 
 def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequence[float]) -> DomainExistenceResult:
@@ -20,6 +21,12 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
     `conflict_load[i]` is L(e_i); `delta_worldline[i]` is W_D*(e_i)-W_S*(e_i)
     on the same ordered contexts.  The function intentionally works only with the
     observed ordering and does not invent a continuous crossing location.
+
+    The monotone trichotomy requires two sampled-path conditions: the direct
+    worldline gap must be nondecreasing, and once positive conflict support
+    (`L>0`) appears it must remain active over later observed contexts.  This
+    second condition prevents a loss and later reappearance of conflict from
+    being misclassified as persistent BALANCE.
     """
 
     if len(conflict_load) != len(delta_worldline) or len(conflict_load) < 2:
@@ -31,16 +38,21 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
 
     L = [float(x) for x in conflict_load]
     D = [float(x) for x in delta_worldline]
-    conflict = tuple(i for i, value in enumerate(L) if value > 0)
+    conflict_active = [value > 0 for value in L]
+    conflict = tuple(i for i, active in enumerate(conflict_active) if active)
     balance = tuple(i for i in conflict if D[i] < 0)
     crossings = tuple(i for i in range(1, len(D)) if D[i - 1] < 0 <= D[i])
-    nondecreasing = all(D[i] >= D[i - 1] for i in range(1, len(D)))
+    delta_nondecreasing = all(D[i] >= D[i - 1] for i in range(1, len(D)))
+    conflict_support_monotone = all(
+        not conflict_active[i] or conflict_active[i + 1]
+        for i in range(len(conflict_active) - 1)
+    )
 
     if not conflict:
         classification = "NO_CONFLICT_ACTIVE_CONTEXT"
     elif not balance:
         classification = "NO_OBSERVED_POSITIVE_WIDTH_BALANCE"
-    elif not nondecreasing:
+    elif not delta_nondecreasing or not conflict_support_monotone:
         classification = "NONMONOTONE_PATH_REQUIRES_REENTRY_AUDIT"
     else:
         first_conflict = conflict[0]
@@ -57,5 +69,6 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
         conflict_indices=conflict,
         balance_indices=balance,
         crossing_indices=crossings,
-        delta_nondecreasing=nondecreasing,
+        delta_nondecreasing=delta_nondecreasing,
+        conflict_support_monotone=conflict_support_monotone,
     )
