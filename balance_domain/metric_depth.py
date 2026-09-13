@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import sqrt
+from math import isfinite, sqrt
 from typing import Sequence
 
 
@@ -22,6 +22,11 @@ def diagonal_metric_boundary_depth(
     metric_diag contains the positive diagonal entries of Q in
     ||delta||_Q^2 = delta^T Q delta.
     """
+    margin = float(margin)
+    gradient = tuple(float(g) for g in gradient)
+    metric_diag = tuple(float(q) for q in metric_diag)
+    if not isfinite(margin) or not all(isfinite(v) for v in gradient + metric_diag):
+        raise ValueError("margin, gradient, and metric diagonal must be finite")
     if margin <= 0:
         raise ValueError("margin must be positive inside the domain")
     if len(gradient) != len(metric_diag) or not gradient:
