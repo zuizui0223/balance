@@ -1,3 +1,7 @@
+import math
+
+import pytest
+
 from balance_domain.receipt import Interval, classify_bounded_receipt
 
 
@@ -66,3 +70,28 @@ def test_incompatible_decomposition_is_not_silently_reconciled():
     )
     assert result.bridge_zero_compatible is False
     assert not result.bridge_residual.contains(0.0)
+
+
+def test_bounded_interval_rejects_nonfinite_and_reversed_bounds():
+    with pytest.raises(ValueError):
+        Interval(math.nan, 1.0)
+    with pytest.raises(ValueError):
+        Interval(0.0, math.inf)
+    with pytest.raises(ValueError):
+        Interval(2.0, 1.0)
+
+
+def test_bounded_interval_normalizes_numeric_inputs_to_float():
+    interval = Interval("0.2", "0.3")
+    assert interval.lower == pytest.approx(0.2)
+    assert interval.upper == pytest.approx(0.3)
+    assert isinstance(interval.lower, float)
+    assert isinstance(interval.upper, float)
+
+
+def test_interval_membership_rejects_nonfinite_or_nonnumeric_queries():
+    interval = Interval(0.0, 1.0)
+    with pytest.raises(ValueError):
+        interval.contains(math.nan)
+    with pytest.raises(ValueError):
+        interval.contains("not-a-number")
