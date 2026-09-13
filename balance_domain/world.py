@@ -16,6 +16,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
+from .boundary import classify_two_margin_point
+
 
 @dataclass(frozen=True)
 class MiddleWorldCertificate:
@@ -182,20 +184,21 @@ def classify_middle_world(
 
     R = s * L
     phi = R - K
-    sch_active = L > tol
-    bita_favoured = phi > tol
+    rho = -phi
+    point = classify_two_margin_point(L, rho, tolerance=tol)
+    sch_active = point.conflict_active
+    bita_favoured = point.reserve_position == "NEGATIVE"
 
     if not sch_active:
         state = "SCH_NO_CONFLICT_WORLD"
-    elif abs(phi) <= tol:
+    elif point.reserve_position == "INTERFACE":
         state = "BALANCE_BITA_INTERFACE"
-    elif phi < 0:
+    elif point.reserve_position == "POSITIVE":
         state = "BALANCE_MIDDLE_WORLD"
     else:
         state = "BITA_DIFFERENTIATION_WORLD"
 
     if state == "BALANCE_MIDDLE_WORLD":
-        rho = K - R
         denom = L + rho
         xi = L / denom if denom > 0 else None
         depth = min(L, rho)
