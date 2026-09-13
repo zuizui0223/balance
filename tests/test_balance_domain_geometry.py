@@ -12,7 +12,8 @@ def test_finite_balance_width_and_equal_margin_point():
     assert math.isclose(geometry.equal_margin_conflict_load, 0.2)
     assert math.isclose(geometry.max_two_sided_depth, 0.2)
     assert math.isclose(geometry.equal_margin_fraction_of_conflict_width, 1.0 / 3.0)
-    assert math.isclose(geometry.criticality_index_at_equal_margin, 1.0 / 3.0)
+    assert math.isclose(geometry.criticality_index_at_equal_margin, 0.5)
+    assert math.isclose(geometry.architecture_pressure_ratio_at_equal_margin, 1.0 / 3.0)
     assert math.isclose(geometry.sch_limited_width, 0.2)
     assert math.isclose(geometry.bita_limited_width, 0.4)
     assert math.isclose(geometry.bita_to_sch_width_ratio, 2.0)
@@ -32,6 +33,8 @@ def test_equal_margin_point_is_not_generally_half_the_conflict_interval():
         geometry.critical_conflict_load / 2.0,
     )
     assert math.isclose(geometry.bita_to_sch_width_ratio, 5.0)
+    assert math.isclose(geometry.criticality_index_at_equal_margin, 0.5)
+    assert math.isclose(geometry.architecture_pressure_ratio_at_equal_margin, 1.0 / 6.0)
 
 
 def test_architecture_cost_scales_width_but_not_normalized_shape():
@@ -44,6 +47,10 @@ def test_architecture_cost_scales_width_but_not_normalized_shape():
         high_cost.bita_to_sch_width_ratio,
         low_cost.bita_to_sch_width_ratio,
     )
+    assert math.isclose(
+        high_cost.criticality_index_at_equal_margin,
+        low_cost.criticality_index_at_equal_margin,
+    )
 
 
 def test_weaker_decoupling_increases_bita_side_skew():
@@ -52,6 +59,8 @@ def test_weaker_decoupling_increases_bita_side_skew():
     assert math.isclose(strong.bita_to_sch_width_ratio, 1.0)
     assert math.isclose(weak.bita_to_sch_width_ratio, 5.0)
     assert weak.equal_margin_fraction_of_conflict_width < strong.equal_margin_fraction_of_conflict_width
+    assert math.isclose(strong.criticality_index_at_equal_margin, 0.5)
+    assert math.isclose(weak.criticality_index_at_equal_margin, 0.5)
 
 
 def test_zero_decoupling_has_no_finite_bita_boundary():
@@ -60,6 +69,8 @@ def test_zero_decoupling_has_no_finite_bita_boundary():
     assert geometry.critical_conflict_load is None
     assert geometry.equal_margin_conflict_load is None
     assert geometry.max_two_sided_depth is None
+    assert geometry.criticality_index_at_equal_margin is None
+    assert geometry.architecture_pressure_ratio_at_equal_margin is None
     assert geometry.bita_to_sch_width_ratio is None
 
 
