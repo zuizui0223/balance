@@ -8,8 +8,8 @@
   "asset_policy": "retain canonical assembled manuscript and provenance as frozen reusable assets; do not interpret canonical as active submission status",
   "assembly_script": "scripts/assemble_balance_manuscript.py",
   "expected_sha256": "e064e672319bb267bc1a4a6dcbc06e817e8cc745c94be740d9e0a189b8bc9a76",
-  "expected_word_count": 7336,
-  "expected_line_count": 470,
+  "expected_word_count": 7555,
+  "expected_line_count": 495,
   "section_order": [
     "Abstract",
     "Introduction",
