@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from balance_domain.peucedanum_raw import (
@@ -28,7 +30,7 @@ def _row(**updates):
 def test_normalized_rows_validate_without_imputing_optional_fields():
     inventory = validate_normalized_rows([
         _row(),
-        _row(plant_id="P2", year=2022, population_id="HC", seed_predation_rate=""),
+        _row(plant_id="P2", year=2022.0, population_id="HC", seed_predation_rate=""),
     ])
     assert inventory.n_records == 2
     assert inventory.years == (2021, 2022)
@@ -37,9 +39,35 @@ def test_normalized_rows_validate_without_imputing_optional_fields():
     assert inventory.female_fitness_rows == 2
 
 
+def test_core_provenance_identifiers_must_be_nonmissing_and_nonempty():
+    for field, bad_value in (
+        ("dataset_id", ""),
+        ("source_doi", "   "),
+        ("population_id", None),
+        ("plant_id", math.nan),
+    ):
+        with pytest.raises(ValueError, match="identifier"):
+            validate_normalized_rows([_row(**{field: bad_value})])
+
+
+def test_year_must_be_integer_valued_not_silently_truncated():
+    with pytest.raises(ValueError, match="integer-valued"):
+        validate_normalized_rows([_row(year=2021.9)])
+    with pytest.raises(ValueError, match="integer-valued"):
+        validate_normalized_rows([_row(year=True)])
+
+    inventory = validate_normalized_rows([_row(year="2021")])
+    assert inventory.years == (2021,)
+
+
 def test_inconsistent_derived_male_fraction_fails_closed():
     with pytest.raises(ValueError):
         validate_normalized_rows([_row(male_fraction=0.2)])
+
+
+def test_nonfinite_derived_male_fraction_fails_closed():
+    with pytest.raises(ValueError, match="male_fraction must be finite"):
+        validate_normalized_rows([_row(male_fraction=math.nan)])
 
 
 def test_seed_predation_must_be_a_proportion():
@@ -61,6 +89,16 @@ def test_regime_gate_detects_a_boundary_sign_failure():
     result = published_regime_reproduction_gate(estimates)
     assert result.qualitative_status == "PUBLISHED_REGIME_NOT_REPRODUCED"
     assert "beta:HC:expected_positive" in result.failed_checks
+
+
+def test_regime_gate_uses_the_normalized_numeric_values_for_sign_checks():
+    estimates = {
+        metric: {plot: str(value) for plot, value in values.items()}
+        for metric, values in PUBLISHED_2025.items()
+    }
+    result = published_regime_reproduction_gate(estimates)  # type: ignore[arg-type]
+    assert result.qualitative_status == "PUBLISHED_REGIME_REPRODUCED"
+    assert result.max_abs_difference_from_published == 0.0
 
 
 def test_numeric_proximity_is_reported_but_not_used_before_source_model_reproduction():
