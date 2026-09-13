@@ -31,6 +31,21 @@ def test_known_horizon_turns_width_interval_into_switching_cost_sum_interval():
     assert abs(result.switching_cost_sum_upper - 2.0) < 1e-12
 
 
+def test_conservative_bounds_survive_binary_floating_point_roundoff():
+    # In exact decimal arithmetic the true width is 0.3 and the cost sum is 3.
+    # Without outward rounding the computed lower cost bound can become
+    # 3.0000000000000004 and incorrectly exclude the true parameter.
+    result = identify_hysteresis_interval(
+        0.3,
+        -0.2,
+        max_up_step=0.1,
+        max_down_step=0.1,
+        horizon=10.0,
+    )
+    assert result.true_width_lower <= 0.3 <= result.true_width_upper
+    assert result.switching_cost_sum_lower <= 3.0 <= result.switching_cost_sum_upper
+
+
 def test_resolution_uncertainty_cannot_make_negative_true_width():
     result = identify_hysteresis_interval(
         0.02,
