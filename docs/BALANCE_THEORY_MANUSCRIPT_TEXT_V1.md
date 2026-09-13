@@ -2,15 +2,10 @@
 
 ## A sandwiched persistence domain
 
-We consider a biological coordinate that contributes to multiple functions and is therefore subject to a shared-coordinate conflict load `L >= 0`. Additional dimensionality can recover only part of that loss. Let `s in [0,1]` denote the recoverable fraction, `R=sL` the corresponding benefit of differentiation, and `K>=0` the added architecture cost. Define the differentiated-minus-shared architecture margin
+We consider a biological coordinate that contributes to multiple functions and is therefore subject to a shared-coordinate conflict load `L >= 0`. Let `R >= 0` denote recoverable conflict loss available to a registered differentiated architecture, and let `K >= 0` denote its additional architecture cost on the same fitness scale. Define
 
 ```text
-Phi = R-K = sL-K,
-```
-
-and the BALANCE reserve
-
-```text
+Phi = R-K
 rho = K-R = -Phi.
 ```
 
@@ -20,17 +15,20 @@ The static BALANCE core is exactly
 B = {L>0} ∩ {Phi<0}.
 ```
 
-Thus conflict must already be present, but differentiation must still reduce net fitness. For `s>0`, the same condition is
+Thus conflict must already be present, but the registered differentiated architecture must still have lower optimized net fitness. The regime is sandwiched between a no-conflict boundary at `L=0` and an architecture-value boundary at `Phi=0`.
+
+For the registered quadratic bridge only, let `s in [0,1]` denote the recoverable fraction of the shared-coordinate conflict load, so that
 
 ```text
-0 < L < K/s.
+R = sL
+Phi = sL-K.
 ```
 
-The regime is therefore sandwiched between a no-conflict boundary at `L=0` and a differentiation boundary at `Phi=0`. It is not a third architecture state. It is the region in which the shared architecture persists despite active conflict because the recoverable benefit of additional dimensionality is still smaller than its cost.
+For `s>0`, BALANCE becomes `0<L<K/s`. The relation `R=sL` is therefore a model-specific bridge/corollary, not the general definition of recoverable benefit.
 
 ## Direct worldline identification
 
-The decomposed variables `s` and `K` are useful for mechanism, but they are not required to define BALANCE empirically. Suppose the shared and differentiated-accessible alternatives can be optimized in matched contexts on one common fitness scale. Let
+The decomposed variables `R` and `K`, and `s` when the quadratic bridge is invoked, are not required to define BALANCE empirically. Suppose the shared and differentiated-accessible alternatives can be optimized in matched contexts on one common fitness scale. Let
 
 ```text
 W_S* = optimized shared-architecture fitness
@@ -38,7 +36,7 @@ W_D* = optimized differentiated-accessible fitness
 Delta_W = W_D* - W_S*.
 ```
 
-A direct BALANCE receipt is then
+A direct BALANCE receipt is
 
 ```text
 L > 0
@@ -46,25 +44,31 @@ and
 Delta_W < 0.
 ```
 
-The architecture boundary is `Delta_W=0`, and the differentiated side is `Delta_W>0`. Under a valid bridge between the direct and decomposed descriptions,
+The architecture boundary is `Delta_W=0`, and the positive architecture-margin side is `Delta_W>0`. Under a valid bridge,
 
 ```text
-Delta_W = Phi = sL-K.
+Delta_W = Phi = R-K,
 ```
 
-This relation separates the three chapters conceptually. SCH can establish that conflict is active (`L>0`); BALANCE can identify whether the shared worldline still outranks an accessible differentiated alternative; BITA can subsequently decompose the observed worldline difference into recoverability and architecture cost. BITA decomposition is therefore a reconciliation and mechanism test rather than a prerequisite for defining the BALANCE state.
+and only under the registered quadratic bridge,
+
+```text
+Delta_W = sL-K.
+```
+
+This separates the programme layers. SCH establishes whether conflict is active (`L>0`); BALANCE identifies whether the shared worldline still outranks an accessible differentiated alternative; SLK owns the architecture-value object `Phi=R-K` and the subsequent distinction between global value, accessibility, invasion, fixation, and occupancy. BITA is orthogonal: it asks what a measured cross-trait interaction identifies about ecological channel allocation. BITA mechanism terms are not identical to `R`, `K`, or `Phi` unless an additional biological bridge is justified.
 
 ## Position and depth inside the middle world
 
 Inside BALANCE, define
 
 ```text
-rho = K-sL > 0
+rho = K-R > 0
 xi = L/(L+rho)
 d_B = min(L,rho).
 ```
 
-The coordinate `xi` locates a context between the two theoretical boundaries. As `L -> 0+`, `xi -> 0`; as `rho -> 0+`, `xi -> 1`. The two-sided depth `d_B` gives the smaller of the distances to the SCH-facing and BITA-facing margins. When direct worldlines are observed, the equivalent quantities are obtained from
+As `L->0+`, `xi->0`; as `rho->0+`, `xi->1`. The two-sided depth `d_B` gives the smaller of the distances to the SCH-facing and SLK-facing architecture-value margins. When direct worldlines are observed,
 
 ```text
 rho_direct = W_S* - W_D*
@@ -72,15 +76,9 @@ xi_direct = L/(L+rho_direct)
 d_B,direct = min(L,rho_direct).
 ```
 
-Under bridge concordance the direct and decomposed coordinates must agree. Neither `xi` nor `d_B` is an evolutionary time variable: both describe location in a contemporaneous fitness geometry.
+Under bridge concordance the direct and decomposed coordinates must agree. Neither `xi` nor `d_B` is evolutionary time.
 
-For fixed `s>0` and `K>0`, the BALANCE interval is `0<L<K/s`, but the point of maximum two-sided depth is generally not the midpoint of that interval. Because
-
-```text
-d_B(L)=min[L,K-sL],
-```
-
-the maximum occurs where the two margins are equal:
+Under the quadratic bridge with fixed `s>0` and `K>0`, `d_B(L)=min[L,K-sL]`, and maximum depth occurs at
 
 ```text
 L_deep = K/(1+s)
@@ -89,104 +87,64 @@ xi_deep = 1/2
 d_B,max = K/(1+s).
 ```
 
-Relative to the full conflict-load width `K/s`, the deepest point occurs at `s/(1+s)`. Weak decoupling therefore pushes the most robust middle-world context toward the low-conflict side, whereas complete recoverability (`s=1`) places it halfway along the conflict-load interval.
+Relative to the full conflict-load width `K/s`, the deepest point occurs at `s/(1+s)`.
 
 ## Scale and shape of the persistence region
 
-The baseline geometry separates the scale of the BALANCE region from its normalized shape. Splitting the interval at its deepest ridge gives a SCH-boundary-limited width
+Under the same quadratic bridge, the SCH-boundary-limited width is
 
 ```text
 W_S = K/(1+s)
 ```
 
-and a BITA-boundary-limited width
+and the SLK-boundary-limited width is
 
 ```text
-W_B = K/[s(1+s)].
+W_A = K/[s(1+s)],
 ```
 
-Therefore
+so `W_A/W_S=1/s`. Increasing `K` stretches both sides proportionally, while changing `s` changes normalized skew.
 
-```text
-W_B/W_S = 1/s.
-```
-
-Increasing architecture cost `K` stretches both sides proportionally, while changing recoverability `s` changes the normalized skew of the persistence domain. In the dimensionless phase plane `c=L/K` and `q=sL/K`, BALANCE is `c>0` and `q<1`, its architecture boundary is `c=1/s`, and the deepest ridge is `c=1/(1+s)`.
-
-The state classification is invariant to a common positive affine transformation of the fitness scale. If `W'=aW+b` with `a>0` applied identically to the linked SCH, BALANCE, and BITA comparisons, all fitness differences scale by `a` and the additive constant cancels. BALANCE occupancy, `xi`, and `q` are unchanged, whereas dimensional quantities such as `rho` and `d_B` rescale. This invariance does not permit comparison of biologically different fitness outcomes merely because the resulting coordinates are dimensionless.
+The state classification is invariant to a common positive affine transformation of the fitness scale. If `W'=aW+b` with `a>0` applied identically to linked SCH, BALANCE, and SLK architecture comparisons, all fitness differences scale by `a` and the additive constant cancels. BALANCE occupancy and dimensionless coordinates are unchanged, whereas dimensional quantities such as `rho` and `d_B` rescale.
 
 ## Environmental paths and topology
 
-Let the theoretical quantities vary along an ordered environmental or functional context `e`. If
-
-```text
-L(e) is nondecreasing,
-s(e) is nondecreasing,
-K(e) is nonincreasing,
-```
-
-then
+Under the quadratic bridge, if along an ordered context `L(e)` and `s(e)` are nondecreasing while `K(e)` is nonincreasing, then
 
 ```text
 Phi(e)=s(e)L(e)-K(e)
 ```
 
-is nondecreasing. Under these sufficient conditions, BALANCE can occupy at most one connected interval before the system enters the differentiation domain. A sequence
-
-```text
-BALANCE -> DIFFERENTIATION -> BALANCE
-```
-
-therefore requires at least one monotonicity condition, or the assumed common-world mapping, to fail. Re-entry is not forbidden in general; rather, it diagnoses non-monotone conflict, recoverability, cost, or architecture mapping.
-
-This environmental formulation motivates empirical quantities such as the width and connectedness of BALANCE occupancy, the number and location of critical crossings, and integrated reserve across a context path. It also distinguishes a static snapshot from a transition mosaic: observations of shared, intermediate, and differentiated states across ordered contexts can be compatible with the predicted topology even when no study directly measures both optimized worldlines.
+is nondecreasing. Under these sufficient conditions BALANCE can occupy at most one connected interval before the positive architecture-margin domain. Re-entry therefore requires at least one monotonicity condition, or the common-world mapping, to fail. This is a bridge-conditional result rather than a general identity for arbitrary landscapes.
 
 ## Direct–decomposed concordance
 
-When the direct optimized-worldline comparison and the decomposed `sL-K` route describe the same contexts, the same reproductive-fitness outcome, the same architecture-cost definition, and the same modeled ecological channels, they must satisfy
+When the direct optimized-worldline comparison and decomposed architecture-value route describe the same contexts, reproductive-fitness outcome, architecture-cost definition, and modeled channels, they must satisfy
 
 ```text
-Delta_W = sL-K.
+Delta_W = R-K.
 ```
 
-We define the bridge residual
+Under the quadratic bridge this becomes `Delta_W=sL-K`. Define
 
 ```text
-delta_parallel = Delta_W-(sL-K).
+delta_parallel = Delta_W-(R-K).
 ```
 
-Under a valid common-world mapping, `delta_parallel=0`. A non-zero residual is informative only after excluding scale mismatch, context mismatch, inconsistent cost definitions, and omitted channels. The same concordance requirement applies to direct and decomposed estimates of `rho`, `xi`, and `d_B`. This creates an empirical falsification route rather than allowing the two descriptions to be averaged when they disagree.
+Under a valid common-world mapping `delta_parallel=0`. A non-zero residual is informative only after excluding scale mismatch, context mismatch, inconsistent cost definitions, and omitted channels. It is not automatically a BITA mechanism term, an SLK architecture cost, or a named biological process.
 
 ## Switching costs and history dependence
 
-Static worldline crossing need not imply instantaneous architecture switching. Let `C_SD` be the cost of switching from shared to differentiated, `C_DS` the reverse switching cost, and `T>0` the persistence horizon of the current context. Starting from the shared state, differentiation pays only when
+Let `C_SD` be the cost of switching from shared to differentiated, `C_DS` the reverse switching cost, and `T>0` the persistence horizon. Starting shared, switching pays only when `Phi>C_SD/T`; starting differentiated, switching back pays only when `Phi<-C_DS/T`. Hence the history-dependent band is
 
 ```text
-Phi > C_SD/T.
+-C_DS/T <= Phi <= C_SD/T
 ```
 
-Starting from the differentiated state, switching back pays only when
-
-```text
-Phi < -C_DS/T.
-```
-
-The resulting history-dependent band is
-
-```text
--C_DS/T <= Phi <= C_SD/T,
-```
-
-with width
-
-```text
-(C_SD+C_DS)/T.
-```
-
-Thus both architecture states can persist around the static crossing depending on history. This hysteresis band is a dynamic extension surrounding the static BALANCE boundary; it is not itself identical to the static BALANCE core.
+with width `(C_SD+C_DS)/T`. This persistence halo is distinct from the static BALANCE core and does not identify the SLK accessibility, invasion, fixation, or occupancy stages without their own process assumptions.
 
 ## Empirical consequences and falsifiers
 
-The theory separates empirical observations that are often conflated. Opposing selection can establish active conflict without showing that the shared architecture is currently favoured over an alternative. Persistence of an integrated state can supply a middle-regime signature without identifying the worldline difference. A differentiated outcome can locate the BITA-facing side without showing where the crossing occurred. Strict BALANCE occupancy requires the linked conditions on conflict and relative optimized worldlines.
+Opposing selection can establish active conflict without showing that the shared architecture currently outranks an alternative. Persistence of an integrated state can provide a middle-regime signature without identifying the worldline difference. A differentiated outcome can locate the positive architecture-margin side without showing where the crossing occurred. Strict BALANCE occupancy requires linked evidence on conflict and relative optimized worldlines.
 
-The theory is falsifiable at several levels. Direct and decomposed worldline estimates should agree after bridge audits; direct and decomposed `xi` and `d_B` should coincide under the same mapping; observed re-entry under apparently monotone `L`, `s`, and `K` would reject the sufficient no-reentry conditions; forward and reverse architecture thresholds can test the switching-cost extension; and the position of deep-BALANCE contexts should move with recoverability in the direction predicted by `L_deep=K/(1+s)`. These predictions motivate the final direct-validation experiments, but they do not need to be measured before testing whether the prerequisite and persistence signatures recur across existing biological systems.
+Direct and decomposed worldline estimates should agree after bridge audits; direct and decomposed `xi` and `d_B` should coincide under the same mapping; re-entry under the quadratic monotonicity assumptions would reject those sufficient conditions; forward and reverse architecture thresholds can test the switching-cost extension; and quadratic deep-BALANCE geometry can test the registered `L_deep=K/(1+s)` prediction. These predictions do not alter the ownership split: SCH identifies conflict, BALANCE owns the persistent middle world, SLK owns architecture value and evolutionary transport, and BITA owns ecological mechanism identification for trait interactions.
