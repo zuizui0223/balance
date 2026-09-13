@@ -89,8 +89,10 @@ Implementation:
 
 ```text
 balance_domain/longitudinal_mosaic.py
-empirical/peucedanum/PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V1.json
+empirical/peucedanum/PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V2.json
 ```
+
+`PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V1.json` remains frozen as the earlier unsigned input. V2 is the active receipt because it makes the source direction required by condition 2 explicit rather than retroactively changing the meaning of V1.
 
 ## What this adds to Chapter 2
 
