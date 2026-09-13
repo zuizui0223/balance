@@ -24,9 +24,12 @@ and, across populations and years,
 
 ```text
 predation risk vs proportion of male flowers
+direction = positive
 r^2 = 0.64
 p < 0.0001.
 ```
+
+The positive direction is registered separately from `r^2`: coefficient of determination measures strength but has no sign and therefore cannot by itself establish that higher predation tracks greater male allocation. The longitudinal classifier requires both the registered positive direction and the reported strength/significance before this layer counts as directional support.
 
 The source also contains a within-population temporal check at HC: earlier flowering in 2018 was associated with 59% predation versus 29% in 2019 when flowering occurred at its usual time.
 
@@ -70,9 +73,11 @@ The Chapter-2 classifier requires all of the following:
 
 ```text
 1. later flowering predicts lower predation;
-2. high-predation populations track toward greater male allocation;
+2. the predation--male-allocation source relation is explicitly registered as positive and is supported by nonzero/significant association strength;
 3. direct selection on perfect-flower production changes from negative on the early/high-predation side to positive on the later/lower-predation side.
 ```
+
+`r^2` and its p-value alone are insufficient for condition 2 because they do not encode direction.
 
 Current published-source readout:
 
@@ -84,8 +89,10 @@ Implementation:
 
 ```text
 balance_domain/longitudinal_mosaic.py
-empirical/peucedanum/PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V1.json
+empirical/peucedanum/PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V2.json
 ```
+
+`PEUCEDANUM_LONGITUDINAL_MOSAIC_INPUT_V1.json` remains frozen as the earlier unsigned input. V2 is the active receipt because it makes the source direction required by condition 2 explicit rather than retroactively changing the meaning of V1.
 
 ## What this adds to Chapter 2
 
