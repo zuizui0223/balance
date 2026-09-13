@@ -6,6 +6,8 @@ from dataclasses import dataclass
 import math
 from typing import Sequence
 
+from .boundary import analyze_two_margin_path
+
 
 @dataclass(frozen=True)
 class WorldlinePathResult:
@@ -26,10 +28,6 @@ def _crossing(e0: float, e1: float, y0: float, y1: float) -> float:
     return e0 + (-y0) * (e1 - e0) / (y1 - y0)
 
 
-def _level_crossing(e0: float, e1: float, y0: float, y1: float, level: float) -> float:
-    return _crossing(e0, e1, y0 - level, y1 - level)
-
-
 def analyze_worldline_path(
     environment: Sequence[float],
     shared_optimum_fitness: Sequence[float],
@@ -41,9 +39,12 @@ def analyze_worldline_path(
     """Identify BALANCE directly from two matched optimized worldlines.
 
     This is the Chapter-2 empirical route that does not require a full BITA
-    decomposition into ``s`` and ``K``.  It requires only a common fitness
+    decomposition into ``s`` and ``K``. It requires only a common fitness
     scale, an SCH-positive conflict receipt ``L>0``, and the matched optimized
     architecture fitnesses ``W_S*`` and ``W_D*``.
+
+    Internally, occupancy is routed through the canonical two-margin primitive
+    using ``L`` and the direct reserve ``rho_direct=W_S*-W_D*=-Delta``.
     """
     e = tuple(float(x) for x in environment)
     Ws = tuple(float(x) for x in shared_optimum_fitness)
@@ -64,13 +65,19 @@ def analyze_worldline_path(
         raise ValueError("tolerance must be positive")
 
     gap = tuple(d - s for s, d in zip(Ws, Wd))
+    reserve = tuple(-value for value in gap)
+    boundary = analyze_two_margin_path(e, L, reserve, tolerance=tol)
+
     states = []
-    for li, gi in zip(L, gap):
-        if li <= tol:
-            states.append("SCH_NO_CONFLICT_WORLD" if gi <= tol else "OUTSIDE_REGISTERED_SCH_CONFLICT")
-        elif gi < -tol:
+    for point in boundary.points:
+        if not point.conflict_active:
+            if point.reserve_position == "NEGATIVE":
+                states.append("OUTSIDE_REGISTERED_SCH_CONFLICT")
+            else:
+                states.append("SCH_NO_CONFLICT_WORLD")
+        elif point.reserve_position == "POSITIVE":
             states.append("BALANCE_MIDDLE_WORLD")
-        elif abs(gi) <= tol:
+        elif point.reserve_position == "INTERFACE":
             states.append("ARCHITECTURE_CRITICAL_INTERFACE")
         else:
             states.append("BITA_DIFFERENTIATION_WORLD")
@@ -87,45 +94,6 @@ def analyze_worldline_path(
     if abs(gap[-1]) <= tol and L[-1] > tol:
         crossings.append(e[-1])
 
-    # BALANCE requires both L>tol and direct_gap<-tol.  Interpolate only a
-    # boundary actually bracketed by the segment, then use the later entry or
-    # earlier exit when both conditions change together.
-    intervals = []
-    in_balance = False
-    start = None
-    for i, state in enumerate(states):
-        if state == "BALANCE_MIDDLE_WORLD" and not in_balance:
-            start = e[i]
-            if i > 0:
-                candidates = []
-                if L[i - 1] <= tol < L[i]:
-                    candidates.append(_level_crossing(e[i - 1], e[i], L[i - 1], L[i], tol))
-                if gap[i - 1] >= -tol and gap[i] < -tol:
-                    candidates.append(_level_crossing(e[i - 1], e[i], gap[i - 1], gap[i], -tol))
-                if candidates:
-                    start = max(candidates)
-            in_balance = True
-        if in_balance and state != "BALANCE_MIDDLE_WORLD":
-            end = e[i]
-            if i > 0:
-                candidates = []
-                if L[i - 1] > tol >= L[i]:
-                    candidates.append(_level_crossing(e[i - 1], e[i], L[i - 1], L[i], tol))
-                if gap[i - 1] < -tol and gap[i] >= -tol:
-                    candidates.append(_level_crossing(e[i - 1], e[i], gap[i - 1], gap[i], -tol))
-                if candidates:
-                    end = min(candidates)
-            intervals.append((float(start), float(end)))
-            in_balance = False
-            start = None
-    if in_balance:
-        intervals.append((float(start), e[-1]))
-
-    width = sum(b - a for a, b in intervals)
-    path_width = e[-1] - e[0]
-    if width < -tol or width > path_width + tol:
-        raise ValueError("BALANCE width lies outside the registered environmental path")
-
     return WorldlinePathResult(
         environment=e,
         shared_optimum_fitness=Ws,
@@ -134,6 +102,6 @@ def analyze_worldline_path(
         direct_gap=gap,
         states=tuple(states),
         critical_crossings=tuple(crossings),
-        balance_intervals=tuple(intervals),
-        balance_width=width,
+        balance_intervals=boundary.middle_intervals,
+        balance_width=boundary.middle_width,
     )

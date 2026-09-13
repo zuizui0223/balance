@@ -1,5 +1,12 @@
 """Core API for Chapter 2 BALANCE-domain analysis."""
 
+from .boundary import (
+    TwoMarginPath,
+    TwoMarginPoint,
+    analyze_two_margin_path,
+    classify_two_margin_point,
+    positive_support_monotone,
+)
 from .static import BalancePathResult, BalancePathTopologyError, analyze_balance_path
 from .dynamics import SwitchingCostResult, switching_cost_state
 from .world import (
@@ -138,6 +145,8 @@ __all__ = [
     "SwitchingCostResult",
     "TREATMENT_ORDER",
     "ThreatStability",
+    "TwoMarginPath",
+    "TwoMarginPoint",
     "WidthDepthBounds",
     "WorldlineComparison",
     "WorldlinePathResult",
@@ -147,6 +156,7 @@ __all__ = [
     "analyze_balance_path",
     "analyze_definitions",
     "analyze_factorial_agent_selection",
+    "analyze_two_margin_path",
     "analyze_worldline_path",
     "audit_concave_margin",
     "audit_strong_concave_chord",
@@ -160,6 +170,7 @@ __all__ = [
     "classify_longitudinal_mosaic",
     "classify_middle_world",
     "classify_multi_alternative_middle_world",
+    "classify_two_margin_point",
     "compare_critical_paths",
     "compare_definition_brackets",
     "compare_worldlines",
@@ -185,6 +196,7 @@ __all__ = [
     "metric_middle_world_depth",
     "multi_margin_lower_depth",
     "normalized_phase_point",
+    "positive_support_monotone",
     "published_regime_reproduction_gate",
     "robust_positive_concave_endpoints",
     "strong_concave_bulge_bounds",

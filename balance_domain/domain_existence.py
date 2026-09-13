@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from math import isfinite
 from typing import Sequence
 
+from .boundary import classify_two_margin_point, positive_support_monotone
+
 
 @dataclass(frozen=True)
 class DomainExistenceResult:
@@ -19,14 +21,13 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
     """Classify sampled BALANCE-domain topology without interpolating hidden crossings.
 
     `conflict_load[i]` is L(e_i); `delta_worldline[i]` is W_D*(e_i)-W_S*(e_i)
-    on the same ordered contexts.  The function intentionally works only with the
+    on the same ordered contexts. The function intentionally works only with the
     observed ordering and does not invent a continuous crossing location.
 
-    The monotone trichotomy requires two sampled-path conditions: the direct
-    worldline gap must be nondecreasing, and once positive conflict support
-    (`L>0`) appears it must remain active over later observed contexts.  This
-    second condition prevents a loss and later reappearance of conflict from
-    being misclassified as persistent BALANCE.
+    Sampled BALANCE occupancy is delegated to the same two-margin primitive as
+    the continuous path analyzers, using ``rho_direct=-Delta`` and zero numerical
+    tolerance. The monotone trichotomy additionally requires Delta to be
+    nondecreasing and positive conflict support, once entered, never to disappear.
     """
 
     if len(conflict_load) != len(delta_worldline) or len(conflict_load) < 2:
@@ -38,15 +39,15 @@ def classify_domain_path(conflict_load: Sequence[float], delta_worldline: Sequen
 
     L = [float(x) for x in conflict_load]
     D = [float(x) for x in delta_worldline]
-    conflict_active = [value > 0 for value in L]
-    conflict = tuple(i for i, active in enumerate(conflict_active) if active)
-    balance = tuple(i for i in conflict if D[i] < 0)
+    points = [
+        classify_two_margin_point(li, -di, tolerance=0.0)
+        for li, di in zip(L, D)
+    ]
+    conflict = tuple(i for i, point in enumerate(points) if point.conflict_active)
+    balance = tuple(i for i, point in enumerate(points) if point.middle_active)
     crossings = tuple(i for i in range(1, len(D)) if D[i - 1] < 0 <= D[i])
     delta_nondecreasing = all(D[i] >= D[i - 1] for i in range(1, len(D)))
-    conflict_support_monotone = all(
-        not conflict_active[i] or conflict_active[i + 1]
-        for i in range(len(conflict_active) - 1)
-    )
+    conflict_support_monotone = positive_support_monotone(L, tolerance=0.0)
 
     if not conflict:
         classification = "NO_CONFLICT_ACTIVE_CONTEXT"

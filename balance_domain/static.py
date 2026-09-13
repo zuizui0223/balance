@@ -6,6 +6,8 @@ from dataclasses import dataclass
 import math
 from typing import Sequence
 
+from .boundary import analyze_two_margin_path
+
 
 class BalancePathTopologyError(ValueError):
     """Raised when registered path constraints imply an impossible topology."""
@@ -37,10 +39,6 @@ def _crossing(e0: float, e1: float, y0: float, y1: float) -> float:
     return e0 + (-y0) * (e1 - e0) / (y1 - y0)
 
 
-def _level_crossing(e0: float, e1: float, y0: float, y1: float, level: float) -> float:
-    return _crossing(e0, e1, y0 - level, y1 - level)
-
-
 def _linear_value(e0: float, e1: float, y0: float, y1: float, x: float) -> float:
     if x <= e0:
         return y0
@@ -64,10 +62,11 @@ def analyze_balance_path(
     - CRITICAL: L > 0 and Phi == 0 (within numerical tolerance)
     - DIFFERENTIATION: L > 0 and Phi > 0
 
-    ``criticality_index`` follows the manuscript interior coordinate
-    ``xi = L / (L + rho)``, where ``rho = K-sL``, and is reported only inside
-    BALANCE. ``architecture_pressure_ratio`` preserves the distinct quantity
-    ``sL/K`` when ``K>0``.
+    Internally, path occupancy is routed through the canonical two-margin
+    primitive using ``L`` and ``rho=K-sL=-Phi``.  ``criticality_index`` follows
+    the manuscript interior coordinate ``xi = L / (L + rho)`` and is reported
+    only inside BALANCE. ``architecture_pressure_ratio`` preserves the distinct
+    quantity ``sL/K`` when ``K>0``.
     """
     e = tuple(float(x) for x in environment)
     L = tuple(float(x) for x in conflict_load)
@@ -91,14 +90,15 @@ def analyze_balance_path(
     pressure_ratio = tuple(None if ki == 0 else ri / ki for ri, ki in zip(R, K))
     reserve = tuple(ki - ri for ri, ki in zip(R, K))
 
+    boundary = analyze_two_margin_path(e, L, reserve, tolerance=tol)
     states = []
-    for li, pi in zip(L, phi):
-        if li <= tol:
+    for point in boundary.points:
+        if not point.conflict_active:
             states.append("NO_CONFLICT")
-        elif abs(pi) <= tol:
-            states.append("CRITICAL")
-        elif pi < 0:
+        elif point.reserve_position == "POSITIVE":
             states.append("BALANCE")
+        elif point.reserve_position == "INTERFACE":
+            states.append("CRITICAL")
         else:
             states.append("DIFFERENTIATION")
 
@@ -117,48 +117,11 @@ def analyze_balance_path(
     if abs(phi[-1]) <= tol:
         crossings.append(e[-1])
 
-    # BALANCE has two independent boundaries: L>tol and Phi<-tol.  A state
-    # transition may be caused by either or both.  Interpolate only quantities
-    # that actually bracket their registered boundary, then take the later
-    # entry / earlier exit when both constraints change in the same segment.
-    intervals = []
-    in_balance = False
-    start = None
-    for i, state in enumerate(states):
-        if state == "BALANCE" and not in_balance:
-            start = e[i]
-            if i > 0:
-                candidates = []
-                if L[i - 1] <= tol < L[i]:
-                    candidates.append(_level_crossing(e[i - 1], e[i], L[i - 1], L[i], tol))
-                if phi[i - 1] >= -tol and phi[i] < -tol:
-                    candidates.append(_level_crossing(e[i - 1], e[i], phi[i - 1], phi[i], -tol))
-                if candidates:
-                    start = max(candidates)
-            in_balance = True
-        if in_balance and state != "BALANCE":
-            end = e[i]
-            if i > 0:
-                candidates = []
-                if L[i - 1] > tol >= L[i]:
-                    candidates.append(_level_crossing(e[i - 1], e[i], L[i - 1], L[i], tol))
-                if phi[i - 1] < -tol and phi[i] >= -tol:
-                    candidates.append(_level_crossing(e[i - 1], e[i], phi[i - 1], phi[i], -tol))
-                if candidates:
-                    end = min(candidates)
-            intervals.append((float(start), float(end)))
-            in_balance = False
-            start = None
-    if in_balance:
-        intervals.append((float(start), e[-1]))
-
-    width = sum(b - a for a, b in intervals)
-    path_width = e[-1] - e[0]
-    if width < -tol or width > path_width + tol:
-        raise BalancePathTopologyError("BALANCE width lies outside the registered environmental path")
+    intervals = boundary.middle_intervals
+    width = boundary.middle_width
 
     # Integrate rho on exactly the same clipped BALANCE intervals used for the
-    # width estimand.  Linear interpolation makes the clipped trapezoids exact
+    # width estimand. Linear interpolation makes the clipped trapezoids exact
     # for the sampled reserve path and avoids integrating outside the domain.
     area = 0.0
     for a, b in intervals:
@@ -201,7 +164,7 @@ def analyze_balance_path(
         reserve=reserve,
         states=tuple(states),
         zero_crossings=tuple(crossings),
-        balance_intervals=tuple(intervals),
+        balance_intervals=intervals,
         balance_width=width,
         integrated_reserve=area,
         monotone_no_reentry_conditions_hold=monotone,
