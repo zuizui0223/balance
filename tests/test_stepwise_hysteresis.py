@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from balance_domain.stepwise_hysteresis import (
@@ -25,6 +27,38 @@ def test_declared_small_step_assumption_fails_closed():
             cost_diff_to_shared=0.5,
             max_phi_jump=0.2,
         )
+
+
+def test_nonfinite_forcing_path_and_resolution_declarations_fail_closed():
+    with pytest.raises(ValueError, match="phi_path values must be finite"):
+        max_path_jump((0.0, math.nan))
+    with pytest.raises(ValueError, match="phi_path values must be finite"):
+        follow_switching_path(
+            (0.0, math.inf),
+            initial_state="shared",
+            horizon_per_step=1.0,
+            cost_shared_to_diff=0.5,
+            cost_diff_to_shared=0.5,
+        )
+    for bad in (math.nan, math.inf, -math.inf):
+        with pytest.raises(ValueError, match="max_phi_jump must be finite"):
+            follow_switching_path(
+                (0.0, 0.1),
+                initial_state="shared",
+                horizon_per_step=1.0,
+                cost_shared_to_diff=0.5,
+                cost_diff_to_shared=0.5,
+                max_phi_jump=bad,
+            )
+
+
+def test_small_step_constructor_rejects_nonfinite_inputs():
+    with pytest.raises(ValueError, match="must be finite"):
+        linear_small_step_path(math.nan, 1.0, max_phi_jump=0.1)
+    with pytest.raises(ValueError, match="must be finite"):
+        linear_small_step_path(0.0, math.inf, max_phi_jump=0.1)
+    with pytest.raises(ValueError, match="must be finite"):
+        linear_small_step_path(0.0, 1.0, max_phi_jump=math.inf)
 
 
 def test_shared_switches_only_after_forward_threshold():
