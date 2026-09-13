@@ -1,5 +1,7 @@
 import math
 
+import pytest
+
 from balance_domain.environmental_depth import environmental_depth
 
 
@@ -48,6 +50,41 @@ def test_separate_margin_rescalings_leave_environmental_depth_invariant():
     assert math.isclose(base.position, scaled.position, rel_tol=1e-12)
 
 
+def test_large_finite_gradients_do_not_collapse_depth_to_zero():
+    result = environmental_depth(
+        conflict_margin=1.7e308,
+        reserve_margin=1.7e308,
+        conflict_gradient=[1.7e308, 1.7e308],
+        reserve_gradient=[-1.7e308, 1.7e308],
+    )
+    assert result.sch_distance == pytest.approx(1.0 / math.sqrt(2.0))
+    assert result.bita_distance == pytest.approx(1.0 / math.sqrt(2.0))
+    assert result.depth == pytest.approx(1.0 / math.sqrt(2.0))
+    assert result.position == pytest.approx(0.5)
+
+
+def test_large_finite_depths_keep_midpoint_coordinate():
+    result = environmental_depth(
+        conflict_margin=1.0e308,
+        reserve_margin=1.0e308,
+        conflict_gradient=[1.0],
+        reserve_gradient=[1.0],
+    )
+    assert result.sch_distance == 1.0e308
+    assert result.bita_distance == 1.0e308
+    assert result.position == pytest.approx(0.5)
+
+
+def test_unrepresentable_positive_distance_fails_closed_instead_of_returning_zero():
+    with pytest.raises(ValueError, match="distance must remain finite and positive"):
+        environmental_depth(
+            conflict_margin=5e-324,
+            reserve_margin=1.0,
+            conflict_gradient=[1.0e308],
+            reserve_gradient=[1.0],
+        )
+
+
 def test_invalid_margins_and_zero_gradients_fail_closed():
     bad_cases = [
         dict(conflict_margin=0.0, reserve_margin=1.0, conflict_gradient=[1.0], reserve_gradient=[1.0]),
@@ -55,9 +92,5 @@ def test_invalid_margins_and_zero_gradients_fail_closed():
         dict(conflict_margin=1.0, reserve_margin=1.0, conflict_gradient=[0.0], reserve_gradient=[1.0]),
     ]
     for kwargs in bad_cases:
-        try:
+        with pytest.raises(ValueError):
             environmental_depth(**kwargs)
-        except ValueError:
-            pass
-        else:
-            raise AssertionError("invalid environmental-depth inputs should fail")
