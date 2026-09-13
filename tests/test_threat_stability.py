@@ -60,6 +60,11 @@ def test_fragility_index_distinguishes_identity_from_state_robustness():
     assert threat_fragility_index(threat_radius=2.0, state_depth=1.0) == pytest.approx(2.0)
 
 
+def test_infinite_threat_radius_remains_meaningful_in_fragility_index():
+    result = threat_fragility_index(threat_radius=math.inf, state_depth=1.0)
+    assert math.isinf(result)
+
+
 def test_invalid_nonunique_threat_fails_closed():
     with pytest.raises(ValueError):
         lipschitz_threat_radius(gaps=[0.0], pairwise_lipschitz=[1.0])
@@ -72,3 +77,22 @@ def test_inverse_gradient_recovery_requires_nonzero_switch():
             switch_vector=[0.0, 0.0],
             metric_diag=[1.0, 1.0],
         )
+
+
+def test_threat_geometry_rejects_nonfinite_observations_but_not_structural_infinity():
+    with pytest.raises(ValueError):
+        lipschitz_threat_radius(gaps=[math.nan], pairwise_lipschitz=[1.0])
+    with pytest.raises(ValueError):
+        diagonal_affine_threat_distance(
+            gap=1.0,
+            gradient_difference=[math.inf],
+            metric_diag=[1.0],
+        )
+    with pytest.raises(ValueError):
+        diagonal_affine_gradient_from_minimum_switch(
+            gap=1.0,
+            switch_vector=[math.nan],
+            metric_diag=[1.0],
+        )
+    with pytest.raises(ValueError):
+        threat_fragility_index(threat_radius=math.nan, state_depth=1.0)

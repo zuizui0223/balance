@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from balance_domain.accessibility_scope import accessibility_scope_bounds
@@ -70,4 +72,19 @@ def test_invalid_nested_reserve_order_fails_closed():
             conflict_load=0.8,
             reserve_definite=0.2,
             reserve_possible=0.3,
+        )
+
+
+def test_accessibility_scope_rejects_nonfinite_margins():
+    with pytest.raises(ValueError):
+        accessibility_scope_bounds(
+            conflict_load=math.nan,
+            reserve_definite=0.5,
+            reserve_possible=0.2,
+        )
+    with pytest.raises(ValueError):
+        accessibility_scope_bounds(
+            conflict_load=0.8,
+            reserve_definite=math.inf,
+            reserve_possible=0.2,
         )

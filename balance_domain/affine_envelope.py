@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import isfinite
 from typing import Sequence
 
 
@@ -23,6 +24,16 @@ def _value(slope: float, intercept: float, x: float) -> float:
     return slope * x + intercept
 
 
+def _finite_affines(slopes: Sequence[float], intercepts: Sequence[float]) -> tuple[tuple[float, ...], tuple[float, ...]]:
+    if len(slopes) != len(intercepts) or not slopes:
+        raise ValueError("slopes and intercepts must have the same nonzero length")
+    slope_values = tuple(float(value) for value in slopes)
+    intercept_values = tuple(float(value) for value in intercepts)
+    if not all(isfinite(value) for value in slope_values + intercept_values):
+        raise ValueError("slopes and intercepts must be finite")
+    return slope_values, intercept_values
+
+
 def affine_upper_envelope_segments(
     slopes: Sequence[float],
     intercepts: Sequence[float],
@@ -37,20 +48,22 @@ def affine_upper_envelope_segments(
     intervals occur only for duplicate affine functions and do not create
     extra switches.
     """
-
-    if len(slopes) != len(intercepts) or not slopes:
-        raise ValueError("slopes and intercepts must have the same nonzero length")
+    slopes, intercepts = _finite_affines(slopes, intercepts)
+    start = float(start)
+    end = float(end)
+    if not isfinite(start) or not isfinite(end):
+        raise ValueError("start and end must be finite")
     if not start < end:
         raise ValueError("start must be smaller than end")
 
-    cuts = {float(start), float(end)}
+    cuts = {start, end}
     n = len(slopes)
     for i in range(n):
         for j in range(i + 1, n):
-            denom = float(slopes[i]) - float(slopes[j])
+            denom = slopes[i] - slopes[j]
             if denom == 0.0:
                 continue
-            x = (float(intercepts[j]) - float(intercepts[i])) / denom
+            x = (intercepts[j] - intercepts[i]) / denom
             if start < x < end:
                 cuts.add(x)
 
@@ -59,7 +72,7 @@ def affine_upper_envelope_segments(
     for left, right in zip(ordered[:-1], ordered[1:]):
         mid = 0.5 * (left + right)
         values = [
-            _value(float(a), float(b), mid)
+            _value(a, b, mid)
             for a, b in zip(slopes, intercepts)
         ]
         active = max(range(n), key=values.__getitem__)
@@ -90,11 +103,17 @@ def alternative_reserve(
     alternative_slopes: Sequence[float],
     alternative_intercepts: Sequence[float],
 ) -> float:
-    if len(alternative_slopes) != len(alternative_intercepts) or not alternative_slopes:
-        raise ValueError("alternative slopes/intercepts must have the same nonzero length")
+    alternative_slopes, alternative_intercepts = _finite_affines(
+        alternative_slopes, alternative_intercepts
+    )
+    environment = float(environment)
+    shared_slope = float(shared_slope)
+    shared_intercept = float(shared_intercept)
+    if not all(isfinite(value) for value in (environment, shared_slope, shared_intercept)):
+        raise ValueError("environment and shared affine coefficients must be finite")
     shared = _value(shared_slope, shared_intercept, environment)
     best_alt = max(
-        _value(float(a), float(b), environment)
+        _value(a, b, environment)
         for a, b in zip(alternative_slopes, alternative_intercepts)
     )
     return shared - best_alt
@@ -115,7 +134,11 @@ def endpoint_reserve_certificate(
     Under the registered affine-envelope model, the reserve is concave, so its
     minimum over a closed interval equals the smaller endpoint reserve.
     """
-
+    start = float(start)
+    end = float(end)
+    strict_tolerance = float(strict_tolerance)
+    if not all(isfinite(value) for value in (start, end, strict_tolerance)):
+        raise ValueError("interval endpoints and strict_tolerance must be finite")
     if not start < end:
         raise ValueError("start must be smaller than end")
     if strict_tolerance < 0:
