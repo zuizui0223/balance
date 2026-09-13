@@ -52,10 +52,8 @@ class BalanceDomainGeometry:
     bita_to_sch_width_ratio: float | None
 
 
-def _positive_fraction_to_float(value: F, name: str) -> float:
-    """Convert a positive exact geometry quantity without inventing 0/inf."""
-    if value <= 0:
-        raise ValueError(f"{name} must be positive")
+def _fraction_to_float(value: F, name: str) -> float:
+    """Convert an exact finite quantity without silently inventing 0/inf."""
     try:
         out = float(value)
     except OverflowError as exc:
@@ -66,11 +64,16 @@ def _positive_fraction_to_float(value: F, name: str) -> float:
         raise ValueError(
             f"{name} is finite mathematically but not representable as float; rescale fitness units"
         )
-    if out == 0.0:
-        raise ValueError(
-            f"{name} underflows float precision; rescale fitness units"
-        )
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale fitness units")
     return out
+
+
+def _positive_fraction_to_float(value: F, name: str) -> float:
+    """Convert a positive exact geometry quantity without inventing 0/inf."""
+    if value <= 0:
+        raise ValueError(f"{name} must be positive")
+    return _fraction_to_float(value, name)
 
 
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
@@ -231,9 +234,17 @@ def classify_middle_world(
     if tol <= 0:
         raise ValueError("tolerance must be positive")
 
-    R = s * L
-    phi = R - K
-    rho = -phi
+    l_q = F.from_float(L)
+    s_q = F.from_float(s)
+    k_q = F.from_float(K)
+    r_q = s_q * l_q
+    phi_q = r_q - k_q
+    rho_q = -phi_q
+
+    R = _fraction_to_float(r_q, "recoverable loss")
+    phi = _fraction_to_float(phi_q, "architecture margin")
+    rho = _fraction_to_float(rho_q, "architecture reserve")
+
     point = classify_two_margin_point(L, rho, tolerance=tol)
     sch_active = point.conflict_active
     bita_favoured = point.reserve_position == "NEGATIVE"
