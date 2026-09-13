@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from balance_domain.affine_envelope import (
@@ -77,3 +79,31 @@ def test_invalid_inputs_fail_closed():
         affine_upper_envelope_segments([], [], start=0.0, end=1.0)
     with pytest.raises(ValueError):
         threat_switch_bound(0)
+
+
+def test_affine_envelope_rejects_nonfinite_coefficients_and_interval_values():
+    with pytest.raises(ValueError):
+        affine_upper_envelope_segments(
+            slopes=[0.0, math.nan],
+            intercepts=[1.0, 2.0],
+            start=0.0,
+            end=1.0,
+        )
+    with pytest.raises(ValueError):
+        alternative_reserve(
+            environment=math.inf,
+            shared_slope=0.0,
+            shared_intercept=2.0,
+            alternative_slopes=[1.0],
+            alternative_intercepts=[0.0],
+        )
+    with pytest.raises(ValueError):
+        endpoint_reserve_certificate(
+            start=0.0,
+            end=1.0,
+            shared_slope=0.0,
+            shared_intercept=2.0,
+            alternative_slopes=[1.0],
+            alternative_intercepts=[0.0],
+            strict_tolerance=math.nan,
+        )
