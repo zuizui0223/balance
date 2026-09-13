@@ -4,6 +4,9 @@ from dataclasses import dataclass
 import math
 
 
+_ROUNDOFF_RELATIVE_TOLERANCE = 64.0 * math.ulp(1.0)
+
+
 @dataclass(frozen=True)
 class DeepestMiddleWorldPoint:
     environment: float
@@ -33,11 +36,35 @@ def _validate(environment, conflict, reserve) -> None:
         raise ValueError("reserve must be non-increasing for the monotone theorem")
 
 
+def _roundoff_equal(left: float, right: float) -> bool:
+    """Return whether two margins differ only at floating-point roundoff scale."""
+
+    if left == right:
+        return True
+    scale = max(abs(left), abs(right))
+    if scale == 0.0:
+        return True
+    return abs(left - right) <= _ROUNDOFF_RELATIVE_TOLERANCE * scale
+
+
+def _middle_coordinate(conflict: float, reserve: float) -> float:
+    """Return L/(L+rho) without overflowing when both finite margins are huge."""
+
+    scale = max(conflict, reserve)
+    if scale <= 0.0:
+        raise ValueError("equal-margin point must have positive total margin")
+    l_scaled = conflict / scale
+    r_scaled = reserve / scale
+    return l_scaled / (l_scaled + r_scaled)
+
+
 def deepest_middle_point(environment, conflict, reserve) -> DeepestMiddleWorldPoint:
     """Locate the equal-margin deepest BALANCE point on a piecewise-linear path.
 
     The routine is an empirical interpolation helper for the monotone theorem. It
-    does not infer a crossing outside the sampled range.
+    does not infer a crossing outside the sampled range. Numerical equality is
+    judged only at machine-roundoff-relative scale so a change of fitness units
+    cannot create or erase an equal-margin sample.
     """
     environment = [float(x) for x in environment]
     conflict = [float(x) for x in conflict]
@@ -46,19 +73,20 @@ def deepest_middle_point(environment, conflict, reserve) -> DeepestMiddleWorldPo
 
     difference = [l - r for l, r in zip(conflict, reserve)]
 
-    exact = [i for i, value in enumerate(difference) if abs(value) <= 1e-12]
+    exact = [
+        i
+        for i, (l, r) in enumerate(zip(conflict, reserve))
+        if _roundoff_equal(l, r)
+    ]
     if exact:
         if len(exact) > 1:
             raise ValueError("equal-margin point is not unique on the sampled path")
         i = exact[0]
-        total = conflict[i] + reserve[i]
-        if total <= 0:
-            raise ValueError("equal-margin point must have positive total margin")
         return DeepestMiddleWorldPoint(
             environment=environment[i],
             conflict_load=conflict[i],
             reserve=reserve[i],
-            xi=conflict[i] / total,
+            xi=_middle_coordinate(conflict[i], reserve[i]),
             depth=min(conflict[i], reserve[i]),
             interpolation_interval=(i, i),
         )
@@ -73,23 +101,25 @@ def deepest_middle_point(environment, conflict, reserve) -> DeepestMiddleWorldPo
 
     i = intervals[0]
     d0, d1 = difference[i], difference[i + 1]
-    fraction = -d0 / (d1 - d0)
+    difference_scale = max(abs(d0), abs(d1))
+    if difference_scale == 0.0:
+        raise RuntimeError("internal equal-margin crossing lost signed difference")
+    d0_scaled = d0 / difference_scale
+    d1_scaled = d1 / difference_scale
+    fraction = -d0_scaled / (d1_scaled - d0_scaled)
 
     def interp(values):
-        return values[i] + fraction * (values[i + 1] - values[i])
+        return (1.0 - fraction) * values[i] + fraction * values[i + 1]
 
     e_star = interp(environment)
     l_star = interp(conflict)
     r_star = interp(reserve)
-    total = l_star + r_star
-    if total <= 0:
-        raise ValueError("interpolated equal-margin point must have positive total margin")
 
     return DeepestMiddleWorldPoint(
         environment=e_star,
         conflict_load=l_star,
         reserve=r_star,
-        xi=l_star / total,
+        xi=_middle_coordinate(l_star, r_star),
         depth=min(l_star, r_star),
         interpolation_interval=(i, i + 1),
     )
