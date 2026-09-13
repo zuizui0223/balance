@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import isinf
+from math import isfinite, isinf
 from typing import Sequence
 
 
@@ -38,16 +38,33 @@ class IntervalChordClassification:
     classification: str
 
 
+def _finite(value: float, name: str) -> float:
+    out = float(value)
+    if not isfinite(out):
+        raise ValueError(f"{name} must be finite")
+    return out
+
+
+def _finite_vector(values: Sequence[float], name: str) -> tuple[float, ...]:
+    out = tuple(float(value) for value in values)
+    if not all(isfinite(value) for value in out):
+        raise ValueError(f"{name} must contain only finite values")
+    return out
+
+
 def concave_segment_lower_bounds(
     left_margins: Sequence[float],
     right_margins: Sequence[float],
     t: float,
 ) -> tuple[float, ...]:
-    if not 0.0 <= t <= 1.0:
-        raise ValueError("t must lie in [0, 1]")
     if not left_margins or len(left_margins) != len(right_margins):
         raise ValueError("endpoint margin vectors must have the same nonzero length")
-    return tuple((1.0 - t) * float(a) + t * float(b) for a, b in zip(left_margins, right_margins))
+    left = _finite_vector(left_margins, "left_margins")
+    right = _finite_vector(right_margins, "right_margins")
+    t = _finite(t, "t")
+    if not 0.0 <= t <= 1.0:
+        raise ValueError("t must lie in [0, 1]")
+    return tuple((1.0 - t) * a + t * b for a, b in zip(left, right))
 
 
 def certify_concave_balance_segment(
@@ -56,8 +73,10 @@ def certify_concave_balance_segment(
 ) -> ConcaveSegmentCertificate:
     if not left_margins or len(left_margins) != len(right_margins):
         raise ValueError("endpoint margin vectors must have the same nonzero length")
+    left = _finite_vector(left_margins, "left_margins")
+    right = _finite_vector(right_margins, "right_margins")
 
-    endpoint_floors = [min(float(a), float(b)) for a, b in zip(left_margins, right_margins)]
+    endpoint_floors = [min(a, b) for a, b in zip(left, right)]
     limiting = min(range(len(endpoint_floors)), key=endpoint_floors.__getitem__)
     floor = endpoint_floors[limiting]
     return ConcaveSegmentCertificate(
@@ -75,10 +94,15 @@ def audit_concave_margin(
     t: float,
     tolerance: float = 0.0,
 ) -> JensenAudit:
+    left = _finite(left, "left")
+    right = _finite(right, "right")
+    observed = _finite(observed, "observed")
+    t = _finite(t, "t")
+    tolerance = _finite(tolerance, "tolerance")
     if tolerance < 0.0:
         raise ValueError("tolerance must be nonnegative")
     lower = concave_segment_lower_bounds([left], [right], t)[0]
-    residual = float(observed) - lower
+    residual = observed - lower
     return JensenAudit(
         lower_bound=lower,
         residual=residual,
@@ -93,6 +117,12 @@ def strong_concave_bulge_bounds(
     t: float,
     metric_distance_sq: float = 1.0,
 ) -> tuple[float, float]:
+    curvature_lower = _finite(curvature_lower, "curvature_lower")
+    curvature_upper = float(curvature_upper)
+    t = _finite(t, "t")
+    metric_distance_sq = _finite(metric_distance_sq, "metric_distance_sq")
+    if not isfinite(curvature_upper) and not (isinf(curvature_upper) and curvature_upper > 0):
+        raise ValueError("curvature_upper must be finite or positive infinity")
     if not 0.0 <= t <= 1.0:
         raise ValueError("t must lie in [0, 1]")
     if curvature_lower < 0.0 or curvature_upper < curvature_lower:
@@ -117,6 +147,11 @@ def audit_strong_concave_chord(
     metric_distance_sq: float = 1.0,
     tolerance: float = 0.0,
 ) -> StrongConcaveChordAudit:
+    left = _finite(left, "left")
+    right = _finite(right, "right")
+    observed = _finite(observed, "observed")
+    t = _finite(t, "t")
+    tolerance = _finite(tolerance, "tolerance")
     if tolerance < 0.0:
         raise ValueError("tolerance must be nonnegative")
     chord = concave_segment_lower_bounds([left], [right], t)[0]
@@ -126,7 +161,7 @@ def audit_strong_concave_chord(
         t=t,
         metric_distance_sq=metric_distance_sq,
     )
-    bulge = float(observed) - chord
+    bulge = observed - chord
     return StrongConcaveChordAudit(
         chord_value=chord,
         bulge_lower=lower,
@@ -147,16 +182,23 @@ def interval_concave_bulge_bounds(
     interior_upper: float,
     t: float,
 ) -> tuple[float, float]:
+    left_lower = _finite(left_lower, "left_lower")
+    left_upper = _finite(left_upper, "left_upper")
+    right_lower = _finite(right_lower, "right_lower")
+    right_upper = _finite(right_upper, "right_upper")
+    interior_lower = _finite(interior_lower, "interior_lower")
+    interior_upper = _finite(interior_upper, "interior_upper")
+    t = _finite(t, "t")
     if not 0.0 <= t <= 1.0:
         raise ValueError("t must lie in [0, 1]")
     if left_lower > left_upper or right_lower > right_upper or interior_lower > interior_upper:
         raise ValueError("each interval must satisfy lower <= upper")
 
-    possible_lower = float(interior_lower) - (
-        (1.0 - t) * float(left_upper) + t * float(right_upper)
+    possible_lower = interior_lower - (
+        (1.0 - t) * left_upper + t * right_upper
     )
-    possible_upper = float(interior_upper) - (
-        (1.0 - t) * float(left_lower) + t * float(right_lower)
+    possible_upper = interior_upper - (
+        (1.0 - t) * left_lower + t * right_lower
     )
     return possible_lower, possible_upper
 
