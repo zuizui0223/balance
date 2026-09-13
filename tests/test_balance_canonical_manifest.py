@@ -20,9 +20,17 @@ def _git_blob_sha(path: Path) -> str:
 def test_canonical_manifest_matches_assembled_manuscript():
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     text = assemble.build_manuscript()
-    assert hashlib.sha256(text.encode("utf-8")).hexdigest() == manifest["expected_sha256"]
-    assert len(text.split()) == manifest["expected_word_count"]
-    assert len(text.splitlines()) == manifest["expected_line_count"]
+    actual = {
+        "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+        "word_count": len(text.split()),
+        "line_count": len(text.splitlines()),
+    }
+    expected = {
+        "sha256": manifest["expected_sha256"],
+        "word_count": manifest["expected_word_count"],
+        "line_count": manifest["expected_line_count"],
+    }
+    assert actual == expected
     assert "## Figure captions" in text
     assert "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv" in text
     assert "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv" in text

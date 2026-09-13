@@ -14,7 +14,8 @@ def test_theory_defines_exact_sandwich_and_direct_worldline_routes():
     assert "B = {L>0} ∩ {Phi<0}" in text
     assert "0 < L < K/s" in text
     assert "Delta_W < 0" in text
-    assert "Delta_W = Phi = sL-K" in text
+    assert "Delta_W = Phi = R-K" in text
+    assert "Delta_W = sL-K" in text
 
 
 def test_theory_preserves_depth_and_deepest_point_results():
@@ -23,7 +24,7 @@ def test_theory_preserves_depth_and_deepest_point_results():
     assert "d_B = min(L,rho)" in text
     assert "L_deep = K/(1+s)" in text
     assert "xi_deep = 1/2" in text
-    assert "W_B/W_S = 1/s" in text
+    assert "W_A/W_S = 1/s" in text
 
 
 def test_theory_preserves_path_and_hysteresis_results():
@@ -36,6 +37,6 @@ def test_theory_preserves_path_and_hysteresis_results():
 
 def test_theory_preserves_concordance_falsification_logic():
     text = _text()
-    assert "delta_parallel = Delta_W-(sL-K)" in text
+    assert "delta_parallel = Delta_W-(R-K)" in text
     assert "delta_parallel=0" in text
     assert "empirical falsification route" in text
