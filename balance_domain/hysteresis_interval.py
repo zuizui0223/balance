@@ -8,7 +8,7 @@ intervals for the true thresholds and hysteresis width.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import isfinite
+from math import inf, isfinite, nextafter
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,14 @@ class HysteresisInterval:
     horizon: float | None
     switching_cost_sum_lower: float | None
     switching_cost_sum_upper: float | None
+
+
+def _lower_outward(value: float) -> float:
+    return nextafter(value, -inf)
+
+
+def _upper_outward(value: float) -> float:
+    return nextafter(value, inf)
 
 
 def identify_hysteresis_interval(
@@ -57,6 +65,10 @@ def identify_hysteresis_interval(
     switch must occur at positive Phi and an observed reverse switch at negative
     Phi. The returned closed intervals are conservative envelopes of the strict
     sets after intersecting them with ``F>=0`` and ``R<=0``.
+
+    Derived floating-point bounds are rounded outward by one representable value
+    so numerical roundoff cannot make a nominal lower bound exceed, or an upper
+    bound fall below, the exact mathematical envelope.
     """
     fhat = float(observed_forward_switch)
     rhat = float(observed_reverse_switch)
@@ -74,19 +86,19 @@ def identify_hysteresis_interval(
         raise ValueError("observed forward switch must not lie below reverse switch")
 
     # Intersect the finite-resolution brackets with the model constraints
-    # F>=0 and R<=0. The intervals are closed conservative envelopes; the true
-    # threshold sets retain their strict side at F_hat / R_hat.
-    forward_lower = max(0.0, fhat - du)
+    # F>=0 and R<=0. Round computed endpoints outward to preserve the declared
+    # conservative-envelope semantics under floating-point arithmetic.
+    forward_lower = max(0.0, _lower_outward(fhat - du))
     forward_upper = fhat
     reverse_lower = rhat
-    reverse_upper = min(0.0, rhat + dd)
+    reverse_upper = min(0.0, _upper_outward(rhat + dd))
     observed_width = fhat - rhat
 
     # Minimum feasible width uses the smallest forward threshold and largest
     # reverse threshold after sign intersection. Maximum is approached by the
     # two observed outer switch points and is returned as a closed envelope.
-    width_lower = forward_lower - reverse_upper
-    width_upper = observed_width
+    width_lower = max(0.0, _lower_outward(forward_lower - reverse_upper))
+    width_upper = _upper_outward(observed_width)
 
     cost_lower = cost_upper = None
     T = None
@@ -94,9 +106,10 @@ def identify_hysteresis_interval(
         T = float(horizon)
         if not isfinite(T) or T <= 0.0:
             raise ValueError("horizon must be finite and positive")
-        # Exact BALANCE width = (C_SD + C_DS)/T.
-        cost_lower = T * width_lower
-        cost_upper = T * width_upper
+        # Exact BALANCE width = (C_SD + C_DS)/T. Round the derived cost bounds
+        # outward as well; they are identification guarantees, not point estimates.
+        cost_lower = max(0.0, _lower_outward(T * width_lower))
+        cost_upper = _upper_outward(T * width_upper)
 
     return HysteresisInterval(
         observed_forward_switch=fhat,
