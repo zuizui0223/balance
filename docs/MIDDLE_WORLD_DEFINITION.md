@@ -1,27 +1,31 @@
-# BALANCE as the middle world between SCH and BITA
+# BALANCE as the middle world between SCH and SLK
 
 ## 1. Programme-level interpretation
 
-The three repositories are not three unrelated theories.
-
-They describe three adjacent states of one trait-architecture problem:
+The linked repositories describe different inferential layers of one trait-architecture problem rather than a single linear chapter sequence.
 
 ```text
-SCH world
+SCH
 shared-coordinate architecture
--> ask whether two functions are in causal conflict and where the shared optimum settles
+-> identify whether functions are in causal conflict and export conflict load L
 
-BALANCE world
+BALANCE
 shared-coordinate conflict is real
-but the recoverable benefit of extra dimensionality is still below its cost
--> ask how large, deep, connected, persistent, and history-dependent this region is
+but the best registered differentiated-accessible worldline still loses
+-> characterize the geometry, depth, topology, and persistence of that middle world
 
-BITA world
-differentiated architecture is worth paying for
--> ask how much conflict is released and which ecological pathway causes the gain
+SLK
+architecture value and evolutionary transport
+-> define Phi = R-K, then separate global value from accessibility, invasion,
+   fixation, and occupancy
+
+BITA
+trait-interaction mechanism identification
+-> ask what an observed A x D interaction identifies and which ecological
+   channels can be allocated by selective intervention
 ```
 
-BALANCE is therefore deliberately treated as a **sandwiched world**. It is defined from both sister chapters rather than by inventing an unrelated third fitness function.
+BALANCE is therefore a **sandwiched architecture-value world** bounded by SCH and SLK. BITA is orthogonal: it can explain ecological channel allocation without owning the architecture-value boundary.
 
 ## 2. Complementary inequalities
 
@@ -29,9 +33,8 @@ Let
 
 ```text
 L   = fitness-scale conflict / compromise load inherited from SCH
-s   = fraction of L recoverable by additional dimensionality
-R   = sL
-K   = additional architecture cost inherited from the BITA comparison
+R   = recoverable conflict loss for the registered differentiated architecture
+K   = additional architecture cost on the same fitness scale
 Phi = R-K
 ```
 
@@ -41,13 +44,13 @@ The SCH-facing certificate is
 L > 0.
 ```
 
-The BITA-facing certificate is
+The SLK-facing architecture-value certificate is
 
 ```text
 Phi > 0
 ```
 
-for differentiation to be favoured.
+for the differentiated architecture to have higher optimized value.
 
 The BALANCE world is the complementary intersection
 
@@ -57,29 +60,35 @@ and
 Phi < 0.
 ```
 
-Equivalently,
+Under the registered quadratic bridge only,
 
 ```text
-0 < L < K/s
+R = sL,  s in [0,1],
 ```
 
-when `s > 0`.
+so when `s>0`, BALANCE can be written
 
-Thus BALANCE is neither "no conflict" nor "failed differentiation". It is the region in which conflict is already biologically real but remaining on one coordinate is still the better architecture.
+```text
+0 < L < K/s.
+```
+
+`R=sL` is a model-specific bridge/corollary, not the general definition of recoverable benefit.
+
+Thus BALANCE is neither "no conflict" nor "failed differentiation". It is the region in which conflict is biologically real but remaining on one coordinate still has higher optimized architecture value.
 
 ## 3. Two-sided coordinates inside BALANCE
 
-Define the BITA-facing reserve
+Define the SLK-facing architecture reserve
 
 ```text
-rho = K-R = K-sL > 0.
+rho = K-R = -Phi > 0.
 ```
 
 Then a BALANCE point has two distances in the common fitness units:
 
 ```text
-SCH-facing distance  = L
-BITA-facing distance = rho.
+SCH-facing distance = L
+SLK-facing distance = rho.
 ```
 
 This motivates two Chapter-2 estimands.
@@ -101,7 +110,7 @@ Interpretation:
 ```text
 xi -> 0   close to the SCH-facing no-conflict boundary
 xi ~ 0.5  centred between the two boundaries in the common fitness units
-xi -> 1   close to the BITA-facing differentiation boundary.
+xi -> 1   close to the SLK-facing architecture-value boundary.
 ```
 
 `xi` is not an evolutionary time variable. It is a location inside the present-day architecture-state geometry.
@@ -132,18 +141,28 @@ is history dependent.
 
 Therefore a lineage starting in the shared architecture can persist temporarily even for small positive `Phi`, while a lineage already differentiated can persist for small negative `Phi`.
 
-This makes the middle chapter genuinely about persistence and state history, not only about a static inequality.
+This makes BALANCE genuinely about persistence and state history, not only about a static inequality. It still does not by itself identify accessibility, invasion, fixation, or occupancy; those are SLK transport questions.
 
 ## 5. What would make BALANCE scientifically independent?
 
-Chapter 2 earns independence from SCH and BITA if at least one of these is recovered empirically:
+BALANCE earns independence from SCH and SLK if at least one of these is recovered empirically:
 
 1. **Domain geometry:** natural contexts differ predictably in `xi`, `d_B`, BALANCE width, or integrated reserve.
-2. **Topology:** re-entry or multiple BALANCE intervals occur and can be attributed to non-monotone `L`, `s`, or `K` rather than measurement noise.
+2. **Topology:** re-entry or multiple BALANCE intervals occur and can be attributed to non-monotone `L`, `R`, or `K` rather than measurement noise.
 3. **History dependence:** forward and reverse architecture thresholds differ as predicted by switching costs and context duration.
-4. **Comparative prediction:** BALANCE metrics predict which systems remain integrated versus which cross into differentiated architecture better than conflict magnitude alone.
+4. **Comparative prediction:** BALANCE metrics predict which systems remain integrated versus which cross the architecture-value boundary better than conflict magnitude alone.
 
-## 6. Claim ceiling
+## 6. Relation to BITA
+
+BITA does not define the `Phi=0` boundary. Its active object is a trait-interaction estimand such as
+
+```text
+Delta_AD W
+```
+
+and the identified set of ecological channel allocations compatible with that total interaction. A BITA mechanism decomposition may inform biological interpretation of recoverable benefit or costs only when an explicit bridge is justified; it is not algebraically identical to `R`, `K`, or `Phi` by default.
+
+## 7. Claim ceiling
 
 Do not infer from a BALANCE-domain estimate alone that:
 
@@ -151,6 +170,8 @@ Do not infer from a BALANCE-domain estimate alone that:
 - a lineage is evolving toward differentiation,
 - `K` is a historical developmental cost unless it was measured as such,
 - state-specific SCH optima equal pure function optima,
-- present-day re-entry proves macroevolutionary reversibility.
+- present-day re-entry proves macroevolutionary reversibility,
+- a BITA ecological channel has been identified,
+- `Phi>0` implies accessibility, invasion, fixation, or occupancy.
 
-The repository studies the ecology and dynamics of the **interior region between the two sister-chapter boundaries**.
+The repository studies the ecology and dynamics of the **interior region between the SCH conflict boundary and the SLK architecture-value boundary**.
