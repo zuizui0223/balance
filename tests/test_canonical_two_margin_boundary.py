@@ -197,7 +197,7 @@ def test_extreme_reserve_crossing_recovers_midpoint_without_overflow():
         reserve_margin=[-1.0e308, 1.0e308],
         tolerance=0.0,
     )
-    assert result.middle_intervals == pytest.approx(((5.0, 10.0),))
+    _assert_intervals_close(result.middle_intervals, ((5.0, 10.0),))
     assert result.middle_width == pytest.approx(5.0)
 
 
@@ -208,7 +208,7 @@ def test_extreme_environment_span_can_still_return_finite_middle_interval():
         reserve_margin=[1.0e308, 1.0e308],
         tolerance=5.0e307,
     )
-    assert result.middle_intervals == pytest.approx(((0.0, 1.0e308),))
+    _assert_intervals_close(result.middle_intervals, ((0.0, 1.0e308),))
     assert result.middle_width == pytest.approx(1.0e308)
 
 
