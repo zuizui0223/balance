@@ -49,6 +49,12 @@ def maximum_covering_radius_for_target_depth(
     lipschitz_constants: Sequence[float],
     target_depth: float = 0.0,
 ) -> float:
+    """Return the largest non-negative covering radius certifying target depth.
+
+    If a sampled minimum margin is already below ``target_depth``, no
+    non-negative covering radius can certify that target, so the request fails
+    closed instead of returning a physically meaningless negative radius.
+    """
     if len(sampled_min_margins) != len(lipschitz_constants) or not sampled_min_margins:
         raise ValueError("sampled_min_margins and lipschitz_constants must have the same nonzero length")
     if any(k < 0 for k in lipschitz_constants):
@@ -57,9 +63,11 @@ def maximum_covering_radius_for_target_depth(
     radii: list[float] = []
     for margin, k in zip(sampled_min_margins, lipschitz_constants):
         slack = float(margin) - target_depth
+        if slack < 0.0:
+            raise ValueError(
+                "target_depth exceeds a sampled minimum margin; no non-negative covering radius can certify it"
+            )
         if k == 0.0:
-            if slack < 0.0:
-                return slack
             continue
         radii.append(slack / float(k))
 

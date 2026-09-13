@@ -1,4 +1,5 @@
 import math
+import random
 
 from balance_domain import analyze_balance_path, switching_cost_state
 
@@ -36,7 +37,63 @@ def test_criticality_index_and_reserve_inside_balance():
     assert all(state == "BALANCE" for state in result.states)
     assert all(0 < q < 1 for q in result.criticality_index if q is not None)
     assert all(r > 0 for r in result.reserve)
+    assert math.isclose(result.criticality_index[1], 0.2 / (0.2 + 0.3))
+    assert math.isclose(result.architecture_pressure_ratio[1], 0.1 / 0.4)
     assert math.isclose(result.balance_width, 2.0)
+
+
+def test_conflict_loss_exit_uses_conflict_boundary_not_phi_extrapolation():
+    result = analyze_balance_path(
+        environment=[0, 1, 2],
+        conflict_load=[2, 1, 0],
+        decoupling=[0.5, 0.5, 0.5],
+        architecture_cost=[2, 1, 1],
+    )
+    assert result.states == ("BALANCE", "BALANCE", "NO_CONFLICT")
+    assert len(result.balance_intervals) == 1
+    start, end = result.balance_intervals[0]
+    assert math.isclose(start, 0.0, abs_tol=1e-9)
+    assert math.isclose(end, 2.0, abs_tol=1e-9)
+    assert math.isclose(result.balance_width, 2.0, abs_tol=1e-9)
+
+
+def test_no_conflict_entry_interpolates_conflict_boundary():
+    result = analyze_balance_path(
+        environment=[0, 1, 2],
+        conflict_load=[0, 1, 1],
+        decoupling=[0.5, 0.5, 0.5],
+        architecture_cost=[1, 1, 1],
+    )
+    assert result.states == ("NO_CONFLICT", "BALANCE", "BALANCE")
+    start, end = result.balance_intervals[0]
+    assert start < 1e-9
+    assert math.isclose(end, 2.0)
+    assert math.isclose(result.balance_width, 2.0, abs_tol=1e-9)
+
+
+def test_integrated_reserve_is_clipped_to_balance_interval():
+    result = analyze_balance_path(
+        environment=[0, 1],
+        conflict_load=[1, 1],
+        decoupling=[1, 1],
+        architecture_cost=[2, 0],
+    )
+    assert result.states == ("BALANCE", "DIFFERENTIATION")
+    assert math.isclose(result.balance_width, 0.5, abs_tol=1e-9)
+    assert math.isclose(result.integrated_reserve, 0.25, abs_tol=1e-9)
+
+
+def test_balance_width_is_always_bounded_by_environment_span():
+    rng = random.Random(20260913)
+    environment = [0, 1, 2, 3, 4]
+    span = environment[-1] - environment[0]
+    for _ in range(250):
+        conflict = [0.0 if rng.random() < 0.25 else rng.uniform(0.0, 2.0) for _ in environment]
+        decoupling = [rng.random() for _ in environment]
+        cost = [rng.uniform(0.0, 2.0) for _ in environment]
+        result = analyze_balance_path(environment, conflict, decoupling, cost)
+        assert -1e-12 <= result.balance_width <= span + 1e-12
+        assert all(environment[0] - 1e-12 <= a <= b <= environment[-1] + 1e-12 for a, b in result.balance_intervals)
 
 
 def test_switching_costs_create_history_dependent_band():
