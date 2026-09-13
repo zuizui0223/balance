@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
+from .boundary import classify_two_margin_point
+
 
 @dataclass(frozen=True)
 class WorldlineComparison:
@@ -47,6 +49,11 @@ def compare_worldlines(
         xi_direct = L / (L + rho_direct)
         d_B,direct = min(L, rho_direct).
 
+    Direct state classification and the optional decomposed BALANCE coordinate
+    both use the canonical two-margin boundary primitive. Representation-specific
+    signs are converted once: ``rho_direct=-Delta_W`` and
+    ``rho_decomposed=K-sL=-(sL-K)``.
+
     When ``decoupling`` and ``architecture_cost`` are also supplied, the
     function checks the programme-level bridge identity
 
@@ -75,6 +82,9 @@ def compare_worldlines(
         raise ValueError("tolerance must be positive")
 
     direct = Wd - Ws
+    direct_reserve_margin = -direct
+    direct_point = classify_two_margin_point(L, direct_reserve_margin, tolerance=tol)
+
     decomposed = None
     residual = None
     consistent = None
@@ -95,24 +105,26 @@ def compare_worldlines(
         decomposed = s * L - K
         residual = direct - decomposed
         consistent = abs(residual) <= tol
-        if L > tol and decomposed < -tol:
-            decomposed_reserve = -decomposed
+        decomposed_margin = -decomposed
+        decomposed_point = classify_two_margin_point(L, decomposed_margin, tolerance=tol)
+        if decomposed_point.middle_active:
+            decomposed_reserve = decomposed_margin
             decomposed_position = L / (L + decomposed_reserve)
 
-    if L <= tol:
-        if direct > tol:
+    if not direct_point.conflict_active:
+        if direct_point.reserve_position == "NEGATIVE":
             state = "OUTSIDE_REGISTERED_SCH_CONFLICT"
         else:
             state = "SCH_NO_CONFLICT_WORLD"
-    elif direct < -tol:
+    elif direct_point.reserve_position == "POSITIVE":
         state = "BALANCE_MIDDLE_WORLD"
-    elif abs(direct) <= tol:
+    elif direct_point.reserve_position == "INTERFACE":
         state = "ARCHITECTURE_CRITICAL_INTERFACE"
     else:
         state = "BITA_DIFFERENTIATION_WORLD"
 
-    if state == "BALANCE_MIDDLE_WORLD":
-        direct_reserve = -direct
+    if direct_point.middle_active:
+        direct_reserve = direct_reserve_margin
         direct_position = L / (L + direct_reserve)
         direct_depth = min(L, direct_reserve)
     else:

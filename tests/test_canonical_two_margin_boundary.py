@@ -13,6 +13,7 @@ from balance_domain.phase import normalized_phase_point
 from balance_domain.static import analyze_balance_path
 from balance_domain.world import classify_middle_world
 from balance_domain.worldline_path import analyze_worldline_path
+from balance_domain.worldlines import compare_worldlines
 
 
 def _assert_intervals_close(left, right):
@@ -88,11 +89,43 @@ def test_all_fitness_scale_routes_share_canonical_node_occupancy_randomized():
             ).state == "MULTI_ALTERNATIVE_BALANCE"
             for li, rho in zip(L, reserve)
         )
+        scalar_direct_results = tuple(
+            compare_worldlines(
+                ws,
+                wd,
+                li,
+                decoupling=si,
+                architecture_cost=ki,
+                tolerance=1e-12,
+            )
+            for ws, wd, li, si, ki in zip(Ws, Wd, L, s, K)
+        )
+        scalar_direct_active = tuple(
+            result.state == "BALANCE_MIDDLE_WORLD"
+            for result in scalar_direct_results
+        )
 
-        assert static_active == direct_active == sampled_active == scalar_active == multi_active
+        assert (
+            static_active
+            == direct_active
+            == sampled_active
+            == scalar_active
+            == multi_active
+            == scalar_direct_active
+        )
         _assert_intervals_close(static.balance_intervals, direct.balance_intervals)
         assert static.balance_width == pytest.approx(direct.balance_width)
         assert 0.0 <= static.balance_width <= environment[-1] - environment[0]
+
+        for active, rho, result in zip(static_active, reserve, scalar_direct_results):
+            assert result.bridge_consistent is True
+            if active:
+                assert result.direct_reserve == pytest.approx(rho)
+                assert result.decomposed_reserve == pytest.approx(rho)
+                assert result.direct_middle_position == pytest.approx(result.decomposed_middle_position)
+            else:
+                assert result.direct_reserve is None
+                assert result.decomposed_reserve is None
 
 
 def test_normalized_phase_near_boundary_is_invariant_to_fitness_unit_rescaling():
@@ -127,6 +160,8 @@ def test_negative_conflict_is_invalid_across_canonical_scalar_routes():
         classify_middle_world(-0.1, 0.5, 1.0)
     with pytest.raises(ValueError):
         classify_multi_alternative_middle_world(-0.1, (1.0, 2.0))
+    with pytest.raises(ValueError):
+        compare_worldlines(10.0, 9.0, -0.1)
 
 
 def test_invalid_canonical_inputs_fail_closed():
