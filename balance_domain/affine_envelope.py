@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 from math import isfinite
 from typing import Sequence
 
@@ -20,11 +21,10 @@ class EndpointReserveCertificate:
     positive_throughout_interval: bool
 
 
-def _value(slope: float, intercept: float, x: float) -> float:
-    return slope * x + intercept
-
-
-def _finite_affines(slopes: Sequence[float], intercepts: Sequence[float]) -> tuple[tuple[float, ...], tuple[float, ...]]:
+def _finite_affines(
+    slopes: Sequence[float],
+    intercepts: Sequence[float],
+) -> tuple[tuple[float, ...], tuple[float, ...]]:
     if len(slopes) != len(intercepts) or not slopes:
         raise ValueError("slopes and intercepts must have the same nonzero length")
     slope_values = tuple(float(value) for value in slopes)
@@ -32,6 +32,52 @@ def _finite_affines(slopes: Sequence[float], intercepts: Sequence[float]) -> tup
     if not all(isfinite(value) for value in slope_values + intercept_values):
         raise ValueError("slopes and intercepts must be finite")
     return slope_values, intercept_values
+
+
+def _exact(value: float) -> Fraction:
+    return Fraction.from_float(float(value))
+
+
+def _finite_output(value: Fraction, name: str) -> float:
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} is not float-representable; rescale units") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} is not float-representable; rescale units")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale units")
+    return out
+
+
+def _exact_value(slope: Fraction, intercept: Fraction, x: Fraction) -> Fraction:
+    return slope * x + intercept
+
+
+def _alternative_reserve_exact(
+    *,
+    environment: float,
+    shared_slope: float,
+    shared_intercept: float,
+    alternative_slopes: Sequence[float],
+    alternative_intercepts: Sequence[float],
+) -> Fraction:
+    alternative_slopes, alternative_intercepts = _finite_affines(
+        alternative_slopes, alternative_intercepts
+    )
+    environment = float(environment)
+    shared_slope = float(shared_slope)
+    shared_intercept = float(shared_intercept)
+    if not all(isfinite(value) for value in (environment, shared_slope, shared_intercept)):
+        raise ValueError("environment and shared affine coefficients must be finite")
+
+    x = _exact(environment)
+    shared = _exact_value(_exact(shared_slope), _exact(shared_intercept), x)
+    best_alt = max(
+        _exact_value(_exact(a), _exact(b), x)
+        for a, b in zip(alternative_slopes, alternative_intercepts)
+    )
+    return shared - best_alt
 
 
 def affine_upper_envelope_segments(
@@ -43,10 +89,10 @@ def affine_upper_envelope_segments(
 ) -> tuple[EnvelopeSegment, ...]:
     """Return active upper-envelope segments for affine alternatives on [start,end].
 
-    Exact pairwise intersections provide all possible switch points. Ties at a
-    single breakpoint are assigned by the adjacent open intervals; exact tie
-    intervals occur only for duplicate affine functions and do not create
-    extra switches.
+    Pairwise intersections and active-alternative comparisons are evaluated
+    exactly at the supplied-float level.  Ties at a single breakpoint are
+    assigned by the adjacent open intervals; duplicate affine functions do not
+    create extra switches.
     """
     slopes, intercepts = _finite_affines(slopes, intercepts)
     start = float(start)
@@ -56,43 +102,54 @@ def affine_upper_envelope_segments(
     if not start < end:
         raise ValueError("start must be smaller than end")
 
-    cuts = {start, end}
+    slope_q = tuple(_exact(value) for value in slopes)
+    intercept_q = tuple(_exact(value) for value in intercepts)
+    start_q = _exact(start)
+    end_q = _exact(end)
+
+    cuts = {start_q, end_q}
     n = len(slopes)
     for i in range(n):
         for j in range(i + 1, n):
-            denom = slopes[i] - slopes[j]
-            if denom == 0.0:
+            denom = slope_q[i] - slope_q[j]
+            if denom == 0:
                 continue
-            x = (intercepts[j] - intercepts[i]) / denom
-            if start < x < end:
+            x = (intercept_q[j] - intercept_q[i]) / denom
+            if start_q < x < end_q:
                 cuts.add(x)
 
     ordered = sorted(cuts)
-    raw: list[EnvelopeSegment] = []
+    raw: list[tuple[Fraction, Fraction, int]] = []
     for left, right in zip(ordered[:-1], ordered[1:]):
-        mid = 0.5 * (left + right)
+        mid = (left + right) / 2
         values = [
-            _value(a, b, mid)
-            for a, b in zip(slopes, intercepts)
+            _exact_value(a, b, mid)
+            for a, b in zip(slope_q, intercept_q)
         ]
         active = max(range(n), key=values.__getitem__)
-        raw.append(EnvelopeSegment(left, right, active))
+        raw.append((left, right, active))
 
     if not raw:
         return ()
 
-    merged: list[EnvelopeSegment] = [raw[0]]
-    for segment in raw[1:]:
-        previous = merged[-1]
-        if segment.active_alternative == previous.active_alternative:
-            merged[-1] = EnvelopeSegment(
-                previous.start,
-                segment.end,
-                previous.active_alternative,
-            )
+    merged: list[tuple[Fraction, Fraction, int]] = [raw[0]]
+    for left, right, active in raw[1:]:
+        previous_left, previous_right, previous_active = merged[-1]
+        if active == previous_active:
+            merged[-1] = (previous_left, right, previous_active)
         else:
-            merged.append(segment)
-    return tuple(merged)
+            merged.append((left, right, active))
+
+    segments: list[EnvelopeSegment] = []
+    for left, right, active in merged:
+        left_f = _finite_output(left, "envelope segment boundary")
+        right_f = _finite_output(right, "envelope segment boundary")
+        if not left_f < right_f:
+            raise ValueError(
+                "distinct affine switch points collapse at float precision; rescale environment units"
+            )
+        segments.append(EnvelopeSegment(left_f, right_f, active))
+    return tuple(segments)
 
 
 def alternative_reserve(
@@ -103,20 +160,14 @@ def alternative_reserve(
     alternative_slopes: Sequence[float],
     alternative_intercepts: Sequence[float],
 ) -> float:
-    alternative_slopes, alternative_intercepts = _finite_affines(
-        alternative_slopes, alternative_intercepts
+    reserve = _alternative_reserve_exact(
+        environment=environment,
+        shared_slope=shared_slope,
+        shared_intercept=shared_intercept,
+        alternative_slopes=alternative_slopes,
+        alternative_intercepts=alternative_intercepts,
     )
-    environment = float(environment)
-    shared_slope = float(shared_slope)
-    shared_intercept = float(shared_intercept)
-    if not all(isfinite(value) for value in (environment, shared_slope, shared_intercept)):
-        raise ValueError("environment and shared affine coefficients must be finite")
-    shared = _value(shared_slope, shared_intercept, environment)
-    best_alt = max(
-        _value(a, b, environment)
-        for a, b in zip(alternative_slopes, alternative_intercepts)
-    )
-    return shared - best_alt
+    return _finite_output(reserve, "alternative reserve")
 
 
 def endpoint_reserve_certificate(
@@ -144,30 +195,30 @@ def endpoint_reserve_certificate(
     if strict_tolerance < 0:
         raise ValueError("strict_tolerance must be nonnegative")
 
-    left = alternative_reserve(
+    left_q = _alternative_reserve_exact(
         environment=start,
         shared_slope=shared_slope,
         shared_intercept=shared_intercept,
         alternative_slopes=alternative_slopes,
         alternative_intercepts=alternative_intercepts,
     )
-    right = alternative_reserve(
+    right_q = _alternative_reserve_exact(
         environment=end,
         shared_slope=shared_slope,
         shared_intercept=shared_intercept,
         alternative_slopes=alternative_slopes,
         alternative_intercepts=alternative_intercepts,
     )
-    lower = min(left, right)
+    lower_q = min(left_q, right_q)
     return EndpointReserveCertificate(
-        left_reserve=left,
-        right_reserve=right,
-        interval_lower_bound=lower,
-        positive_throughout_interval=lower > strict_tolerance,
+        left_reserve=_finite_output(left_q, "left reserve"),
+        right_reserve=_finite_output(right_q, "right reserve"),
+        interval_lower_bound=_finite_output(lower_q, "interval reserve lower bound"),
+        positive_throughout_interval=lower_q > _exact(strict_tolerance),
     )
 
 
 def threat_switch_bound(number_of_alternatives: int) -> int:
-    if number_of_alternatives < 1:
-        raise ValueError("number_of_alternatives must be positive")
+    if type(number_of_alternatives) is not int or number_of_alternatives < 1:
+        raise ValueError("number_of_alternatives must be a positive integer")
     return number_of_alternatives - 1

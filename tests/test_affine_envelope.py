@@ -74,6 +74,54 @@ def test_nonpositive_endpoint_fails_positive_interval_certificate():
     assert cert.right_reserve == pytest.approx(-2.0)
 
 
+def test_extreme_opposite_affines_recover_switch_missed_by_float_overflow():
+    segments = affine_upper_envelope_segments(
+        slopes=[1.0e308, -1.0e308],
+        intercepts=[-1.0e308, 1.0e308],
+        start=0.0,
+        end=2.0,
+    )
+    assert len(segments) == 2
+    assert segments[0].start == pytest.approx(0.0)
+    assert segments[0].end == pytest.approx(1.0)
+    assert segments[0].active_alternative == 1
+    assert segments[1].start == pytest.approx(1.0)
+    assert segments[1].end == pytest.approx(2.0)
+    assert segments[1].active_alternative == 0
+
+
+def test_same_sign_huge_interval_midpoint_does_not_overflow_active_identity():
+    segments = affine_upper_envelope_segments(
+        slopes=[0.0, 1.0],
+        intercepts=[1.3e308, 0.0],
+        start=1.0e308,
+        end=1.6e308,
+    )
+    assert len(segments) == 2
+    assert segments[0].active_alternative == 0
+    assert segments[1].active_alternative == 1
+    assert segments[0].end == pytest.approx(1.3e308)
+    assert segments[1].start == pytest.approx(1.3e308)
+
+
+def test_affine_reserve_recovers_finite_value_after_product_cancellation():
+    reserve = alternative_reserve(
+        environment=2.0,
+        shared_slope=1.0e308,
+        shared_intercept=-1.0e308,
+        alternative_slopes=[0.0],
+        alternative_intercepts=[5.0e307],
+    )
+    assert reserve == pytest.approx(5.0e307)
+
+
+def test_threat_switch_bound_requires_true_integer_count():
+    assert threat_switch_bound(3) == 2
+    for bad in (2.5, True):
+        with pytest.raises(ValueError, match="positive integer"):
+            threat_switch_bound(bad)
+
+
 def test_invalid_inputs_fail_closed():
     with pytest.raises(ValueError):
         affine_upper_envelope_segments([], [], start=0.0, end=1.0)
