@@ -1,0 +1,25 @@
+{
+  "protocol": "PEDICULARIS_TOLERANCE_PREREGISTRATION_V1",
+  "context_id": null,
+  "stage0_completed": false,
+  "margins_frozen_before_formal_qualification": false,
+  "q1": {
+    "eta_A": null,
+    "mandatory_endpoints": [],
+    "all_endpoints_resolvable": false,
+    "all_equivalence_bounds_frozen": false
+  },
+  "q3": {
+    "eta_G": null,
+    "mandatory_endpoints": [],
+    "all_endpoints_resolvable": false,
+    "all_equivalence_bounds_frozen": false
+  },
+  "governance": {
+    "non_significance_not_equivalence": true,
+    "no_posthoc_margin_widening": true,
+    "failed_mandatory_endpoint_blocks_promotion": true,
+    "unresolvable_endpoint_requires_measurement_or_manipulation_redesign": true
+  },
+  "qualification_ready": false
+}
