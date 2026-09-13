@@ -1,5 +1,7 @@
 import math
 
+import pytest
+
 from balance_domain.worldline_path import analyze_worldline_path
 
 
@@ -74,3 +76,26 @@ def test_direct_worldline_no_conflict_entry_uses_conflict_boundary():
     )
     assert result.balance_intervals[0][0] < 1e-8
     assert math.isclose(result.balance_width, 2.0, abs_tol=1e-8)
+
+
+def test_extreme_direct_gap_crossing_is_recovered_exactly():
+    result = analyze_worldline_path(
+        environment=[0.0, 1.0],
+        shared_optimum_fitness=[1.0e308, 0.0],
+        differentiated_optimum_fitness=[0.0, 1.0e308],
+        conflict_load=[1.0, 1.0],
+    )
+    assert result.direct_gap == pytest.approx((-1.0e308, 1.0e308))
+    assert result.critical_crossings == pytest.approx((0.5,))
+    assert result.balance_intervals[0][0] == pytest.approx(0.0)
+    assert result.balance_intervals[0][1] == pytest.approx(0.5)
+
+
+def test_unrepresentable_direct_gap_fails_closed_instead_of_returning_infinity():
+    with pytest.raises(ValueError, match="direct worldline gap.*not representable"):
+        analyze_worldline_path(
+            environment=[0.0, 1.0],
+            shared_optimum_fitness=[-1.0e308, -1.0e308],
+            differentiated_optimum_fitness=[1.0e308, 1.0e308],
+            conflict_load=[1.0, 1.0],
+        )
