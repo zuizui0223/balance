@@ -7,7 +7,7 @@ from fractions import Fraction as F
 import math
 from typing import Sequence
 
-from .boundary import analyze_two_margin_path, two_margin_middle_position
+from .boundary import _finite_numeric, analyze_two_margin_path, two_margin_middle_position
 
 
 class BalancePathTopologyError(ValueError):
@@ -102,15 +102,13 @@ def analyze_balance_path(
     only inside BALANCE. ``architecture_pressure_ratio`` preserves the distinct
     quantity ``sL/K`` when ``K>0``.
     """
-    e = tuple(float(x) for x in environment)
-    L = tuple(float(x) for x in conflict_load)
-    s = tuple(float(x) for x in decoupling)
-    K = tuple(float(x) for x in architecture_cost)
+    e = tuple(_finite_numeric(x, f"environment[{i}]") for i, x in enumerate(environment))
+    L = tuple(_finite_numeric(x, f"conflict_load[{i}]") for i, x in enumerate(conflict_load))
+    s = tuple(_finite_numeric(x, f"decoupling[{i}]") for i, x in enumerate(decoupling))
+    K = tuple(_finite_numeric(x, f"architecture_cost[{i}]") for i, x in enumerate(architecture_cost))
     n = len(e)
     if n < 2 or not (len(L) == len(s) == len(K) == n):
         raise ValueError("all paths must have equal length >= 2")
-    if not all(math.isfinite(x) for values in (e, L, s, K) for x in values):
-        raise ValueError("all path values must be finite")
     if any(e[i + 1] <= e[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if any(x < 0 for x in L) or any(x < 0 for x in K):
