@@ -9,6 +9,7 @@ is promoted.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 import math
 from typing import Iterable, Mapping
 
@@ -32,6 +33,9 @@ REQUIRED_NORMALIZED_FIELDS = (
     "male_flower_count",
 )
 
+_MISSING_IDENTIFIERS = {"none", "null", "nan", "required_before_use"}
+_MALE_FRACTION_TOLERANCE = F.from_float(1e-9)
+
 
 @dataclass(frozen=True)
 class RawInventory:
@@ -51,33 +55,73 @@ class ReproductionGate:
     numeric_tolerance_registered: bool
 
 
+def _finite_numeric(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be finite numeric evidence, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be finite numeric evidence") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be finite numeric evidence")
+    return out
+
+
 def _finite_nonnegative(value: object, name: str) -> float:
-    x = float(value)
-    if not math.isfinite(x) or x < 0:
+    x = _finite_numeric(value, name)
+    if x < 0:
         raise ValueError(f"{name} must be finite and non-negative")
     return x
 
 
 def _required_identifier(value: object, name: str) -> str:
-    if value is None:
+    if value is None or isinstance(value, bool):
         raise ValueError(f"{name} must be a non-empty identifier")
-    if isinstance(value, (int, float)) and not isinstance(value, bool):
-        numeric = float(value)
-        if not math.isfinite(numeric):
-            raise ValueError(f"{name} must be a non-empty identifier")
-    text = str(value).strip()
-    if not text:
-        raise ValueError(f"{name} must be a non-empty identifier")
+    if isinstance(value, (int, float)):
+        try:
+            _finite_numeric(value, name)
+        except ValueError as exc:
+            raise ValueError(f"{name} must be a non-empty identifier") from exc
+        text = str(value).strip()
+    else:
+        text = str(value).strip()
+    if not text or text.casefold() in _MISSING_IDENTIFIERS:
+        raise ValueError(f"{name} must be a frozen non-missing identifier")
     return text
 
 
 def _integer_year(value: object, name: str) -> int:
     if isinstance(value, bool):
         raise ValueError(f"{name} must be an integer-valued finite year")
-    numeric = float(value)
-    if not math.isfinite(numeric) or not numeric.is_integer():
+    try:
+        numeric = _finite_numeric(value, name)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer-valued finite year") from exc
+    if not numeric.is_integer():
         raise ValueError(f"{name} must be an integer-valued finite year")
     return int(numeric)
+
+
+def _male_fraction_matches(perfect: float, male: float, observed: float) -> bool:
+    """Apply the previous math.isclose contract without overflowing counts.
+
+    The expected fraction is evaluated exactly at the supplied-float level.
+    This preserves rel_tol=abs_tol=1e-9 while avoiding ``perfect + male``
+    overflow for finite large counts.
+    """
+    perfect_q = F.from_float(perfect)
+    male_q = F.from_float(male)
+    total_q = perfect_q + male_q
+    if total_q <= 0:
+        return False
+    expected_q = male_q / total_q
+    observed_q = F.from_float(observed)
+    difference = abs(observed_q - expected_q)
+    tolerance = max(
+        _MALE_FRACTION_TOLERANCE,
+        _MALE_FRACTION_TOLERANCE * max(abs(observed_q), abs(expected_q)),
+    )
+    return difference <= tolerance
 
 
 def validate_normalized_rows(rows: Iterable[Mapping[str, object]]) -> RawInventory:
@@ -107,33 +151,33 @@ def validate_normalized_rows(rows: Iterable[Mapping[str, object]]) -> RawInvento
         population = _required_identifier(row["population_id"], f"row {i} population_id")
         dataset = _required_identifier(row["dataset_id"], f"row {i} dataset_id")
         _required_identifier(row["source_doi"], f"row {i} source_doi")
-        plant = _required_identifier(row["plant_id"], f"row {i} plant_id")
+        _required_identifier(row["plant_id"], f"row {i} plant_id")
 
-        flowering_day = float(row["flowering_day"])
-        if not math.isfinite(flowering_day):
-            raise ValueError(f"row {i} flowering_day must be finite")
-        perfect = _finite_nonnegative(row["perfect_flower_count"], f"row {i} perfect_flower_count")
+        _finite_numeric(row["flowering_day"], f"row {i} flowering_day")
+        perfect = _finite_nonnegative(
+            row["perfect_flower_count"], f"row {i} perfect_flower_count"
+        )
         male = _finite_nonnegative(row["male_flower_count"], f"row {i} male_flower_count")
-        total = perfect + male
-        if total <= 0:
+        if perfect == 0.0 and male == 0.0:
             raise ValueError(f"row {i} has zero total flowers")
 
         if row.get("seed_predation_rate") not in (None, ""):
-            pred = float(row["seed_predation_rate"])
-            if not math.isfinite(pred) or not 0 <= pred <= 1:
+            pred = _finite_numeric(
+                row["seed_predation_rate"], f"row {i} seed_predation_rate"
+            )
+            if not 0 <= pred <= 1:
                 raise ValueError(f"row {i} seed_predation_rate must lie in [0,1]")
             seed_rows += 1
 
         if row.get("intact_fruit_count") not in (None, ""):
-            _finite_nonnegative(row["intact_fruit_count"], f"row {i} intact_fruit_count")
+            _finite_nonnegative(
+                row["intact_fruit_count"], f"row {i} intact_fruit_count"
+            )
             female_rows += 1
 
         if row.get("male_fraction") not in (None, ""):
-            observed = float(row["male_fraction"])
-            if not math.isfinite(observed):
-                raise ValueError(f"row {i} male_fraction must be finite when provided")
-            expected = male / total
-            if not math.isclose(observed, expected, rel_tol=1e-9, abs_tol=1e-9):
+            observed = _finite_numeric(row["male_fraction"], f"row {i} male_fraction")
+            if not _male_fraction_matches(perfect, male, observed):
                 raise ValueError(f"row {i} male_fraction is inconsistent with flower counts")
 
         years.add(year)
@@ -171,9 +215,7 @@ def published_regime_reproduction_gate(
         for plot in PLOT_ORDER:
             if plot not in estimates[metric]:
                 raise ValueError(f"metric {metric!r} missing plot {plot!r}")
-            value = float(estimates[metric][plot])
-            if not math.isfinite(value):
-                raise ValueError(f"estimate {metric}/{plot} must be finite")
+            value = _finite_numeric(estimates[metric][plot], f"estimate {metric}/{plot}")
             normalized_metric[plot] = value
             diffs.append(abs(value - published[plot]))
         normalized[metric] = normalized_metric
