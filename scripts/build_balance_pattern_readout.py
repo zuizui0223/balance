@@ -8,11 +8,20 @@ from pathlib import Path
 
 REQUIRED = {
     "cluster_id",
+    "source_id",
+    "system_taxon",
+    "domain",
+    "conflict_present",
+    "shared_architecture_present",
+    "alternative_architecture_present",
     "pattern_class",
     "context_axis",
     "evidence_level",
     "confidence",
     "quantitative_pool_eligible",
+    "source_basis",
+    "claim_ceiling",
+    "notes",
 }
 
 MIDDLE_CLASSES = {
@@ -20,6 +29,73 @@ MIDDLE_CLASSES = {
     "SANDWICHED_TRANSITION_MOSAIC",
     "PERSISTENT_INTEGRATION_WITH_ALTERNATIVE_AVAILABLE",
 }
+
+_MISSING_TEXT = {"none", "null", "nan", "required_before_use"}
+_REQUIRED_TEXT_FIELDS = (
+    "cluster_id",
+    "source_id",
+    "system_taxon",
+    "domain",
+    "pattern_class",
+    "context_axis",
+    "evidence_level",
+    "confidence",
+    "source_basis",
+    "claim_ceiling",
+)
+
+
+def _required_text(value: object, field: str, row_number: int) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"row {row_number} {field} must be a frozen string")
+    text = value.strip()
+    if not text or text.casefold() in _MISSING_TEXT:
+        raise ValueError(f"row {row_number} {field} must be frozen before readout")
+    return text
+
+
+def _validated_rows(reader: csv.DictReader) -> list[dict[str, str]]:
+    rows = list(reader)
+    if not rows:
+        raise ValueError("pattern ledger must contain at least one adjudicated cluster")
+
+    seen: set[str] = set()
+    validated: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside the canonical ledger schema")
+        clean = dict(row)
+        for field in _REQUIRED_TEXT_FIELDS:
+            clean[field] = _required_text(row.get(field), field, row_number)
+
+        cluster_id = clean["cluster_id"]
+        if cluster_id in seen:
+            raise ValueError(
+                f"duplicate cluster_id {cluster_id!r}: each independent cluster must occupy exactly one ledger row"
+            )
+        seen.add(cluster_id)
+
+        for field in (
+            "conflict_present",
+            "shared_architecture_present",
+            "alternative_architecture_present",
+        ):
+            clean[field] = _required_text(row.get(field), field, row_number)
+
+        quantitative = _required_text(
+            row.get("quantitative_pool_eligible"),
+            "quantitative_pool_eligible",
+            row_number,
+        ).casefold()
+        if quantitative not in {"true", "false"}:
+            raise ValueError(
+                f"row {row_number} quantitative_pool_eligible must be literal true or false"
+            )
+        clean["quantitative_pool_eligible"] = quantitative
+        # Notes may be empty, but if present preserve normalized text.
+        clean["notes"] = (row.get("notes") or "").strip()
+        validated.append(clean)
+    return validated
 
 
 def build(path: Path) -> dict:
@@ -29,30 +105,36 @@ def build(path: Path) -> dict:
         missing = sorted(REQUIRED - fields)
         if missing:
             raise ValueError("missing required columns: " + ", ".join(missing))
-        rows = list(reader)
+        extra = sorted(fields - REQUIRED)
+        if extra:
+            raise ValueError("unexpected columns outside canonical ledger schema: " + ", ".join(extra))
+        rows = _validated_rows(reader)
 
-    clusters = {r["cluster_id"] for r in rows if r["cluster_id"]}
-    patterns = Counter(r["pattern_class"] for r in rows if r["pattern_class"])
-    contexts = Counter(r["context_axis"] for r in rows if r["context_axis"])
-    confidence = Counter(r["confidence"] for r in rows if r["confidence"])
-    domains = Counter(r.get("domain", "") for r in rows if r.get("domain", ""))
+    # One validated row is one independent biological cluster. This invariant is
+    # enforced above rather than inferred after aggregation, so a cluster cannot
+    # inflate recurrence by appearing in multiple pattern classes or domains.
+    clusters = {r["cluster_id"] for r in rows}
+    patterns = Counter(r["pattern_class"] for r in rows)
+    contexts = Counter(r["context_axis"] for r in rows)
+    confidence = Counter(r["confidence"] for r in rows)
+    domains = Counter(r["domain"] for r in rows)
     quantitative = {
         r["cluster_id"]
         for r in rows
-        if r["quantitative_pool_eligible"].lower() == "true"
+        if r["quantitative_pool_eligible"] == "true"
     }
 
     def class_clusters(pattern_class: str) -> set[str]:
         return {
             r["cluster_id"]
             for r in rows
-            if r["pattern_class"] == pattern_class and r["cluster_id"]
+            if r["pattern_class"] == pattern_class
         }
 
     middle = {
         r["cluster_id"]
         for r in rows
-        if r["pattern_class"] in MIDDLE_CLASSES and r["cluster_id"]
+        if r["pattern_class"] in MIDDLE_CLASSES
     }
 
     return {
