@@ -67,12 +67,16 @@ def _nonnegative_fraction_to_float(value: F, name: str) -> float:
     return out
 
 
+def _max_path_jump_exact(values: Sequence[float]) -> F:
+    if len(values) <= 1:
+        return F(0, 1)
+    exact = tuple(F.from_float(value) for value in values)
+    return max(abs(b - a) for a, b in zip(exact, exact[1:]))
+
+
 def max_path_jump(phi_path: Sequence[float]) -> float:
     values = _finite_path(phi_path)
-    if len(values) == 1:
-        return 0.0
-    exact = tuple(F.from_float(value) for value in values)
-    largest = max(abs(b - a) for a, b in zip(exact, exact[1:]))
+    largest = _max_path_jump_exact(values)
     return _nonnegative_fraction_to_float(largest, "maximum observed phi jump")
 
 
@@ -92,10 +96,15 @@ def follow_switching_path(
     size in architecture space. A declared resolution bound must itself be a
     finite non-negative number; NaN/Inf do not represent an auditable sampling
     resolution.
+
+    The actual maximum consecutive jump is compared to the declared bound in
+    exact arithmetic at the supplied-float level before any result is rounded
+    back onto the float-valued receipt surface.
     """
     values = _finite_path(phi_path)
     state = _validate_state(initial_state)
-    observed = max_path_jump(values)
+    observed_q = _max_path_jump_exact(values)
+    observed = _nonnegative_fraction_to_float(observed_q, "maximum observed phi jump")
     declared = None
     if max_phi_jump is not None:
         try:
@@ -104,7 +113,6 @@ def follow_switching_path(
             raise ValueError("max_phi_jump must be finite and non-negative or None") from exc
         if not math.isfinite(declared) or declared < 0.0:
             raise ValueError("max_phi_jump must be finite and non-negative or None")
-        observed_q = F.from_float(observed)
         declared_q = F.from_float(declared)
         roundoff_q = F.from_float(1e-15)
         if observed_q > declared_q + roundoff_q:
@@ -190,7 +198,7 @@ def linear_small_step_path(start: float, stop: float, *, max_phi_jump: float) ->
         path.append(value)
     result = tuple(path)
     # Verify the promised resolution on the actual float path returned to the caller.
-    if max_path_jump(result) > jump:
+    if _max_path_jump_exact(result) > jump_q:
         raise RuntimeError("constructed forcing path exceeded max_phi_jump after float conversion")
     return result
 
