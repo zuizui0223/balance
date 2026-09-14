@@ -3,6 +3,7 @@ name: Run first allowed Q1B pool
 on:
   pull_request:
     paths:
+      - "balance_domain/q1b_pooling.py"
       - "scripts/run_q1b_first_pool.py"
       - "data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json"
       - ".github/workflows/run-q1b-first-pool.yml"
