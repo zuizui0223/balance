@@ -57,7 +57,10 @@ def switching_cost_state(
     Threshold algebra is evaluated exactly at the supplied-float level. A
     mathematically finite nonzero threshold or width that cannot be represented
     by the float-valued receipt fails closed rather than becoming ``0`` or
-    ``inf``. State comparisons use the exact thresholds before conversion.
+    ``inf``. Once the exact thresholds have been safely projected onto the
+    public float-valued receipt surface, the state decisions use those same
+    returned thresholds so the reported boundary and the reported switch state
+    cannot contradict one another by one rounding unit.
     """
     try:
         T = float(horizon)
@@ -76,7 +79,6 @@ def switching_cost_state(
     t_q = F.from_float(T)
     csd_q = F.from_float(csd)
     cds_q = F.from_float(cds)
-    p_q = F.from_float(p)
     forward_q = csd_q / t_q
     reverse_q = -cds_q / t_q
     width_q = forward_q - reverse_q
@@ -84,8 +86,8 @@ def switching_cost_state(
     forward = _fraction_to_float(forward_q, "forward switching threshold")
     reverse = _fraction_to_float(reverse_q, "reverse switching threshold")
     width = _fraction_to_float(width_q, "hysteresis width")
-    shared_stays = p_q <= forward_q
-    differentiated_stays = p_q >= reverse_q
+    shared_stays = p <= forward
+    differentiated_stays = p >= reverse
     history_dependent = shared_stays and differentiated_stays
     return SwitchingCostResult(
         phi=p,
