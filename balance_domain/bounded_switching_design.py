@@ -13,6 +13,16 @@ from math import inf, isfinite, nextafter
 from typing import Sequence
 
 Record = tuple[object, object, str]  # true Phi in [lower,upper], observed state
+_MISSING_IDENTIFIERS = {"none", "null", "nan", "required_before_use"}
+
+
+def _required_text(value: object, name: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{name} must be a frozen non-missing string")
+    text = value.strip()
+    if not text or text.casefold() in _MISSING_IDENTIFIERS:
+        raise ValueError(f"{name} must be frozen before use")
+    return text
 
 
 def _q(value: object) -> F:
@@ -113,10 +123,10 @@ def identify_bounded_switching(
     W=c_F+c_R. Correlations beyond latent monotonicity are not assumed; supplying
     correlated measurement errors gives conservative outer projections.
     """
-    if (not isinstance(common_phi_scale, str) or not common_phi_scale.strip()
-            or not isinstance(fixed_context, str) or not fixed_context.strip()
-            or latent_monotone_and_instantaneous_declared is not True):
-        raise ValueError("declare scale, context and latent monotone instantaneous rule")
+    scale = _required_text(common_phi_scale, "common_phi_scale")
+    context = _required_text(fixed_context, "fixed_context")
+    if latent_monotone_and_instantaneous_declared is not True:
+        raise ValueError("declare latent monotone instantaneous rule")
     f, fs = _ratio(upward, True)
     r, rs = _ratio(downward, False)
     lo = F(f.exact_lower)+F(r.exact_lower)
@@ -129,7 +139,7 @@ def identify_bounded_switching(
         if not 0 < tl <= th:
             raise ValueError("independent horizon bounds must satisfy 0 < lower <= upper")
         cost = _band(tl*lo, None if hi is None else th*hi)
-    return BoundedSwitchingReceipt(f, r, width, fs, rs, cost, common_phi_scale, fixed_context)
+    return BoundedSwitchingReceipt(f, r, width, fs, rs, cost, scale, context)
 
 
 @dataclass(frozen=True)
