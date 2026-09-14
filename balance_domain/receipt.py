@@ -18,32 +18,34 @@ def _required_identifier(value: object, name: str) -> str:
     return out
 
 
+def _finite_numeric(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be numeric, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be numeric and float-representable") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be finite")
+    return out
+
+
 @dataclass(frozen=True)
 class Interval:
     lower: float
     upper: float
 
     def __post_init__(self) -> None:
-        try:
-            lower = float(self.lower)
-            upper = float(self.upper)
-        except (TypeError, ValueError, OverflowError) as exc:
-            raise ValueError("interval bounds must be numeric and float-representable") from exc
-        if not math.isfinite(lower) or not math.isfinite(upper):
-            raise ValueError("bounded empirical interval endpoints must be finite")
+        lower = _finite_numeric(self.lower, "interval lower bound")
+        upper = _finite_numeric(self.upper, "interval upper bound")
         if lower > upper:
             raise ValueError("interval lower bound must not exceed upper bound")
         object.__setattr__(self, "lower", lower)
         object.__setattr__(self, "upper", upper)
 
     def contains(self, value: float) -> bool:
-        try:
-            value = float(value)
-        except (TypeError, ValueError, OverflowError) as exc:
-            raise ValueError("interval membership value must be numeric and float-representable") from exc
-        if not math.isfinite(value):
-            raise ValueError("interval membership value must be finite")
-        return self.lower <= value <= self.upper
+        numeric = _finite_numeric(value, "interval membership value")
+        return self.lower <= numeric <= self.upper
 
 
 @dataclass(frozen=True)
