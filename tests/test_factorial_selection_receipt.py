@@ -75,6 +75,27 @@ def test_interaction_is_the_same_context_difference_from_either_agent_axis():
     assert receipt.interaction_contrast == pytest.approx(-2.0)
 
 
+def test_extreme_interaction_cancellation_remains_finite():
+    # The registered interaction is 1e308, and all four mediated contrasts are
+    # finite. A left-to-right float sum temporarily forms 2e308 and therefore
+    # overflows even though the final estimand is representable.
+    receipt = analyze_factorial_agent_selection(
+        (0.0, -1.0e308, -1.0e308, -1.0e308)
+    )
+    assert receipt.mediated_contrasts == pytest.approx(
+        (1.0e308, 0.0, 1.0e308, 0.0)
+    )
+    assert receipt.interaction_contrast == pytest.approx(1.0e308)
+    assert math.isfinite(receipt.interaction_contrast)
+
+
+def test_unrepresentable_point_contrast_fails_closed():
+    # The first registered mediated contrast is mathematically finite but about
+    # 2e308, outside the float-valued receipt surface.
+    with pytest.raises(ValueError, match="mediated contrast.*not representable"):
+        analyze_factorial_agent_selection((1.0e308, -1.0e308, 0.0, 0.0))
+
+
 def test_covariance_provenance_is_required_for_readiness():
     covariance = (
         (0.1, 0.01, 0.0, 0.0),
@@ -192,6 +213,24 @@ def test_psd_covariance_readiness_and_standard_errors_scale_consistently():
         )
         assert scaled.interaction_standard_error == pytest.approx(
             expected_factor * base.interaction_standard_error
+        )
+
+
+def test_unrepresentable_transformed_covariance_fails_before_ready_state():
+    # This is a valid PSD covariance, but each difference contrast has variance
+    # 2e308. The old float transform produced +inf standard errors while still
+    # returning JOINT_MULTICONTRAST_READY.
+    huge_identity = (
+        (1.0e308, 0.0, 0.0, 0.0),
+        (0.0, 1.0e308, 0.0, 0.0),
+        (0.0, 0.0, 1.0e308, 0.0),
+        (0.0, 0.0, 0.0, 1.0e308),
+    )
+    with pytest.raises(ValueError, match="transformed contrast covariance.*not representable"):
+        analyze_factorial_agent_selection(
+            (0.1, 0.2, 0.3, 0.4),
+            slope_covariance=huge_identity,
+            covariance_source="joint_model",
         )
 
 

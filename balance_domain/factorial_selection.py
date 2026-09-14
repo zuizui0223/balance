@@ -35,6 +35,7 @@ is explicitly registered as ``joint_model`` or ``raw_bootstrap``.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 import math
 from typing import Sequence
 
@@ -88,12 +89,32 @@ class FactorialSelectionReceipt:
 
 
 def _finite_vector(values: Sequence[float], *, name: str) -> tuple[float, ...]:
-    vals = tuple(float(value) for value in values)
+    try:
+        vals = tuple(float(value) for value in values)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} values must be finite numeric values") from exc
     if len(vals) != 4:
         raise ValueError(f"{name} must contain exactly four values")
     if not all(math.isfinite(value) for value in vals):
         raise ValueError(f"{name} values must be finite")
     return vals
+
+
+def _fraction_to_float(value: F, name: str) -> float:
+    """Convert one exact finite estimand without inventing 0/inf."""
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale selection units"
+        ) from exc
+    if not math.isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale selection units"
+        )
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale selection units")
+    return out
 
 
 def _require_positive_semidefinite(
@@ -134,7 +155,10 @@ def _validate_covariance(
     covariance by any positive scalar cannot change whether it is accepted as a
     covariance matrix. The all-zero covariance is a valid singular PSD case.
     """
-    rows = tuple(tuple(float(value) for value in row) for row in covariance)
+    try:
+        rows = tuple(tuple(float(value) for value in row) for row in covariance)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("slope_covariance values must be finite numeric values") from exc
     if len(rows) != 4 or any(len(row) != 4 for row in rows):
         raise ValueError("slope_covariance must be a 4x4 matrix")
     if not all(math.isfinite(value) for row in rows for value in row):
@@ -158,38 +182,42 @@ def _validate_covariance(
     return rows, scale  # type: ignore[return-value]
 
 
-def _linear_transform(
-    matrix: Sequence[Sequence[float]], vector: Sequence[float]
-) -> tuple[float, ...]:
+def _linear_transform_exact(
+    matrix: Sequence[Sequence[float]], vector: Sequence[F]
+) -> tuple[F, ...]:
     return tuple(
-        sum(float(weight) * float(value) for weight, value in zip(row, vector))
+        sum(
+            (F.from_float(float(weight)) * value for weight, value in zip(row, vector)),
+            F(0, 1),
+        )
         for row in matrix
     )
 
 
-def _quadratic_cross(
+def _quadratic_cross_exact(
     left: Sequence[float],
-    covariance: Sequence[Sequence[float]],
+    covariance: Sequence[Sequence[F]],
     right: Sequence[float],
-) -> float:
-    return sum(
-        float(left[i]) * float(covariance[i][j]) * float(right[j])
-        for i in range(4)
-        for j in range(4)
-    )
+) -> F:
+    total = F(0, 1)
+    for i in range(4):
+        left_q = F.from_float(float(left[i]))
+        for j in range(4):
+            total += left_q * covariance[i][j] * F.from_float(float(right[j]))
+    return total
 
 
-def _quadratic_roundoff_tolerance(
+def _quadratic_roundoff_tolerance_exact(
     weights: Sequence[float], *, covariance_scale: float, relative_tolerance: float
-) -> float:
-    """Scale a relative matrix tolerance to one quadratic form.
-
-    ``|w' E w| <= max|E_ij| (sum |w_i|)^2`` gives a conservative conversion
-    from an elementwise covariance tolerance to the units of a derived
-    variance.
-    """
-    l1 = sum(abs(float(weight)) for weight in weights)
-    return relative_tolerance * covariance_scale * l1 * l1
+) -> F:
+    """Scale a relative matrix tolerance to one quadratic form exactly."""
+    l1 = sum((abs(F.from_float(float(weight))) for weight in weights), F(0, 1))
+    return (
+        F.from_float(relative_tolerance)
+        * F.from_float(covariance_scale)
+        * l1
+        * l1
+    )
 
 
 def analyze_factorial_agent_selection(
@@ -220,10 +248,19 @@ def analyze_factorial_agent_selection(
         raise ValueError("tolerance must be finite and positive")
 
     slopes = _finite_vector(treatment_slopes, name="treatment_slopes")
-    contrasts = _linear_transform(_CONTRAST_MATRIX, slopes)
-    interaction = sum(
-        weight * value for weight, value in zip(_INTERACTION_VECTOR, slopes)
+    slopes_q = tuple(F.from_float(value) for value in slopes)
+    contrasts_q = _linear_transform_exact(_CONTRAST_MATRIX, slopes_q)
+    contrasts = tuple(
+        _fraction_to_float(value, "mediated contrast") for value in contrasts_q
     )
+    interaction_q = sum(
+        (
+            F.from_float(weight) * value
+            for weight, value in zip(_INTERACTION_VECTOR, slopes_q)
+        ),
+        F(0, 1),
+    )
+    interaction = _fraction_to_float(interaction_q, "interaction contrast")
 
     if slope_covariance is None:
         if covariance_source is not None:
@@ -246,38 +283,55 @@ def analyze_factorial_agent_selection(
     covariance, covariance_scale = _validate_covariance(
         slope_covariance, tolerance=tol
     )
-    transformed = tuple(
+    covariance_q = tuple(
+        tuple(F.from_float(value) for value in row)
+        for row in covariance
+    )
+    transformed_q = tuple(
         tuple(
-            _quadratic_cross(left, covariance, right)
+            _quadratic_cross_exact(left, covariance_q, right)
             for right in _CONTRAST_MATRIX
         )
         for left in _CONTRAST_MATRIX
     )
+    transformed = tuple(
+        tuple(
+            _fraction_to_float(value, "transformed contrast covariance")
+            for value in row
+        )
+        for row in transformed_q
+    )
 
-    variances = []
+    standard_errors_list = []
     for i, weights in enumerate(_CONTRAST_MATRIX):
-        variance = transformed[i][i]
-        variance_tol = _quadratic_roundoff_tolerance(
+        variance_q = transformed_q[i][i]
+        variance_tol_q = _quadratic_roundoff_tolerance_exact(
             weights,
             covariance_scale=covariance_scale,
             relative_tolerance=tol,
         )
-        if variance < -variance_tol:
+        if variance_q < -variance_tol_q:
             raise ValueError("transformed contrast variance is negative")
-        variances.append(max(0.0, variance))
-    standard_errors = tuple(math.sqrt(value) for value in variances)
+        variance_q = max(F(0, 1), variance_q)
+        variance = _fraction_to_float(variance_q, "transformed contrast variance")
+        standard_errors_list.append(math.sqrt(variance))
+    standard_errors = tuple(standard_errors_list)
 
-    interaction_variance = _quadratic_cross(
-        _INTERACTION_VECTOR, covariance, _INTERACTION_VECTOR
+    interaction_variance_q = _quadratic_cross_exact(
+        _INTERACTION_VECTOR, covariance_q, _INTERACTION_VECTOR
     )
-    interaction_tol = _quadratic_roundoff_tolerance(
+    interaction_tol_q = _quadratic_roundoff_tolerance_exact(
         _INTERACTION_VECTOR,
         covariance_scale=covariance_scale,
         relative_tolerance=tol,
     )
-    if interaction_variance < -interaction_tol:
+    if interaction_variance_q < -interaction_tol_q:
         raise ValueError("interaction contrast variance is negative")
-    interaction_se = math.sqrt(max(0.0, interaction_variance))
+    interaction_variance_q = max(F(0, 1), interaction_variance_q)
+    interaction_variance = _fraction_to_float(
+        interaction_variance_q, "interaction contrast variance"
+    )
+    interaction_se = math.sqrt(interaction_variance)
 
     return FactorialSelectionReceipt(
         treatment_slopes=slopes,  # type: ignore[arg-type]
