@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 
+from .boundary import _finite_numeric
+
 
 _ROUNDOFF_RELATIVE_TOLERANCE = 64.0 * math.ulp(1.0)
 
@@ -66,9 +68,18 @@ def deepest_middle_point(environment, conflict, reserve) -> DeepestMiddleWorldPo
     judged only at machine-roundoff-relative scale so a change of fitness units
     cannot create or erase an equal-margin sample.
     """
-    environment = [float(x) for x in environment]
-    conflict = [float(x) for x in conflict]
-    reserve = [float(x) for x in reserve]
+    environment = [
+        _finite_numeric(value, f"environment[{index}]")
+        for index, value in enumerate(environment)
+    ]
+    conflict = [
+        _finite_numeric(value, f"conflict[{index}]")
+        for index, value in enumerate(conflict)
+    ]
+    reserve = [
+        _finite_numeric(value, f"reserve[{index}]")
+        for index, value in enumerate(reserve)
+    ]
     _validate(environment, conflict, reserve)
 
     difference = [l - r for l, r in zip(conflict, reserve)]
