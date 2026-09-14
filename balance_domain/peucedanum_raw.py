@@ -78,10 +78,11 @@ def _required_identifier(value: object, name: str) -> str:
     if value is None or isinstance(value, bool):
         raise ValueError(f"{name} must be a non-empty identifier")
     if isinstance(value, (int, float)):
-        numeric = _finite_numeric(value, name)
+        try:
+            _finite_numeric(value, name)
+        except ValueError as exc:
+            raise ValueError(f"{name} must be a non-empty identifier") from exc
         text = str(value).strip()
-        if not math.isfinite(numeric):  # defensive; _finite_numeric already checks
-            raise ValueError(f"{name} must be a non-empty identifier")
     else:
         text = str(value).strip()
     if not text or text.casefold() in _MISSING_IDENTIFIERS:
@@ -90,7 +91,12 @@ def _required_identifier(value: object, name: str) -> str:
 
 
 def _integer_year(value: object, name: str) -> int:
-    numeric = _finite_numeric(value, name)
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be an integer-valued finite year")
+    try:
+        numeric = _finite_numeric(value, name)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer-valued finite year") from exc
     if not numeric.is_integer():
         raise ValueError(f"{name} must be an integer-valued finite year")
     return int(numeric)
