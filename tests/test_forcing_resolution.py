@@ -59,6 +59,34 @@ def test_observed_hysteresis_width_overestimates_by_at_most_two_crossing_jumps()
     assert audit.width_overestimate <= audit.overestimate_upper_bound + 1e-12
 
 
+def test_extreme_individual_switch_jumps_remain_finite_but_unrepresentable_width_fails_closed():
+    params = dict(
+        horizon_per_step=1.0,
+        cost_shared_to_diff=0.0,
+        cost_diff_to_shared=0.0,
+    )
+    upward = follow_switching_path(
+        (-1.0e308, 0.0, 1.0e308),
+        initial_state="shared",
+        **params,
+    )
+    downward = follow_switching_path(
+        (1.0e308, 0.0, -1.0e308),
+        initial_state="differentiated",
+        **params,
+    )
+
+    up = upward_switch_resolution(upward)
+    down = downward_switch_resolution(downward)
+    assert up.jump_bound == pytest.approx(1.0e308)
+    assert up.absolute_error == pytest.approx(1.0e308)
+    assert down.jump_bound == pytest.approx(1.0e308)
+    assert down.absolute_error == pytest.approx(1.0e308)
+
+    with pytest.raises(ValueError, match="observed hysteresis width.*not representable"):
+        hysteresis_resolution_audit(upward, downward)
+
+
 def test_path_refinement_shrinks_the_resolution_bound():
     coarse = hysteresis_resolution_audit(
         _up(linear_small_step_path(-0.2, 0.4, max_phi_jump=0.1)),

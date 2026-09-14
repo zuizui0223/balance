@@ -165,6 +165,39 @@ def test_longer_context_shrinks_hysteresis_band():
     assert long.hysteresis_width < short.hysteresis_width
 
 
+def test_switching_state_preserves_representable_extreme_threshold():
+    result = switching_cost_state(
+        phi=0.0,
+        horizon=1.0,
+        cost_shared_to_diff=1.0e308,
+        cost_diff_to_shared=0.0,
+    )
+    assert result.forward_threshold == pytest.approx(1.0e308)
+    assert result.reverse_threshold == 0.0
+    assert result.hysteresis_width == pytest.approx(1.0e308)
+    assert result.history_dependent
+
+
+def test_switching_state_rejects_unrepresentable_finite_hysteresis_width():
+    with pytest.raises(ValueError, match="hysteresis width.*not representable"):
+        switching_cost_state(
+            phi=0.0,
+            horizon=1.0,
+            cost_shared_to_diff=1.0e308,
+            cost_diff_to_shared=1.0e308,
+        )
+
+
+def test_switching_state_rejects_positive_threshold_underflow():
+    with pytest.raises(ValueError, match="forward switching threshold underflows"):
+        switching_cost_state(
+            phi=0.0,
+            horizon=2.0,
+            cost_shared_to_diff=5.0e-324,
+            cost_diff_to_shared=0.0,
+        )
+
+
 def test_switching_state_rejects_nonfinite_inputs_in_finite_horizon_model():
     bad_cases = (
         dict(phi=math.nan, horizon=10, cost_shared_to_diff=1, cost_diff_to_shared=1),
