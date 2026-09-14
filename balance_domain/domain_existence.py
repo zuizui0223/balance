@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import isfinite
 from typing import Sequence
 
 from .boundary import (
     DEFAULT_BOUNDARY_TOLERANCE,
+    _finite_numeric,
     classify_two_margin_point,
     positive_support_monotone,
 )
@@ -42,16 +42,21 @@ def classify_domain_path(
 
     if len(conflict_load) != len(delta_worldline) or len(conflict_load) < 2:
         raise ValueError("conflict_load and delta_worldline must have equal length >= 2")
-    tol = float(tolerance)
-    if not isfinite(tol) or tol < 0:
+    tol = _finite_numeric(tolerance, "tolerance")
+    if tol < 0:
         raise ValueError("tolerance must be finite and non-negative")
-    if not all(isfinite(float(x)) for x in (*conflict_load, *delta_worldline)):
-        raise ValueError("all path values must be finite")
-    if any(float(x) < 0 for x in conflict_load):
+
+    L = [
+        _finite_numeric(value, f"conflict_load[{index}]")
+        for index, value in enumerate(conflict_load)
+    ]
+    D = [
+        _finite_numeric(value, f"delta_worldline[{index}]")
+        for index, value in enumerate(delta_worldline)
+    ]
+    if any(value < 0 for value in L):
         raise ValueError("conflict load must be non-negative")
 
-    L = [float(x) for x in conflict_load]
-    D = [float(x) for x in delta_worldline]
     points = [
         classify_two_margin_point(li, -di, tolerance=tol)
         for li, di in zip(L, D)
