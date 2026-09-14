@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, math, random, sys, urllib.request
+import json, random, sys, urllib.request
 from pathlib import Path
 import numpy as np
 
-# Import the frozen Impatiens reanalysis contract and reuse its parsing/model code.
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import run_impatiens_q1b_reanalysis as imp
-
+SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPT_DIR))
+sys.path.insert(0, str(ROOT))
+
+# Import the frozen Impatiens reanalysis contract and the pure pooling algebra.
+import run_impatiens_q1b_reanalysis as imp
+from balance_domain.q1b_pooling import dl_mkh
+
 FRAGARIA = ROOT / 'data' / 'BALANCE_FRAGARIA_Q1B_RECEIPT_V1.json'
 GYMNADENIA = ROOT / 'data' / 'BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json'
-T975_DF2 = 4.302652729911275
 
 
 def impatiens_cluster_receipt():
@@ -55,20 +58,6 @@ def impatiens_cluster_receipt():
       'effect_size_status':'EFFECT_SIZE_READY_CLUSTER_AGGREGATE',
       'claim_ceiling':'equal-weight cluster summary of preregistered Q1B traits; not direct BALANCE occupancy'
     }
-
-
-def dl_mkh(yi, vi):
-    yi=np.asarray(yi,float); vi=np.asarray(vi,float); k=len(yi)
-    w=1/vi; mu_f=float(np.sum(w*yi)/np.sum(w))
-    Q=float(np.sum(w*(yi-mu_f)**2)); df=k-1
-    c=float(np.sum(w)-np.sum(w*w)/np.sum(w))
-    tau2=max(0.0,(Q-df)/c) if c>0 else 0.0
-    wr=1/(vi+tau2); mu=float(np.sum(wr*yi)/np.sum(wr))
-    q=float(np.sum(wr*(yi-mu)**2)/df) if df>0 else 1.0
-    se=float(math.sqrt(max(1.0,q)/np.sum(wr)))
-    ci=[mu-T975_DF2*se,mu+T975_DF2*se]
-    I2=max(0.0,(Q-df)/Q)*100 if Q>0 else 0.0
-    return {'k':k,'mu_random':mu,'se_mkh':se,'ci95_mkh':ci,'tau2_DL':tau2,'Q_fixed':Q,'I2_percent':I2,'mu_fixed':mu_f}
 
 
 def main(outdir):
