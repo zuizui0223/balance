@@ -13,6 +13,7 @@ from typing import Mapping, Sequence
 
 
 _ALLOWED_DIRECTIONS = {"positive", "negative", "unknown"}
+_MISSING_CONTEXTS = {"none", "null", "nan", "required_before_use"}
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,27 @@ class LongitudinalMosaicResult:
     high_pressure_contexts: tuple[str, ...]
     low_pressure_contexts: tuple[str, ...]
     claim_ceiling: str
+
+
+def _finite_numeric(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be numeric, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be a finite numeric value") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be a finite numeric value")
+    return out
+
+
+def _context_label(value: object) -> str:
+    if not isinstance(value, str):
+        raise ValueError("ordered_contexts must contain frozen string labels")
+    label = value.strip()
+    if not label or label.casefold() in _MISSING_CONTEXTS:
+        raise ValueError("ordered_contexts must contain frozen non-missing context labels")
+    return label
 
 
 def classify_longitudinal_mosaic(
@@ -44,15 +66,18 @@ def classify_longitudinal_mosaic(
     but cannot establish the sign of the association. A separate registered
     source direction is therefore required. Only a positive predation -> male
     allocation relation supports the directional chain used by this receipt.
+
+    Booleans are not accepted as numerical evidence and placeholder context
+    labels are rejected. These validation rules prevent coercion artifacts from
+    creating a positive longitudinal-mosaic classification.
     """
-    pressure_estimate = float(flowering_time_predation_estimate)
-    pressure_p = float(flowering_time_predation_p)
-    allocation_r2 = float(predation_allocation_r2)
-    allocation_p = float(predation_allocation_p)
-    alpha_value = float(alpha)
-    vals = [pressure_estimate, pressure_p, allocation_r2, allocation_p, alpha_value]
-    if not all(math.isfinite(v) for v in vals):
-        raise ValueError("numeric inputs must be finite")
+    pressure_estimate = _finite_numeric(
+        flowering_time_predation_estimate, "flowering_time_predation_estimate"
+    )
+    pressure_p = _finite_numeric(flowering_time_predation_p, "flowering_time_predation_p")
+    allocation_r2 = _finite_numeric(predation_allocation_r2, "predation_allocation_r2")
+    allocation_p = _finite_numeric(predation_allocation_p, "predation_allocation_p")
+    alpha_value = _finite_numeric(alpha, "alpha")
     if not 0 < alpha_value < 1:
         raise ValueError("alpha must lie in (0,1)")
     if not 0 <= allocation_r2 <= 1:
@@ -60,24 +85,27 @@ def classify_longitudinal_mosaic(
     if not 0 <= pressure_p <= 1 or not 0 <= allocation_p <= 1:
         raise ValueError("p values must lie in [0,1]")
 
-    direction = str(predation_allocation_direction).strip().lower()
+    if not isinstance(predation_allocation_direction, str):
+        raise ValueError("predation_allocation_direction must be a registered string direction")
+    direction = predation_allocation_direction.strip().lower()
     if direction not in _ALLOWED_DIRECTIONS:
         allowed = ", ".join(sorted(_ALLOWED_DIRECTIONS))
         raise ValueError(f"predation_allocation_direction must be one of: {allowed}")
 
-    contexts = tuple(str(context).strip() for context in ordered_contexts)
-    if any(not context for context in contexts):
-        raise ValueError("ordered_contexts must contain non-empty context labels")
+    contexts = tuple(_context_label(context) for context in ordered_contexts)
     if len(contexts) < 2 or len(set(contexts)) != len(contexts):
         raise ValueError("ordered_contexts must contain at least two unique contexts")
+    if not isinstance(selection_margin_by_context, Mapping):
+        raise ValueError("selection_margin_by_context must be a context-to-margin mapping")
 
     margins = []
     for context in contexts:
         if context not in selection_margin_by_context:
             raise ValueError(f"missing selection margin for {context}")
-        value = float(selection_margin_by_context[context])
-        if not math.isfinite(value):
-            raise ValueError(f"selection margin for {context} must be finite")
+        value = _finite_numeric(
+            selection_margin_by_context[context],
+            f"selection margin for {context}",
+        )
         margins.append(value)
 
     pressure = pressure_estimate < 0 and pressure_p < alpha_value
