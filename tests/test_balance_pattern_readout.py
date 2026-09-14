@@ -3,6 +3,8 @@ import importlib.util
 import json
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "build_balance_pattern_readout.py"
@@ -23,6 +25,17 @@ def _ledger_rows():
         return list(csv.DictReader(handle))
 
 
+def _write_ledger(path: Path, rows: list[dict[str, str]], *, drop: str | None = None):
+    with LEDGER.open(encoding="utf-8", newline="") as handle:
+        fieldnames = list(csv.DictReader(handle).fieldnames or ())
+    if drop is not None:
+        fieldnames.remove(drop)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def test_registered_readout_matches_builder():
     builder = _load_builder()
     expected = json.loads(READOUT.read_text(encoding="utf-8"))
@@ -37,6 +50,58 @@ def test_ledger_rows_have_exact_registered_schema():
     assert len(reader.fieldnames) == 15
     assert all(None not in row for row in rows)
     assert all(set(row) == set(reader.fieldnames) for row in rows)
+    cluster_ids = [row["cluster_id"] for row in rows]
+    assert len(cluster_ids) == len(set(cluster_ids))
+    assert all(cluster_ids)
+
+
+def test_builder_rejects_duplicate_or_missing_cluster_identity(tmp_path):
+    builder = _load_builder()
+    rows = _ledger_rows()
+
+    duplicate = [dict(rows[0]), dict(rows[1])]
+    duplicate[1]["cluster_id"] = duplicate[0]["cluster_id"]
+    path = tmp_path / "duplicate.csv"
+    _write_ledger(path, duplicate)
+    with pytest.raises(ValueError, match="duplicate cluster_id"):
+        builder.build(path)
+
+    for bad in ("", "None", "null", "nan", "REQUIRED_BEFORE_USE"):
+        malformed = [dict(rows[0])]
+        malformed[0]["cluster_id"] = bad
+        path = tmp_path / f"bad-{bad or 'empty'}.csv"
+        _write_ledger(path, malformed)
+        with pytest.raises(ValueError, match="cluster_id.*frozen"):
+            builder.build(path)
+
+
+def test_builder_requires_source_adjudication_columns_and_valid_pool_flag(tmp_path):
+    builder = _load_builder()
+    rows = _ledger_rows()
+
+    missing_source = tmp_path / "missing-source.csv"
+    _write_ledger(missing_source, [dict(rows[0])], drop="source_basis")
+    with pytest.raises(ValueError, match="missing required columns: source_basis"):
+        builder.build(missing_source)
+
+    malformed = [dict(rows[0])]
+    malformed[0]["quantitative_pool_eligible"] = "yes"
+    bad_flag = tmp_path / "bad-flag.csv"
+    _write_ledger(bad_flag, malformed)
+    with pytest.raises(ValueError, match="literal true or false"):
+        builder.build(bad_flag)
+
+
+def test_builder_rejects_placeholder_source_or_claim_provenance(tmp_path):
+    builder = _load_builder()
+    rows = _ledger_rows()
+    for field in ("source_id", "source_basis", "claim_ceiling"):
+        malformed = [dict(rows[0])]
+        malformed[0][field] = "REQUIRED_BEFORE_USE"
+        path = tmp_path / f"bad-{field}.csv"
+        _write_ledger(path, malformed)
+        with pytest.raises(ValueError, match=f"{field}.*frozen"):
+            builder.build(path)
 
 
 def test_pattern_recovery_adds_fragaria_diffuse_conflict_without_false_pooling():
