@@ -7,7 +7,7 @@ from fractions import Fraction as F
 import math
 from typing import Sequence
 
-from .boundary import DEFAULT_BOUNDARY_TOLERANCE, analyze_two_margin_path
+from .boundary import DEFAULT_BOUNDARY_TOLERANCE, _finite_numeric, analyze_two_margin_path
 
 
 @dataclass(frozen=True)
@@ -69,17 +69,21 @@ def analyze_worldline_path(
     Internally, occupancy is routed through the canonical two-margin primitive
     using ``L`` and the direct reserve ``rho_direct=W_S*-W_D*=-Delta``.
     """
-    e = tuple(float(x) for x in environment)
-    Ws = tuple(float(x) for x in shared_optimum_fitness)
-    Wd = tuple(float(x) for x in differentiated_optimum_fitness)
-    L = tuple(float(x) for x in conflict_load)
-    tol = float(tolerance)
+    e = tuple(_finite_numeric(x, f"environment[{i}]") for i, x in enumerate(environment))
+    Ws = tuple(
+        _finite_numeric(x, f"shared_optimum_fitness[{i}]")
+        for i, x in enumerate(shared_optimum_fitness)
+    )
+    Wd = tuple(
+        _finite_numeric(x, f"differentiated_optimum_fitness[{i}]")
+        for i, x in enumerate(differentiated_optimum_fitness)
+    )
+    L = tuple(_finite_numeric(x, f"conflict_load[{i}]") for i, x in enumerate(conflict_load))
+    tol = _finite_numeric(tolerance, "tolerance")
     n = len(e)
 
     if n < 2 or not (len(Ws) == len(Wd) == len(L) == n):
         raise ValueError("all paths must have equal length >= 2")
-    if not all(math.isfinite(x) for values in (e, Ws, Wd, L) for x in values) or not math.isfinite(tol):
-        raise ValueError("all path values and tolerance must be finite")
     if any(e[i + 1] <= e[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if any(x < 0 for x in L):
