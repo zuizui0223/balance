@@ -48,6 +48,27 @@ def _out(value: F, upper: bool) -> float:
     return v
 
 
+def _point(value: F, name: str) -> float:
+    """Convert an actionable point without silently inventing zero/infinity."""
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} is not float-representable; rescale input units") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} is not float-representable; rescale input units")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale input units")
+    return out
+
+
+def _guaranteed_lower(value: F, name: str) -> float:
+    """Return a conservative lower certificate without erasing a positive gain."""
+    out = _out(value, False)
+    if value > 0 and out <= 0.0:
+        raise ValueError(f"{name} underflows the float certificate; rescale input units")
+    return out
+
+
 @dataclass(frozen=True)
 class ThresholdBand:
     lower: float
@@ -173,6 +194,11 @@ def plan_reset_refinement(
     worst-case span min(w,w/2+e); guaranteed reduction is max(0,w/2-e).
     A repeatable reset to the OLD state is essential. This is not a valid
     bisection protocol for an irreversible, unreset one-way trajectory.
+
+    ``query_phi_exact`` remains the authoritative rational nominal command;
+    the float ``query_phi`` is a convenience display. A nonzero command that
+    disappears to ``0.0`` on that surface fails closed. Likewise a strictly
+    positive exact guaranteed reduction may not be reported as numeric zero.
     """
     if matched_reset_available_declared is not True:
         raise ValueError("matched reset to each old architecture must be declared available")
@@ -189,14 +215,25 @@ def plan_reset_refinement(
         remaining = min(w, w/2+e)
         gain = w-remaining
         phi = q if name == "forward" else -q
-        options.append(RefinementOption(name, str(q), float(phi), str(phi),
-                                         _out(w, True), _out(remaining, True),
-                                         _out(gain, False), _out(e, True)))
+        options.append(RefinementOption(
+            name,
+            str(q),
+            _point(phi, f"{name} reset query phi"),
+            str(phi),
+            _out(w, True),
+            _out(remaining, True),
+            _guaranteed_lower(gain, f"{name} guaranteed span reduction"),
+            _out(e, True),
+        ))
         gains.append(gain)
     best = max(gains)
     names = tuple(o.direction for o, gain in zip(options, gains) if gain == best) if best > 0 else ()
-    return RefinementPlan(tuple(options), names, _out(best, False),
-                          "guaranteed_refinement" if best > 0 else "query_error_floor")
+    return RefinementPlan(
+        tuple(options),
+        names,
+        _guaranteed_lower(best, "guaranteed width span reduction"),
+        "guaranteed_refinement" if best > 0 else "query_error_floor",
+    )
 
 
 def synthetic_example() -> dict:
