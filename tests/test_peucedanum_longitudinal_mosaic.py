@@ -18,9 +18,9 @@ def _inputs():
     return pop, sel, relation
 
 
-def _result():
+def _kwargs():
     pop, sel, relation = _inputs()
-    return classify_longitudinal_mosaic(
+    return dict(
         flowering_time_predation_estimate=pop["flowering_time_to_predation"]["estimate"],
         flowering_time_predation_p=pop["flowering_time_to_predation"]["p_upper_bound"],
         predation_allocation_r2=relation["r_squared"],
@@ -29,6 +29,10 @@ def _result():
         selection_margin_by_context=sel["final_fruit_selection_gradient_beta"],
         ordered_contexts=sel["ordered_contexts"],
     )
+
+
+def _result():
+    return classify_longitudinal_mosaic(**_kwargs())
 
 
 def test_published_source_series_is_longitudinally_concordant():
@@ -43,33 +47,53 @@ def test_published_source_series_is_longitudinally_concordant():
 
 
 def test_r_squared_and_significance_without_positive_direction_are_not_enough():
-    pop, sel, relation = _inputs()
+    kwargs = _kwargs()
     for direction in ("negative", "unknown"):
         result = classify_longitudinal_mosaic(
-            flowering_time_predation_estimate=pop["flowering_time_to_predation"]["estimate"],
-            flowering_time_predation_p=pop["flowering_time_to_predation"]["p_upper_bound"],
-            predation_allocation_r2=relation["r_squared"],
-            predation_allocation_p=relation["p_upper_bound"],
-            predation_allocation_direction=direction,
-            selection_margin_by_context=sel["final_fruit_selection_gradient_beta"],
-            ordered_contexts=sel["ordered_contexts"],
+            **{**kwargs, "predation_allocation_direction": direction}
         )
         assert not result.allocation_tracking_supported
         assert result.classification == "LONGITUDINAL_MOSAIC_INCOMPLETE_OR_DISCORDANT"
 
 
 def test_invalid_allocation_direction_fails_closed():
-    pop, sel, relation = _inputs()
-    with pytest.raises(ValueError, match="predation_allocation_direction"):
+    kwargs = _kwargs()
+    for bad in ("", "upward", None, True):
+        with pytest.raises(ValueError, match="predation_allocation_direction"):
+            classify_longitudinal_mosaic(
+                **{**kwargs, "predation_allocation_direction": bad}
+            )
+
+
+def test_boolean_values_are_not_longitudinal_numeric_evidence():
+    kwargs = _kwargs()
+    for field in (
+        "flowering_time_predation_estimate",
+        "flowering_time_predation_p",
+        "predation_allocation_r2",
+        "predation_allocation_p",
+        "alpha",
+    ):
+        with pytest.raises(ValueError, match="not boolean"):
+            classify_longitudinal_mosaic(**{**kwargs, field: True})
+
+    margins = dict(kwargs["selection_margin_by_context"])
+    margins[kwargs["ordered_contexts"][0]] = False
+    with pytest.raises(ValueError, match="not boolean"):
         classify_longitudinal_mosaic(
-            flowering_time_predation_estimate=pop["flowering_time_to_predation"]["estimate"],
-            flowering_time_predation_p=pop["flowering_time_to_predation"]["p_upper_bound"],
-            predation_allocation_r2=relation["r_squared"],
-            predation_allocation_p=relation["p_upper_bound"],
-            predation_allocation_direction="",
-            selection_margin_by_context=sel["final_fruit_selection_gradient_beta"],
-            ordered_contexts=sel["ordered_contexts"],
+            **{**kwargs, "selection_margin_by_context": margins}
         )
+
+
+def test_placeholder_or_nonstring_contexts_do_not_enter_mosaic_receipt():
+    kwargs = _kwargs()
+    for bad in ("None", "null", "nan", "REQUIRED_BEFORE_USE", None, 1):
+        contexts = list(kwargs["ordered_contexts"])
+        contexts[0] = bad
+        with pytest.raises(ValueError, match="ordered_contexts"):
+            classify_longitudinal_mosaic(
+                **{**kwargs, "ordered_contexts": contexts}
+            )
 
 
 def test_claim_ceiling_does_not_count_source_layers_as_independent_studies():
@@ -79,14 +103,12 @@ def test_claim_ceiling_does_not_count_source_layers_as_independent_studies():
 
 
 def test_selection_without_earlier_pressure_layer_is_not_enough():
-    _, sel, relation = _inputs()
+    kwargs = _kwargs()
     result = classify_longitudinal_mosaic(
-        flowering_time_predation_estimate=0.01,
-        flowering_time_predation_p=0.8,
-        predation_allocation_r2=relation["r_squared"],
-        predation_allocation_p=relation["p_upper_bound"],
-        predation_allocation_direction=relation["direction"],
-        selection_margin_by_context=sel["final_fruit_selection_gradient_beta"],
-        ordered_contexts=sel["ordered_contexts"],
+        **{
+            **kwargs,
+            "flowering_time_predation_estimate": 0.01,
+            "flowering_time_predation_p": 0.8,
+        }
     )
     assert result.classification == "LONGITUDINAL_MOSAIC_INCOMPLETE_OR_DISCORDANT"
