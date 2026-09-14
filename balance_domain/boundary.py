@@ -41,6 +41,18 @@ class TwoMarginPath:
     middle_width: float
 
 
+def _finite_numeric(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be finite numeric evidence, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be finite numeric evidence") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be finite numeric evidence")
+    return out
+
+
 def _level_crossing(
     x0: float,
     x1: float,
@@ -80,11 +92,9 @@ def classify_two_margin_point(
     only when ``L > tolerance``. The architecture reserve is positive only
     when ``rho > tolerance`` and negative only when ``rho < -tolerance``.
     """
-    L = float(conflict_margin)
-    rho = float(reserve_margin)
-    tol = float(tolerance)
-    if not all(math.isfinite(value) for value in (L, rho, tol)):
-        raise ValueError("two-margin inputs and tolerance must be finite")
+    L = _finite_numeric(conflict_margin, "conflict_margin")
+    rho = _finite_numeric(reserve_margin, "reserve_margin")
+    tol = _finite_numeric(tolerance, "tolerance")
     if L < 0:
         raise ValueError("conflict margin must be non-negative")
     if tol < 0:
@@ -116,10 +126,8 @@ def two_margin_middle_position(conflict_margin: float, reserve_margin: float) ->
     itself be represented strictly inside ``(0,1)`` as a float, the routine
     fails closed rather than returning a boundary value.
     """
-    L = float(conflict_margin)
-    rho = float(reserve_margin)
-    if not all(math.isfinite(value) for value in (L, rho)):
-        raise ValueError("middle-position margins must be finite")
+    L = _finite_numeric(conflict_margin, "conflict_margin")
+    rho = _finite_numeric(reserve_margin, "reserve_margin")
     if L <= 0 or rho <= 0:
         raise ValueError("middle-position margins must be strictly positive")
 
@@ -142,12 +150,13 @@ def positive_support_monotone(
     The magnitude may rise or fall. Only the support pattern relative to the
     registered tolerance is constrained.
     """
-    vals = tuple(float(value) for value in values)
-    tol = float(tolerance)
+    try:
+        vals = tuple(_finite_numeric(value, "support value") for value in values)
+    except TypeError as exc:
+        raise ValueError("support values must be a finite numeric sequence") from exc
+    tol = _finite_numeric(tolerance, "tolerance")
     if not vals:
         raise ValueError("at least one support value is required")
-    if not all(math.isfinite(value) for value in (*vals, tol)):
-        raise ValueError("support values and tolerance must be finite")
     if any(value < 0 for value in vals):
         raise ValueError("support values must be non-negative")
     if tol < 0:
@@ -174,15 +183,16 @@ def analyze_two_margin_path(
     therefore still be analyzed when the identified BALANCE interval itself is
     representable; only an unrepresentable derived width fails closed.
     """
-    x = tuple(float(value) for value in environment)
-    L = tuple(float(value) for value in conflict_margin)
-    rho = tuple(float(value) for value in reserve_margin)
-    tol = float(tolerance)
+    try:
+        x = tuple(_finite_numeric(value, "environment value") for value in environment)
+        L = tuple(_finite_numeric(value, "conflict margin") for value in conflict_margin)
+        rho = tuple(_finite_numeric(value, "reserve margin") for value in reserve_margin)
+    except TypeError as exc:
+        raise ValueError("environment and margins must be finite numeric sequences") from exc
+    tol = _finite_numeric(tolerance, "tolerance")
     n = len(x)
     if n < 2 or not (len(L) == len(rho) == n):
         raise ValueError("environment and both margins must have equal length >= 2")
-    if not all(math.isfinite(value) for values in (x, L, rho) for value in values) or not math.isfinite(tol):
-        raise ValueError("two-margin path values and tolerance must be finite")
     if any(x[i + 1] <= x[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if any(value < 0 for value in L):
