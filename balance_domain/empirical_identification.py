@@ -14,6 +14,7 @@ from math import isfinite
 from typing import Sequence
 
 Record = tuple[float, str]
+_MISSING_IDENTIFIERS = {"none", "null", "nan", "required_before_use"}
 
 
 @dataclass(frozen=True)
@@ -36,7 +37,30 @@ class SwitchingIdentification:
     total_switching_cost: Interval | None
     horizon_bounds: tuple[float, float] | None
     cost_scale_identified: bool
+    common_phi_scale: str
+    fixed_context: str
     scope: str
+
+
+def _required_text(value: object, name: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{name} must be a non-empty frozen string identifier")
+    text = value.strip()
+    if not text or text.casefold() in _MISSING_IDENTIFIERS:
+        raise ValueError(f"{name} must be frozen before use")
+    return text
+
+
+def _finite_number(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be numeric, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be a finite numeric value") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} must be a finite numeric value")
+    return out
 
 
 def _interval(lo, hi, lc=True, uc=True) -> Interval:
@@ -50,12 +74,22 @@ def _interval(lo, hi, lc=True, uc=True) -> Interval:
 
 
 def _threshold(records: Sequence[Record], forward: bool) -> tuple[Interval, bool]:
-    rows = tuple((float(phi), state) for phi, state in records)
+    rows = []
+    try:
+        for index, record in enumerate(records):
+            phi_raw, state = record
+            phi = _finite_number(phi_raw, f"forcing record {index} Phi")
+            rows.append((phi, state))
+    except (TypeError, ValueError) as exc:
+        if isinstance(exc, ValueError) and "forcing record" in str(exc):
+            raise
+        raise ValueError("forcing records must be (Phi, state) pairs") from exc
+    rows = tuple(rows)
     old, new = ("shared", "differentiated") if forward else ("differentiated", "shared")
     if not rows or rows[0][1] != old:
         raise ValueError(f"path must begin with a recorded {old} state before switching")
-    if any(not isfinite(phi) or state not in {old, new} for phi, state in rows):
-        raise ValueError("forcing records must be finite and have valid architecture states")
+    if any(state not in {old, new} for _, state in rows):
+        raise ValueError("forcing records must have valid architecture states")
     if any((b < a if forward else b > a) for (a, _), (b, _) in zip(rows, rows[1:])):
         raise ValueError("forcing path must be monotone in its declared direction")
     switch = next((i for i, (_, state) in enumerate(rows) if state == new), None)
@@ -99,14 +133,15 @@ def identify_switching_records(
     threshold/horizon inputs overflow the numeric representation while deriving
     a width or cost interval, the receipt fails closed rather than emitting
     ``inf`` as if it were a finite identified endpoint.
+
+    The calibrated Phi-scale label and fixed-context identifier are frozen into
+    the returned receipt. Placeholder identifiers are rejected so a numerical
+    interval cannot become detached from the conditions under which it was
+    identified.
     """
-    if (
-        not isinstance(common_phi_scale, str)
-        or not common_phi_scale.strip()
-        or not isinstance(fixed_context, str)
-        or not fixed_context.strip()
-        or instantaneous_rule_declared is not True
-    ):
+    scale = _required_text(common_phi_scale, "common_phi_scale")
+    context = _required_text(fixed_context, "fixed_context")
+    if instantaneous_rule_declared is not True:
         raise ValueError("declare common Phi scale, fixed context and instantaneous switching")
 
     f, fs = _threshold(upward, True)
@@ -121,8 +156,13 @@ def identify_switching_records(
     cf = cr = ct = None
     horizon = None
     if horizon_bounds is not None:
-        lo, hi = map(float, horizon_bounds)
-        if not all(isfinite(value) for value in (lo, hi)) or not 0 < lo <= hi:
+        try:
+            lo_raw, hi_raw = horizon_bounds
+        except (TypeError, ValueError) as exc:
+            raise ValueError("horizon_bounds must contain exactly two finite numeric values") from exc
+        lo = _finite_number(lo_raw, "horizon lower bound")
+        hi = _finite_number(hi_raw, "horizon upper bound")
+        if not 0 < lo <= hi:
             raise ValueError("independent horizon bounds must satisfy 0 < lower <= upper")
         horizon = (lo, hi)
         cf = _scale_nonnegative(f, lo, hi)
@@ -136,19 +176,23 @@ def identify_switching_records(
         ct = _scale_nonnegative(width, lo, hi)
 
     return SwitchingIdentification(
-        f,
-        r,
-        width,
-        fs,
-        rs,
-        cf,
-        cr,
-        ct,
-        horizon,
-        horizon is not None and horizon[0] == horizon[1],
-        "conditional_error_free_brackets; unknown_horizon_identifies_cost_over_horizon_only"
-        if horizon is None
-        else "conditional_error_free_brackets_with_independent_horizon",
+        forward_threshold=f,
+        reverse_threshold=r,
+        width=width,
+        forward_switch_observed=fs,
+        reverse_switch_observed=rs,
+        cost_shared_to_diff=cf,
+        cost_diff_to_shared=cr,
+        total_switching_cost=ct,
+        horizon_bounds=horizon,
+        cost_scale_identified=horizon is not None and horizon[0] == horizon[1],
+        common_phi_scale=scale,
+        fixed_context=context,
+        scope=(
+            "conditional_error_free_brackets; unknown_horizon_identifies_cost_over_horizon_only"
+            if horizon is None
+            else "conditional_error_free_brackets_with_independent_horizon"
+        ),
     )
 
 

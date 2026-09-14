@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from balance_domain.empirical_identification import (
@@ -35,6 +37,8 @@ def test_exact_brackets_use_last_stay_and_preserve_strict_endpoints():
         result.total_switching_cost.lower,
         result.total_switching_cost.upper,
     ) == pytest.approx((1.5, 2))
+    assert result.common_phi_scale == "matched payoff"
+    assert result.fixed_context == "same environment"
 
 
 def test_unknown_horizon_does_not_create_absolute_costs():
@@ -90,6 +94,31 @@ def test_invalid_horizons(bounds):
         identify_switching_records(UP, DOWN, **META, horizon_bounds=bounds)
 
 
+def test_scale_and_context_placeholders_cannot_become_identification_provenance():
+    for field, bad in (
+        ("common_phi_scale", "None"),
+        ("common_phi_scale", "null"),
+        ("fixed_context", "nan"),
+        ("fixed_context", "REQUIRED_BEFORE_USE"),
+        ("fixed_context", None),
+    ):
+        kwargs = dict(META)
+        kwargs[field] = bad
+        with pytest.raises(ValueError, match="frozen"):
+            identify_switching_records(UP, DOWN, **kwargs)
+
+
+def test_boolean_forcing_and_horizon_values_are_not_numeric_evidence():
+    with pytest.raises(ValueError, match="numeric, not boolean"):
+        identify_switching_records(
+            [(True, "shared"), (0.12, "differentiated")],
+            DOWN,
+            **META,
+        )
+    with pytest.raises(ValueError, match="numeric, not boolean"):
+        identify_switching_records(UP, DOWN, **META, horizon_bounds=(True, 10.0))
+
+
 def test_finite_thresholds_that_overflow_derived_width_fail_closed():
     upward = [(1.0e308, "shared"), (1.1e308, "differentiated")]
     downward = [(-1.0e308, "differentiated"), (-1.1e308, "shared")]
@@ -109,5 +138,8 @@ def test_finite_horizon_scaling_that_overflows_cost_interval_fails_closed():
         )
 
 
-def test_example_label():
-    assert synthetic_example()["data_kind"] == "synthetic_bracket_witness"
+def test_example_label_and_frozen_provenance():
+    example = synthetic_example()
+    assert example["data_kind"] == "synthetic_bracket_witness"
+    assert example["receipt"]["common_phi_scale"] == "synthetic payoff/time units"
+    assert example["receipt"]["fixed_context"] == "synthetic environment"
