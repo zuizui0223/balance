@@ -17,6 +17,18 @@ class MultiAlternativeState:
     state: str
 
 
+def _finite_input(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be finite numeric evidence, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be finite numeric evidence") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be finite numeric evidence")
+    return out
+
+
 def classify_multi_alternative_middle_world(
     conflict_margin: float,
     alternative_reserves: Sequence[float],
@@ -37,12 +49,13 @@ def classify_multi_alternative_middle_world(
     if not alternative_reserves:
         raise ValueError("at least one alternative architecture is required")
 
-    conflict = float(conflict_margin)
-    reserves = tuple(float(x) for x in alternative_reserves)
-    tol = float(atol)
-    if not math.isfinite(conflict) or not all(math.isfinite(x) for x in reserves):
-        raise ValueError("conflict margin and alternative reserves must be finite")
-    if not math.isfinite(tol) or tol < 0:
+    conflict = _finite_input(conflict_margin, "conflict_margin")
+    reserves = tuple(
+        _finite_input(value, f"alternative_reserves[{index}]")
+        for index, value in enumerate(alternative_reserves)
+    )
+    tol = _finite_input(atol, "atol")
+    if tol < 0:
         raise ValueError("atol must be finite and nonnegative")
 
     envelope_reserve = min(reserves)

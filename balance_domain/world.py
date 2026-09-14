@@ -76,6 +76,11 @@ def _positive_fraction_to_float(value: F, name: str) -> float:
     return _fraction_to_float(value, name)
 
 
+def _reject_boolean_inputs(*values: object) -> None:
+    if any(isinstance(value, bool) for value in values):
+        raise ValueError("scientific numeric inputs must not be boolean")
+
+
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
     """Return the one-dimensional BALANCE geometry on its theorem domain.
 
@@ -124,6 +129,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     float, the helper fails closed rather than returning ``inf`` or ``0`` while
     still claiming ``finite_bita_boundary=True``.
     """
+    _reject_boolean_inputs(decoupling, architecture_cost)
     s = float(decoupling)
     K = float(architecture_cost)
     if not math.isfinite(s) or not math.isfinite(K):
@@ -220,6 +226,7 @@ def classify_middle_world(
         ``min(L, rho)`` and measures how deeply the context lies inside the
         middle world in the common fitness units.
     """
+    _reject_boolean_inputs(conflict_load, decoupling, architecture_cost, tolerance)
     L = float(conflict_load)
     s = float(decoupling)
     K = float(architecture_cost)

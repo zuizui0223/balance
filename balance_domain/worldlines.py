@@ -30,6 +30,19 @@ class WorldlineComparison:
     state: str
 
 
+def _finite_input(value: object, name: str) -> float:
+    """Normalize one public scalar input without accepting booleans as evidence."""
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be finite numeric evidence, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be finite numeric evidence") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be finite numeric evidence")
+    return out
+
+
 def _finite_fraction_output(value: Fraction, name: str) -> float:
     try:
         out = float(value)
@@ -87,12 +100,10 @@ def compare_worldlines(
     one. Scale mismatch, context mismatch, cost-definition mismatch and
     omitted ecological channels must be excluded first.
     """
-    Ws = float(shared_optimum_fitness)
-    Wd = float(differentiated_optimum_fitness)
-    L = float(conflict_load)
-    tol = float(tolerance)
-    if not all(math.isfinite(x) for x in (Ws, Wd, L, tol)):
-        raise ValueError("inputs must be finite")
+    Ws = _finite_input(shared_optimum_fitness, "shared_optimum_fitness")
+    Wd = _finite_input(differentiated_optimum_fitness, "differentiated_optimum_fitness")
+    L = _finite_input(conflict_load, "conflict_load")
+    tol = _finite_input(tolerance, "tolerance")
     if L < 0:
         raise ValueError("conflict_load must be non-negative")
     if tol <= 0:
@@ -116,10 +127,8 @@ def compare_worldlines(
     if (decoupling is None) != (architecture_cost is None):
         raise ValueError("decoupling and architecture_cost must be supplied together")
     if decoupling is not None and architecture_cost is not None:
-        s = float(decoupling)
-        K = float(architecture_cost)
-        if not math.isfinite(s) or not math.isfinite(K):
-            raise ValueError("decomposition inputs must be finite")
+        s = _finite_input(decoupling, "decoupling")
+        K = _finite_input(architecture_cost, "architecture_cost")
         if not 0 <= s <= 1:
             raise ValueError("decoupling must lie in [0,1]")
         if K < 0:
