@@ -72,6 +72,8 @@ def normalized_phase_point(
     by the float-valued API fails closed rather than appearing as ``inf``, zero,
     or a rounded structural boundary value.
     """
+    if any(isinstance(value, bool) for value in (conflict_load, decoupling, architecture_cost, tolerance)):
+        raise ValueError("phase numeric inputs must not be boolean")
     L = float(conflict_load)
     s = float(decoupling)
     K = float(architecture_cost)
