@@ -6,6 +6,8 @@ from fractions import Fraction
 from math import inf, isfinite, isnan
 from typing import Sequence
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class ThreatStability:
@@ -52,12 +54,16 @@ def lipschitz_threat_radius(
     finite nonzero ratio that merely overflows binary float is not the same
     statement and fails closed if it is the limiting radius.
     """
-    gaps = tuple(float(g) for g in gaps)
-    constants = tuple(float(value) for value in pairwise_lipschitz)
+    gaps = tuple(
+        _finite_numeric(value, f"gaps[{index}]")
+        for index, value in enumerate(gaps)
+    )
+    constants = tuple(
+        _finite_numeric(value, f"pairwise_lipschitz[{index}]")
+        for index, value in enumerate(pairwise_lipschitz)
+    )
     if len(gaps) != len(constants) or not gaps:
         raise ValueError("gaps and pairwise_lipschitz must have the same nonzero length")
-    if not all(isfinite(value) for value in gaps + constants):
-        raise ValueError("gaps and Lipschitz constants must be finite")
     if any(g <= 0 for g in gaps):
         raise ValueError("a unique active threat requires strictly positive pairwise gaps")
     if any(value < 0 for value in constants):
@@ -89,11 +95,15 @@ def diagonal_affine_threat_distance(
     ``metric_diag`` contains the positive diagonal of Q.  The distance is
     ``gap / sqrt(a^T Q^-1 a)``.
     """
-    gap = float(gap)
-    gradient = tuple(float(value) for value in gradient_difference)
-    metric = tuple(float(value) for value in metric_diag)
-    if not isfinite(gap) or not all(isfinite(value) for value in gradient + metric):
-        raise ValueError("gap, gradient difference, and metric diagonal must be finite")
+    gap = _finite_numeric(gap, "gap")
+    gradient = tuple(
+        _finite_numeric(value, f"gradient_difference[{index}]")
+        for index, value in enumerate(gradient_difference)
+    )
+    metric = tuple(
+        _finite_numeric(value, f"metric_diag[{index}]")
+        for index, value in enumerate(metric_diag)
+    )
     if gap < 0:
         raise ValueError("gap must be nonnegative")
     if len(gradient) != len(metric) or not gradient:
@@ -138,11 +148,15 @@ def diagonal_affine_gradient_from_minimum_switch(
 
         a = -gap * Q * delta / (delta^T Q delta).
     """
-    gap = float(gap)
-    switch = tuple(float(value) for value in switch_vector)
-    metric = tuple(float(value) for value in metric_diag)
-    if not isfinite(gap) or not all(isfinite(value) for value in switch + metric):
-        raise ValueError("gap, switch vector, and metric diagonal must be finite")
+    gap = _finite_numeric(gap, "gap")
+    switch = tuple(
+        _finite_numeric(value, f"switch_vector[{index}]")
+        for index, value in enumerate(switch_vector)
+    )
+    metric = tuple(
+        _finite_numeric(value, f"metric_diag[{index}]")
+        for index, value in enumerate(metric_diag)
+    )
     if gap <= 0:
         raise ValueError("gap must be positive for inverse recovery from a unique threat")
     if len(switch) != len(metric) or not switch:
@@ -171,8 +185,13 @@ def diagonal_affine_gradient_from_minimum_switch(
 
 
 def threat_fragility_index(*, threat_radius: float, state_depth: float) -> float:
-    radius = float(threat_radius)
-    depth = float(state_depth)
+    if isinstance(threat_radius, bool) or isinstance(state_depth, bool):
+        raise ValueError("threat_radius and state_depth must be numeric evidence, not boolean")
+    try:
+        radius = float(threat_radius)
+        depth = float(state_depth)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("threat_radius and state_depth must be numeric") from exc
     # +inf is meaningful only as the structural certificate produced by a
     # constant pairwise difference.  Finite radii are divided exactly below so
     # numerical overflow cannot manufacture the same sentinel.
