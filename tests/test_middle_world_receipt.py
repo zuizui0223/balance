@@ -95,7 +95,7 @@ def test_bounded_receipt_requires_frozen_string_identifiers():
     assert normalized.fitness_scale_id == "seed_set"
 
 
-def test_bounded_interval_rejects_nonfinite_and_reversed_bounds():
+def test_bounded_interval_rejects_nonfinite_reversed_and_boolean_bounds():
     with pytest.raises(ValueError):
         Interval(math.nan, 1.0)
     with pytest.raises(ValueError):
@@ -104,6 +104,10 @@ def test_bounded_interval_rejects_nonfinite_and_reversed_bounds():
         Interval(2.0, 1.0)
     with pytest.raises(ValueError):
         Interval(10**10000, 10**10000)
+    with pytest.raises(ValueError, match="not boolean"):
+        Interval(True, 1.0)
+    with pytest.raises(ValueError, match="not boolean"):
+        Interval(0.0, False)
 
 
 def test_bounded_interval_normalizes_numeric_inputs_to_float():
@@ -114,7 +118,7 @@ def test_bounded_interval_normalizes_numeric_inputs_to_float():
     assert isinstance(interval.upper, float)
 
 
-def test_interval_membership_rejects_nonfinite_or_nonnumeric_queries():
+def test_interval_membership_rejects_nonfinite_nonnumeric_or_boolean_queries():
     interval = Interval(0.0, 1.0)
     with pytest.raises(ValueError):
         interval.contains(math.nan)
@@ -122,3 +126,5 @@ def test_interval_membership_rejects_nonfinite_or_nonnumeric_queries():
         interval.contains("not-a-number")
     with pytest.raises(ValueError):
         interval.contains(10**10000)
+    with pytest.raises(ValueError, match="not boolean"):
+        interval.contains(True)
