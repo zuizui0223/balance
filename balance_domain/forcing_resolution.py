@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction as F
-from math import isfinite
+from math import inf, isfinite, nextafter
 
 from balance_domain.stepwise_hysteresis import SwitchingPathResult
 
@@ -51,6 +51,20 @@ def _fraction_to_float(value: F, name: str) -> float:
         )
     if value != 0 and out == 0.0:
         raise ValueError(f"{name} underflows float precision; rescale forcing units")
+    return out
+
+
+def _upper_bound_to_float(value: F, name: str) -> float:
+    """Convert a non-negative exact upper bound without rounding inward."""
+    if value < 0:
+        raise ValueError(f"{name} must be non-negative")
+    out = _fraction_to_float(value, name)
+    if F.from_float(out) < value:
+        out = nextafter(out, inf)
+        if not isfinite(out):
+            raise ValueError(
+                f"{name} is finite mathematically but has no finite conservative float upper bound; rescale forcing units"
+            )
     return out
 
 
@@ -119,7 +133,7 @@ def upward_switch_resolution(result: SwitchingPathResult) -> SwitchPointResoluti
         raise RuntimeError("strict forward switching requires a positive crossing jump")
     if error_q > jump_q + _MODEL_TOLERANCE_Q:
         raise RuntimeError("forward switch error exceeded the crossing jump")
-    jump = _fraction_to_float(jump_q, "forward crossing jump")
+    jump = _upper_bound_to_float(jump_q, "forward crossing jump")
     error = _fraction_to_float(error_q, "forward switch absolute error")
     return SwitchPointResolution(
         direction="upward",
@@ -161,7 +175,7 @@ def downward_switch_resolution(result: SwitchingPathResult) -> SwitchPointResolu
         raise RuntimeError("strict reverse switching requires a positive crossing jump")
     if error_q > jump_q + _MODEL_TOLERANCE_Q:
         raise RuntimeError("reverse switch error exceeded the crossing jump")
-    jump = _fraction_to_float(jump_q, "reverse crossing jump")
+    jump = _upper_bound_to_float(jump_q, "reverse crossing jump")
     error = _fraction_to_float(error_q, "reverse switch absolute error")
     return SwitchPointResolution(
         direction="downward",
@@ -189,7 +203,8 @@ def hysteresis_resolution_audit(
     Both sweeps must encode the same full threshold pair ``(F,R)``. Checking
     only the threshold used by each observed switch would allow two different
     horizons/cost regimes to be spliced into a hysteresis width that belongs to
-    neither experiment.
+    neither experiment. Float-valued jump bounds are rounded outward so the
+    reported bound cannot become smaller than the exact supplied-float bound.
     """
     up = upward_switch_resolution(upward)
     down = downward_switch_resolution(downward)
@@ -214,6 +229,8 @@ def hysteresis_resolution_audit(
     true_width_q = up_forward_q - up_reverse_q
     observed_width_q = up_observed_q - down_observed_q
     overestimate_q = observed_width_q - true_width_q
+    # The individual jump bounds have already been rounded outward, so summing
+    # their float representations remains conservative for the exact jumps.
     bound_q = F.from_float(up.jump_bound) + F.from_float(down.jump_bound)
     if overestimate_q < -_MODEL_TOLERANCE_Q:
         raise RuntimeError("finite monotone sampling unexpectedly narrowed hysteresis")
@@ -223,7 +240,7 @@ def hysteresis_resolution_audit(
     true_width = _fraction_to_float(true_width_q, "true hysteresis width")
     observed_width = _fraction_to_float(observed_width_q, "observed hysteresis width")
     overestimate = _fraction_to_float(overestimate_q, "hysteresis width overestimate")
-    bound = _fraction_to_float(bound_q, "hysteresis overestimate upper bound")
+    bound = _upper_bound_to_float(bound_q, "hysteresis overestimate upper bound")
     return HysteresisResolutionAudit(
         true_forward_threshold=up_forward,
         true_reverse_threshold=up_reverse,
