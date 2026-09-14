@@ -12,20 +12,40 @@ import math
 import random
 
 
+_MISSING_TEXT = {"none", "null", "nan", "required_before_use"}
+
+
 def _required_text(value: object, name: str) -> str:
-    if value is None:
-        raise ValueError(f"{name} must be non-empty")
-    text = str(value).strip()
+    if not isinstance(value, str):
+        raise ValueError(f"{name} must be non-empty string text")
+    text = value.strip()
     if not text:
         raise ValueError(f"{name} must be non-empty")
+    if text.casefold() in _MISSING_TEXT:
+        raise ValueError(f"{name} must be frozen before use")
     return text
+
+
+def _finite_numeric(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be finite numeric evidence, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be finite numeric evidence") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{name} must be finite numeric evidence")
+    return out
 
 
 def _integer_value(value: object, name: str) -> int:
     if isinstance(value, bool):
         raise ValueError(f"{name} must be an integer-valued finite number")
-    numeric = float(value)
-    if not math.isfinite(numeric) or not numeric.is_integer():
+    try:
+        numeric = _finite_numeric(value, name)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer-valued finite number") from exc
+    if not numeric.is_integer():
         raise ValueError(f"{name} must be an integer-valued finite number")
     return int(numeric)
 
@@ -83,10 +103,14 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
     critical-region receipt. Draw count and seed are exact integers; published
     means/SEs and every retained interpolated crossing must be finite.
     """
+    if not isinstance(config, dict):
+        raise ValueError("proxy-criticality config must be a mapping")
     system = _required_text(config["system"], "system")
     input_version = _required_text(config["input_version"], "input_version")
 
     axis = config["proxy_axis"]
+    if not isinstance(axis, dict):
+        raise ValueError("proxy_axis must be a mapping")
     axis_name = _required_text(axis["name"], "proxy_axis.name")
     axis_units = _required_text(axis["units"], "proxy_axis.units")
     left_context = _required_text(axis["left_context"], "proxy_axis.left_context")
@@ -94,10 +118,8 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
     if left_context == right_context:
         raise ValueError("proxy-axis contexts must be distinct")
 
-    e_left = float(axis["left_value"])
-    e_right = float(axis["right_value"])
-    if not all(math.isfinite(value) for value in (e_left, e_right)):
-        raise ValueError("proxy-axis endpoints must be finite")
+    e_left = _finite_numeric(axis["left_value"], "proxy_axis.left_value")
+    e_right = _finite_numeric(axis["right_value"], "proxy_axis.right_value")
     axis_span_q = F.from_float(e_right) - F.from_float(e_left)
     if axis_span_q == 0:
         raise ValueError("proxy-axis endpoints must define a finite nonzero span")
@@ -107,6 +129,8 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
         raise ValueError("proxy-axis endpoints must define a finite nonzero span") from exc
 
     registered = config["registered_sensitivity_model"]
+    if not isinstance(registered, dict):
+        raise ValueError("registered_sensitivity_model must be a mapping")
     draws = _integer_value(registered["draws"], "draws")
     if draws < 1000:
         raise ValueError("draws must be >= 1000")
@@ -122,15 +146,15 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
     ci_intervals = []
     for raw_name, definition in definitions.items():
         name = _required_text(raw_name, "definition name")
+        if not isinstance(definition, dict):
+            raise ValueError(f"definition {name} must be a mapping")
         zero_semantics = _required_text(
             definition["zero_semantics"], f"{name}.zero_semantics"
         )
-        lm = float(definition["left_mean"])
-        ls = float(definition["left_se"])
-        rm = float(definition["right_mean"])
-        rs = float(definition["right_se"])
-        if not all(math.isfinite(value) for value in (lm, ls, rm, rs)):
-            raise ValueError(f"published mean/SE values for {name} must be finite")
+        lm = _finite_numeric(definition["left_mean"], f"{name}.left_mean")
+        ls = _finite_numeric(definition["left_se"], f"{name}.left_se")
+        rm = _finite_numeric(definition["right_mean"], f"{name}.right_mean")
+        rs = _finite_numeric(definition["right_se"], f"{name}.right_se")
         if ls < 0 or rs < 0:
             raise ValueError("published SE values must be >= 0")
         point = _crossing(e_left, e_right, lm, rm)
