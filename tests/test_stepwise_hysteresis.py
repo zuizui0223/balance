@@ -17,6 +17,25 @@ def test_small_step_constructor_respects_bound():
     assert max_path_jump(path) <= 0.3 + 1e-15
 
 
+def test_extreme_span_constructor_avoids_intermediate_overflow():
+    path = linear_small_step_path(-1.0e308, 1.0e308, max_phi_jump=1.0e308)
+    assert path == pytest.approx((-1.0e308, 0.0, 1.0e308))
+    assert max_path_jump(path) == pytest.approx(1.0e308)
+
+
+def test_unrepresentable_true_path_jump_fails_closed():
+    with pytest.raises(ValueError, match="maximum observed phi jump.*not representable"):
+        max_path_jump((-1.0e308, 1.0e308))
+    with pytest.raises(ValueError, match="maximum observed phi jump.*not representable"):
+        follow_switching_path(
+            (-1.0e308, 1.0e308),
+            initial_state="shared",
+            horizon_per_step=1.0,
+            cost_shared_to_diff=0.0,
+            cost_diff_to_shared=0.0,
+        )
+
+
 def test_declared_small_step_assumption_fails_closed():
     with pytest.raises(ValueError, match="violates declared max_phi_jump"):
         follow_switching_path(
