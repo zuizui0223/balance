@@ -99,7 +99,8 @@ def follow_switching_path(
 
     The actual maximum consecutive jump is compared to the declared bound in
     exact arithmetic at the supplied-float level before any result is rounded
-    back onto the float-valued receipt surface.
+    back onto the float-valued receipt surface. The historical ``1e-15``
+    absolute numerical allowance is retained, but applied to exact values.
     """
     values = _finite_path(phi_path)
     state = _validate_state(initial_state)
@@ -197,8 +198,9 @@ def linear_small_step_path(start: float, stop: float, *, max_phi_jump: float) ->
             )
         path.append(value)
     result = tuple(path)
-    # Verify the promised resolution on the actual float path returned to the caller.
-    if _max_path_jump_exact(result) > jump_q:
+    # Verify the promised resolution on the actual float path using the same
+    # registered absolute numerical allowance as follow_switching_path().
+    if _max_path_jump_exact(result) > jump_q + F.from_float(1e-15):
         raise RuntimeError("constructed forcing path exceeded max_phi_jump after float conversion")
     return result
 
