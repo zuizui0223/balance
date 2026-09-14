@@ -8,8 +8,9 @@ between two sweep spans to minimize the required integer number of intervals.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from decimal import Decimal, localcontext
 from fractions import Fraction
-from math import isfinite, nextafter, sqrt
+from math import inf, isfinite, nextafter
 
 
 @dataclass(frozen=True)
@@ -33,6 +34,65 @@ def _ceil_fraction(value: Fraction) -> int:
     if value <= 0:
         raise ValueError("ceiling helper requires a positive value")
     return -(-value.numerator // value.denominator)
+
+
+def _finite_positive_float(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be a finite positive number, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be a finite positive number") from exc
+    if not isfinite(out) or out <= 0.0:
+        raise ValueError(f"{name} must be a finite positive number")
+    return out
+
+
+def _fraction_point(value: Fraction, name: str) -> float:
+    """Convert a positive actionable quantity without inventing zero/infinity."""
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{name} is not float-representable; change design scale") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} is not float-representable; change design scale")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; change design scale")
+    return out
+
+
+def _fraction_upper(value: Fraction, name: str, *, cap: float | None = None) -> float:
+    """Return a conservative finite upper float for an exact nonnegative value."""
+    out = _fraction_point(value, name)
+    if Fraction.from_float(out) < value:
+        out = nextafter(out, inf)
+    if cap is not None:
+        out = min(out, cap)
+    if not isfinite(out):
+        raise ValueError(f"{name} upper certificate is not float-representable")
+    return out
+
+
+def _decimal_point(value: Decimal, name: str) -> float:
+    try:
+        out = float(value)
+    except (ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} is not float-representable; change design scale") from exc
+    if not isfinite(out):
+        raise ValueError(f"{name} is not float-representable; change design scale")
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; change design scale")
+    return out
+
+
+def _decimal_lower(value: Decimal, name: str) -> float:
+    """Conservatively expose a positive continuous lower bound."""
+    out = _decimal_point(value, name)
+    if Decimal.from_float(out) > value:
+        out = nextafter(out, -inf)
+    if not isfinite(out) or (value > 0 and out <= 0.0):
+        raise ValueError(f"{name} cannot be represented as a positive finite lower bound")
+    return out
 
 
 def _inflation_exact(
@@ -131,34 +191,42 @@ def optimal_hysteresis_resolution_design(
 
         forward_span/n_up + reverse_span/n_down <= width_error_budget.
 
-    The continuous relaxation allocates step sizes in proportion to square
-    roots of sweep spans. For the integer problem, feasibility at a fixed total
-    interval count is a one-dimensional discrete-convex problem, so its minimum
-    is found by binary search. A second binary search finds the smallest feasible
-    total. Input floats are converted to their exact binary rational values for
-    every feasibility comparison, eliminating scale-dependent epsilon decisions.
+    The integer feasibility problem is evaluated exactly at the supplied-float
+    level. Continuous square-root diagnostics are evaluated with high-range
+    ``Decimal`` arithmetic so a representable final diagnostic is not lost to
+    an overflowing binary-float intermediate. Actionable step sizes and final
+    diagnostics fail closed if a nonzero finite value cannot be represented on
+    the float-valued receipt surface.
 
     Runtime is ``O((log N)^2)`` in the returned total interval count rather than
     scanning every candidate forward count up to ``N``.
     """
-    su = float(forward_span)
-    sd = float(reverse_span)
-    eta = float(width_error_budget)
-    if not all(isfinite(x) for x in (su, sd, eta)):
-        raise ValueError("spans and error budget must be finite")
-    if su <= 0.0 or sd <= 0.0 or eta <= 0.0:
-        raise ValueError("spans and error budget must be positive")
-
-    root_up = sqrt(su)
-    root_down = sqrt(sd)
-    root_sum = root_up + root_down
-    delta_up_cont = eta * (root_up / root_sum)
-    delta_down_cont = eta * (root_down / root_sum)
-    lower_bound = (root_sum * root_sum) / eta
+    su = _finite_positive_float(forward_span, "forward_span")
+    sd = _finite_positive_float(reverse_span, "reverse_span")
+    eta = _finite_positive_float(width_error_budget, "width_error_budget")
 
     su_exact = Fraction.from_float(su)
     sd_exact = Fraction.from_float(sd)
     eta_exact = Fraction.from_float(eta)
+
+    # Continuous diagnostics are not used to choose the integer design, but are
+    # reported as the relaxation benchmark. High-range Decimal arithmetic avoids
+    # root_sum**2 overflow when the final dimensionless lower bound is ordinary.
+    with localcontext() as ctx:
+        ctx.prec = 100
+        su_d = Decimal.from_float(su)
+        sd_d = Decimal.from_float(sd)
+        eta_d = Decimal.from_float(eta)
+        root_up = su_d.sqrt()
+        root_down = sd_d.sqrt()
+        root_sum = root_up + root_down
+        delta_up_d = eta_d * root_up / root_sum
+        delta_down_d = eta_d * root_down / root_sum
+        lower_bound_d = root_sum * root_sum / eta_d
+
+    delta_up_cont = _decimal_point(delta_up_d, "continuous optimal forward step")
+    delta_down_cont = _decimal_point(delta_down_d, "continuous optimal reverse step")
+    lower_bound = _decimal_lower(lower_bound_d, "continuous interval lower bound")
 
     # Constructive equal-budget allocation gives an exact feasible upper bound:
     # su/n_up <= eta/2 and sd/n_down <= eta/2.
@@ -192,13 +260,14 @@ def optimal_hysteresis_resolution_design(
     if exact_guaranteed > eta_exact:
         raise RuntimeError("integer design failed declared hysteresis-width precision")
 
-    # Report a conservative float upper envelope of the exact rational
-    # inflation. If the nearest float rounds down, move one representable value
-    # upward; never report above the user-supplied budget, which is itself an
-    # exact upper bound after the exact feasibility check above.
-    guaranteed = min(
-        eta,
-        nextafter(float(exact_guaranteed), float("inf")),
+    forward_step_exact = su_exact / n_up
+    reverse_step_exact = sd_exact / n_down
+    forward_step = _fraction_point(forward_step_exact, "forward interval step")
+    reverse_step = _fraction_point(reverse_step_exact, "reverse interval step")
+    guaranteed = _fraction_upper(
+        exact_guaranteed,
+        "guaranteed width inflation",
+        cap=eta,
     )
 
     return HysteresisResolutionDesign(
@@ -208,8 +277,8 @@ def optimal_hysteresis_resolution_design(
         forward_intervals=n_up,
         reverse_intervals=n_down,
         total_intervals=total,
-        forward_step=su / n_up,
-        reverse_step=sd / n_down,
+        forward_step=forward_step,
+        reverse_step=reverse_step,
         guaranteed_width_inflation=guaranteed,
         continuous_optimal_forward_step=delta_up_cont,
         continuous_optimal_reverse_step=delta_down_cont,
