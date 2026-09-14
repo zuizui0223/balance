@@ -5,6 +5,8 @@ from fractions import Fraction
 from math import isfinite
 from typing import Sequence
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class CoveringCertificate:
@@ -21,17 +23,14 @@ class LipschitzZeroBracket:
 
 
 def _finite_scalar(value: float, name: str) -> float:
-    out = float(value)
-    if not isfinite(out):
-        raise ValueError(f"{name} must be finite")
-    return out
+    return _finite_numeric(value, name)
 
 
 def _finite_tuple(values: Sequence[float], name: str) -> tuple[float, ...]:
-    out = tuple(float(value) for value in values)
-    if not all(isfinite(value) for value in out):
-        raise ValueError(f"{name} must contain only finite values")
-    return out
+    return tuple(
+        _finite_numeric(value, f"{name}[{index}]")
+        for index, value in enumerate(values)
+    )
 
 
 def _fraction(value: float) -> Fraction:
