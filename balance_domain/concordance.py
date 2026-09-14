@@ -6,6 +6,8 @@ from dataclasses import dataclass
 import math
 from typing import Sequence
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class CriticalConcordanceResult:
@@ -76,18 +78,25 @@ def compare_critical_paths(
     applies only to the gap values; it is never reused as an environmental
     coordinate tolerance.
     """
-    e = tuple(float(x) for x in environment)
-    direct = tuple(float(x) for x in direct_worldline_gap)
-    decomposed = tuple(float(x) for x in decomposed_gap)
-    value_tolerance = float(value_tolerance)
-    critical_point_tolerance = float(critical_point_tolerance)
+    e = tuple(
+        _finite_numeric(value, f"environment[{index}]")
+        for index, value in enumerate(environment)
+    )
+    direct = tuple(
+        _finite_numeric(value, f"direct_worldline_gap[{index}]")
+        for index, value in enumerate(direct_worldline_gap)
+    )
+    decomposed = tuple(
+        _finite_numeric(value, f"decomposed_gap[{index}]")
+        for index, value in enumerate(decomposed_gap)
+    )
+    value_tolerance = _finite_numeric(value_tolerance, "value_tolerance")
+    critical_point_tolerance = _finite_numeric(
+        critical_point_tolerance, "critical_point_tolerance"
+    )
     n = len(e)
     if n < 2 or not (len(direct) == len(decomposed) == n):
         raise ValueError("all paths must have equal length >= 2")
-    if not all(math.isfinite(x) for values in (e, direct, decomposed) for x in values):
-        raise ValueError("all path values must be finite")
-    if not math.isfinite(value_tolerance) or not math.isfinite(critical_point_tolerance):
-        raise ValueError("tolerances must be finite")
     if any(e[i + 1] <= e[i] for i in range(n - 1)):
         raise ValueError("environment must be strictly increasing")
     if value_tolerance <= 0 or critical_point_tolerance < 0:

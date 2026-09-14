@@ -10,23 +10,34 @@ ordinal labels.
 from __future__ import annotations
 
 from dataclasses import dataclass
-import math
 from typing import Mapping, Sequence
 
+from .boundary import _finite_numeric
 
-def _finite(value: float, name: str) -> float:
-    value = float(value)
-    if not math.isfinite(value):
-        raise ValueError(f"{name} must be finite")
-    return value
+
+_MISSING_LABELS = {"none", "null", "nan", "required_before_use"}
+
+
+def _finite(value: object, name: str) -> float:
+    return _finite_numeric(value, name)
+
+
+def _required_text(value: object, name: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{name} must be a frozen non-missing string")
+    text = value.strip()
+    if not text or text.casefold() in _MISSING_LABELS:
+        raise ValueError(f"{name} must be frozen before use")
+    return text
 
 
 def _ordered_contexts(contexts: Sequence[str]) -> tuple[str, ...]:
-    values = tuple(contexts)
+    values = tuple(
+        _required_text(context, f"context label {index}")
+        for index, context in enumerate(contexts)
+    )
     if len(values) < 2:
         raise ValueError("at least two ordered contexts are required")
-    if any(not isinstance(context, str) or not context.strip() for context in values):
-        raise ValueError("context labels must be non-empty strings")
     if len(set(values)) != len(values):
         raise ValueError("context labels must be unique")
     return values
@@ -75,8 +86,7 @@ def crossing_bracket(
     context_values: Mapping[str, float] | None = None,
     tolerance: float = 1e-12,
 ) -> CrossingBracket:
-    if not isinstance(definition, str) or not definition.strip():
-        raise ValueError("definition label must be a non-empty string")
+    definition = _required_text(definition, "definition label")
     contexts = _ordered_contexts(contexts)
     tol = _finite(tolerance, "tolerance")
     if tol < 0:
@@ -165,8 +175,7 @@ def _validate_bracket_against_contexts(
     bracket: CrossingBracket,
     contexts: tuple[str, ...],
 ) -> None:
-    if not isinstance(bracket.definition, str) or not bracket.definition.strip():
-        raise ValueError("bracket definition label must be non-empty")
+    _required_text(bracket.definition, "bracket definition label")
     if type(bracket.left_index) is not int or type(bracket.right_index) is not int:
         raise ValueError("bracket indices must be integers")
     if not 0 <= bracket.left_index <= bracket.right_index < len(contexts):
