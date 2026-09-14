@@ -5,6 +5,8 @@ from decimal import Decimal, localcontext
 from math import isfinite
 from typing import Sequence
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class MetricBoundaryDepth:
@@ -44,11 +46,15 @@ def diagonal_metric_boundary_depth(
     metric_diag contains the positive diagonal entries of Q in
     ||delta||_Q^2 = delta^T Q delta.
     """
-    margin = float(margin)
-    gradient = tuple(float(g) for g in gradient)
-    metric_diag = tuple(float(q) for q in metric_diag)
-    if not isfinite(margin) or not all(isfinite(v) for v in gradient + metric_diag):
-        raise ValueError("margin, gradient, and metric diagonal must be finite")
+    margin = _finite_numeric(margin, "margin")
+    gradient = tuple(
+        _finite_numeric(value, f"gradient[{index}]")
+        for index, value in enumerate(gradient)
+    )
+    metric_diag = tuple(
+        _finite_numeric(value, f"metric_diag[{index}]")
+        for index, value in enumerate(metric_diag)
+    )
     if margin <= 0:
         raise ValueError("margin must be positive inside the domain")
     if len(gradient) != len(metric_diag) or not gradient:

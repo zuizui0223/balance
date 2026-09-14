@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from fractions import Fraction
 import math
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class AccessibilityScopeBounds:
@@ -45,11 +47,9 @@ def accessibility_scope_bounds(
     over the whole declared accessibility set. Outside that case the function
     returns signed minimum margins instead of silently calling them depth.
     """
-    conflict = float(conflict_load)
-    definite = float(reserve_definite)
-    possible = float(reserve_possible)
-    if not all(math.isfinite(value) for value in (conflict, definite, possible)):
-        raise ValueError("conflict and reserve bounds must be finite")
+    conflict = _finite_numeric(conflict_load, "conflict_load")
+    definite = _finite_numeric(reserve_definite, "reserve_definite")
+    possible = _finite_numeric(reserve_possible, "reserve_possible")
     if conflict < 0:
         raise ValueError("conflict_load must be non-negative")
     if possible > definite:
