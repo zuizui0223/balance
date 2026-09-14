@@ -66,8 +66,57 @@ def test_interaction_f_supplies_interaction_uncertainty():
     assert (receipt.interaction_contrast / receipt.interaction_standard_error) ** 2 == pytest.approx(2.366)
 
 
+def test_extreme_interaction_square_overflow_recovers_finite_covariance():
+    # Let a,b,c be independent with variances A=B=C=5e307 and d=b+c-a.
+    # Then Var(d)=1.5e308, Var(a+d)=1e308 and Var(a-b)=1e308.
+    # With q=1e308 and F=1e308, q^2 itself is far outside float range but
+    # q^2/F is the representable interaction variance 1e308.
+    a_var = 5.0e307
+    receipt = reconstruct_reported_factorial_contrasts(
+        (1.0e308, 0.0, 1.0e308, 0.0),
+        (
+            math.sqrt(a_var),
+            math.sqrt(a_var),
+            math.sqrt(a_var),
+            math.sqrt(1.5e308),
+        ),
+        combined_contrast=1.0e308,
+        combined_standard_error=1.0e154,
+        interaction_f=1.0e308,
+    )
+    assert receipt.effect_size_ready
+    assert receipt.interaction_contrast == pytest.approx(1.0e308)
+    assert receipt.interaction_standard_error == pytest.approx(1.0e154)
+    assert all(
+        math.isfinite(value)
+        for row in receipt.contrast_covariance
+        for value in row
+    )
+
+
+def test_nonfinite_tolerances_cannot_disable_closure_or_covariance_gates():
+    base = dict(
+        mediated_contrasts=(-0.022, 0.572, -0.391, 0.203),
+        contrast_standard_errors=(0.314, 0.224, 0.125, 0.365),
+        combined_contrast=0.181,
+        combined_standard_error=0.213,
+        interaction_f=2.366,
+    )
+    for bad in (math.nan, math.inf):
+        with pytest.raises(ValueError, match="finite"):
+            reconstruct_reported_factorial_contrasts(
+                **base,
+                closure_tolerance=bad,
+            )
+        with pytest.raises(ValueError, match="finite"):
+            reconstruct_reported_factorial_contrasts(
+                **base,
+                covariance_tolerance=bad,
+            )
+
+
 def test_incomplete_or_inconsistent_reported_statistics_fail_closed():
-    with pytest.raises(ValueError, match="a \+ d"):
+    with pytest.raises(ValueError, match=r"a \+ d"):
         reconstruct_reported_factorial_contrasts(
             (-0.022, 0.572, -0.391, 0.204),
             (0.314, 0.224, 0.125, 0.365),
