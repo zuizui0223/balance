@@ -24,6 +24,16 @@ REQUIRED = {
     "notes",
 }
 
+PATTERN_CLASSES = {
+    "CONFLICT_WITHOUT_SPLITTING",
+    "SANDWICHED_TRANSITION_MOSAIC",
+    "BOUNDARY_CROSSING",
+    "PERSISTENT_INTEGRATION_WITH_ALTERNATIVE_AVAILABLE",
+    "HYSTERESIS_OR_PATH_DEPENDENCE",
+    "DIRECT_DIFFERENTIATION",
+    "UNRESOLVED",
+}
+
 MIDDLE_CLASSES = {
     "CONFLICT_WITHOUT_SPLITTING",
     "SANDWICHED_TRANSITION_MOSAIC",
@@ -74,6 +84,12 @@ def _validated_rows(reader: csv.DictReader) -> list[dict[str, str]]:
                 f"duplicate cluster_id {cluster_id!r}: each independent cluster must occupy exactly one ledger row"
             )
         seen.add(cluster_id)
+
+        pattern_class = clean["pattern_class"]
+        if pattern_class not in PATTERN_CLASSES:
+            raise ValueError(
+                f"row {row_number} pattern_class {pattern_class!r} is not a registered reality-pattern class"
+            )
 
         for field in (
             "conflict_present",
