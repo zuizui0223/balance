@@ -8,6 +8,7 @@ intervals for the true thresholds and hysteresis width.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction as F
 from math import inf, isfinite, nextafter
 
 
@@ -29,12 +30,67 @@ class HysteresisInterval:
     switching_cost_sum_upper: float | None
 
 
-def _lower_outward(value: float) -> float:
-    return nextafter(value, -inf)
+def _point_to_float(value: F, name: str) -> float:
+    """Convert one exact point estimand without inventing 0/inf."""
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale forcing units"
+        ) from exc
+    if not isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale forcing units"
+        )
+    if value != 0 and out == 0.0:
+        raise ValueError(f"{name} underflows float precision; rescale forcing units")
+    return out
 
 
-def _upper_outward(value: float) -> float:
-    return nextafter(value, inf)
+def _lower_bound_to_float(value: F, name: str, *, clamp_zero: bool = False) -> float:
+    """Convert an exact lower bound, moving outward only when rounding is inward."""
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale forcing units"
+        ) from exc
+    if not isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale forcing units"
+        )
+    if F.from_float(out) > value:
+        out = nextafter(out, -inf)
+        if not isfinite(out):
+            raise ValueError(
+                f"{name} has no finite conservative float lower bound; rescale forcing units"
+            )
+    if clamp_zero and out < 0.0:
+        out = 0.0
+    return out
+
+
+def _upper_bound_to_float(value: F, name: str, *, clamp_zero: bool = False) -> float:
+    """Convert an exact upper bound, moving outward only when rounding is inward."""
+    try:
+        out = float(value)
+    except OverflowError as exc:
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale forcing units"
+        ) from exc
+    if not isfinite(out):
+        raise ValueError(
+            f"{name} is finite mathematically but not representable as float; rescale forcing units"
+        )
+    if F.from_float(out) < value:
+        out = nextafter(out, inf)
+        if not isfinite(out):
+            raise ValueError(
+                f"{name} has no finite conservative float upper bound; rescale forcing units"
+            )
+    if clamp_zero and out > 0.0:
+        out = 0.0
+    return out
 
 
 def identify_hysteresis_interval(
@@ -66,14 +122,18 @@ def identify_hysteresis_interval(
     Phi. The returned closed intervals are conservative envelopes of the strict
     sets after intersecting them with ``F>=0`` and ``R<=0``.
 
-    Derived floating-point bounds are rounded outward by one representable value
-    so numerical roundoff cannot make a nominal lower bound exceed, or an upper
-    bound fall below, the exact mathematical envelope.
+    All differences and optional horizon rescalings are evaluated exactly at
+    the supplied-float level. Point estimands fail closed if they leave the
+    finite float surface; lower/upper identification bounds are rounded only in
+    the conservative outward direction when required.
     """
-    fhat = float(observed_forward_switch)
-    rhat = float(observed_reverse_switch)
-    du = float(max_up_step)
-    dd = float(max_down_step)
+    try:
+        fhat = float(observed_forward_switch)
+        rhat = float(observed_reverse_switch)
+        du = float(max_up_step)
+        dd = float(max_down_step)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("switch points and step bounds must be finite numeric values") from exc
     if not all(isfinite(x) for x in (fhat, rhat, du, dd)):
         raise ValueError("switch points and step bounds must be finite")
     if du <= 0.0 or dd <= 0.0:
@@ -85,31 +145,53 @@ def identify_hysteresis_interval(
     if fhat < rhat:
         raise ValueError("observed forward switch must not lie below reverse switch")
 
-    # Intersect the finite-resolution brackets with the model constraints
-    # F>=0 and R<=0. Round computed endpoints outward to preserve the declared
-    # conservative-envelope semantics under floating-point arithmetic.
-    forward_lower = max(0.0, _lower_outward(fhat - du))
+    fhat_q = F.from_float(fhat)
+    rhat_q = F.from_float(rhat)
+    du_q = F.from_float(du)
+    dd_q = F.from_float(dd)
+    zero = F(0, 1)
+
+    # Exact mathematical envelopes after intersecting with F>=0 and R<=0.
+    forward_lower_q = max(zero, fhat_q - du_q)
+    reverse_upper_q = min(zero, rhat_q + dd_q)
+    observed_width_q = fhat_q - rhat_q
+    width_lower_q = max(zero, forward_lower_q - reverse_upper_q)
+    width_upper_q = observed_width_q
+
+    forward_lower = _lower_bound_to_float(
+        forward_lower_q, "forward threshold lower bound", clamp_zero=True
+    )
     forward_upper = fhat
     reverse_lower = rhat
-    reverse_upper = min(0.0, _upper_outward(rhat + dd))
-    observed_width = fhat - rhat
-
-    # Minimum feasible width uses the smallest forward threshold and largest
-    # reverse threshold after sign intersection. Maximum is approached by the
-    # two observed outer switch points and is returned as a closed envelope.
-    width_lower = max(0.0, _lower_outward(forward_lower - reverse_upper))
-    width_upper = _upper_outward(observed_width)
+    reverse_upper = _upper_bound_to_float(
+        reverse_upper_q, "reverse threshold upper bound", clamp_zero=True
+    )
+    observed_width = _point_to_float(observed_width_q, "observed hysteresis width")
+    width_lower = _lower_bound_to_float(
+        width_lower_q, "true hysteresis width lower bound", clamp_zero=True
+    )
+    width_upper = _upper_bound_to_float(
+        width_upper_q, "true hysteresis width upper bound"
+    )
 
     cost_lower = cost_upper = None
     T = None
     if horizon is not None:
-        T = float(horizon)
+        try:
+            T = float(horizon)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("horizon must be finite and positive") from exc
         if not isfinite(T) or T <= 0.0:
             raise ValueError("horizon must be finite and positive")
-        # Exact BALANCE width = (C_SD + C_DS)/T. Round the derived cost bounds
-        # outward as well; they are identification guarantees, not point estimates.
-        cost_lower = max(0.0, _lower_outward(T * width_lower))
-        cost_upper = _upper_outward(T * width_upper)
+        t_q = F.from_float(T)
+        cost_lower_q = t_q * width_lower_q
+        cost_upper_q = t_q * width_upper_q
+        cost_lower = _lower_bound_to_float(
+            cost_lower_q, "switching cost sum lower bound", clamp_zero=True
+        )
+        cost_upper = _upper_bound_to_float(
+            cost_upper_q, "switching cost sum upper bound"
+        )
 
     return HysteresisInterval(
         observed_forward_switch=fhat,
