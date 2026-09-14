@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from balance_domain.hysteresis_interval import identify_hysteresis_interval
@@ -33,8 +35,7 @@ def test_known_horizon_turns_width_interval_into_switching_cost_sum_interval():
 
 def test_conservative_bounds_survive_binary_floating_point_roundoff():
     # In exact decimal arithmetic the true width is 0.3 and the cost sum is 3.
-    # Without outward rounding the computed lower cost bound can become
-    # 3.0000000000000004 and incorrectly exclude the true parameter.
+    # Outward rounding must not exclude the true parameter.
     result = identify_hysteresis_interval(
         0.3,
         -0.2,
@@ -44,6 +45,41 @@ def test_conservative_bounds_survive_binary_floating_point_roundoff():
     )
     assert result.true_width_lower <= 0.3 <= result.true_width_upper
     assert result.switching_cost_sum_lower <= 3.0 <= result.switching_cost_sum_upper
+
+
+def test_large_representable_hysteresis_width_stays_finite():
+    result = identify_hysteresis_interval(
+        8.0e307,
+        -8.0e307,
+        max_up_step=1.0e307,
+        max_down_step=1.0e307,
+    )
+    assert math.isfinite(result.observed_width)
+    assert result.observed_width == pytest.approx(1.6e308)
+    assert math.isfinite(result.true_width_lower)
+    assert math.isfinite(result.true_width_upper)
+    assert result.true_width_lower <= result.observed_width <= result.true_width_upper
+
+
+def test_unrepresentable_observed_hysteresis_width_fails_closed():
+    with pytest.raises(ValueError, match="observed hysteresis width.*not representable"):
+        identify_hysteresis_interval(
+            1.0e308,
+            -1.0e308,
+            max_up_step=1.0e307,
+            max_down_step=1.0e307,
+        )
+
+
+def test_unrepresentable_switching_cost_upper_bound_fails_closed():
+    with pytest.raises(ValueError, match="switching cost sum upper bound.*not representable"):
+        identify_hysteresis_interval(
+            1.0e154,
+            -1.0e154,
+            max_up_step=1.0e154,
+            max_down_step=1.0e154,
+            horizon=1.0e154,
+        )
 
 
 def test_resolution_uncertainty_cannot_make_negative_true_width():
