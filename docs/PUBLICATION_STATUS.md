@@ -25,11 +25,28 @@ The repository remains the canonical home for:
 - no-reentry sufficient conditions;
 - switching-cost hysteresis and persistence.
 
-These results remain citable and should be versioned for a Zenodo DOI when the module is stable.
+These results remain citable and are now exposed through a self-verifying DOI-module release surface.
+
+## DOI-module release surface
+
+The release contract is defined by
+
+```text
+release/BALANCE_DOI_MODULE_MANIFEST_V1.json
+docs/BALANCE_TECHNICAL_MODULE_V1.md
+docs/ZENODO_RELEASE_CHECKLIST_V1.md
+scripts/build_balance_doi_bundle.py
+```
+
+The builder fails closed unless the dormant-module status, canonical manuscript contract, empirical claim ceiling and frozen pattern readout remain mutually consistent. A successful build emits a versioned ZIP, a release receipt with per-file SHA256 inventory, and a checksum for the exact ZIP proposed for deposition.
+
+The release surface does **not** infer author order, ORCID identifiers, a license, or a DOI. Those are human deposition metadata and must be confirmed separately before a Zenodo record is minted.
 
 ## What is no longer an active paper claim
 
 BALANCE will not currently be developed as a separate full paper whose central claim is simply the geometry of `L>0, Phi<0`. The existence of that state belongs to the SLK flagship; BALANCE supplies the diagnostic and certification machinery underneath it.
+
+The frozen literature-pattern layer is contextual evidence only. It does not identify direct matched BALANCE worldline occupancy, natural prevalence, or pooled `Phi`, `rho`, `xi`, or `d_B` across unmatched systems.
 
 ## Reactivation rule
 

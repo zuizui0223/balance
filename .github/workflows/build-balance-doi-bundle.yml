@@ -1,0 +1,99 @@
+name: Build BALANCE DOI module bundle
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'release/**'
+      - 'docs/**'
+      - 'manuscript/**'
+      - 'data/**'
+      - 'figures/**'
+      - 'theory/**'
+      - 'balance_domain/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'README.md'
+      - 'pyproject.toml'
+      - '.github/workflows/build-balance-doi-bundle.yml'
+  push:
+    paths:
+      - 'release/**'
+      - 'docs/**'
+      - 'manuscript/**'
+      - 'data/**'
+      - 'figures/**'
+      - 'theory/**'
+      - 'balance_domain/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'README.md'
+      - 'pyproject.toml'
+      - '.github/workflows/build-balance-doi-bundle.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install test tooling
+        run: |
+          python -m pip install --upgrade pip pytest
+
+      - name: Run repository tests
+        run: |
+          python -m pytest -q
+
+      - name: Build self-verifying DOI bundle
+        run: |
+          python scripts/build_balance_doi_bundle.py
+
+      - name: Validate release outputs
+        run: |
+          test -s release/generated/BALANCE_DOI_MODULE_V1.zip
+          test -s release/generated/BALANCE_DOI_MODULE_V1_RELEASE_RECEIPT.json
+          test -s release/generated/BALANCE_DOI_MODULE_V1.sha256
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root = Path('release/generated')
+          bundle = root / 'BALANCE_DOI_MODULE_V1.zip'
+          receipt_path = root / 'BALANCE_DOI_MODULE_V1_RELEASE_RECEIPT.json'
+          checksum_path = root / 'BALANCE_DOI_MODULE_V1.sha256'
+          receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
+          assert receipt['all_contract_checks_pass'] is True
+          assert receipt['active_publication_queue'] is False
+          assert receipt['pattern_independent_clusters'] == 17
+          assert receipt['middle_regime_signature_clusters'] == 9
+          assert receipt['direct_matched_worldline_receipts'] == 0
+          digest = hashlib.sha256(bundle.read_bytes()).hexdigest()
+          assert checksum_path.read_text(encoding='utf-8') == f'{digest}  {bundle.name}\n'
+          with zipfile.ZipFile(bundle) as zf:
+              assert zf.testzip() is None
+              embedded = json.loads(zf.read('RELEASE_RECEIPT.json'))
+              assert embedded == receipt
+          print(f'bundle_files={receipt["bundle_file_count"]}')
+          print(f'bundle_sha256={digest}')
+          print(f'git_head={receipt["git_head"]}')
+          PY
+
+      - name: Upload DOI candidate bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-doi-module-v1-candidate
+          path: |
+            release/generated/BALANCE_DOI_MODULE_V1.zip
+            release/generated/BALANCE_DOI_MODULE_V1_RELEASE_RECEIPT.json
+            release/generated/BALANCE_DOI_MODULE_V1.sha256
+          if-no-files-found: error
