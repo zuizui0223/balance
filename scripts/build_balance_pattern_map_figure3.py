@@ -2,13 +2,23 @@
 """Build Figure 3: source-adjudicated BALANCE pattern-class × domain recurrence map."""
 from __future__ import annotations
 
-import csv
 import html
+import json
+import sys
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from balance_domain.pattern_ledger import (  # noqa: E402
+    build_pattern_readout_from_rows,
+    load_pattern_ledger,
+)
+
 LEDGER = ROOT / "data" / "BALANCE_PATTERN_LEDGER_V1.csv"
+READOUT = ROOT / "data" / "BALANCE_PATTERN_READOUT_V1.json"
 DEFAULT_OUT = ROOT / "figures" / "BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg"
 
 PATTERN_ORDER = [
@@ -38,8 +48,25 @@ def _esc(v: object) -> str:
 
 
 def _load():
-    with LEDGER.open(encoding="utf-8", newline="") as handle:
-        rows = list(csv.DictReader(handle))
+    rows = load_pattern_ledger(LEDGER)
+    computed_readout = build_pattern_readout_from_rows(rows)
+    frozen_readout = json.loads(READOUT.read_text(encoding="utf-8"))
+    if computed_readout != frozen_readout:
+        raise ValueError("pattern ledger and frozen readout disagree; regenerate/adjudicate before Figure 3")
+
+    hidden_patterns = sorted({r["pattern_class"] for r in rows} - set(PATTERN_ORDER))
+    if hidden_patterns:
+        raise ValueError(
+            "Figure 3 has no registered display row for pattern classes: "
+            + ", ".join(hidden_patterns)
+        )
+    hidden_domains = sorted({r["domain"] for r in rows} - set(DOMAIN_ORDER))
+    if hidden_domains:
+        raise ValueError(
+            "Figure 3 has no registered display column for domains: "
+            + ", ".join(hidden_domains)
+        )
+
     clusters = {(r["cluster_id"], r["domain"], r["pattern_class"]) for r in rows}
     counts = Counter((domain, pattern) for _, domain, pattern in clusters)
     return rows, clusters, counts
@@ -128,5 +155,5 @@ def main(out_path: str | None = None):
 
 
 if __name__ == "__main__":
-    import sys
-    main(sys.argv[1] if len(sys.argv) > 1 else None)
+    import sys as _sys
+    main(_sys.argv[1] if len(_sys.argv) > 1 else None)
