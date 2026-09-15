@@ -12,9 +12,10 @@
   },
   "claim_ceiling": "technical certification and source-adjudicated pattern synthesis; no direct matched BALANCE worldline occupancy and no standalone prevalence claim",
   "canonical_context": {
-    "manuscript": "manuscript/BALANCE_MANUSCRIPT_V1.md",
+    "assembled_manuscript_arcname": "manuscript/BALANCE_MANUSCRIPT_V1.md",
     "manifest": "manuscript/BALANCE_CANONICAL_MANUSCRIPT_MANIFEST_V1.json",
-    "role": "frozen reusable context asset, not an active submission"
+    "assembly_script": "scripts/assemble_balance_manuscript.py",
+    "role": "deterministically assembled frozen context asset included in the DOI bundle, not an active submission"
   },
   "primary_theory_anchors": [
     "theory/MIDDLE_WORLD_RESULTS_V1.md",
