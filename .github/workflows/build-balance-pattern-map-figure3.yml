@@ -3,6 +3,7 @@ name: Build BALANCE reality-pattern Figure 3
 on:
   pull_request:
     paths:
+      - "balance_domain/pattern_ledger.py"
       - "scripts/build_balance_pattern_map_figure3.py"
       - "data/BALANCE_PATTERN_LEDGER_V1.csv"
       - "data/BALANCE_PATTERN_READOUT_V1.json"
