@@ -21,7 +21,6 @@ from assemble_balance_manuscript import build_manuscript  # noqa: E402
 MANIFEST_PATH = ROOT / "release" / "BALANCE_DOI_MODULE_MANIFEST_V1.json"
 STATUS_PATH = ROOT / "docs" / "PUBLICATION_STATUS.md"
 CANONICAL_MANIFEST_PATH = ROOT / "manuscript" / "BALANCE_CANONICAL_MANUSCRIPT_MANIFEST_V1.json"
-CANONICAL_MANUSCRIPT_PATH = ROOT / "manuscript" / "BALANCE_MANUSCRIPT_V1.md"
 PATTERN_LEDGER = ROOT / "data" / "BALANCE_PATTERN_LEDGER_V1.csv"
 PATTERN_READOUT = ROOT / "data" / "BALANCE_PATTERN_READOUT_V1.json"
 DEFAULT_OUT_DIR = ROOT / "release" / "generated"
@@ -46,6 +45,13 @@ def _git_head() -> str:
 
 def load_release_manifest() -> dict:
     return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+
+
+def _assembled_manuscript() -> tuple[str, bytes]:
+    release_manifest = load_release_manifest()
+    arcname = release_manifest["canonical_context"]["assembled_manuscript_arcname"]
+    text = build_manuscript()
+    return arcname, text.encode("utf-8")
 
 
 def validate_release_contract() -> dict[str, object]:
@@ -74,14 +80,17 @@ def validate_release_contract() -> dict[str, object]:
     if "not_direct_BALANCE_worldline_occupancy" not in canonical.get("claim_ceiling", ""):
         raise ValueError("canonical claim ceiling no longer excludes direct BALANCE occupancy")
 
-    assembled = build_manuscript()
+    assembled_arcname, assembled_bytes = _assembled_manuscript()
+    if Path(assembled_arcname).name != canonical.get("canonical_manuscript"):
+        raise ValueError("release manuscript archive name disagrees with canonical manifest")
+    assembled = assembled_bytes.decode("utf-8")
     expected_assembled = {
         "sha256": canonical["expected_sha256"],
         "word_count": canonical["expected_word_count"],
         "line_count": canonical["expected_line_count"],
     }
     actual_assembled = {
-        "sha256": _sha256_bytes(assembled.encode("utf-8")),
+        "sha256": _sha256_bytes(assembled_bytes),
         "word_count": len(assembled.split()),
         "line_count": len(assembled.splitlines()),
     }
@@ -89,8 +98,6 @@ def validate_release_contract() -> dict[str, object]:
         raise ValueError(
             f"canonical manuscript assembly drift: expected {expected_assembled}, got {actual_assembled}"
         )
-    if CANONICAL_MANUSCRIPT_PATH.read_text(encoding="utf-8") != assembled:
-        raise ValueError("saved canonical manuscript differs from deterministic assembly")
 
     rows = load_pattern_ledger(PATTERN_LEDGER)
     computed_readout = build_pattern_readout(PATTERN_LEDGER)
@@ -111,8 +118,8 @@ def validate_release_contract() -> dict[str, object]:
         + release_manifest["primary_empirical_anchors"]
         + release_manifest["primary_figures"]
         + [
-            release_manifest["canonical_context"]["manuscript"],
             release_manifest["canonical_context"]["manifest"],
+            release_manifest["canonical_context"]["assembly_script"],
             "docs/BALANCE_TECHNICAL_MODULE_V1.md",
             "docs/PUBLICATION_STATUS.md",
         ]
@@ -128,6 +135,7 @@ def validate_release_contract() -> dict[str, object]:
         "claim_ceiling": release_manifest["claim_ceiling"],
         "git_head": _git_head(),
         "canonical_manuscript": actual_assembled,
+        "canonical_manuscript_arcname": assembled_arcname,
         "pattern_records": len(rows),
         "pattern_independent_clusters": frozen_readout["n_independent_clusters"],
         "middle_regime_signature_clusters": frozen_readout[
@@ -184,16 +192,33 @@ def _zip_write_bytes(zf: zipfile.ZipFile, arcname: str, data: bytes) -> None:
 def build_bundle(out_dir: Path = DEFAULT_OUT_DIR) -> tuple[Path, Path, Path]:
     receipt = validate_release_contract()
     files = bundle_files()
-    inventory = []
+    assembled_arcname, assembled_bytes = _assembled_manuscript()
+
+    payloads: list[tuple[str, bytes, str]] = []
+    existing_names: set[str] = set()
     for rel in files:
+        arcname = rel.as_posix()
         data = (ROOT / rel).read_bytes()
-        inventory.append(
-            {
-                "path": rel.as_posix(),
-                "bytes": len(data),
-                "sha256": _sha256_bytes(data),
-            }
-        )
+        payloads.append((arcname, data, "repository"))
+        existing_names.add(arcname)
+
+    if assembled_arcname in existing_names:
+        existing = (ROOT / assembled_arcname).read_bytes()
+        if existing != assembled_bytes:
+            raise ValueError("committed canonical manuscript differs from deterministic assembly")
+    else:
+        payloads.append((assembled_arcname, assembled_bytes, "deterministic_assembly"))
+
+    payloads.sort(key=lambda item: item[0])
+    inventory = [
+        {
+            "path": arcname,
+            "bytes": len(data),
+            "sha256": _sha256_bytes(data),
+            "source": source,
+        }
+        for arcname, data, source in payloads
+    ]
     receipt["bundle_file_count"] = len(inventory)
     receipt["bundle_inventory"] = inventory
 
@@ -204,9 +229,8 @@ def build_bundle(out_dir: Path = DEFAULT_OUT_DIR) -> tuple[Path, Path, Path]:
 
     receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode("utf-8")
     with zipfile.ZipFile(zip_path, "w") as zf:
-        for item in inventory:
-            rel = Path(item["path"])
-            _zip_write_bytes(zf, rel.as_posix(), (ROOT / rel).read_bytes())
+        for arcname, data, _source in payloads:
+            _zip_write_bytes(zf, arcname, data)
         _zip_write_bytes(zf, "RELEASE_RECEIPT.json", receipt_bytes)
 
     receipt_path.write_bytes(receipt_bytes)
