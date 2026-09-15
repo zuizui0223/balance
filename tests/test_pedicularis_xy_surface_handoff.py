@@ -98,6 +98,11 @@ def test_forged_conflict_source_cannot_bypass_canonical_handoff_validator() -> N
     with pytest.raises(ValueError, match="SCH source receipt"):
         consume_pedicularis_xy_surface(conflict, _xy())
 
+    conflict = _conflict()
+    conflict["conflict_load"].pop("source_field")
+    with pytest.raises(ValueError, match="source_field"):
+        consume_pedicularis_xy_surface(conflict, _xy())
+
 
 def test_missing_xy_identifiers_cannot_match_missing_conflict_identifiers():
     conflict = _conflict()
