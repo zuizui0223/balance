@@ -39,10 +39,15 @@ def _validate_state(state: str) -> ArchitectureState:
 
 
 def _finite_path(phi_path: Sequence[float]) -> tuple[float, ...]:
-    values = tuple(
-        _finite_numeric(value, f"phi_path[{i}]")
-        for i, value in enumerate(phi_path)
-    )
+    if any(isinstance(value, bool) for value in phi_path):
+        raise ValueError("phi_path values must be finite numeric evidence, not boolean")
+    try:
+        values = tuple(
+            _finite_numeric(value, f"phi_path[{i}]")
+            for i, value in enumerate(phi_path)
+        )
+    except ValueError as exc:
+        raise ValueError("phi_path values must be finite") from exc
     if not values:
         raise ValueError("phi_path must be non-empty")
     return values
