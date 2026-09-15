@@ -1,0 +1,75 @@
+{
+  "module_id": "BALANCE_DOI_MODULE_V1",
+  "title": "BALANCE: certification machinery for persistent functional conflict under accessible differentiation",
+  "publication_status": "DOI_TECHNICAL_MODULE_SUPPORTING_SLK",
+  "active_publication_queue": false,
+  "primary_state_certificate": {
+    "decomposed": ["L > 0", "Phi < 0"],
+    "direct_worldline": ["L > 0", "Delta_W = W_D* - W_S* < 0"],
+    "direct_reserve": "rho = W_S* - W_D* = -Delta_W",
+    "position": "xi = L/(L+rho)",
+    "two_sided_depth": "d_B = min(L,rho)"
+  },
+  "claim_ceiling": "technical certification and source-adjudicated pattern synthesis; no direct matched BALANCE worldline occupancy and no standalone prevalence claim",
+  "canonical_context": {
+    "manuscript": "manuscript/BALANCE_MANUSCRIPT_V1.md",
+    "manifest": "manuscript/BALANCE_CANONICAL_MANUSCRIPT_MANIFEST_V1.json",
+    "role": "frozen reusable context asset, not an active submission"
+  },
+  "primary_theory_anchors": [
+    "theory/MIDDLE_WORLD_RESULTS_V1.md",
+    "docs/CHAPTER2_VALIDATION_LOGIC_V1.md",
+    "docs/THEORY_CAUSAL_GENERALITY_RECOVERY_V1.md"
+  ],
+  "primary_empirical_anchors": [
+    "data/BALANCE_PATTERN_LEDGER_V1.csv",
+    "data/BALANCE_PATTERN_READOUT_V1.json",
+    "data/BALANCE_MANUSCRIPT_CITATION_LEDGER_V1.csv",
+    "data/BALANCE_PATTERN_CLUSTER_CITATION_MAP_V1.csv"
+  ],
+  "primary_figures": [
+    "figures/BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg",
+    "figures/BALANCE_FIGURE2_Q1B_QUANTITATIVE_V1.svg",
+    "figures/BALANCE_FIGURE3_REALITY_PATTERN_MAP_V1.svg"
+  ],
+  "bundle_roots": [
+    ".github/workflows",
+    "balance_domain",
+    "comparative",
+    "data",
+    "docs",
+    "empirical",
+    "figures",
+    "manuscript",
+    "scripts",
+    "tests",
+    "theory",
+    "README.md",
+    "pyproject.toml",
+    "release"
+  ],
+  "bundle_exclusions": [
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "release/generated",
+    "*.pyc",
+    ".DS_Store"
+  ],
+  "frozen_empirical_receipts": {
+    "pattern_independent_clusters": 17,
+    "middle_regime_signature_clusters": 9,
+    "direct_matched_worldline_receipts": 0
+  },
+  "reactivation_policy": [
+    "direct empirical worldlines recover a nontrivial middle-world geometry that is itself a biological result",
+    "an independent theorem family emerges that cannot be reduced to SLK state classification",
+    "an empirical hysteresis or persistence result establishes a distinct scientific question"
+  ],
+  "external_deposition_metadata_required": [
+    "author list and order",
+    "ORCID identifiers where desired",
+    "license decision",
+    "Zenodo deposition and DOI minting"
+  ]
+}
