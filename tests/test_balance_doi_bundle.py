@@ -59,7 +59,7 @@ def test_doi_bundle_is_self_verifying(tmp_path: Path) -> None:
     )
 
     with zipfile.ZipFile(zip_path) as archive:
-        archive.testzip() is None
+        assert archive.testzip() is None
         names = set(archive.namelist())
         assert "RELEASE_RECEIPT.json" in names
         embedded = json.loads(archive.read("RELEASE_RECEIPT.json"))
