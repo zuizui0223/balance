@@ -5,6 +5,8 @@ from fractions import Fraction
 from math import isfinite
 from typing import Sequence
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class EnvelopeSegment:
@@ -27,15 +29,19 @@ def _finite_affines(
 ) -> tuple[tuple[float, ...], tuple[float, ...]]:
     if len(slopes) != len(intercepts) or not slopes:
         raise ValueError("slopes and intercepts must have the same nonzero length")
-    slope_values = tuple(float(value) for value in slopes)
-    intercept_values = tuple(float(value) for value in intercepts)
-    if not all(isfinite(value) for value in slope_values + intercept_values):
-        raise ValueError("slopes and intercepts must be finite")
+    slope_values = tuple(
+        _finite_numeric(value, f"slopes[{index}]")
+        for index, value in enumerate(slopes)
+    )
+    intercept_values = tuple(
+        _finite_numeric(value, f"intercepts[{index}]")
+        for index, value in enumerate(intercepts)
+    )
     return slope_values, intercept_values
 
 
 def _exact(value: float) -> Fraction:
-    return Fraction.from_float(float(value))
+    return Fraction.from_float(value)
 
 
 def _finite_output(value: Fraction, name: str) -> float:
@@ -65,11 +71,9 @@ def _alternative_reserve_exact(
     alternative_slopes, alternative_intercepts = _finite_affines(
         alternative_slopes, alternative_intercepts
     )
-    environment = float(environment)
-    shared_slope = float(shared_slope)
-    shared_intercept = float(shared_intercept)
-    if not all(isfinite(value) for value in (environment, shared_slope, shared_intercept)):
-        raise ValueError("environment and shared affine coefficients must be finite")
+    environment = _finite_numeric(environment, "environment")
+    shared_slope = _finite_numeric(shared_slope, "shared_slope")
+    shared_intercept = _finite_numeric(shared_intercept, "shared_intercept")
 
     x = _exact(environment)
     shared = _exact_value(_exact(shared_slope), _exact(shared_intercept), x)
@@ -95,10 +99,8 @@ def affine_upper_envelope_segments(
     create extra switches.
     """
     slopes, intercepts = _finite_affines(slopes, intercepts)
-    start = float(start)
-    end = float(end)
-    if not isfinite(start) or not isfinite(end):
-        raise ValueError("start and end must be finite")
+    start = _finite_numeric(start, "start")
+    end = _finite_numeric(end, "end")
     if not start < end:
         raise ValueError("start must be smaller than end")
 
@@ -185,11 +187,9 @@ def endpoint_reserve_certificate(
     Under the registered affine-envelope model, the reserve is concave, so its
     minimum over a closed interval equals the smaller endpoint reserve.
     """
-    start = float(start)
-    end = float(end)
-    strict_tolerance = float(strict_tolerance)
-    if not all(isfinite(value) for value in (start, end, strict_tolerance)):
-        raise ValueError("interval endpoints and strict_tolerance must be finite")
+    start = _finite_numeric(start, "start")
+    end = _finite_numeric(end, "end")
+    strict_tolerance = _finite_numeric(strict_tolerance, "strict_tolerance")
     if not start < end:
         raise ValueError("start must be smaller than end")
     if strict_tolerance < 0:
