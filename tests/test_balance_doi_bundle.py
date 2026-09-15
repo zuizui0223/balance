@@ -1,16 +1,20 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
+import sys
 import zipfile
 from pathlib import Path
 
-from scripts.build_balance_doi_bundle import (
-    MANIFEST_PATH,
-    build_bundle,
-    bundle_files,
-    validate_release_contract,
-)
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+bundle = importlib.import_module("build_balance_doi_bundle")
+
+MANIFEST_PATH = bundle.MANIFEST_PATH
+build_bundle = bundle.build_bundle
+bundle_files = bundle.bundle_files
+validate_release_contract = bundle.validate_release_contract
 
 
 def test_doi_release_contract_keeps_claim_ceiling_closed() -> None:
@@ -21,6 +25,7 @@ def test_doi_release_contract_keeps_claim_ceiling_closed() -> None:
     assert receipt["pattern_independent_clusters"] == 17
     assert receipt["middle_regime_signature_clusters"] == 9
     assert receipt["direct_matched_worldline_receipts"] == 0
+    assert receipt["canonical_manuscript"]["word_count"] == 7555
     assert "no direct matched BALANCE worldline occupancy" in receipt["claim_ceiling"]
 
 
@@ -37,6 +42,8 @@ def test_doi_bundle_inventory_is_explicit_and_excludes_generated_outputs() -> No
         assert rel in names
     for rel in manifest["primary_figures"]:
         assert rel in names
+    assembled = manifest["canonical_context"]["assembled_manuscript_arcname"]
+    assert assembled not in names
     assert all(not name.startswith("release/generated/") for name in names)
     assert all("/__pycache__/" not in f"/{name}" for name in names)
     assert all(not name.endswith(".pyc") for name in names)
@@ -62,8 +69,11 @@ def test_doi_bundle_is_self_verifying(tmp_path: Path) -> None:
         assert archive.testzip() is None
         names = set(archive.namelist())
         assert "RELEASE_RECEIPT.json" in names
+        assert receipt["canonical_manuscript_arcname"] in names
         embedded = json.loads(archive.read("RELEASE_RECEIPT.json"))
         assert embedded == receipt
+        inventory = {item["path"]: item for item in receipt["bundle_inventory"]}
+        assert inventory[receipt["canonical_manuscript_arcname"]]["source"] == "deterministic_assembly"
         for item in receipt["bundle_inventory"]:
             data = archive.read(item["path"])
             assert len(data) == item["bytes"]
