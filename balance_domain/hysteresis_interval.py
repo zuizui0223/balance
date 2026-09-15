@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from fractions import Fraction as F
 from math import inf, isfinite, nextafter
 
+from balance_domain.boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class HysteresisInterval:
@@ -127,15 +129,10 @@ def identify_hysteresis_interval(
     finite float surface; lower/upper identification bounds are rounded only in
     the conservative outward direction when required.
     """
-    try:
-        fhat = float(observed_forward_switch)
-        rhat = float(observed_reverse_switch)
-        du = float(max_up_step)
-        dd = float(max_down_step)
-    except (TypeError, ValueError, OverflowError) as exc:
-        raise ValueError("switch points and step bounds must be finite numeric values") from exc
-    if not all(isfinite(x) for x in (fhat, rhat, du, dd)):
-        raise ValueError("switch points and step bounds must be finite")
+    fhat = _finite_numeric(observed_forward_switch, "observed_forward_switch")
+    rhat = _finite_numeric(observed_reverse_switch, "observed_reverse_switch")
+    du = _finite_numeric(max_up_step, "max_up_step")
+    dd = _finite_numeric(max_down_step, "max_down_step")
     if du <= 0.0 or dd <= 0.0:
         raise ValueError("observed strict switches require strictly positive step bounds")
     if fhat <= 0.0:
@@ -177,11 +174,8 @@ def identify_hysteresis_interval(
     cost_lower = cost_upper = None
     T = None
     if horizon is not None:
-        try:
-            T = float(horizon)
-        except (TypeError, ValueError, OverflowError) as exc:
-            raise ValueError("horizon must be finite and positive") from exc
-        if not isfinite(T) or T <= 0.0:
+        T = _finite_numeric(horizon, "horizon")
+        if T <= 0.0:
             raise ValueError("horizon must be finite and positive")
         t_q = F.from_float(T)
         cost_lower_q = t_q * width_lower_q
