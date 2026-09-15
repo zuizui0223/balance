@@ -5,6 +5,8 @@ from fractions import Fraction
 from math import isfinite, isinf
 from typing import Sequence
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class ConcaveSegmentCertificate:
@@ -40,17 +42,24 @@ class IntervalChordClassification:
 
 
 def _finite(value: float, name: str) -> float:
-    out = float(value)
-    if not isfinite(out):
-        raise ValueError(f"{name} must be finite")
-    return out
+    return _finite_numeric(value, name)
 
 
 def _finite_vector(values: Sequence[float], name: str) -> tuple[float, ...]:
-    out = tuple(float(value) for value in values)
-    if not all(isfinite(value) for value in out):
-        raise ValueError(f"{name} must contain only finite values")
-    return out
+    return tuple(_finite_numeric(value, f"{name}[{i}]") for i, value in enumerate(values))
+
+
+def _finite_or_positive_infinity(value: float, name: str) -> float:
+    """Accept one finite scientific value or the registered structural +inf sentinel."""
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be finite numeric evidence or positive infinity, not boolean")
+    try:
+        out = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{name} must be finite or positive infinity") from exc
+    if isfinite(out) or (isinf(out) and out > 0):
+        return out
+    raise ValueError(f"{name} must be finite or positive infinity")
 
 
 def _q(value: float) -> Fraction:
@@ -82,11 +91,9 @@ def _strong_concave_bulge_bounds_exact(
     metric_distance_sq: float,
 ) -> tuple[Fraction, Fraction | None]:
     curvature_lower = _finite(curvature_lower, "curvature_lower")
-    curvature_upper = float(curvature_upper)
+    curvature_upper = _finite_or_positive_infinity(curvature_upper, "curvature_upper")
     t = _finite(t, "t")
     metric_distance_sq = _finite(metric_distance_sq, "metric_distance_sq")
-    if not isfinite(curvature_upper) and not (isinf(curvature_upper) and curvature_upper > 0):
-        raise ValueError("curvature_upper must be finite or positive infinity")
     if not 0.0 <= t <= 1.0:
         raise ValueError("t must lie in [0, 1]")
     if curvature_lower < 0.0 or curvature_upper < curvature_lower:
