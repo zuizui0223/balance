@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from fractions import Fraction as F
 from math import inf, isfinite, nextafter
 
+from balance_domain.boundary import _finite_numeric
 from balance_domain.stepwise_hysteresis import SwitchingPathResult
 
 
@@ -75,22 +76,35 @@ def _within_model_tolerance(left: float, right: float) -> bool:
 def _single_switch(result: SwitchingPathResult):
     if not result.steps:
         raise ValueError("resolution audit requires a non-empty switching path")
-    switched = [step for step in result.steps if step.switched]
+    switched: list[tuple[int, object]] = []
+    for position, step in enumerate(result.steps):
+        if type(step.index) is not int:
+            raise ValueError("PathStep.index must be an integer position")
+        if step.index != position:
+            raise ValueError("PathStep.index must match its position in the switching path")
+        if type(step.switched) is not bool:
+            raise ValueError("PathStep.switched must be boolean")
+        if step.switched:
+            switched.append((position, step))
     if len(switched) != 1:
         raise ValueError("resolution audit requires exactly one observed switch")
-    step = switched[0]
-    if step.index <= 0:
+    position, step = switched[0]
+    if position <= 0:
         raise ValueError("switch must have a preceding sampled phi for a resolution bound")
-    return step, result.steps[step.index - 1]
+    return position, step, result.steps[position - 1]
 
 
 def _threshold_pair(result: SwitchingPathResult) -> tuple[float, float]:
     """Return one constant finite ``(forward, reverse)`` model pair for a sweep."""
     if not result.steps:
         raise ValueError("resolution audit requires a non-empty switching path")
-    pairs = tuple((float(step.forward_threshold), float(step.reverse_threshold)) for step in result.steps)
-    if not all(isfinite(value) for pair in pairs for value in pair):
-        raise ValueError("switching thresholds must be finite")
+    pairs = tuple(
+        (
+            _finite_numeric(step.forward_threshold, f"steps[{i}].forward_threshold"),
+            _finite_numeric(step.reverse_threshold, f"steps[{i}].reverse_threshold"),
+        )
+        for i, step in enumerate(result.steps)
+    )
     forward, reverse = pairs[0]
     forward_q = F.from_float(forward)
     reverse_q = F.from_float(reverse)
@@ -107,25 +121,28 @@ def _threshold_pair(result: SwitchingPathResult) -> tuple[float, float]:
 
 def upward_switch_resolution(result: SwitchingPathResult) -> SwitchPointResolution:
     """Bound a shared->differentiated switch on a nondecreasing phi path."""
-    values = tuple(float(step.phi) for step in result.steps)
-    if not values or not all(isfinite(value) for value in values):
+    values = tuple(
+        _finite_numeric(step.phi, f"steps[{i}].phi")
+        for i, step in enumerate(result.steps)
+    )
+    if not values:
         raise ValueError("upward resolution requires a finite non-empty phi path")
     if any(b < a for a, b in zip(values, values[1:])):
         raise ValueError("upward resolution requires a nondecreasing phi path")
-    step, previous = _single_switch(result)
+    position, step, _previous = _single_switch(result)
     if not (
         step.state_before == "shared"
         and step.state_after == "differentiated"
     ):
         raise ValueError("observed switch is not shared->differentiated")
-    threshold = float(step.forward_threshold)
-    if not isfinite(threshold):
-        raise ValueError("forward threshold must be finite")
-    if not previous.phi <= threshold < step.phi:
+    threshold = _finite_numeric(step.forward_threshold, "forward threshold")
+    previous_phi = values[position - 1]
+    step_phi = values[position]
+    if not previous_phi <= threshold < step_phi:
         raise RuntimeError("switch samples do not bracket the forward threshold")
 
-    step_q = F.from_float(step.phi)
-    previous_q = F.from_float(previous.phi)
+    step_q = F.from_float(step_phi)
+    previous_q = F.from_float(previous_phi)
     threshold_q = F.from_float(threshold)
     jump_q = step_q - previous_q
     error_q = step_q - threshold_q
@@ -138,36 +155,39 @@ def upward_switch_resolution(result: SwitchingPathResult) -> SwitchPointResoluti
     return SwitchPointResolution(
         direction="upward",
         threshold=threshold,
-        observed_switch_phi=step.phi,
-        previous_phi=previous.phi,
+        observed_switch_phi=step_phi,
+        previous_phi=previous_phi,
         absolute_error=error,
         jump_bound=jump,
-        bracket_lower=previous.phi,
-        bracket_upper=step.phi,
+        bracket_lower=previous_phi,
+        bracket_upper=step_phi,
     )
 
 
 def downward_switch_resolution(result: SwitchingPathResult) -> SwitchPointResolution:
     """Bound a differentiated->shared switch on a nonincreasing phi path."""
-    values = tuple(float(step.phi) for step in result.steps)
-    if not values or not all(isfinite(value) for value in values):
+    values = tuple(
+        _finite_numeric(step.phi, f"steps[{i}].phi")
+        for i, step in enumerate(result.steps)
+    )
+    if not values:
         raise ValueError("downward resolution requires a finite non-empty phi path")
     if any(b > a for a, b in zip(values, values[1:])):
         raise ValueError("downward resolution requires a nonincreasing phi path")
-    step, previous = _single_switch(result)
+    position, step, _previous = _single_switch(result)
     if not (
         step.state_before == "differentiated"
         and step.state_after == "shared"
     ):
         raise ValueError("observed switch is not differentiated->shared")
-    threshold = float(step.reverse_threshold)
-    if not isfinite(threshold):
-        raise ValueError("reverse threshold must be finite")
-    if not step.phi < threshold <= previous.phi:
+    threshold = _finite_numeric(step.reverse_threshold, "reverse threshold")
+    previous_phi = values[position - 1]
+    step_phi = values[position]
+    if not step_phi < threshold <= previous_phi:
         raise RuntimeError("switch samples do not bracket the reverse threshold")
 
-    step_q = F.from_float(step.phi)
-    previous_q = F.from_float(previous.phi)
+    step_q = F.from_float(step_phi)
+    previous_q = F.from_float(previous_phi)
     threshold_q = F.from_float(threshold)
     jump_q = previous_q - step_q
     error_q = threshold_q - step_q
@@ -180,12 +200,12 @@ def downward_switch_resolution(result: SwitchingPathResult) -> SwitchPointResolu
     return SwitchPointResolution(
         direction="downward",
         threshold=threshold,
-        observed_switch_phi=step.phi,
-        previous_phi=previous.phi,
+        observed_switch_phi=step_phi,
+        previous_phi=previous_phi,
         absolute_error=error,
         jump_bound=jump,
-        bracket_lower=step.phi,
-        bracket_upper=previous.phi,
+        bracket_lower=step_phi,
+        bracket_upper=previous_phi,
     )
 
 
