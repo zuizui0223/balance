@@ -87,7 +87,7 @@ def consume_conflict_handoff(
     if not lo <= point <= hi:
         raise ValueError("conflict_load point must lie inside its interval")
     source_field = raw.get("source_field")
-    if source_field is not None and source_field != SOURCE_FIELD:
+    if source_field != SOURCE_FIELD:
         raise ValueError("conflict_load source_field does not match the SCH handoff contract")
 
     source = receipt.get("source")
