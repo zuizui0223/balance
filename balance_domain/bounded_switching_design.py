@@ -14,6 +14,7 @@ from typing import Sequence
 
 Record = tuple[object, object, str]  # true Phi in [lower,upper], observed state
 _MISSING_IDENTIFIERS = {"none", "null", "nan", "required_before_use"}
+_BOUNDED_SCOPE = "bounded_Phi_exact_states_latent_monotone_fixed_horizon_and_instantaneous_rule"
 
 
 def _required_text(value: object, name: str) -> str:
@@ -87,6 +88,36 @@ def _band(lo: F, hi: F | None, lc=True, uc=False) -> ThresholdBand:
                          str(lo), None if hi is None else str(hi))
 
 
+def _validated_band_exact(
+    band: ThresholdBand, name: str
+) -> tuple[F, F | None]:
+    """Validate one public exact/display band against the canonical encoder."""
+    if not isinstance(band, ThresholdBand):
+        raise ValueError(f"{name} must be a ThresholdBand receipt")
+    if isinstance(band.lower, bool) or isinstance(band.upper, bool):
+        raise ValueError(f"{name} display bounds must not be boolean")
+    if not isinstance(band.exact_lower, str):
+        raise ValueError(f"{name}.exact_lower must be a canonical exact string")
+    if band.exact_upper is not None and not isinstance(band.exact_upper, str):
+        raise ValueError(f"{name}.exact_upper must be a canonical exact string or None")
+    if type(band.lower_closed) is not bool or type(band.upper_closed) is not bool:
+        raise ValueError(f"{name} closure flags must be boolean")
+    try:
+        lo = F(band.exact_lower)
+        hi = None if band.exact_upper is None else F(band.exact_upper)
+    except (ValueError, TypeError, ZeroDivisionError, OverflowError) as exc:
+        raise ValueError(f"{name} exact bounds are invalid") from exc
+    if lo < 0 or (hi is not None and hi < 0):
+        raise ValueError(f"{name} threshold/cost bounds must be nonnegative")
+    try:
+        canonical = _band(lo, hi)
+    except ValueError as exc:
+        raise ValueError(f"{name} exact bounds do not define a valid strict threshold band") from exc
+    if band != canonical:
+        raise ValueError(f"{name} exact/display/closure fields are not canonical or mutually consistent")
+    return lo, hi
+
+
 def _ratio(records: Sequence[Record], forward: bool) -> tuple[ThresholdBand, bool]:
     old, new = ("shared", "differentiated") if forward else ("differentiated", "shared")
     rows = []
@@ -129,7 +160,44 @@ class BoundedSwitchingReceipt:
     total_cost: ThresholdBand | None
     common_phi_scale: str
     fixed_context: str
-    scope: str = "bounded_Phi_exact_states_latent_monotone_fixed_horizon_and_instantaneous_rule"
+    scope: str = _BOUNDED_SCOPE
+
+
+def _validated_receipt(
+    receipt: BoundedSwitchingReceipt,
+) -> tuple[tuple[F, F | None], tuple[F, F | None], tuple[F, F | None]]:
+    """Validate public receipt self-consistency before any downstream design."""
+    if not isinstance(receipt, BoundedSwitchingReceipt):
+        raise ValueError("bounded switching receipt must be a BoundedSwitchingReceipt")
+    f = _validated_band_exact(receipt.forward_cost_over_horizon, "forward threshold band")
+    r = _validated_band_exact(receipt.reverse_cost_over_horizon, "reverse threshold band")
+    w = _validated_band_exact(receipt.hysteresis_width, "hysteresis width band")
+    expected_width = _band(
+        f[0] + r[0],
+        None if f[1] is None or r[1] is None else f[1] + r[1],
+    )
+    if receipt.hysteresis_width != expected_width:
+        raise ValueError("hysteresis width band is inconsistent with forward and reverse threshold bands")
+
+    if type(receipt.forward_switch_observed) is not bool or type(receipt.reverse_switch_observed) is not bool:
+        raise ValueError("switch-observed flags must be literal booleans")
+    if receipt.forward_switch_observed != (f[1] is not None):
+        raise ValueError("forward_switch_observed is inconsistent with the forward threshold band")
+    if receipt.reverse_switch_observed != (r[1] is not None):
+        raise ValueError("reverse_switch_observed is inconsistent with the reverse threshold band")
+
+    if receipt.total_cost is not None:
+        cost = _validated_band_exact(receipt.total_cost, "total switching-cost band")
+        if (cost[1] is None) != (w[1] is None):
+            raise ValueError("total switching-cost upper boundedness is inconsistent with hysteresis width")
+
+    scale = _required_text(receipt.common_phi_scale, "common_phi_scale")
+    context = _required_text(receipt.fixed_context, "fixed_context")
+    if receipt.common_phi_scale != scale or receipt.fixed_context != context:
+        raise ValueError("bounded switching receipt provenance must be stored in normalized frozen form")
+    if receipt.scope != _BOUNDED_SCOPE:
+        raise ValueError("bounded switching receipt scope is not the registered scope")
+    return f, r, w
 
 
 def identify_bounded_switching(
@@ -160,7 +228,9 @@ def identify_bounded_switching(
         if not 0 < tl <= th:
             raise ValueError("independent horizon bounds must satisfy 0 < lower <= upper")
         cost = _band(tl*lo, None if hi is None else th*hi)
-    return BoundedSwitchingReceipt(f, r, width, fs, rs, cost, scale, context)
+    receipt = BoundedSwitchingReceipt(f, r, width, fs, rs, cost, scale, context)
+    _validated_receipt(receipt)
+    return receipt
 
 
 @dataclass(frozen=True)
@@ -202,15 +272,16 @@ def plan_reset_refinement(
     """
     if matched_reset_available_declared is not True:
         raise ValueError("matched reset to each old architecture must be declared available")
+    forward, reverse, _ = _validated_receipt(receipt)
     options, gains = [], []
-    for name, band, error in (("forward", receipt.forward_cost_over_horizon, forward_query_error),
-                             ("reverse", receipt.reverse_cost_over_horizon, reverse_query_error)):
+    for name, exact_band, error in (("forward", forward, forward_query_error),
+                                    ("reverse", reverse, reverse_query_error)):
         e = _q(error)
         if e < 0:
             raise ValueError("query error must be nonnegative")
-        if band.exact_upper is None:
+        lo, hi = exact_band
+        if hi is None:
             raise ValueError("finite preswitch/switch brackets are needed for midpoint design")
-        lo, hi = F(band.exact_lower), F(band.exact_upper)
         w, q = hi-lo, (hi+lo)/2
         remaining = min(w, w/2+e)
         gain = w-remaining

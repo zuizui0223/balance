@@ -11,7 +11,8 @@ from fractions import Fraction as F
 import json
 
 from .bounded_switching_design import (
-    BoundedSwitchingReceipt, _band, _out, _q, identify_bounded_switching,
+    BoundedSwitchingReceipt, _band, _out, _q, _validated_receipt,
+    identify_bounded_switching,
 )
 
 
@@ -79,13 +80,15 @@ def plan_budgeted_reset_refinement(
         raise ValueError("exact frontier solver permits budget <= 2000 units")
     if matched_reset_available_declared is not True:
         raise ValueError("matched resets to the old architectures must be declared available")
+    forward, reverse, _ = _validated_receipt(receipt)
     ef, er = _q(forward_query_error), _q(reverse_query_error)
     if min(ef, er) < 0:
         raise ValueError("query errors must be nonnegative")
-    bands = receipt.forward_cost_over_horizon, receipt.reverse_cost_over_horizon
-    if any(b.exact_upper is None for b in bands):
+    flo, fhi = forward
+    rlo, rhi = reverse
+    if fhi is None or rhi is None:
         raise ValueError("finite threshold brackets required before budget allocation")
-    wf, wr = (F(b.exact_upper)-F(b.exact_lower) for b in bands)
+    wf, wr = fhi-flo, rhi-rlo
     if min(wf, wr) < 0:
         raise ValueError("invalid negative threshold span")
     fs = tuple(worst_span_after_queries(wf, ef, n) for n in range(B//cf+1))
@@ -133,6 +136,7 @@ def condition_reset_outcome(
         raise ValueError("direction must be forward or reverse")
     if matched_reset_available_declared is not True:
         raise ValueError("matched reset must be declared available")
+    forward, reverse, _ = _validated_receipt(receipt)
     old, new = (("shared", "differentiated") if direction == "forward"
                 else ("differentiated", "shared"))
     if observed_state not in (old, new):
@@ -141,9 +145,7 @@ def condition_reset_outcome(
     if e < 0:
         raise ValueError("query error must be nonnegative")
     q = phi if direction == "forward" else -phi
-    band = (receipt.forward_cost_over_horizon if direction == "forward"
-            else receipt.reverse_cost_over_horizon)
-    lo, hi = F(band.exact_lower), None if band.exact_upper is None else F(band.exact_upper)
+    lo, hi = forward if direction == "forward" else reverse
     if observed_state == old:
         lo = max(lo, q-e)
     else:
@@ -160,12 +162,14 @@ def condition_reset_outcome(
         if not 0 < tl <= th:
             raise ValueError("independent horizon bounds must satisfy 0 < lower <= upper")
         cost = _band(tl*wl, None if wh is None else th*wh)
-    return replace(receipt, forward_cost_over_horizon=fb, reverse_cost_over_horizon=rb,
-                   hysteresis_width=_band(wl, wh), total_cost=cost,
-                   forward_switch_observed=receipt.forward_switch_observed or
-                       (direction == "forward" and observed_state == new),
-                   reverse_switch_observed=receipt.reverse_switch_observed or
-                       (direction == "reverse" and observed_state == new))
+    result = replace(receipt, forward_cost_over_horizon=fb, reverse_cost_over_horizon=rb,
+                     hysteresis_width=_band(wl, wh), total_cost=cost,
+                     forward_switch_observed=receipt.forward_switch_observed or
+                         (direction == "forward" and observed_state == new),
+                     reverse_switch_observed=receipt.reverse_switch_observed or
+                         (direction == "reverse" and observed_state == new))
+    _validated_receipt(result)
+    return result
 
 
 def synthetic_example() -> dict:
