@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from fractions import Fraction as F
 import math
 
+from .boundary import _finite_numeric
+
 
 @dataclass(frozen=True)
 class SwitchingCostResult:
@@ -62,15 +64,10 @@ def switching_cost_state(
     returned thresholds so the reported boundary and the reported switch state
     cannot contradict one another by one rounding unit.
     """
-    try:
-        T = float(horizon)
-        csd = float(cost_shared_to_diff)
-        cds = float(cost_diff_to_shared)
-        p = float(phi)
-    except (TypeError, ValueError, OverflowError) as exc:
-        raise ValueError("phi, horizon, and switching costs must be finite numeric values") from exc
-    if not all(math.isfinite(value) for value in (p, T, csd, cds)):
-        raise ValueError("phi, horizon, and switching costs must be finite")
+    p = _finite_numeric(phi, "phi")
+    T = _finite_numeric(horizon, "horizon")
+    csd = _finite_numeric(cost_shared_to_diff, "cost_shared_to_diff")
+    cds = _finite_numeric(cost_diff_to_shared, "cost_diff_to_shared")
     if T <= 0:
         raise ValueError("horizon must be positive")
     if csd < 0 or cds < 0:
