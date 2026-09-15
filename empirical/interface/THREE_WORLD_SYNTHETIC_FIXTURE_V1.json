@@ -12,7 +12,8 @@
     "conflict_load": {
       "point": 0.4,
       "lower_95": 0.38,
-      "upper_95": 0.42
+      "upper_95": 0.42,
+      "source_field": "criticality_export.L_S_component"
     },
     "source": {
       "repository": "sch",
