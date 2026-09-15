@@ -14,9 +14,72 @@ POOL = ROOT / "data" / "BALANCE_Q1B_FIRST_POOL_V1.json"
 LAYER_MAP = ROOT / "data" / "BALANCE_THEORY_EMPIRICAL_LAYER_MAP_V1.csv"
 DEFAULT_OUT = ROOT / "figures" / "BALANCE_FIGURE1_THEORY_EMPIRICAL_SPINE_V1.svg"
 
+_PATTERN_ANALYSIS = "balance_reality_pattern_readout"
+_PATTERN_CLAIM_CEILING = (
+    "screened_source_adjudicated_recurrence_not_natural_prevalence_or_direct_Phi_identification"
+)
+_POOL_ANALYSIS = "BALANCE_Q1B_FIRST_ALLOWED_POOL_V1"
+_POOL_GATE = "OPEN_3_OF_3_EFFECT_SIZE_READY_POSITIVE_CLUSTERS"
+_POOL_CLAIM_CEILING = (
+    "pooled Q1B mediated-selection contrasts only; does not identify direct BALANCE occupancy, "
+    "W_S*, W_D*, rho, Phi, xi, or d_B"
+)
+_DIRECT_STATUS = "NOT_IDENTIFIED"
+_DIRECT_EVIDENCE = "0_direct_matched_receipts"
+_DIRECT_ALLOWED = "no_direct_claim"
+_DIRECT_PROHIBITED = "WSstar_gt_WDstar_rho_Phi_xi_dB"
+
 
 def _esc(value: object) -> str:
     return html.escape(str(value), quote=True)
+
+
+def _require_equal(actual: object, expected: object, name: str) -> None:
+    if actual != expected:
+        raise ValueError(f"{name} drifted from the frozen flagship source contract")
+
+
+def _validate_source_contracts(pattern: dict, pool: dict, layer_map: list[dict[str, str]]) -> dict[str, str]:
+    """Fail closed if an upstream evidence layer changes its allowed claim surface."""
+    _require_equal(pattern.get("analysis"), _PATTERN_ANALYSIS, "pattern analysis")
+    _require_equal(
+        pattern.get("claim_ceiling"),
+        _PATTERN_CLAIM_CEILING,
+        "pattern claim_ceiling",
+    )
+    _require_equal(pool.get("analysis"), _POOL_ANALYSIS, "Q1B pool analysis")
+    _require_equal(pool.get("pool_gate"), _POOL_GATE, "Q1B pool gate")
+    _require_equal(
+        pool.get("claim_ceiling"),
+        _POOL_CLAIM_CEILING,
+        "Q1B pool claim_ceiling",
+    )
+
+    direct_rows = [
+        row
+        for row in layer_map
+        if row.get("theory_object") == "shared_vs_differentiated_worldline"
+    ]
+    if len(direct_rows) != 1:
+        raise ValueError("flagship source contract requires exactly one direct-worldline layer row")
+    direct = direct_rows[0]
+    _require_equal(direct.get("status"), _DIRECT_STATUS, "direct-worldline status")
+    _require_equal(
+        direct.get("current_evidence"),
+        _DIRECT_EVIDENCE,
+        "direct-worldline current_evidence",
+    )
+    _require_equal(
+        direct.get("allowed_inference"),
+        _DIRECT_ALLOWED,
+        "direct-worldline allowed_inference",
+    )
+    _require_equal(
+        direct.get("prohibited_inference"),
+        _DIRECT_PROHIBITED,
+        "direct-worldline prohibited_inference",
+    )
+    return direct
 
 
 def _load() -> dict:
@@ -27,11 +90,12 @@ def _load() -> dict:
     with LAYER_MAP.open(encoding="utf-8", newline="") as handle:
         layer_map = list(csv.DictReader(handle))
 
+    direct = _validate_source_contracts(pattern, pool, layer_map)
+
     counts = {}
     for row in boundary:
         counts[row["layer"]] = counts.get(row["layer"], 0) + 1
 
-    direct = next(row for row in layer_map if row["theory_object"] == "shared_vs_differentiated_worldline")
     return {
         "pattern": pattern,
         "pool": pool,
