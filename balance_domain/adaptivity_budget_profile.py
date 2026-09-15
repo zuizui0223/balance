@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from fractions import Fraction as F
 from typing import Sequence
 
-from .bounded_switching_design import BoundedSwitchingReceipt, _q
+from .bounded_switching_design import BoundedSwitchingReceipt, _q, _validated_receipt
 from .budgeted_switching_design import plan_budgeted_reset_refinement
 
 
@@ -130,11 +130,13 @@ def balance_adaptivity_budget_profile(
     ef, er = _q(forward_query_error), _q(reverse_query_error)
     if min(ef, er) < 0:
         raise ValueError("query errors must be nonnegative")
-    fb, rb = receipt.forward_cost_over_horizon, receipt.reverse_cost_over_horizon
-    if fb.exact_upper is None or rb.exact_upper is None:
+    forward, reverse, _ = _validated_receipt(receipt)
+    flo, fhi = forward
+    rlo, rhi = reverse
+    if fhi is None or rhi is None:
         raise ValueError("finite forward and reverse threshold brackets are required")
-    wf = F(fb.exact_upper) - F(fb.exact_lower)
-    wr = F(rb.exact_upper) - F(rb.exact_lower)
+    wf = fhi - flo
+    wr = rhi - rlo
 
     fixed = plan_budgeted_reset_refinement(
         receipt,
