@@ -56,6 +56,10 @@ def dl_mkh(yi: Sequence[float], vi: Sequence[float]) -> dict[str, object]:
     high-range :class:`~decimal.Decimal` arithmetic before conversion back to
     the float-valued JSON surface.
     """
+    if any(isinstance(value, bool) for value in yi) or any(
+        isinstance(value, bool) for value in vi
+    ):
+        raise ValueError("Q1B pooling inputs must be finite numeric values, not boolean")
     try:
         y = tuple(float(value) for value in yi)
         v = tuple(float(value) for value in vi)
