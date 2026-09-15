@@ -6,6 +6,7 @@ from fractions import Fraction as F
 import math
 from typing import Literal, Sequence
 
+from balance_domain.boundary import _finite_numeric
 from balance_domain.dynamics import switching_cost_state
 
 ArchitectureState = Literal["shared", "differentiated"]
@@ -38,14 +39,12 @@ def _validate_state(state: str) -> ArchitectureState:
 
 
 def _finite_path(phi_path: Sequence[float]) -> tuple[float, ...]:
-    try:
-        values = tuple(float(x) for x in phi_path)
-    except (TypeError, ValueError, OverflowError) as exc:
-        raise ValueError("phi_path values must be finite numeric values") from exc
+    values = tuple(
+        _finite_numeric(value, f"phi_path[{i}]")
+        for i, value in enumerate(phi_path)
+    )
     if not values:
         raise ValueError("phi_path must be non-empty")
-    if not all(math.isfinite(value) for value in values):
-        raise ValueError("phi_path values must be finite")
     return values
 
 
@@ -108,11 +107,8 @@ def follow_switching_path(
     observed = _nonnegative_fraction_to_float(observed_q, "maximum observed phi jump")
     declared = None
     if max_phi_jump is not None:
-        try:
-            declared = float(max_phi_jump)
-        except (TypeError, ValueError, OverflowError) as exc:
-            raise ValueError("max_phi_jump must be finite and non-negative or None") from exc
-        if not math.isfinite(declared) or declared < 0.0:
+        declared = _finite_numeric(max_phi_jump, "max_phi_jump")
+        if declared < 0.0:
             raise ValueError("max_phi_jump must be finite and non-negative or None")
         declared_q = F.from_float(declared)
         roundoff_q = F.from_float(1e-15)
@@ -162,14 +158,9 @@ def linear_small_step_path(start: float, stop: float, *, max_phi_jump: float) ->
     extreme finite span such as ``-1e308 .. +1e308`` need not overflow the
     intermediate distance or interpolation expression.
     """
-    try:
-        a = float(start)
-        b = float(stop)
-        jump = float(max_phi_jump)
-    except (TypeError, ValueError, OverflowError) as exc:
-        raise ValueError("start, stop, and max_phi_jump must be finite numeric values") from exc
-    if not all(math.isfinite(value) for value in (a, b, jump)):
-        raise ValueError("start, stop, and max_phi_jump must be finite")
+    a = _finite_numeric(start, "start")
+    b = _finite_numeric(stop, "stop")
+    jump = _finite_numeric(max_phi_jump, "max_phi_jump")
     if jump <= 0.0:
         raise ValueError("max_phi_jump must be positive")
 
