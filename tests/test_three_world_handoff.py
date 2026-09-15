@@ -61,7 +61,12 @@ def test_sch_source_schema_is_part_of_the_handoff_contract():
         consume_conflict_handoff(receipt)
 
 
-def test_explicit_conflict_source_field_must_match_sch_export():
+def test_conflict_source_field_is_required_and_must_match_sch_export():
+    receipt = _handoff()
+    receipt["conflict_load"].pop("source_field")
+    with pytest.raises(ValueError, match="source_field"):
+        consume_conflict_handoff(receipt)
+
     receipt = _handoff()
     receipt["conflict_load"]["source_field"] = "other.field"
     with pytest.raises(ValueError, match="source_field"):
