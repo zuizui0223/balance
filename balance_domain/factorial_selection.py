@@ -89,6 +89,8 @@ class FactorialSelectionReceipt:
 
 
 def _finite_vector(values: Sequence[float], *, name: str) -> tuple[float, ...]:
+    if any(isinstance(value, bool) for value in values):
+        raise ValueError(f"{name} values must be finite numeric values, not boolean")
     try:
         vals = tuple(float(value) for value in values)
     except (TypeError, ValueError, OverflowError) as exc:
@@ -155,6 +157,8 @@ def _validate_covariance(
     covariance by any positive scalar cannot change whether it is accepted as a
     covariance matrix. The all-zero covariance is a valid singular PSD case.
     """
+    if any(isinstance(value, bool) for row in covariance for value in row):
+        raise ValueError("slope_covariance values must be finite numeric values, not boolean")
     try:
         rows = tuple(tuple(float(value) for value in row) for row in covariance)
     except (TypeError, ValueError, OverflowError) as exc:
@@ -243,7 +247,12 @@ def analyze_factorial_agent_selection(
     not infer such a covariance from standard errors.
     """
 
-    tol = float(tolerance)
+    if isinstance(tolerance, bool):
+        raise ValueError("tolerance must be finite and positive, not boolean")
+    try:
+        tol = float(tolerance)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("tolerance must be finite and positive") from exc
     if not math.isfinite(tol) or tol <= 0:
         raise ValueError("tolerance must be finite and positive")
 
