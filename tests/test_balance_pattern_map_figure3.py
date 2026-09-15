@@ -1,10 +1,17 @@
+import csv
 import importlib.util
-from collections import Counter
+import json
 from pathlib import Path
+
+import pytest
+
+from balance_domain.pattern_ledger import build_pattern_readout_from_rows, load_pattern_ledger
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "build_balance_pattern_map_figure3.py"
+LEDGER = ROOT / "data" / "BALANCE_PATTERN_LEDGER_V1.csv"
+READOUT = ROOT / "data" / "BALANCE_PATTERN_READOUT_V1.json"
 
 
 def _module():
@@ -13,6 +20,19 @@ def _module():
     assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
+
+
+def _raw_rows():
+    with LEDGER.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        return list(reader.fieldnames or ()), list(reader)
+
+
+def _write_rows(path: Path, fieldnames: list[str], rows: list[dict[str, str]]):
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def test_figure3_counts_match_frozen_pattern_readout():
@@ -43,3 +63,63 @@ def test_figure3_explicitly_prohibits_prevalence_interpretation():
     assert "recurrence map, not an estimate of natural prevalence" in svg
     assert "17 independent clusters; 9 middle-regime signatures" in svg
     assert "do not estimate natural prevalence or direct BALANCE occupancy" in svg
+
+
+def test_figure3_rejects_duplicate_cluster_rows_before_counting(tmp_path):
+    mod = _module()
+    fieldnames, rows = _raw_rows()
+    malformed = [dict(rows[0]), dict(rows[0])]
+    ledger = tmp_path / "duplicate.csv"
+    _write_rows(ledger, fieldnames, malformed)
+    mod.LEDGER = ledger
+    with pytest.raises(ValueError, match="duplicate cluster_id"):
+        mod._load()
+
+
+def test_figure3_requires_ledger_and_frozen_readout_to_match(tmp_path):
+    mod = _module()
+    drifted = json.loads(READOUT.read_text(encoding="utf-8"))
+    drifted["n_independent_clusters"] += 1
+    readout = tmp_path / "drifted.json"
+    readout.write_text(json.dumps(drifted), encoding="utf-8")
+    mod.READOUT = readout
+    with pytest.raises(ValueError, match="ledger and frozen readout disagree"):
+        mod._load()
+
+
+def test_figure3_rejects_new_pattern_class_without_explicit_display_row(tmp_path):
+    mod = _module()
+    fieldnames, rows = _raw_rows()
+    altered = [dict(row) for row in rows]
+    altered[0]["pattern_class"] = "HYSTERESIS_OR_PATH_DEPENDENCE"
+    ledger = tmp_path / "new-pattern.csv"
+    _write_rows(ledger, fieldnames, altered)
+    validated = load_pattern_ledger(ledger)
+    readout = tmp_path / "new-pattern.json"
+    readout.write_text(
+        json.dumps(build_pattern_readout_from_rows(validated)),
+        encoding="utf-8",
+    )
+    mod.LEDGER = ledger
+    mod.READOUT = readout
+    with pytest.raises(ValueError, match="no registered display row"):
+        mod._load()
+
+
+def test_figure3_rejects_new_domain_without_explicit_display_column(tmp_path):
+    mod = _module()
+    fieldnames, rows = _raw_rows()
+    altered = [dict(row) for row in rows]
+    altered[0]["domain"] = "new_domain"
+    ledger = tmp_path / "new-domain.csv"
+    _write_rows(ledger, fieldnames, altered)
+    validated = load_pattern_ledger(ledger)
+    readout = tmp_path / "new-domain.json"
+    readout.write_text(
+        json.dumps(build_pattern_readout_from_rows(validated)),
+        encoding="utf-8",
+    )
+    mod.LEDGER = ledger
+    mod.READOUT = readout
+    with pytest.raises(ValueError, match="no registered display column"):
+        mod._load()
