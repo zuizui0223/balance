@@ -4,6 +4,7 @@ from balance_domain.plant_u1 import (
     build_u1_handoff,
     load_u1_sample,
     load_u1_source_resolution,
+    load_u1_universe,
 )
 
 
@@ -70,3 +71,10 @@ def test_ligtu_taxon_grain_conflict_blocks_both_labels():
     assert by_taxon["Alstroemeria ligtu var. Simsii"]["screen_ready"] == "false"
     assert by_taxon["Alstroemeria ligtu"]["doi"] == "10.1086/662029"
     assert by_taxon["Alstroemeria ligtu var. Simsii"]["doi"] == "10.1086/662029"
+
+
+def test_u1_universe_and_resolution_source_statuses_are_synchronized():
+    universe = {r["universe_record_id"]: r for r in load_u1_universe(UNIVERSE)}
+    resolution = load_u1_source_resolution(RESOLUTION)
+    for row in resolution:
+        assert universe[row["universe_record_id"]]["primary_source_status"] == row["source_status"]
