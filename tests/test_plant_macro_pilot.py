@@ -24,7 +24,7 @@ def test_plant_pilot_spans_all_required_architecture_modes():
     readout = build_plant_macro_readout(PILOT)
     modes = readout["architecture_mode_counts"]
     for mode in (
-        "SHARED_COMPROMISE",
+        "SHARED_INTEGRATED",
         "TEMPORAL_SEPARATION",
         "SPATIAL_SEPARATION",
         "WITHIN_FLOWER_DIVISION_OF_LABOUR",
@@ -51,5 +51,5 @@ def test_architecture_is_not_called_resolution_for_all_rows():
         for r in rows
         if r["conflict_status"] != "POSITIVE"
     }
-    assert "SHARED_COMPROMISE" in negative_architectures
+    assert "SHARED_INTEGRATED" in negative_architectures
     assert "SPATIAL_SEPARATION" in negative_architectures
