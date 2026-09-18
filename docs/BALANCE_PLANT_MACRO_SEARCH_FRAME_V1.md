@@ -147,7 +147,7 @@ Do not screen on architecture outcome at this stage.
 Code the observed architecture independently of whether conflict is positive:
 
 ```text
-SHARED_COMPROMISE
+SHARED_INTEGRATED
 TEMPORAL_SEPARATION
 SPATIAL_SEPARATION
 WITHIN_FLOWER_DIVISION_OF_LABOUR
@@ -157,7 +157,7 @@ UNRESOLVED
 NA
 ```
 
-The label `SHARED_COMPROMISE` is retained for compatibility, but in negative-conflict rows it means only shared/integrated architecture and is not interpreted as compromise caused by conflict.
+The label `SHARED_INTEGRATED` is retained for compatibility, but in negative-conflict rows it means only shared/integrated architecture and is not interpreted as compromise caused by conflict.
 
 A later schema version may rename this state to `SHARED_INTEGRATED` if that improves semantic clarity.
 
