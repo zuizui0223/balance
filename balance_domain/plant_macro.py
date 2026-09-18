@@ -19,7 +19,7 @@ FIELDS = (
     "function_a",
     "function_b",
     "conflict_status",
-    "resolution_mode",
+    "architecture_mode",
     "structural_module_division",
     "module_substrate",
     "conflict_timing_geometry",
@@ -185,8 +185,8 @@ def _validated_rows(reader: csv.DictReader) -> list[dict[str, str]]:
         clean["conflict_status"] = _cat(
             row.get("conflict_status"), "conflict_status", CONFLICT, row_number
         )
-        clean["resolution_mode"] = _cat(
-            row.get("resolution_mode"), "resolution_mode", RESOLUTION, row_number
+        clean["architecture_mode"] = _cat(
+            row.get("architecture_mode"), "architecture_mode", RESOLUTION, row_number
         )
         clean["structural_module_division"] = _cat(
             row.get("structural_module_division"),
@@ -239,7 +239,7 @@ def _validated_rows(reader: csv.DictReader) -> list[dict[str, str]]:
             fold=True,
         )
 
-        mode = clean["resolution_mode"]
+        mode = clean["architecture_mode"]
         structural = clean["structural_module_division"]
         if mode in STRUCTURAL_TRUE and structural != "true":
             raise ValueError(
@@ -258,7 +258,7 @@ def _validated_rows(reader: csv.DictReader) -> list[dict[str, str]]:
             )
         if mode == "NA" and structural != "na":
             raise ValueError(
-                f"row {row_number} structural outcome must be na when resolution_mode is NA"
+                f"row {row_number} structural outcome must be na when architecture_mode is NA"
             )
 
         if clean["primary_model_eligible"] == "true":
@@ -319,8 +319,8 @@ def build_plant_macro_readout_from_rows(rows: list[dict[str, str]]) -> dict:
         "conflict_status_counts": dict(
             sorted(Counter(r["conflict_status"] for r in rows).items())
         ),
-        "resolution_mode_counts": dict(
-            sorted(Counter(r["resolution_mode"] for r in rows).items())
+        "architecture_mode_counts": dict(
+            sorted(Counter(r["architecture_mode"] for r in rows).items())
         ),
         "module_substrate_counts": dict(
             sorted(Counter(r["module_substrate"] for r in rows).items())
