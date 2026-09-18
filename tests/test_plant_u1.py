@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from balance_domain.plant_u1 import (
     build_u1_handoff,
     load_u1_sample,
@@ -18,10 +16,11 @@ RESOLUTION = ROOT / "data" / "BALANCE_PLANT_U1_SOURCE_RESOLUTION_V1.csv"
 def test_u1_current_handoff_is_valid_but_not_frozen():
     readout = build_u1_handoff(UNIVERSE, SAMPLE, RESOLUTION)
     assert readout["review_reported_taxa"] == 47
-    assert readout["registered_taxon_labels"] == 44
-    assert readout["review_taxon_reconciliation_gap"] == 3
+    assert readout["network_visible_taxon_labels"] == 44
+    assert readout["network_visible_expected_labels"] == 44
+    assert readout["supplement_only_taxa_to_recover"] == 3
     assert readout["provisional_sample_size"] == 20
-    assert readout["n_source_ready"] == 10
+    assert readout["n_source_ready"] == 15
     assert readout["n_taxon_grain_conflicts"] == 2
     assert readout["double_code_sample_frozen"] is False
 
@@ -48,6 +47,20 @@ def test_screen_ready_rows_require_clear_taxon_reconciliation():
             assert row["source_status"] == "RESOLVED_PRIMARY"
             assert row["primary_citation"]
             assert row["taxon_reconciliation"] == "CLEAR"
+
+
+def test_five_newly_resolved_sources_are_screen_ready():
+    rows = load_u1_source_resolution(RESOLUTION)
+    by_taxon = {r["taxon_raw"]: r for r in rows}
+    for taxon in (
+        "Aristotelia chilensis",
+        "Berberis darwinii",
+        "Bouvardia ternifolia",
+        "Cardus thoermeri",
+        "Cnidoscolus acontifolius",
+    ):
+        assert by_taxon[taxon]["screen_ready"] == "true"
+        assert by_taxon[taxon]["source_status"] == "RESOLVED_PRIMARY"
 
 
 def test_ligtu_taxon_grain_conflict_blocks_both_labels():
