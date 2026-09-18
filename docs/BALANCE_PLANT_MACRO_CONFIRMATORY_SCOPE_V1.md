@@ -98,7 +98,7 @@ Comparative radiation papers are not flattened into one pseudo-independent row p
 Use a nominal architecture variable rather than assuming a universal evolutionary ladder. Only conflict-positive rows are interpreted as conflict-resolution outcomes; negative and unresolved conflict rows retain architecture state without causal language.
 
 ```text
-SHARED_COMPROMISE
+SHARED_INTEGRATED
 TEMPORAL_SEPARATION
 SPATIAL_SEPARATION
 WITHIN_FLOWER_DIVISION_OF_LABOUR
@@ -110,7 +110,7 @@ UNRESOLVED
 Examples:
 
 ```text
-shared corolla under pollinator/ant conflict -> SHARED_COMPROMISE
+shared corolla under pollinator/ant conflict -> SHARED_INTEGRATED
 dichogamy -> TEMPORAL_SEPARATION
 herkogamy or flower/trap separation -> SPATIAL_SEPARATION
 heteranthery -> WITHIN_FLOWER_DIVISION_OF_LABOUR
@@ -123,7 +123,7 @@ A secondary binary estimand is:
 ```text
 structural_module_division =
   true  for WITHIN_FLOWER_DIVISION_OF_LABOUR or AMONG_FLOWER_MODULE_DIVISION
-  false for SHARED_COMPROMISE / TEMPORAL_SEPARATION / SPATIAL_SEPARATION
+  false for SHARED_INTEGRATED / TEMPORAL_SEPARATION / SPATIAL_SEPARATION
 ```
 
 This binary outcome is a statistical simplification, not a claim that temporal/spatial separation is biologically unimportant.
