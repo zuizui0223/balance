@@ -143,6 +143,8 @@ def validate_u1_handoff(
             if sample[field] != universe[field] or sample[field] != resolution[field]:
                 raise ValueError(f"U1 handoff mismatch for {uid!r} field {field}")
 
+        if universe["primary_source_status"] != resolution["source_status"]:
+            raise ValueError(f"U1 universe source status drift for {uid!r}")
         if sample["primary_source_status"] != resolution["source_status"]:
             raise ValueError(f"U1 sample source status drift for {uid!r}")
 
