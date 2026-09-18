@@ -93,9 +93,9 @@ Repeated contexts from one species receive a common dependency-group identifier 
 
 Comparative radiation papers are not flattened into one pseudo-independent row per species unless species-level predictor and response information is independently recoverable.
 
-## Plant-specific resolution modes
+## Plant-specific architecture modes
 
-Use a nominal resolution variable rather than assuming a universal evolutionary ladder.
+Use a nominal architecture variable rather than assuming a universal evolutionary ladder. Only conflict-positive rows are interpreted as conflict-resolution outcomes; negative and unresolved conflict rows retain architecture state without causal language.
 
 ```text
 SHARED_COMPROMISE
