@@ -21,7 +21,7 @@ def test_u1_current_handoff_is_valid_but_not_frozen():
     assert readout["network_visible_expected_labels"] == 44
     assert readout["supplement_only_taxa_to_recover"] == 3
     assert readout["provisional_sample_size"] == 20
-    assert readout["n_source_ready"] == 17
+    assert readout["n_source_ready"] == 20
     assert readout["n_taxon_grain_conflicts"] == 0
     assert readout["double_code_sample_frozen"] is False
 
@@ -82,3 +82,12 @@ def test_u1_universe_and_resolution_source_statuses_are_synchronized():
     resolution = load_u1_source_resolution(RESOLUTION)
     for row in resolution:
         assert universe[row["universe_record_id"]]["primary_source_status"] == row["source_status"]
+
+
+def test_all_provisional_first20_sources_are_ready_but_sample_not_frozen():
+    rows = load_u1_source_resolution(RESOLUTION)
+    assert len(rows) == 20
+    assert all(r["screen_ready"] == "true" for r in rows)
+    readout = build_u1_handoff(UNIVERSE, SAMPLE, RESOLUTION)
+    assert readout["double_code_sample_frozen"] is False
+    assert readout["supplement_only_taxa_to_recover"] == 3
