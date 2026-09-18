@@ -52,6 +52,7 @@ SOURCE_STATUS = {
 SCREEN_READY = {"true", "false"}
 
 EXPECTED_REVIEW_TAXA = 47
+EXPECTED_NETWORK_VISIBLE_LABELS = 44
 EXPECTED_PROVISIONAL_SAMPLE_SIZE = 20
 
 
@@ -76,6 +77,11 @@ def load_u1_universe(path: Path) -> list[dict[str, str]]:
         raise ValueError("U1 universe_record_id must be unique")
     if {r["universe_id"] for r in rows} != {"U1_HAAS_LORTIE_2020"}:
         raise ValueError("U1 universe must use one frozen source-universe id")
+    if len(rows) != EXPECTED_NETWORK_VISIBLE_LABELS:
+        raise ValueError(
+            "U1 network-visible extraction must remain at 44 labels until "
+            "supplement-only taxa are explicitly recovered rather than silently mixed in"
+        )
     return rows
 
 
@@ -94,7 +100,9 @@ def load_u1_sample(path: Path) -> list[dict[str, str]]:
 def load_u1_source_resolution(path: Path) -> list[dict[str, str]]:
     rows = _load_exact(path, RESOLUTION_FIELDS)
     if len(rows) != EXPECTED_PROVISIONAL_SAMPLE_SIZE:
-        raise ValueError("U1 source-resolution ledger must contain the full 20-row provisional sample")
+        raise ValueError(
+            "U1 source-resolution ledger must contain the full 20-row provisional sample"
+        )
     for n, row in enumerate(rows, start=2):
         if row["source_status"] not in SOURCE_STATUS:
             raise ValueError(f"row {n} has invalid source_status")
@@ -119,14 +127,14 @@ def validate_u1_handoff(
     sample_rows: list[dict[str, str]],
     resolution_rows: list[dict[str, str]],
 ) -> dict:
-    """Validate the provisional U1 sample without pretending the review frame is reconciled."""
+    """Validate the provisional U1 network-visible sample without overclaiming the full review frame."""
     universe_by_id = {r["universe_record_id"]: r for r in universe_rows}
     resolution_by_id = {r["universe_record_id"]: r for r in resolution_rows}
 
     for sample in sample_rows:
         uid = sample["universe_record_id"]
         if uid not in universe_by_id:
-            raise ValueError(f"sample row {uid!r} is absent from U1 universe")
+            raise ValueError(f"sample row {uid!r} is absent from U1 network-visible universe")
         if uid not in resolution_by_id:
             raise ValueError(f"sample row {uid!r} lacks source-resolution row")
         universe = universe_by_id[uid]
@@ -138,8 +146,8 @@ def validate_u1_handoff(
         if sample["primary_source_status"] != resolution["source_status"]:
             raise ValueError(f"U1 sample source status drift for {uid!r}")
 
-    # The current sample is deliberately the first 20 raw taxon labels while taxon
-    # grain is unresolved. Recompute the same provisional ordering fail-closed.
+    # The current sample is deliberately the first 20 raw network-visible taxon labels
+    # while the supplement-only taxa and taxonomic grain remain unresolved.
     expected = sorted(
         universe_rows,
         key=lambda r: (r["taxon_raw"].casefold(), r["universe_record_id"]),
@@ -155,12 +163,16 @@ def validate_u1_handoff(
         for r in resolution_rows
         if r["taxon_reconciliation"].startswith("TAXON_GRAIN_CONFLICT")
     ]
-    review_gap = EXPECTED_REVIEW_TAXA - len(universe_rows)
-    if review_gap < 0:
-        raise ValueError("U1 extracted universe exceeds review-reported taxon count")
+
+    # Haas & Lortie report 47 taxa overall. Figure 4 omits plant species from studies
+    # without actual herbivore/pollinator taxa (e.g. artificial damage/hand pollination),
+    # so the current 44 labels are a network-visible subset, not an extraction-completeness claim.
+    supplement_only_taxa_needed = EXPECTED_REVIEW_TAXA - len(universe_rows)
+    if supplement_only_taxa_needed < 0:
+        raise ValueError("U1 network-visible extraction exceeds review-reported taxon count")
 
     sample_frozen = (
-        review_gap == 0
+        supplement_only_taxa_needed == 0
         and not taxon_conflicts
         and all(r["screen_ready"] == "true" for r in resolution_rows)
     )
@@ -168,8 +180,9 @@ def validate_u1_handoff(
     return {
         "analysis": "balance_plant_u1_handoff",
         "review_reported_taxa": EXPECTED_REVIEW_TAXA,
-        "registered_taxon_labels": len(universe_rows),
-        "review_taxon_reconciliation_gap": review_gap,
+        "network_visible_taxon_labels": len(universe_rows),
+        "network_visible_expected_labels": EXPECTED_NETWORK_VISIBLE_LABELS,
+        "supplement_only_taxa_to_recover": supplement_only_taxa_needed,
         "provisional_sample_size": len(sample_rows),
         "source_status_counts": dict(
             sorted(Counter(r["source_status"] for r in resolution_rows).items())
@@ -179,8 +192,8 @@ def validate_u1_handoff(
         "taxon_grain_conflict_records": sorted(taxon_conflicts),
         "double_code_sample_frozen": sample_frozen,
         "claim_ceiling": (
-            "outcome_blind_review_universe_registration_only_"
-            "not_confirmatory_until_taxon_and_source_reconciliation_close"
+            "outcome_blind_network_visible_review_subset_only_"
+            "not_confirmatory_until_supplement_taxa_taxon_grain_and_sources_reconcile"
         ),
     }
 
