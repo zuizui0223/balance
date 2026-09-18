@@ -41,7 +41,7 @@ OTHER                     1
 Observed architecture modes:
 
 ```text
-SHARED_COMPROMISE                   15
+SHARED_INTEGRATED                   15
 TEMPORAL_SEPARATION                  2
 SPATIAL_SEPARATION                   4
 WITHIN_FLOWER_DIVISION_OF_LABOUR     3
@@ -73,7 +73,7 @@ Only rows with `conflict_status=POSITIVE` may be interpreted as observed candida
 The 16 positive-conflict pilot records contain:
 
 ```text
-SHARED_COMPROMISE                    7
+SHARED_INTEGRATED                    7
 TEMPORAL_SEPARATION                  2
 SPATIAL_SEPARATION                   1
 WITHIN_FLOWER_DIVISION_OF_LABOUR     3
