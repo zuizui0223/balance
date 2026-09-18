@@ -66,7 +66,7 @@ def test_resolution_binary_consistency_is_fail_closed(tmp_path):
     path = tmp_path / "plants.csv"
     _write(
         path,
-        [_row(architecture_mode="SHARED_COMPROMISE", structural_module_division="true")],
+        [_row(architecture_mode="SHARED_INTEGRATED", structural_module_division="true")],
     )
     with pytest.raises(ValueError, match="must be false"):
         load_plant_macro_ledger(path)
