@@ -19,7 +19,7 @@ def _row(**updates):
         "function_a": "pollen reward",
         "function_b": "pollen export",
         "conflict_status": "POSITIVE",
-        "resolution_mode": "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+        "architecture_mode": "WITHIN_FLOWER_DIVISION_OF_LABOUR",
         "structural_module_division": "true",
         "module_substrate": "SERIAL_WITHIN_FLOWER",
         "conflict_timing_geometry": "SIMULTANEOUS",
@@ -66,7 +66,7 @@ def test_resolution_binary_consistency_is_fail_closed(tmp_path):
     path = tmp_path / "plants.csv"
     _write(
         path,
-        [_row(resolution_mode="SHARED_COMPROMISE", structural_module_division="true")],
+        [_row(architecture_mode="SHARED_COMPROMISE", structural_module_division="true")],
     )
     with pytest.raises(ValueError, match="must be false"):
         load_plant_macro_ledger(path)
@@ -78,7 +78,7 @@ def test_polymorphic_or_mosaic_is_not_forced_into_binary(tmp_path):
         path,
         [
             _row(
-                resolution_mode="POLYMORPHIC_OR_MOSAIC",
+                architecture_mode="POLYMORPHIC_OR_MOSAIC",
                 structural_module_division="unresolved",
                 primary_model_eligible="false",
             )
