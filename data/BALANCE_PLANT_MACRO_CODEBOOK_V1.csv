@@ -1,0 +1,30 @@
+field,type,allowed_values,analysis_role,definition
+cluster_id,string,unique_nonempty,id,Species or context-level record identifier
+dependency_group,string,nonempty,dependence,Identifier shared by non-independent rows from the same biological system or species
+sampling_frame_id,string,nonempty,design,Outcome-blind search or discovery frame admitting the record
+unit_type,categorical,SPECIES|SPECIES_CONTEXT|COMPARATIVE_CLADE|REVIEW_ONLY,design,Grain of the coded record
+source_id,string,nonempty,provenance,Primary source identifiers joined by semicolon
+publication_year,integer_or_unresolved,1800_2100_or_UNRESOLVED,bias,Publication year of the primary source
+system_taxon,string,nonempty,descriptor,Species or comparative taxon
+conflict_family,categorical,POLLINATOR_ANTAGONIST|SEXUAL_INTERFERENCE|POLLEN_REWARD_GAMETE|POLLINATOR_PREY|POLLINATION_ABIOTIC|OTHER|UNRESOLVED,stratification,Biological family of competing functions
+shared_structure,string,nonempty,descriptor,Reproductive structure or module under multifunctional demand
+function_a,string,nonempty,descriptor,First declared biological function
+function_b,string,nonempty,descriptor,Second declared biological function
+conflict_status,categorical,POSITIVE|ALIGNED_NO_CONFLICT|NO_DEMONSTRATED_CONFLICT|UNRESOLVED,screen,Adjudicated evidence for opposing functional demands
+architecture_mode,categorical,SHARED_INTEGRATED|TEMPORAL_SEPARATION|SPATIAL_SEPARATION|WITHIN_FLOWER_DIVISION_OF_LABOUR|AMONG_FLOWER_MODULE_DIVISION|POLYMORPHIC_OR_MOSAIC|UNRESOLVED|NA,outcome,Observed reproductive architecture mode; interpreted as conflict resolution only when conflict_status is POSITIVE
+structural_module_division,categorical,true|false|unresolved|na,primary_outcome,Derived binary response for within-flower or among-flower division of labour
+module_substrate,categorical,SINGLE_OR_CONTINUOUS|SERIAL_WITHIN_FLOWER|REPEATED_FLOWERS|PREEXISTING_SEPARATE_ORGANS|MULTILEVEL|UNRESOLVED,predictor,Pre-existing architectural degrees of freedom coded independently of resolution mode
+conflict_timing_geometry,categorical,SIMULTANEOUS|SEQUENTIAL_WITHIN_UNIT|SEASONALLY_ALTERNATING|CONTEXT_DEPENDENT|MIXED|UNRESOLVED,predictor,Temporal geometry of competing functional demands
+conflict_spatial_geometry,categorical,SAME_UNIT|BETWEEN_MODULES|AMONG_INDIVIDUALS|AMONG_POPULATIONS|ENVIRONMENTAL_MOSAIC|MIXED|UNRESOLVED,predictor,Spatial geometry of competing functional demands
+self_compatibility,categorical,SELF_COMPATIBLE|SELF_INCOMPATIBLE|MIXED|UNRESOLVED,moderator,Self compatibility when independently reported
+autonomous_selfing,categorical,ABSENT_OR_LOW|PRESENT|MIXED|UNRESOLVED,moderator,Autonomous selfing capacity when independently reported
+pollinator_dependence,categorical,LOW|MEDIUM|HIGH|UNRESOLVED,moderator,Dependence on animal pollination for reproductive success
+life_history,categorical,ANNUAL|BIENNIAL|PERENNIAL|MIXED|UNRESOLVED,moderator,Plant life history
+study_design,string,nonempty,bias,Strongest design supporting the row
+evidence_quality,categorical,HIGH|MODERATE|LOW|UNREVIEWED,bias,Prospectively defined evidence-quality class
+adjudication_status,categorical,UNSCREENED|SCREENED|ADJUDICATED|EXCLUDED,design,Plant-macro review status
+primary_model_eligible,boolean,true|false,gate,True only after conflict-positive species-level adjudication with resolved binary outcome and predictor receipts
+exclusion_reason,string,free_text,gate,Reason a screened record is excluded or not eligible
+source_basis,string,nonempty,provenance,Repository receipt DOI PMID or citation basis
+claim_ceiling,string,nonempty,guardrail,Strongest inference licensed by the record
+notes,string,free_text,notes,Additional adjudication notes

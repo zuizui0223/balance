@@ -1,0 +1,3 @@
+cluster_id,coder_id,conflict_status,architecture_mode,module_substrate,conflict_timing_geometry,conflict_spatial_geometry,notes
+EXAMPLE_CLUSTER,CODER_A,POSITIVE,SHARED_INTEGRATED,SINGLE_OR_CONTINUOUS,SIMULTANEOUS,SAME_UNIT,Example row only.
+EXAMPLE_CLUSTER,CODER_B,POSITIVE,SHARED_INTEGRATED,SINGLE_OR_CONTINUOUS,SIMULTANEOUS,SAME_UNIT,Example row only.

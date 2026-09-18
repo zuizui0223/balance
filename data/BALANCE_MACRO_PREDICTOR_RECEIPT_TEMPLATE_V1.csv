@@ -1,0 +1,3 @@
+receipt_id,cluster_id,predictor,reported_value,source_id,evidence_type,outcome_independence,adjudication_status,notes
+EXAMPLE_REJECTED_OUTCOME_DERIVED,EXAMPLE_CLUSTER,alternative_accessibility,HIGH,EXAMPLE_SOURCE,OUTCOME_DERIVED,FALSE,REJECTED,Example only: observed differentiation cannot by itself establish prior accessibility.
+EXAMPLE_INDEPENDENT_INTEGRATED_STATE,EXAMPLE_CLUSTER,functional_coupling,MEDIUM,EXAMPLE_SOURCE_2,INTEGRATED_STATE_EXPERIMENT,TRUE,SCREENED,Example only: requires source adjudication before promotion.
