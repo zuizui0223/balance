@@ -16,8 +16,8 @@ def test_u2_provisional_review_universe_validates():
 def test_u2_is_discovery_only_not_claimed_closed():
     readout = build_u2_readout(U2)
     assert readout["n_registered_dependency_groups"] == 16
-    assert readout["n_species_level_source_resolved"] == 15
-    assert readout["n_taxon_resolution_pending"] == 1
+    assert readout["n_species_level_source_resolved"] == 16
+    assert readout["n_taxon_resolution_pending"] == 0
     assert readout["review_universe_closed"] is False
     assert "not_conflict_positive" in readout["claim_ceiling"]
 
@@ -38,8 +38,9 @@ def test_review_universe_retains_null_or_specificity_case():
     assert pont["screening_status"] == "UNSCREENED"
 
 
-def test_alpinia_genus_level_record_is_not_silently_species_level():
+def test_alpinia_flexistyly_program_is_resolved_to_species():
     rows = load_u2_universe(U2)
-    alpinia = next(r for r in rows if r["dependency_group"] == "Alpinia_flexistyly_program")
-    assert alpinia["taxon_raw"] == "Alpinia spp."
-    assert alpinia["source_resolution_status"] == "TAXON_RESOLUTION_PENDING"
+    alpinia = next(r for r in rows if r["dependency_group"] == "Alpinia_kwangsiensis")
+    assert alpinia["taxon_raw"] == "Alpinia kwangsiensis"
+    assert alpinia["source_resolution_status"] == "RESOLVED_PRIMARY"
+    assert alpinia["primary_source_doi"] == "10.1038/35068635"
