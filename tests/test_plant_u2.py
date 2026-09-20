@@ -55,7 +55,7 @@ def test_review_universe_retains_null_or_specificity_case():
     rows = load_u2_universe(U2)
     pont = next(r for r in rows if r["dependency_group"] == "Pontederia_cordata")
     assert pont["evidence_family"] == "PHYSICAL_SEX_ORGAN_INTERFERENCE_NULL_TEST"
-    assert pont["screening_status"] == "UNSCREENED"
+    assert pont["screening_status"] == "SCREENED"
 
 
 def test_alpinia_flexistyly_program_is_resolved_to_species():
