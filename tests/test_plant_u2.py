@@ -1,25 +1,41 @@
 from pathlib import Path
 
-from balance_domain.plant_u2 import build_u2_readout, load_u2_universe
+from balance_domain.plant_u2 import (
+    build_u2_readout,
+    build_u2_reference_handoff,
+    load_u2_universe,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 U2 = ROOT / "data" / "BALANCE_PLANT_U2_BARRETT_REVIEW_UNIVERSE_V1.csv"
+COVERAGE = ROOT / "data" / "BALANCE_PLANT_U2_REFERENCE_COVERAGE_V1.csv"
 
 
-def test_u2_provisional_review_universe_validates():
+def test_u2_review_universe_validates():
     rows = load_u2_universe(U2)
-    assert len(rows) == 16
-    assert len({r["dependency_group"] for r in rows}) == 16
+    assert len(rows) == 22
+    assert len({r["dependency_group"] for r in rows}) == 22
 
 
-def test_u2_is_discovery_only_not_claimed_closed():
+def test_u2_is_discovery_only_even_when_source_resolution_is_closed():
     readout = build_u2_readout(U2)
-    assert readout["n_registered_dependency_groups"] == 16
-    assert readout["n_species_level_source_resolved"] == 16
+    assert readout["n_registered_dependency_groups"] == 22
+    assert readout["n_species_level_source_resolved"] == 22
     assert readout["n_taxon_resolution_pending"] == 0
-    assert readout["review_universe_closed"] is False
     assert "not_conflict_positive" in readout["claim_ceiling"]
+
+
+def test_u2_reference_coverage_and_source_handoff_are_closed():
+    handoff = build_u2_reference_handoff(U2, COVERAGE)
+    assert handoff["n_registered_dependency_groups"] == 22
+    assert handoff["n_barrett_references"] == 37
+    assert handoff["n_pending_reference_classifications"] == 0
+    assert handoff["n_unresolved_primary_sources"] == 0
+    assert handoff["review_reference_coverage_closed"] is True
+    assert handoff["species_source_resolution_closed"] is True
+    assert handoff["discovery_universe_source_closed"] is True
+    assert "not_conflict_status" in handoff["claim_ceiling"]
 
 
 def test_eichhornia_multiple_studies_are_one_dependency_group():
