@@ -2,75 +2,64 @@
 
 ## Purpose
 
-Open a second outcome-independent discovery universe while U1 waits for three supplement-only taxa.
+U2 is the first **source-closed outcome-independent sexual-interference discovery universe** in the plant macro programme.
 
-U2 is anchored to Barrett (2002), *Sexual interference of the floral kind* (Heredity 88:154–159; DOI 10.1038/sj.hdy.6800020).
+It is anchored to Barrett (2002), *Sexual interference of the floral kind* (Heredity 88:154–159; DOI 10.1038/sj.hdy.6800020).
 
-The review defines sexual interference broadly as conflicts between maternal and paternal function that can waste gametes or mating opportunities and explicitly discusses both positive and negative experimental evidence.
+The review defines sexual interference broadly as conflicts between maternal and paternal function that can waste gametes or mating opportunities and explicitly discusses positive, negative and ambiguous experimental evidence.
+
+## Current closure state
+
+Current registry: 22 biological dependency groups; 37 Barrett-2002 references classified; all taxon-empirical references mapped; zero pending reference classifications; zero unresolved primary-source groups.
+
+Every U2 biological group remains `screening_status = UNSCREENED`. Source closure therefore does **not** mean conflict-positive or analysis-eligible.
 
 ## Construction
 
-The first U2 registry contains 16 biological dependency groups drawn from taxon-specific empirical studies explicitly cited by Barrett (2002).
+The 22 groups are the biological units recoverable from taxon-specific empirical studies cited by Barrett (2002), with repeated studies on one species merged before analysis.
 
-It is not a list of architectures that 'worked'.
+The registry deliberately retains different inferential outcomes, including a null physical-interference test in *Pontederia cordata*; prior/self-pollen interference cases; movement herkogamy in *Mimulus aurantiacus*; display and sexual-segregation experiments in *Eichhornia paniculata*; stylar-polymorphism studies in *Narcissus*; historical heteranthery observations; and self-sterility/incompatibility cases that may fail the strict BALANCE conflict gate.
 
-Examples retained include:
-
-- a null physical-interference test in *Pontederia cordata*;
-- self-pollen interference in *Campsis radicans* and *Asclepias exaltata*;
-- movement herkogamy in *Mimulus aurantiacus*;
-- large-display and inflorescence-sexual-segregation manipulations in *Eichhornia paniculata*;
-- stylar-polymorphism studies in *Narcissus*;
-- review-cited self-sterility / incompatibility cases that may later fail the strict conflict gate.
-
-This mixture is intentional. U2 membership is review-citation membership, not BALANCE-positive status.
+U2 membership is review-citation membership, not a list of successful conflict-resolution architectures.
 
 ## Source grain
 
-Multiple studies on one species are merged into one dependency group at the universe-registration stage.
+Multiple studies on one species are one dependency group. For example, Kohn & Barrett 1992, Harder & Barrett 1995, and Harder, Barrett & Cole 2000 all map to one `Eichhornia_paniculata` group.
 
-For example:
+The former genus-level flexistyly record has been resolved to *Alpinia kwangsiensis* with the review-cited primary programme attached.
 
-```text
-Eichhornia paniculata
-<- Kohn & Barrett 1992
-<- Harder & Barrett 1995
-<- Harder, Barrett & Cole 2000
-```
+The comparative *Wachendorfia* paper is represented by separate species rows because the primary source resolves species-level states, while shared-source provenance is retained.
 
-is one biological group, not three independent replicates.
+## Full review-reference audit
 
-`Alpinia` remains genus-level and is marked `TAXON_RESOLUTION_PENDING`; it cannot enter a species-level model until the primary flexistyly programme is resolved to species.
+`data/BALANCE_PLANT_U2_REFERENCE_COVERAGE_V1.csv` classifies all 37 references in Barrett (2002) as taxon-specific empirical evidence, synthesis/review, theory/general, historical synthesis, or broad comparative dataset.
+
+Every taxon-specific empirical reference is mapped to one or more registered U2 dependency groups. Non-taxon references are not silently converted into biological replication.
+
+The canonical validator fails closed if one of the 37 references disappears, a taxon-empirical citation becomes unmapped, a registered dependency group lacks taxon-specific reference support, or a primary source returns to unresolved status.
+
+## Independent double-coding sample
+
+Because the source universe is closed, U2 now has a deterministic first-20 sample in `data/BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv` using `FIRST_20_DEPENDENCY_GROUPS_LEXICOGRAPHIC_FROM_SOURCE_CLOSED_U2`.
+
+All 20 sampled groups are source-resolved and marked `READY_FOR_INDEPENDENT_DOUBLE_CODING`.
+
+The blinded source packet is `data/BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv`. Coders are instructed to use the primary source only and not the review-side `evidence_family` or interpretive notes.
 
 ## Why U2 is useful
 
-U1 is dominated by herbivore-pollinator interactions.
+U1 primarily addresses herbivore–pollinator interactions. U2 supplies an independently constructed literature family in which competing functions are male and female reproductive roles.
 
-U2 supplies an independently assembled literature family in which the competing functions are male and female reproductive roles. It directly populates the plant programme's temporal/spatial architecture axis:
-
-```text
-simultaneous sexual function
--> dichogamy / temporal separation
--> herkogamy / spatial separation
--> inflorescence-level sexual segregation
-```
-
-without selecting records from the observed BALANCE architecture outcome.
+It directly probes whether architecture can be classified along shared simultaneous function, temporal separation, spatial separation, and inflorescence/module-level sexual segregation without selecting the first 20 rows by observed architecture.
 
 ## Claim ceiling
 
-U2 registration does not establish that:
+Even with source closure, U2 does not establish that sexual interference is present in every cited species, that dichogamy/herkogamy evolved because of interference, that anti-selfing and sexual-interference mechanisms are distinguishable from citation membership, or that any U2 row belongs in the confirmatory primary model.
 
-- sexual interference is present in every cited species;
-- dichogamy or herkogamy evolved because of interference;
-- anti-selfing and interference hypotheses are distinguishable from citation alone;
-- any U2 row is confirmatory-model eligible.
+Those claims require the independent source-level coding and adjudication stage.
 
-Every row still requires source-level conflict, architecture and predictor adjudication.
+## Current next gate
 
-## Next gate
+U2 literature discovery is no longer the bottleneck. The next operation is 20 source-resolved groups -> independent coder A/B classifications -> raw agreement + Cohen kappa + Gwet AC1 -> disagreement adjudication -> versioned codebook repair if required.
 
-1. resolve the one genus-level `Alpinia` record to species;
-2. identify all review-cited primary experimental groups rather than stopping at the first 16;
-3. freeze a deterministic dependency-group ordering;
-4. double-code only after the U2 review universe itself is closed.
+No synthetic second coder will be generated. Until an independent second coding pass exists, U2 remains source-ready but not reliability-closed.
