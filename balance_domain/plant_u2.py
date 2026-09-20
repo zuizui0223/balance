@@ -29,6 +29,27 @@ COVERAGE_FIELDS = (
     "notes",
 )
 
+
+SAMPLE_FIELDS = (
+    "sample_order",
+    "universe_record_id",
+    "dependency_group",
+    "taxon_raw",
+    "selection_rule",
+    "source_resolution_status",
+    "double_code_status",
+)
+
+SOURCE_PACKET_FIELDS = (
+    "sample_order",
+    "universe_record_id",
+    "dependency_group",
+    "taxon_raw",
+    "primary_source_id",
+    "primary_source_doi",
+    "coder_instruction",
+)
+
 SCREENING = {"UNSCREENED", "SCREENED", "ADJUDICATED", "EXCLUDED"}
 SOURCE = {"RESOLVED_PRIMARY", "TAXON_RESOLUTION_PENDING", "SOURCE_RESOLUTION_PENDING"}
 REFERENCE_CLASS = {
@@ -42,6 +63,7 @@ COVERAGE_STATUS = {"MAPPED", "NO_NEW_GROUP_REQUIRED", "PENDING"}
 
 EXPECTED_GROUPS = 22
 EXPECTED_REFERENCES = 37
+EXPECTED_DOUBLE_CODE_SAMPLE = 20
 
 
 def load_u2_universe(path: Path) -> list[dict[str, str]]:
@@ -231,4 +253,105 @@ def build_u2_reference_handoff(universe_path: Path, coverage_path: Path) -> dict
     return validate_u2_reference_handoff(
         load_u2_universe(universe_path),
         load_u2_reference_coverage(coverage_path),
+    )
+
+
+def load_u2_double_code_sample(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != SAMPLE_FIELDS:
+            raise ValueError("U2 double-code sample columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != EXPECTED_DOUBLE_CODE_SAMPLE:
+        raise ValueError(
+            f"U2 double-code sample must contain {EXPECTED_DOUBLE_CODE_SAMPLE} groups"
+        )
+    orders = [int(r["sample_order"]) for r in rows]
+    if orders != list(range(1, EXPECTED_DOUBLE_CODE_SAMPLE + 1)):
+        raise ValueError("U2 sample_order must be exactly 1..20")
+    if len({r["universe_record_id"] for r in rows}) != len(rows):
+        raise ValueError("U2 double-code sample record IDs must be unique")
+    if not all(r["double_code_status"] == "READY_FOR_INDEPENDENT_DOUBLE_CODING" for r in rows):
+        raise ValueError("every U2 sampled group must be source-ready before coding")
+    return rows
+
+
+def load_u2_source_packet(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != SOURCE_PACKET_FIELDS:
+            raise ValueError("U2 source-packet columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != EXPECTED_DOUBLE_CODE_SAMPLE:
+        raise ValueError(
+            f"U2 source packet must contain {EXPECTED_DOUBLE_CODE_SAMPLE} groups"
+        )
+    for n, row in enumerate(rows, start=2):
+        if row["coder_instruction"] != (
+            "CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES"
+        ):
+            raise ValueError(f"source-packet row {n} has wrong blinding instruction")
+    return rows
+
+
+def validate_u2_double_code_handoff(
+    universe_rows: list[dict[str, str]],
+    sample_rows: list[dict[str, str]],
+    packet_rows: list[dict[str, str]],
+) -> dict:
+    by_id = {r["universe_record_id"]: r for r in universe_rows}
+    expected = sorted(
+        universe_rows,
+        key=lambda r: (r["taxon_raw"].casefold(), r["universe_record_id"]),
+    )[:EXPECTED_DOUBLE_CODE_SAMPLE]
+
+    if [r["universe_record_id"] for r in sample_rows] != [
+        r["universe_record_id"] for r in expected
+    ]:
+        raise ValueError("U2 sample no longer matches frozen lexicographic selection rule")
+
+    packet_by_id = {r["universe_record_id"]: r for r in packet_rows}
+    for sample in sample_rows:
+        uid = sample["universe_record_id"]
+        if uid not in by_id or uid not in packet_by_id:
+            raise ValueError(f"U2 sampled record {uid!r} missing from handoff")
+        universe = by_id[uid]
+        packet = packet_by_id[uid]
+        for field in ("dependency_group", "taxon_raw"):
+            if sample[field] != universe[field] or sample[field] != packet[field]:
+                raise ValueError(f"U2 handoff mismatch for {uid!r} field {field}")
+        if universe["source_resolution_status"] != "RESOLVED_PRIMARY":
+            raise ValueError(f"U2 sampled record {uid!r} is not source-resolved")
+        if sample["source_resolution_status"] != "RESOLVED_PRIMARY":
+            raise ValueError(f"U2 sample status drift for {uid!r}")
+        if packet["primary_source_id"] != universe["primary_source_id"]:
+            raise ValueError(f"U2 blinded source packet source drift for {uid!r}")
+
+    return {
+        "analysis": "balance_plant_u2_double_code_handoff",
+        "n_universe_groups": len(universe_rows),
+        "n_sampled_groups": len(sample_rows),
+        "n_source_packet_groups": len(packet_rows),
+        "all_sampled_sources_resolved": True,
+        "selection_rule_closed": True,
+        "source_packet_blinded_to_review_evidence_family": True,
+        "independent_double_coding_ready": True,
+        "claim_ceiling": (
+            "source_closed_blinded_coder_assignment_only_"
+            "not_conflict_status_not_architecture_mode_not_adjudicated"
+        ),
+    }
+
+
+def build_u2_double_code_handoff(
+    universe_path: Path,
+    sample_path: Path,
+    packet_path: Path,
+) -> dict:
+    return validate_u2_double_code_handoff(
+        load_u2_universe(universe_path),
+        load_u2_double_code_sample(sample_path),
+        load_u2_source_packet(packet_path),
     )
