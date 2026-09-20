@@ -1,2 +1,2 @@
-pair_id,case_family,case_taxon,case_source_id,control_taxon,control_source_id,match_level,phylogenetic_basis,animal_pollination_eligible,heteranthery_absence_confirmed,selection_status,tie_break_used,predictor_blinding_status,notes
-EXAMPLE_PAIR,EXAMPLE_FAMILY,CASE_SPECIES,CASE_SOURCE,CONTROL_SPECIES,CONTROL_SOURCE,CONGENERIC,PRIMARY_PHYLOGENY_OR_TAXONOMIC_SOURCE,true,true,SCREENED,NONE,BLINDED,Example only; no real U3 pair is registered by this template.
+pair_id,pair_role,case_family,case_taxon,case_source_id,control_taxon,control_source_id,match_level,phylogenetic_basis,animal_pollination_eligible,heteranthery_absence_confirmed,selection_status,tie_break_used,predictor_blinding_status,notes
+EXAMPLE_PAIR,PRIMARY,EXAMPLE_FAMILY,CASE_SPECIES,CASE_SOURCE,CONTROL_SPECIES,CONTROL_SOURCE,CONGENERIC,PRIMARY_PHYLOGENY_OR_TAXONOMIC_SOURCE,true,true,SCREENED,NONE,BLINDED,Example only; no real U3 pair is registered by this template.
