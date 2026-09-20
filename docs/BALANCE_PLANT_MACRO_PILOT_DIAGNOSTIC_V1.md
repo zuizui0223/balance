@@ -42,8 +42,9 @@ Observed architecture modes:
 
 ```text
 SHARED_INTEGRATED                   15
-TEMPORAL_SEPARATION                  2
+TEMPORAL_SEPARATION                  1
 SPATIAL_SEPARATION                   4
+TEMPORAL_AND_SPATIAL_SEPARATION      1
 WITHIN_FLOWER_DIVISION_OF_LABOUR     3
 AMONG_FLOWER_MODULE_DIVISION         1
 POLYMORPHIC_OR_MOSAIC                3
@@ -74,8 +75,9 @@ The 16 positive-conflict pilot records contain:
 
 ```text
 SHARED_INTEGRATED                    7
-TEMPORAL_SEPARATION                  2
+TEMPORAL_SEPARATION                  1
 SPATIAL_SEPARATION                   1
+TEMPORAL_AND_SPATIAL_SEPARATION      1
 WITHIN_FLOWER_DIVISION_OF_LABOUR     3
 AMONG_FLOWER_MODULE_DIVISION         1
 POLYMORPHIC_OR_MOSAIC                2
