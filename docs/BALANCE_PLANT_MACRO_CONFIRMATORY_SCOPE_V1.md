@@ -101,6 +101,7 @@ Use a nominal architecture variable rather than assuming a universal evolutionar
 SHARED_INTEGRATED
 TEMPORAL_SEPARATION
 SPATIAL_SEPARATION
+TEMPORAL_AND_SPATIAL_SEPARATION
 WITHIN_FLOWER_DIVISION_OF_LABOUR
 AMONG_FLOWER_MODULE_DIVISION
 POLYMORPHIC_OR_MOSAIC
@@ -113,6 +114,7 @@ Examples:
 shared corolla under pollinator/ant conflict -> SHARED_INTEGRATED
 dichogamy -> TEMPORAL_SEPARATION
 herkogamy or flower/trap separation -> SPATIAL_SEPARATION
+combined dichogamy + herkogamy -> TEMPORAL_AND_SPATIAL_SEPARATION
 heteranthery -> WITHIN_FLOWER_DIVISION_OF_LABOUR
 male-only + bisexual flowers -> AMONG_FLOWER_MODULE_DIVISION
 context-dependent morph/state turnover -> POLYMORPHIC_OR_MOSAIC
@@ -123,7 +125,7 @@ A secondary binary estimand is:
 ```text
 structural_module_division =
   true  for WITHIN_FLOWER_DIVISION_OF_LABOUR or AMONG_FLOWER_MODULE_DIVISION
-  false for SHARED_INTEGRATED / TEMPORAL_SEPARATION / SPATIAL_SEPARATION
+  false for SHARED_INTEGRATED / TEMPORAL_SEPARATION / SPATIAL_SEPARATION / TEMPORAL_AND_SPATIAL_SEPARATION
 ```
 
 This binary outcome is a statistical simplification, not a claim that temporal/spatial separation is biologically unimportant.
