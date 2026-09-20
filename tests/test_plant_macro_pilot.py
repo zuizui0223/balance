@@ -27,6 +27,7 @@ def test_plant_pilot_spans_all_required_architecture_modes():
         "SHARED_INTEGRATED",
         "TEMPORAL_SEPARATION",
         "SPATIAL_SEPARATION",
+        "TEMPORAL_AND_SPATIAL_SEPARATION",
         "WITHIN_FLOWER_DIVISION_OF_LABOUR",
         "AMONG_FLOWER_MODULE_DIVISION",
         "POLYMORPHIC_OR_MOSAIC",
