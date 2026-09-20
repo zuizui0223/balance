@@ -111,3 +111,19 @@ def test_dependency_groups_are_reported_separately_from_record_count(tmp_path):
     readout = build_plant_macro_readout(path)
     assert readout["n_records"] == 2
     assert readout["n_dependency_groups"] == 1
+
+
+def test_combined_temporal_spatial_separation_is_nonstructural(tmp_path):
+    path = tmp_path / "plants.csv"
+    _write(
+        path,
+        [
+            _row(
+                architecture_mode="TEMPORAL_AND_SPATIAL_SEPARATION",
+                structural_module_division="false",
+            )
+        ],
+    )
+    rows = load_plant_macro_ledger(path)
+    assert rows[0]["architecture_mode"] == "TEMPORAL_AND_SPATIAL_SEPARATION"
+    assert rows[0]["structural_module_division"] == "false"
