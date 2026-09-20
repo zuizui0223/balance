@@ -64,3 +64,11 @@ def test_u2_historical_heteranthery_is_not_promoted_from_morphology_alone():
         assert rows[dep]["conflict_status"] == "UNRESOLVED"
         assert rows[dep]["architecture_mode"] == "UNRESOLVED"
         assert rows[dep]["evidence_quality"] == "LOW"
+
+
+def test_u2_polemonium_retains_joint_spatiotemporal_architecture():
+    rows = {r["dependency_group"]: r for r in load_plant_macro_ledger(SCREEN)}
+    pole = rows["Polemonium_viscosum"]
+    assert pole["conflict_status"] == "POSITIVE"
+    assert pole["architecture_mode"] == "TEMPORAL_AND_SPATIAL_SEPARATION"
+    assert pole["structural_module_division"] == "false"
