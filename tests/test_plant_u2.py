@@ -2,7 +2,9 @@ from pathlib import Path
 
 from balance_domain.plant_u2 import (
     build_u2_readout,
+    build_u2_double_code_handoff,
     build_u2_reference_handoff,
+    load_u2_double_code_sample,
     load_u2_universe,
 )
 
@@ -10,6 +12,8 @@ from balance_domain.plant_u2 import (
 ROOT = Path(__file__).resolve().parents[1]
 U2 = ROOT / "data" / "BALANCE_PLANT_U2_BARRETT_REVIEW_UNIVERSE_V1.csv"
 COVERAGE = ROOT / "data" / "BALANCE_PLANT_U2_REFERENCE_COVERAGE_V1.csv"
+SAMPLE = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv"
+PACKET = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv"
 
 
 def test_u2_review_universe_validates():
@@ -60,3 +64,31 @@ def test_alpinia_flexistyly_program_is_resolved_to_species():
     assert alpinia["taxon_raw"] == "Alpinia kwangsiensis"
     assert alpinia["source_resolution_status"] == "RESOLVED_PRIMARY"
     assert alpinia["primary_source_doi"] == "10.1038/35068635"
+
+
+def test_u2_source_closed_first20_is_ready_for_independent_double_coding():
+    handoff = build_u2_double_code_handoff(U2, SAMPLE, PACKET)
+    assert handoff["n_universe_groups"] == 22
+    assert handoff["n_sampled_groups"] == 20
+    assert handoff["n_source_packet_groups"] == 20
+    assert handoff["all_sampled_sources_resolved"] is True
+    assert handoff["selection_rule_closed"] is True
+    assert handoff["source_packet_blinded_to_review_evidence_family"] is True
+    assert handoff["independent_double_coding_ready"] is True
+
+
+def test_u2_double_code_sample_retains_first20_lexicographic_groups():
+    rows = load_u2_double_code_sample(SAMPLE)
+    taxa = [r["taxon_raw"] for r in rows]
+    assert taxa[:5] == [
+        "Alpinia kwangsiensis",
+        "Asclepias exaltata",
+        "Campsis radicans",
+        "Chamaecrista fasciculata (Todd: Cassia chamaecrista)",
+        "Eichhornia paniculata",
+    ]
+    assert taxa[-3:] == [
+        "Wachendorfia brachyandra",
+        "Wachendorfia paniculata",
+        "Wachendorfia parviflora",
+    ]
