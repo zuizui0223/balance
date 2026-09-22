@@ -16,6 +16,7 @@ FIELDS = (
     "heteranthery_absence_status",
     "animal_pollination_status",
     "phylogenetic_proximity_status",
+    "closest_eligible_search_status",
     "evidence_tier",
     "selection_status",
     "source_id",
@@ -27,6 +28,13 @@ ROLE = {"INCUMBENT", "ALTERNATIVE", "REPLACEMENT"}
 GATE = {"PASS", "OPEN", "FAIL"}
 EVIDENCE_TIER = {"PRIMARY", "SECONDARY", "MIXED"}
 STATUS = {"SCREENED", "OPEN", "REJECTED"}
+
+GATE_FIELDS = (
+    "heteranthery_absence_status",
+    "animal_pollination_status",
+    "phylogenetic_proximity_status",
+    "closest_eligible_search_status",
+)
 
 
 def load_u3_control_alternatives(
@@ -64,11 +72,7 @@ def load_u3_control_alternatives(
             raise ValueError(f"row {n} candidate control must be a different frozen taxon")
         if clean["candidate_role"] not in ROLE:
             raise ValueError(f"row {n} invalid candidate_role")
-        for field in (
-            "heteranthery_absence_status",
-            "animal_pollination_status",
-            "phylogenetic_proximity_status",
-        ):
+        for field in GATE_FIELDS:
             if clean[field] not in GATE:
                 raise ValueError(f"row {n} invalid {field}")
         if clean["evidence_tier"] not in EVIDENCE_TIER:
@@ -78,11 +82,7 @@ def load_u3_control_alternatives(
         if not clean["source_id"]:
             raise ValueError(f"row {n} source_id must be frozen")
 
-        gates = (
-            clean["heteranthery_absence_status"],
-            clean["animal_pollination_status"],
-            clean["phylogenetic_proximity_status"],
-        )
+        gates = tuple(clean[field] for field in GATE_FIELDS)
         if clean["selection_status"] == "SCREENED":
             if any(g != "PASS" for g in gates):
                 raise ValueError(f"row {n} SCREENED candidate requires all gates PASS")
@@ -119,14 +119,42 @@ def build_u3_control_alternatives_readout(
     rejected_controls = sorted(
         {r["candidate_control"] for r in rows if r["selection_status"] == "REJECTED"}
     )
+    phylo_pass_search_open = [
+        r
+        for r in rows
+        if r["phylogenetic_proximity_status"] == "PASS"
+        and r["closest_eligible_search_status"] == "OPEN"
+        and r["selection_status"] != "REJECTED"
+    ]
+    biologically_pass_search_open = [
+        r
+        for r in rows
+        if all(
+            r[field] == "PASS"
+            for field in (
+                "heteranthery_absence_status",
+                "animal_pollination_status",
+                "phylogenetic_proximity_status",
+            )
+        )
+        and r["closest_eligible_search_status"] == "OPEN"
+    ]
     return {
         "analysis": "balance_plant_u3_control_alternatives",
         "n_candidates": len(rows),
         "status_counts": dict(sorted(status.items())),
+        "n_screened": status.get("SCREENED", 0),
         "n_open": status.get("OPEN", 0),
         "n_rejected": status.get("REJECTED", 0),
         "open_case_taxa": unresolved_cases,
         "rejected_controls": rejected_controls,
+        "n_phylogenetic_pass_closest_search_open": len(phylo_pass_search_open),
+        "n_biological_gates_pass_closest_search_open": len(
+            biologically_pass_search_open
+        ),
+        "biological_pass_but_unselected_candidates": sorted(
+            r["candidate_control"] for r in biologically_pass_search_open
+        ),
         "candidate_search_closed": status.get("OPEN", 0) == 0,
         "claim_ceiling": (
             "candidate_search_receipts_only_not_matched_control_selection_"
