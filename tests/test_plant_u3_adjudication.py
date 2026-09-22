@@ -17,17 +17,16 @@ PAIRS = ROOT / "data" / "BALANCE_PLANT_U3_MATCHED_CONTROLS_V1.csv"
 ADJ = ROOT / "data" / "BALANCE_PLANT_U3_CONTROL_ADJUDICATION_V1.csv"
 
 
-def test_real_u3_adjudication_has_two_pass_four_open():
+def test_real_u3_adjudication_has_two_pass_two_open_two_fail():
     rows = load_u3_control_adjudication(ADJ, PAIRS, CASES, U3)
     assert len(rows) == 6
     readout = build_u3_control_adjudication_readout(ADJ, PAIRS, CASES, U3)
-    assert readout["decision_counts"] == {"OPEN": 4, "PASS": 2}
+    assert readout["decision_counts"] == {"FAIL": 2, "OPEN": 2, "PASS": 2}
     assert set(readout["open_pair_ids"]) == {
         "U3_PAIR_MONKO_001",
         "U3_PAIR_MONVA_001",
-        "U3_PAIR_SENAL_001",
-        "U3_PAIR_SENBI_001",
     }
+    assert readout["n_fail"] == 2
     assert readout["adjudication_closed"] is False
 
 
@@ -35,6 +34,15 @@ def test_pass_rows_match_adjudicated_pair_registry():
     rows = load_u3_control_adjudication(ADJ, PAIRS, CASES, U3)
     passed = {r["case_taxon"] for r in rows if r["decision"] == "PASS"}
     assert passed == {"Solanum rostratum", "Melastoma malabathricum"}
+
+
+def test_senna_surattensis_fails_heteranthery_absence_gate():
+    rows = load_u3_control_adjudication(ADJ, PAIRS, CASES, U3)
+    senna = [r for r in rows if r["control_taxon"] == "Senna surattensis"]
+    assert len(senna) == 2
+    assert all(r["heteranthery_absence_status"] == "FAIL" for r in senna)
+    assert all(r["decision"] == "FAIL" for r in senna)
+    assert all("REPLACEMENT_REQUIRED" in r["blocker"] for r in senna)
 
 
 def _read_rows():
