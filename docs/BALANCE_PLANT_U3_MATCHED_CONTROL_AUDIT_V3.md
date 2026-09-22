@@ -2,15 +2,18 @@
 
 ## Current state
 
-U3 now has full **candidate control coverage** and partial **adjudication closure**.
+U3 has six species-level case records, but the latest source audit rejects the previously proposed `Senna surattensis` negative controls.
 
 ```text
-source-resolved heteranthery cases          6
-registered PRIMARY control candidates       6
-adjudicated PRIMARY pairs                   2
-screened PRIMARY pairs still open           4
-screened-control coverage complete?        YES
-case-control adjudication closed?           NO
+source-resolved heteranthery cases             6
+PRIMARY pair records retained                  6
+registered eligible PRIMARY controls           4
+adjudicated PRIMARY pairs                      2
+screened PRIMARY pairs still open              2
+rejected PRIMARY control proposals             2
+cases needing replacement controls             2
+screened-control coverage complete?           NO
+case-control adjudication closed?              NO
 ```
 
 Canonical machine-readable surfaces:
@@ -22,7 +25,7 @@ balance_domain/plant_u3_controls.py
 balance_domain/plant_u3_adjudication.py
 ```
 
-The adjudication ledger separates biological eligibility from the final decision. A pair can be promoted to `ADJUDICATED` only when every registered gate passes.
+The pair record is retained when a proposed control is rejected so the failed comparison remains auditable rather than disappearing from the history.
 
 ## PASS — Solanum rostratum -> Solanum lycocarpum
 
@@ -56,6 +59,8 @@ Three independent source surfaces close the match:
 
 The registered match level remains `SAME_TRIBE_SUBFAMILY`; no false congeneric or species-sister claim is made.
 
+This closes control selection only. The separate pollen-fate conflict extraction for `O. chinensis` remains unresolved.
+
 ## OPEN — Monochoria korsakowii -> Monochoria australasica
 
 Decision:
@@ -77,7 +82,9 @@ Open gates:
 DIRECT_ANIMAL_POLLINATION_AND_CLOSEST_ELIGIBLE_CONGENER_SEARCH_OPEN
 ```
 
-The current evidence makes `M. australasica` a strong control candidate, but the programme still requires source-secure direct animal-pollination eligibility and an explicit search excluding a closer eligible nonheterantherous congener.
+The current evidence makes `M. australasica` a plausible control candidate, but the programme still requires source-secure direct animal-pollination eligibility and an explicit search excluding a closer eligible nonheterantherous congener.
+
+The latter search must explicitly consider `M. cyanea`, which has been described as lacking the case-defining stamen dimorphism in secondary syntheses but is not placed in the 2021 plastid sampling used for the current control receipt.
 
 ## OPEN — Monochoria vaginalis -> Monochoria australasica
 
@@ -87,57 +94,78 @@ Decision:
 OPEN
 ```
 
-The same biological control is shared with `M. korsakowii`.
-
-That shared-control dependence is retained explicitly.
+The same biological control is shared with `M. korsakowii`; that dependence is retained explicitly.
 
 The same two gates remain open:
 
 - direct animal-pollination source closure;
-- closest-eligible-control closure.
+- closest-eligible-control closure, including the `M. cyanea` candidate.
 
-The two Monochoria pairs can therefore never be treated as two independent negative-control lineages merely because there are two case species.
+The two Monochoria pairs cannot be treated as two independent negative-control lineages merely because there are two case species.
 
-## OPEN — Senna alata -> Senna surattensis
-
-Decision:
-
-```text
-OPEN
-```
-
-Closed gates:
-
-- congeneric match;
-- direct source comparison showing `S. surattensis` lacks the strong feeding/pollinating stamen differentiation of the case;
-- Xylocopa visitation / animal-pollination eligibility;
-- predictor blinding.
-
-Open gate:
-
-```text
-CLOSEST_ELIGIBLE_NONHETERANTHEROUS_CONGENER_SEARCH_OPEN
-```
-
-The current pair is source-comparable and biologically valid, but the broad Senna phylogeny has not yet demonstrated that no closer eligible nonheterantherous congener exists.
-
-## OPEN — Senna bicapsularis -> Senna surattensis
+## FAIL — Senna alata -> Senna surattensis
 
 Decision:
 
 ```text
-OPEN
+FAIL
+heteranthery_absence_status = FAIL
+selection_status = REJECTED
 ```
 
-The known close relative `S. corymbosa` is itself heterantherous and therefore cannot serve as a negative architecture control.
+The earlier screen over-interpreted the statement that `S. surattensis` has all 10 stamens fertile and similar in size.
 
-That exclusion improves the case for `S. surattensis`, but it still does not exhaust the search for the closest eligible nonheterantherous comparator.
+Luo et al. (2009) explicitly sampled seven species with heteromorphic stamens. Their Table 1 codes `S. surattensis` as having `long, short` stamen differentiation, and the discussion describes its androecium as having **little** morphological differentiation.
 
-The same `S. surattensis` control is shared with `S. alata`, so shared-control dependence must remain explicit.
+Therefore:
+
+```text
+weak differentiation
+!=
+confirmed heteranthery absence
+```
+
+The proposed control is source-comparable and animal-pollinated, but it is not a valid negative architecture control under the frozen U3 protocol.
+
+A replacement nonheterantherous congener or nearest eligible relative must be registered before this case regains control coverage.
+
+## FAIL — Senna bicapsularis -> Senna surattensis
+
+Decision:
+
+```text
+FAIL
+heteranthery_absence_status = FAIL
+selection_status = REJECTED
+```
+
+The same source problem applies.
+
+`S. surattensis` is less differentiated than `S. bicapsularis`, but the source still distinguishes long and short stamen sets. It is therefore informative as a low-differentiation comparative state, not as a clean absence control.
+
+The previous shared-control convenience is not retained at the cost of violating the outcome definition.
+
+## Why the Senna rejection improves the design
+
+A case-control study of structural differentiation becomes circular if controls are allowed to be merely "less differentiated" while being labeled "absence."
+
+The fail-closed correction separates two possible future analyses:
+
+```text
+primary U3 matched lane:
+  heteranthery present
+  versus
+  independently confirmed heteranthery absent
+
+possible exploratory continuum lane:
+  degree / geometry of stamen differentiation
+```
+
+The second may ultimately be biologically useful, but it is a different estimand and must not silently replace the preregistered binary control gate.
 
 ## Fail-closed contract
 
-The new adjudication validator requires:
+The adjudication validator requires:
 
 ```text
 decision = PASS
@@ -157,18 +185,27 @@ and an explicit blocker exists
 and pair registry selection_status = SCREENED
 ```
 
+For a rejected pair:
+
+```text
+decision = FAIL
+=>
+at least one biological gate = FAIL
+and pair registry selection_status = REJECTED
+```
+
 A documentation edit cannot silently promote a pair.
 
 ## Current bottleneck
 
-Control discovery is no longer the U3 bottleneck.
-
 The remaining U3 matching work is now precisely:
 
-1. resolve direct animal-pollination + nearest-eligible search for `M. australasica`;
-2. close closest-eligible nonheterantherous comparator search for `S. alata`;
-3. close the same search for `S. bicapsularis`;
+1. resolve direct animal-pollination + nearest-eligible search for `M. australasica`, explicitly checking `M. cyanea`;
+2. identify and freeze a genuinely nonheterantherous replacement control for `S. alata`;
+3. identify and freeze a genuinely nonheterantherous replacement control for `S. bicapsularis`;
 4. resolve the five Table-S1-dependent U3 family representative identities for broader structural discovery.
+
+Separately, the matched conflict-estimand lane still needs direct pollen-fate evidence for `Osbeckia chinensis`.
 
 ## Claim ceiling
 
