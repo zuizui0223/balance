@@ -19,8 +19,8 @@ ALTS = ROOT / "data" / "BALANCE_PLANT_U3_CONTROL_ALTERNATIVES_V1.csv"
 def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
-    assert len(rows) == 15
-    assert out["status_counts"] == {"OPEN": 9, "REJECTED": 6}
+    assert len(rows) == 19
+    assert out["status_counts"] == {"OPEN": 8, "REJECTED": 11}
     assert out["n_screened"] == 0
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
@@ -53,15 +53,30 @@ def test_monochoria_cyanea_is_explicitly_in_closest_control_search():
     assert all(r["selection_status"] == "OPEN" for r in cyanea)
 
 
-def test_same_clade_senna_alata_candidates_block_clade_jump():
+def test_sampled_clade_ii_candidates_are_mostly_rejected_before_clade_jump():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
-    for taxon in ("Senna martiana", "Senna pleurocarpa"):
-        row = next(r for r in rows if r["candidate_control"] == taxon)
-        assert row["case_taxon"] == "Senna alata"
-        assert row["phylogenetic_proximity_status"] == "PASS"
-        assert row["heteranthery_absence_status"] == "OPEN"
-        assert row["closest_eligible_search_status"] == "OPEN"
-        assert row["selection_status"] == "OPEN"
+    rejected = {
+        r["candidate_control"]
+        for r in rows
+        if r["case_taxon"] == "Senna alata"
+        and r["phylogenetic_proximity_status"] == "PASS"
+        and r["heteranthery_absence_status"] == "FAIL"
+    }
+    assert {
+        "Senna surattensis",
+        "Senna siamea",
+        "Senna martiana",
+        "Senna pleurocarpa",
+        "Senna didymobotrya",
+        "Senna italica",
+        "Senna nicaraguensis",
+    }.issubset(rejected)
+
+    paradictyon = next(
+        r for r in rows if r["candidate_control"] == "Senna paradictyon"
+    )
+    assert paradictyon["heteranthery_absence_status"] == "OPEN"
+    assert paradictyon["selection_status"] == "OPEN"
 
     atomaria = next(r for r in rows if r["candidate_control"] == "Senna atomaria")
     assert atomaria["heteranthery_absence_status"] == "PASS"
@@ -86,14 +101,8 @@ def test_senna_rugosa_is_rejected_after_primary_morphology_audit():
     assert all("Irwin_Barneby_1982" in r["source_id"] for r in rugosa)
 
 
-def test_close_senna_candidates_are_rejected_when_heteranthery_persists():
+def test_close_senna_bicapsularis_candidate_is_rejected_when_heteranthery_persists():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
-    siamea = next(r for r in rows if r["candidate_control"] == "Senna siamea")
-    assert siamea["case_taxon"] == "Senna alata"
-    assert siamea["phylogenetic_proximity_status"] == "PASS"
-    assert siamea["heteranthery_absence_status"] == "FAIL"
-    assert siamea["selection_status"] == "REJECTED"
-
     corymbosa = next(r for r in rows if r["candidate_control"] == "Senna corymbosa")
     assert corymbosa["case_taxon"] == "Senna bicapsularis"
     assert corymbosa["phylogenetic_proximity_status"] == "PASS"
