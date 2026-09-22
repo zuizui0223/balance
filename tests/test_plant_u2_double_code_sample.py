@@ -14,15 +14,22 @@ def _rows(path):
         return list(csv.DictReader(handle))
 
 
-def test_u2_double_code_sample_is_first20_frozen_record_ids():
+def test_u2_double_code_sample_is_first20_lexicographic_dependency_groups():
+    universe = _rows(UNIVERSE)
     rows = _rows(SAMPLE)
+    expected = sorted(
+        universe,
+        key=lambda r: (r["taxon_raw"].casefold(), r["universe_record_id"]),
+    )[:20]
+
     assert len(rows) == 20
     assert [r["sample_order"] for r in rows] == [str(i) for i in range(1, 21)]
     assert [r["universe_record_id"] for r in rows] == [
-        f"U2_{i:03d}" for i in range(1, 21)
+        r["universe_record_id"] for r in expected
     ]
     assert all(
-        r["selection_rule"] == "FIRST_20_DEPENDENCY_GROUPS_BY_FROZEN_U2_RECORD_ID"
+        r["selection_rule"]
+        == "FIRST_20_DEPENDENCY_GROUPS_LEXICOGRAPHIC_BY_TAXON_AFTER_U2_SOURCE_CLOSURE"
         for r in rows
     )
     assert all(r["source_resolution_status"] == "RESOLVED_PRIMARY" for r in rows)
@@ -74,7 +81,9 @@ def test_u2_blank_worksheet_has_two_coders_per_sample_cluster():
         assert all(not r["module_substrate"] for r in rows)
 
 
-def test_u2_records_21_22_are_not_in_reliability_sample():
+def test_u2_lexicographic_tail_is_not_in_reliability_sample():
     sample_ids = {r["universe_record_id"] for r in _rows(SAMPLE)}
-    assert "U2_021" not in sample_ids
-    assert "U2_022" not in sample_ids
+    assert "U2_020" not in sample_ids  # Wachendorfia thyrsiflora
+    assert "U2_009" not in sample_ids  # Wahlenbergia albomarginata
+    assert "U2_021" in sample_ids      # Solanum rostratum sorts earlier
+    assert "U2_022" in sample_ids      # Chamaecrista fasciculata sorts earlier
