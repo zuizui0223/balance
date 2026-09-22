@@ -67,8 +67,12 @@ def test_shared_controls_remain_explicitly_nonindependent():
 def test_real_u3_matched_control_layer_has_full_screened_coverage_but_stays_open():
     readout = build_u3_matched_control_readout(PAIRS, CASES, U3)
     assert readout["n_pairs"] == 6
+    assert readout["n_registered_primary_pairs"] == 6
     assert readout["n_adjudicated_primary_pairs"] == 0
     assert readout["n_registered_case_taxa"] == 6
+    assert readout["n_cases_with_registered_primary_control"] == 6
+    assert readout["cases_without_registered_primary_control"] == []
+    assert readout["screened_control_coverage_complete"] is True
     assert readout["n_cases_with_adjudicated_primary_control"] == 0
     assert set(readout["unmatched_case_taxa"]) == {
         "Solanum rostratum",
