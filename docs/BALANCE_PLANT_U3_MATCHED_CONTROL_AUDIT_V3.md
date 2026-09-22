@@ -21,11 +21,33 @@ Canonical machine-readable surfaces:
 ```text
 data/BALANCE_PLANT_U3_MATCHED_CONTROLS_V1.csv
 data/BALANCE_PLANT_U3_CONTROL_ADJUDICATION_V1.csv
+data/BALANCE_PLANT_U3_CONTROL_ALTERNATIVES_V1.csv
 balance_domain/plant_u3_controls.py
 balance_domain/plant_u3_adjudication.py
+balance_domain/plant_u3_alternatives.py
 ```
 
 The pair record is retained when a proposed control is rejected so the failed comparison remains auditable rather than disappearing from the history.
+
+## Frozen alternative-control search
+
+Replacement/closest-control discovery is now a separate fail-closed registry rather than an informal literature search.
+
+```text
+alternative-control receipts     8
+OPEN                              6
+REJECTED                          2
+SCREENED / promoted               0
+```
+
+The registry explicitly contains:
+
+- `Monochoria australasica` as the incumbent OPEN candidate for both Monochoria cases;
+- `Monochoria cyanea` as an alternative that must be considered in the closest-control search;
+- rejected `Senna surattensis` receipts for both Senna cases;
+- `Senna rugosa` as a replacement candidate only, with secondary evidence and all eligibility gates still OPEN.
+
+A candidate can become `SCREENED` only when heteranthery absence, animal-pollination eligibility, and phylogenetic proximity all pass. Thus neither `M. cyanea` nor `S. rugosa` is silently promoted because it would repair the current design.
 
 ## PASS — Solanum rostratum -> Solanum lycocarpum
 
