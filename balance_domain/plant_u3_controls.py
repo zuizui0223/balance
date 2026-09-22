@@ -33,10 +33,14 @@ TIE_BREAK = {"NONE", "PHYLOGENETIC_DISTANCE", "SOURCE_QUALITY", "LEXICOGRAPHIC_T
 BLINDING = {"BLINDED", "UNBLINDED", "UNCERTAIN"}
 
 
-def _bool(value: str, field: str, row: int) -> bool:
+def _tri_bool(value: str, field: str, row: int) -> bool | None:
     v = value.strip().casefold()
-    if v not in {"true", "false"}:
-        raise ValueError(f"row {row} {field} must be literal true or false")
+    if v not in {"true", "false", "unresolved"}:
+        raise ValueError(
+            f"row {row} {field} must be literal true, false, or unresolved"
+        )
+    if v == "unresolved":
+        return None
     return v == "true"
 
 
@@ -98,12 +102,15 @@ def load_u3_matched_controls(
         if clean["predictor_blinding_status"] not in BLINDING:
             raise ValueError(f"row {n} invalid predictor_blinding_status")
 
-        clean["animal_pollination_eligible"] = _bool(
+        clean["animal_pollination_eligible"] = _tri_bool(
             clean["animal_pollination_eligible"], "animal_pollination_eligible", n
         )
-        clean["heteranthery_absence_confirmed"] = _bool(
-            clean["heteranthery_absence_confirmed"], "heteranthery_absence_confirmed", n
-        )
+        heteranthery = clean["heteranthery_absence_confirmed"].strip().casefold()
+        if heteranthery not in {"true", "false"}:
+            raise ValueError(
+                f"row {n} heteranthery_absence_confirmed must be literal true or false"
+            )
+        clean["heteranthery_absence_confirmed"] = heteranthery == "true"
 
         if clean["pair_role"] == "PRIMARY":
             if clean["case_taxon"] in primary_cases:
