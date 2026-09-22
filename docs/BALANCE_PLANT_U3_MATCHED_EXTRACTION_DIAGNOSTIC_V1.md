@@ -191,9 +191,31 @@ heteranthery ~ conflict strength
 
 or a matched estimate that interprets control architecture as evidence of weak conflict or global integration.
 
+## Osbeckia historical-source audit
+
+The historical pollination source is now identified exactly:
+
+```text
+van der Pijl L. 1939.
+Over de meeldraden van enkele Melastomataceae.
+De Tropische Natuur 28:169-172.
+```
+
+The source documents Hymenoptera visiting `Osbeckia chinensis`, landing on the stamen bundle, bending it until the ventral body contacts the stigma, and extracting pollen from the poricidal anthers. This is sufficient to make the visitor-handling mechanism source-secure.
+
+It is **not** sufficient for the registered pollen-fate conflict estimand. The historical observation does not provide a matched quantitative partition between pollen removed as reward and pollen successfully exported between flowers, nor a reproductive-fitness comparison under altered pollen removal.
+
+Therefore `O. chinensis` remains:
+
+```text
+pollen_fate_conflict_status = UNRESOLVED
+```
+
+rather than being promoted from behavioral plausibility alone.
+
 ## Next empirical search target
 
-The immediate control-side search target is now `Osbeckia chinensis`.
+The immediate control-side search target remains `Osbeckia chinensis`, but the missing evidence is now narrower. Another descriptive visitation record is not enough.
 
 Search specifically for experiments or quantitative observations on:
 
@@ -207,9 +229,8 @@ pollen limitation / reward removal
 
 For broader architecture, also recover source-secure evidence on sex-function partitioning among flowers or modules before assigning `SHARED_INTEGRATED`.
 
-The target is not merely another floral-description paper.
-
 The target is evidence capable of adjudicating whether this nonheterantherous system experiences measurable pollen-reward versus gamete-function conflict and where that conflict is routed.
+
 
 ## Claim ceiling
 
