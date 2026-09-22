@@ -121,7 +121,9 @@ def load_u3_matched_extraction(
 
         # A nonheterantherous control is not assumed to be globally integrated.
         # It may use another conflict-resolution architecture (for example,
-        # among-flower sex-function partitioning) or remain unresolved.
+        # among-flower sex-function partitioning) or remain unresolved. Likewise,
+        # module substrate is extracted after matching and must not be forced to
+        # agree with the case: doing so would condition on a BALANCE predictor.
         out.extend((roles["CASE"], roles["CONTROL"]))
 
     return out
@@ -139,6 +141,23 @@ def build_u3_matched_extraction_readout(
     )
     controls = [r for r in rows if r["taxon_role"] == "CONTROL"]
     cases = [r for r in rows if r["taxon_role"] == "CASE"]
+
+    pair_roles: dict[str, dict[str, dict[str, str]]] = {}
+    for row in rows:
+        pair_roles.setdefault(row["pair_id"], {})[row["taxon_role"]] = row
+
+    n_module_substrate_matched_pairs = sum(
+        roles["CASE"]["module_substrate"] == roles["CONTROL"]["module_substrate"]
+        for roles in pair_roles.values()
+    )
+    n_controls_shared_integrated = sum(
+        r["architecture_mode"] == "SHARED_INTEGRATED" for r in controls
+    )
+    n_controls_with_alternative_resolved_architecture = sum(
+        r["architecture_mode"] not in {"SHARED_INTEGRATED", "UNRESOLVED"}
+        for r in controls
+    )
+
     return {
         "analysis": "balance_plant_u3_matched_extraction",
         "n_pairs": len(cases),
@@ -154,18 +173,27 @@ def build_u3_matched_extraction_readout(
         "control_module_substrate_counts": dict(
             sorted(Counter(r["module_substrate"] for r in controls).items())
         ),
+        "n_module_substrate_matched_pairs": n_module_substrate_matched_pairs,
         "n_controls_with_resolved_architecture": sum(
             r["architecture_mode"] != "UNRESOLVED" for r in controls
+        ),
+        "n_controls_shared_integrated": n_controls_shared_integrated,
+        "n_controls_with_alternative_resolved_architecture": (
+            n_controls_with_alternative_resolved_architecture
         ),
         "n_controls_with_resolved_conflict": sum(
             r["pollen_fate_conflict_status"] in {"POSITIVE", "NO_DEMONSTRATED_CONFLICT"}
             for r in controls
         ),
+        "matched_integrated_control_contrast_ready": (
+            n_controls_shared_integrated == len(controls)
+        ),
         "matched_conflict_estimand_ready": all(
             r["pollen_fate_conflict_status"] != "UNRESOLVED" for r in controls
         ),
         "claim_ceiling": (
-            "matched_source_extraction_only_no_effect_estimate_"
-            "until_control_conflict_evidence_is_resolved"
+            "matched_heteranthery_source_extraction_only_no_conflict_effect_estimate_"
+            "until_control_conflict_evidence_is_resolved_and_no_integrated_control_"
+            "contrast_without_shared_integrated_controls"
         ),
     }
