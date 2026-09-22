@@ -19,8 +19,9 @@ ALTS = ROOT / "data" / "BALANCE_PLANT_U3_CONTROL_ALTERNATIVES_V1.csv"
 def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
-    assert len(rows) == 12
-    assert out["status_counts"] == {"OPEN": 6, "REJECTED": 6}
+    assert len(rows) == 15
+    assert out["status_counts"] == {"OPEN": 9, "REJECTED": 6}
+    assert out["n_screened"] == 0
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
         "Monochoria korsakowii",
@@ -28,6 +29,14 @@ def test_real_u3_alternative_registry_keeps_search_open():
         "Senna alata",
         "Senna bicapsularis",
     }
+
+
+def test_closest_eligible_search_is_separate_from_phylogenetic_proximity():
+    rows = load_u3_control_alternatives(ALTS, CASES, U3)
+    armata = next(r for r in rows if r["candidate_control"] == "Senna armata")
+    assert armata["phylogenetic_proximity_status"] == "PASS"
+    assert armata["closest_eligible_search_status"] == "OPEN"
+    assert armata["selection_status"] == "OPEN"
 
 
 def test_monochoria_cyanea_is_explicitly_in_closest_control_search():
@@ -40,7 +49,24 @@ def test_monochoria_cyanea_is_explicitly_in_closest_control_search():
     assert all(r["heteranthery_absence_status"] == "PASS" for r in cyanea)
     assert all(r["animal_pollination_status"] == "OPEN" for r in cyanea)
     assert all(r["phylogenetic_proximity_status"] == "OPEN" for r in cyanea)
+    assert all(r["closest_eligible_search_status"] == "OPEN" for r in cyanea)
     assert all(r["selection_status"] == "OPEN" for r in cyanea)
+
+
+def test_same_clade_senna_alata_candidates_block_clade_jump():
+    rows = load_u3_control_alternatives(ALTS, CASES, U3)
+    for taxon in ("Senna martiana", "Senna pleurocarpa"):
+        row = next(r for r in rows if r["candidate_control"] == taxon)
+        assert row["case_taxon"] == "Senna alata"
+        assert row["phylogenetic_proximity_status"] == "PASS"
+        assert row["heteranthery_absence_status"] == "OPEN"
+        assert row["closest_eligible_search_status"] == "OPEN"
+        assert row["selection_status"] == "OPEN"
+
+    atomaria = next(r for r in rows if r["candidate_control"] == "Senna atomaria")
+    assert atomaria["heteranthery_absence_status"] == "PASS"
+    assert atomaria["phylogenetic_proximity_status"] == "OPEN"
+    assert atomaria["selection_status"] == "OPEN"
 
 
 def test_rejected_senna_surattensis_cannot_reenter_as_open():
@@ -71,25 +97,24 @@ def test_close_senna_candidates_are_rejected_when_heteranthery_persists():
     corymbosa = next(r for r in rows if r["candidate_control"] == "Senna corymbosa")
     assert corymbosa["case_taxon"] == "Senna bicapsularis"
     assert corymbosa["phylogenetic_proximity_status"] == "PASS"
+    assert corymbosa["closest_eligible_search_status"] == "PASS"
     assert corymbosa["heteranthery_absence_status"] == "FAIL"
     assert corymbosa["selection_status"] == "REJECTED"
 
 
-def test_first_plausible_homomorphic_senna_replacements_remain_open():
+def test_vii_b_contains_biologically_eligible_candidate_but_tiebreak_stays_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
-    atomaria = next(r for r in rows if r["candidate_control"] == "Senna atomaria")
-    assert atomaria["case_taxon"] == "Senna alata"
-    assert atomaria["heteranthery_absence_status"] == "PASS"
-    assert atomaria["animal_pollination_status"] == "OPEN"
-    assert atomaria["phylogenetic_proximity_status"] == "OPEN"
-    assert atomaria["selection_status"] == "OPEN"
+    covesii = next(r for r in rows if r["candidate_control"] == "Senna covesii")
+    assert covesii["case_taxon"] == "Senna bicapsularis"
+    assert covesii["heteranthery_absence_status"] == "PASS"
+    assert covesii["animal_pollination_status"] == "PASS"
+    assert covesii["phylogenetic_proximity_status"] == "PASS"
+    assert covesii["closest_eligible_search_status"] == "OPEN"
+    assert covesii["selection_status"] == "OPEN"
 
-    armata = next(r for r in rows if r["candidate_control"] == "Senna armata")
-    assert armata["case_taxon"] == "Senna bicapsularis"
-    assert armata["heteranthery_absence_status"] == "PASS"
-    assert armata["animal_pollination_status"] == "OPEN"
-    assert armata["phylogenetic_proximity_status"] == "OPEN"
-    assert armata["selection_status"] == "OPEN"
+    out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
+    assert out["n_biological_gates_pass_closest_search_open"] == 1
+    assert out["biological_pass_but_unselected_candidates"] == ["Senna covesii"]
 
 
 def _read_rows():
@@ -114,7 +139,7 @@ def test_open_candidate_cannot_hide_failed_gate(tmp_path):
         load_u3_control_alternatives(path, CASES, U3)
 
 
-def test_screened_candidate_requires_all_gates_pass(tmp_path):
+def test_screened_candidate_requires_all_four_gates_pass(tmp_path):
     rows = _read_rows()
     row = next(r for r in rows if r["selection_status"] == "OPEN")
     row["selection_status"] = "SCREENED"
