@@ -12,7 +12,7 @@ CASES = ROOT / "data" / "BALANCE_PLANT_U3_CASE_CANDIDATES_V1.csv"
 PAIRS = ROOT / "data" / "BALANCE_PLANT_U3_MATCHED_CONTROLS_V1.csv"
 
 
-def test_real_u3_matched_control_registry_has_one_screened_primary_per_case():
+def test_real_u3_matched_control_registry_has_one_primary_per_case():
     rows = load_u3_matched_controls(PAIRS, CASES, U3)
     assert len(rows) == 6
 
@@ -34,11 +34,14 @@ def test_real_u3_matched_control_registry_has_one_screened_primary_per_case():
         "Senna alata": "Senna surattensis",
         "Senna bicapsularis": "Senna surattensis",
     }
+    adjudicated = {"Solanum rostratum", "Melastoma malabathricum"}
     for case, control in expected_controls.items():
         row = by_case[case]
         assert row["control_taxon"] == control
         assert row["pair_role"] == "PRIMARY"
-        assert row["selection_status"] == "SCREENED"
+        assert row["selection_status"] == (
+            "ADJUDICATED" if case in adjudicated else "SCREENED"
+        )
         assert row["predictor_blinding_status"] == "BLINDED"
         assert row["animal_pollination_eligible"] is True
         assert row["heteranthery_absence_confirmed"] is True
@@ -68,15 +71,13 @@ def test_real_u3_matched_control_layer_has_full_screened_coverage_but_stays_open
     readout = build_u3_matched_control_readout(PAIRS, CASES, U3)
     assert readout["n_pairs"] == 6
     assert readout["n_registered_primary_pairs"] == 6
-    assert readout["n_adjudicated_primary_pairs"] == 0
+    assert readout["n_adjudicated_primary_pairs"] == 2
     assert readout["n_registered_case_taxa"] == 6
     assert readout["n_cases_with_registered_primary_control"] == 6
     assert readout["cases_without_registered_primary_control"] == []
     assert readout["screened_control_coverage_complete"] is True
-    assert readout["n_cases_with_adjudicated_primary_control"] == 0
+    assert readout["n_cases_with_adjudicated_primary_control"] == 2
     assert set(readout["unmatched_case_taxa"]) == {
-        "Solanum rostratum",
-        "Melastoma malabathricum",
         "Monochoria korsakowii",
         "Monochoria vaginalis",
         "Senna alata",
