@@ -48,7 +48,13 @@ def test_real_u3_matched_control_registry_has_one_primary_record_per_case():
         assert row["pair_role"] == "PRIMARY"
         assert row["selection_status"] == statuses[case]
         assert row["predictor_blinding_status"] == "BLINDED"
-        assert row["animal_pollination_eligible"] is True
+
+    assert by_case["Solanum rostratum"]["animal_pollination_eligible"] is True
+    assert by_case["Melastoma malabathricum"]["animal_pollination_eligible"] is True
+    assert by_case["Monochoria korsakowii"]["animal_pollination_eligible"] is None
+    assert by_case["Monochoria vaginalis"]["animal_pollination_eligible"] is None
+    assert by_case["Senna alata"]["animal_pollination_eligible"] is True
+    assert by_case["Senna bicapsularis"]["animal_pollination_eligible"] is True
 
 
 def test_senna_surattensis_is_not_a_registered_negative_control():
@@ -96,3 +102,11 @@ def test_real_u3_matched_control_layer_loses_full_coverage_after_senna_rejection
         "Senna bicapsularis",
     }
     assert readout["case_control_layer_closed"] is False
+
+
+def test_monochoria_pollination_eligibility_is_not_promoted_from_amegilla_territorial_record():
+    rows = load_u3_matched_controls(PAIRS, CASES, U3)
+    mon = [r for r in rows if r["control_taxon"] == "Monochoria australasica"]
+    assert len(mon) == 2
+    assert all(r["animal_pollination_eligible"] is None for r in mon)
+    assert all(r["selection_status"] == "SCREENED" for r in mon)
