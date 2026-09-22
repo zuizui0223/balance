@@ -55,7 +55,9 @@ Current species-level case registry:
 6 source-resolved heteranthery cases
 3 direct pollen-fate conflict cases
 3 partial conflict cases
-0 fully adjudicated matched-control closure
+6 registered PRIMARY controls
+2 adjudicated controls
+4 screened controls still open
 ```
 
 U3 is outcome-selected by architecture and therefore cannot estimate prevalence.
@@ -111,7 +113,7 @@ The programme is not yet model-ready because:
 
 1. U1 full-47 reconstruction is formally open;
 2. U2 independent double coding has not been completed;
-3. U3 matched controls are screened but not adjudicated;
+3. U3 has complete screened control coverage but four of six PRIMARY controls remain open;
 4. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
 5. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
 
