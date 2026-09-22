@@ -34,20 +34,24 @@ The pair record is retained when a proposed control is rejected so the failed co
 Replacement/closest-control discovery is now a separate fail-closed registry rather than an informal literature search.
 
 ```text
-alternative-control receipts     8
+alternative-control receipts    12
 OPEN                              6
-REJECTED                          2
+REJECTED                          6
 SCREENED / promoted               0
 ```
 
 The registry explicitly contains:
 
 - `Monochoria australasica` as the incumbent OPEN candidate for both Monochoria cases;
-- `Monochoria cyanea` as an alternative that must be considered in the closest-control search;
+- `Monochoria cyanea` as an equal-stamen alternative whose direct pollination evidence and relative phylogenetic proximity remain OPEN;
 - rejected `Senna surattensis` receipts for both Senna cases;
-- `Senna rugosa` as a replacement candidate only, with secondary evidence and all eligibility gates still OPEN.
+- rejected `Senna rugosa` receipts after direct morphology contradicted a later "non-heterantherous" synthesis label;
+- `Senna siamea` as a phylogenetically close but heterantherous REJECTED candidate for `S. alata`;
+- `Senna corymbosa` as a sister but heterantherous REJECTED candidate for `S. bicapsularis`;
+- `Senna atomaria` as the first source-secure homomorphic replacement candidate for `S. alata`, still OPEN on direct pollination and closest-eligible placement;
+- `Senna armata` as the first source-secure homomorphic replacement candidate for `S. bicapsularis`, still OPEN on direct pollination and closest-eligible placement.
 
-A candidate can become `SCREENED` only when heteranthery absence, animal-pollination eligibility, and phylogenetic proximity all pass. Thus neither `M. cyanea` nor `S. rugosa` is silently promoted because it would repair the current design.
+A candidate can become `SCREENED` only when heteranthery absence, animal-pollination eligibility, and phylogenetic proximity all pass. No candidate is promoted merely because it repairs the current design.
 
 ## PASS — Solanum rostratum -> Solanum lycocarpum
 
@@ -185,6 +189,50 @@ possible exploratory continuum lane:
 
 The second may ultimately be biologically useful, but it is a different estimand and must not silently replace the preregistered binary control gate.
 
+## Senna replacement-search result
+
+The replacement search now shows a biologically informative pattern: the nearest-looking candidates often retain the very differentiation that the control is meant to lack.
+
+### S. alata
+
+`S. siamea` is phylogenetically close in a recent plastome comparison, but its seven fertile stamens are divided into long and short sets. It therefore fails the heteranthery-absence gate despite good phylogenetic proximity.
+
+`S. rugosa` is also rejected. Direct Irwin-Barneby morphology describes three long and four short fertile stamens with different anther dimensions. A later synthesis calling the species non-heterantherous does not override the directly described discrete fertile-stamen sets.
+
+The first plausible absence candidate is now `S. atomaria`:
+
+```text
+heteranthery_absence_status = PASS
+animal_pollination_status   = OPEN
+phylogenetic_proximity      = OPEN
+selection_status            = OPEN
+```
+
+Its seven fertile anthers are described as isomorphic, but bee-resource records are not yet equivalent to source-secure effective pollination, and the closest-eligible phylogenetic search is not closed.
+
+### S. bicapsularis
+
+`S. corymbosa` is especially diagnostic: recent ITS evidence recovers it as the sister of `S. bicapsularis`, but direct floral work retains differentiated stamen functions. It is therefore rejected despite excellent phylogenetic proximity.
+
+`S. rugosa` fails for the same direct-morphology reason noted above.
+
+The first plausible absence candidate is now `S. armata`:
+
+```text
+heteranthery_absence_status = PASS
+animal_pollination_status   = OPEN
+phylogenetic_proximity      = OPEN
+selection_status            = OPEN
+```
+
+Irwin-Barneby morphology explicitly states that the fertile stamens are not differentiated into two sets. The remaining work is to close effective animal-pollination evidence and the closest-eligible comparison within/around the VIIb lineage.
+
+### Biological implication
+
+This search suggests that heteranthery is locally phylogenetically persistent enough that a strict negative control may require moving beyond the closest species.
+
+That is not a reason to relax the control definition. It is itself a result about the architecture landscape and supports keeping a future differentiation-continuum analysis separate from the confirmatory binary case-control estimand.
+
 ## Fail-closed contract
 
 The adjudication validator requires:
@@ -222,9 +270,9 @@ A documentation edit cannot silently promote a pair.
 
 The remaining U3 matching work is now precisely:
 
-1. resolve direct animal-pollination + nearest-eligible search for `M. australasica`, explicitly checking `M. cyanea`;
-2. identify and freeze a genuinely nonheterantherous replacement control for `S. alata`;
-3. identify and freeze a genuinely nonheterantherous replacement control for `S. bicapsularis`;
+1. resolve direct animal-pollination + nearest-eligible search for `M. australasica`, explicitly comparing `M. cyanea`;
+2. close effective animal-pollination evidence and closest-eligible placement for the OPEN `S. alata -> S. atomaria` candidate;
+3. close effective animal-pollination evidence and closest-eligible placement for the OPEN `S. bicapsularis -> S. armata` candidate;
 4. resolve the five Table-S1-dependent U3 family representative identities for broader structural discovery.
 
 Separately, the matched conflict-estimand lane still needs direct pollen-fate evidence for `Osbeckia chinensis`.
