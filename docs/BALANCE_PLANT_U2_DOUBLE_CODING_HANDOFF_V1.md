@@ -19,13 +19,7 @@ The provisional BALANCE coding already exists, but it is **not part of the coder
 
 The double-coding protocol requires the first 20 unique dependency groups from an outcome-blind frozen screening frame.
 
-For U2, record IDs are frozen before the provisional conflict/architecture screen. Therefore the formal reliability sample is:
-
-```text
-U2_001
-...
-U2_020
-```
+For U2, the 22 dependency groups are source-closed before the reliability sample is selected. The formal sample is the first 20 groups after deterministic lexicographic ordering by `taxon_raw` (with `universe_record_id` as the tie-break).
 
 Selection is independent of:
 
@@ -34,7 +28,7 @@ Selection is independent of:
 - evidence quality after screening;
 - whether a case is positive, null or unresolved.
 
-U2_021 and U2_022 are outside the sample only because they are records 21 and 22. They are not outcome-based exclusions.
+The two groups outside the sample are the final two under the frozen lexicographic rule. Their exclusion is not based on conflict status, architecture mode, evidence quality, or any model result.
 
 Canonical sample:
 
