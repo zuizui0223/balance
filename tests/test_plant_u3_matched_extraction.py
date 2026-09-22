@@ -23,12 +23,15 @@ def test_matched_extraction_covers_only_two_pass_pairs():
     }
 
 
-def test_current_matched_lane_is_not_conflict_estimand_ready():
+def test_current_matched_lane_has_one_resolved_control_conflict_but_is_not_ready():
     out = build_u3_matched_extraction_readout(EXTRACT, ADJ, PAIRS, CASES, U3)
     assert out["n_pairs"] == 2
     assert out["case_conflict_status_counts"] == {"POSITIVE": 2}
-    assert out["control_conflict_status_counts"] == {"UNRESOLVED": 2}
-    assert out["n_controls_with_resolved_conflict"] == 0
+    assert out["control_conflict_status_counts"] == {
+        "POSITIVE": 1,
+        "UNRESOLVED": 1,
+    }
+    assert out["n_controls_with_resolved_conflict"] == 1
     assert out["matched_conflict_estimand_ready"] is False
 
 
