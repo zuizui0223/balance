@@ -2,7 +2,7 @@
 
 ## Why a programme map is needed
 
-The plant macro programme now contains four evidence lanes with intentionally different sampling logic.
+The plant macro programme contains four evidence lanes with intentionally different sampling logic.
 
 Their raw counts must not be combined into one prevalence estimate.
 
@@ -17,15 +17,14 @@ tests/test_plant_programme.py
 
 ## U1 — broad interaction specificity
 
-Current provisional source-screened sample:
+The provisional strict blind first-20 screen currently returns:
 
 ```text
 20 records
-13 excluded at the shared-reproductive-coordinate S0 gate
 0 positive conflict
 1 aligned no-conflict
-5 no-demonstrated-conflict
-14 unresolved (including S0 failures)
+18 no-demonstrated-conflict
+1 unresolved candidate
 ```
 
 U1's value is specificity.
@@ -38,31 +37,36 @@ Current source-closed review universe:
 
 ```text
 22 dependency groups
-8 positive conflict
-2 no-demonstrated-conflict
-12 unresolved
+8 strict conflict-gate positives
+3 no-demonstrated-conflict
+11 unresolved candidates
 ```
 
 U2 is the first lane with a formal, outcome-blind, source-closed first-20 double-coding packet.
 
 Its next gate is genuinely independent coder B, not further assistant-generated recoding.
 
+The contrast with U1 is a measurement/specificity result, not a prevalence comparison, because the review universes use different inclusion criteria.
+
 ## U3 — structural-positive case-control development
 
-Current species-level case registry:
+Current species-level case/control registry:
 
 ```text
 6 source-resolved heteranthery cases
-3 direct pollen-fate conflict cases
-3 partial conflict cases
-6 registered PRIMARY controls
+6 retained PRIMARY pair records
 2 adjudicated controls
-4 screened controls still open
+2 screened controls still open
+2 proposed Senna controls rejected
+4 cases currently retain eligible registered controls
+2 Senna cases require replacement controls
 ```
 
 U3 is outcome-selected by architecture and therefore cannot estimate prevalence.
 
-Its valid role is matched case-control development for structural division of labour.
+The `Senna surattensis` proposals are now rejected because Luo et al. (2009) explicitly distinguish long and short stamen sets and include the species among heteromorphic-stamen taxa. "Little morphological differentiation" is not evidence of heteranthery absence.
+
+The valid U3 role is matched case-control development for structural division of labour with fail-closed control eligibility.
 
 ## U4 — pollinator-prey mechanism stress test
 
@@ -101,9 +105,13 @@ proof that conflict caused the separation
 review membership
 !=
 positive mechanism receipt
+
+weak differentiation
+!=
+absence of differentiation
 ```
 
-This is not merely a guardrail. It defines the empirical target of BALANCE macro:
+This defines the empirical target of BALANCE macro:
 
 > identify the conditions under which an independently demonstrated functional conflict is associated with shared, temporal, spatial, signal, or structural resolution architecture.
 
@@ -113,7 +121,7 @@ The programme is not yet model-ready because:
 
 1. U1 full-47 reconstruction is formally open;
 2. U2 independent double coding has not been completed;
-3. U3 has complete screened control coverage but four of six PRIMARY controls remain open;
+3. U3 has two open Monochoria controls and two Senna cases requiring replacement controls;
 4. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
 5. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
 
