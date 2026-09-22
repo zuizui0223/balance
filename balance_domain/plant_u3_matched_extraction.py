@@ -23,8 +23,24 @@ FIELDS = (
 )
 
 ROLE = {"CASE", "CONTROL"}
-ARCHITECTURE = {"WITHIN_FLOWER_DIVISION_OF_LABOUR", "SHARED_INTEGRATED"}
-MODULE = {"SERIAL_WITHIN_FLOWER"}
+ARCHITECTURE = {
+    "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+    "AMONG_FLOWER_MODULE_DIVISION",
+    "SHARED_INTEGRATED",
+    "TEMPORAL_SEPARATION",
+    "SPATIAL_SEPARATION",
+    "TEMPORAL_AND_SPATIAL_SEPARATION",
+    "POLYMORPHIC_OR_MOSAIC",
+    "UNRESOLVED",
+}
+MODULE = {
+    "SERIAL_WITHIN_FLOWER",
+    "REPEATED_FLOWERS",
+    "SINGLE_OR_CONTINUOUS",
+    "PREEXISTING_SEPARATE_ORGANS",
+    "MULTILEVEL",
+    "UNRESOLVED",
+}
 CONFLICT = {"POSITIVE", "NO_DEMONSTRATED_CONFLICT", "UNRESOLVED"}
 POLLINATION = {"CONFIRMED", "UNRESOLVED"}
 EXTRACTION = {"EXTRACTED", "PENDING"}
@@ -99,10 +115,13 @@ def load_u3_matched_extraction(
             raise ValueError(f"pair {pair_id!r} control taxon disagrees with adjudication")
 
         if roles["CASE"]["architecture_mode"] != "WITHIN_FLOWER_DIVISION_OF_LABOUR":
-            raise ValueError(f"pair {pair_id!r} case architecture must be structural division")
-        if roles["CONTROL"]["architecture_mode"] != "SHARED_INTEGRATED":
-            raise ValueError(f"pair {pair_id!r} control architecture must be shared/integrated")
+            raise ValueError(
+                f"pair {pair_id!r} case architecture must be within-flower division"
+            )
 
+        # A nonheterantherous control is not assumed to be globally integrated.
+        # It may use another conflict-resolution architecture (for example,
+        # among-flower sex-function partitioning) or remain unresolved.
         out.extend((roles["CASE"], roles["CONTROL"]))
 
     return out
@@ -128,6 +147,15 @@ def build_u3_matched_extraction_readout(
         ),
         "control_conflict_status_counts": dict(
             sorted(Counter(r["pollen_fate_conflict_status"] for r in controls).items())
+        ),
+        "control_architecture_mode_counts": dict(
+            sorted(Counter(r["architecture_mode"] for r in controls).items())
+        ),
+        "control_module_substrate_counts": dict(
+            sorted(Counter(r["module_substrate"] for r in controls).items())
+        ),
+        "n_controls_with_resolved_architecture": sum(
+            r["architecture_mode"] != "UNRESOLVED" for r in controls
         ),
         "n_controls_with_resolved_conflict": sum(
             r["pollen_fate_conflict_status"] in {"POSITIVE", "NO_DEMONSTRATED_CONFLICT"}
