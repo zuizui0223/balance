@@ -135,18 +135,28 @@ def build_u3_matched_control_readout(
 ) -> dict:
     rows = load_u3_matched_controls(path, case_path, universe_path)
     primary = [r for r in rows if r["pair_role"] == "PRIMARY"]
+    registered_primary = [
+        r for r in primary if r["selection_status"] in {"SCREENED", "ADJUDICATED"}
+    ]
     adjudicated_primary = [
         r for r in primary if r["selection_status"] == "ADJUDICATED"
     ]
     registered_cases = load_u3_case_candidates(case_path, universe_path)
     all_case_taxa = {r["case_taxon"] for r in registered_cases}
+    candidate_case_taxa = {r["case_taxon"] for r in registered_primary}
     closed_case_taxa = {r["case_taxon"] for r in adjudicated_primary}
     return {
         "analysis": "balance_plant_u3_matched_control_readout",
         "n_pairs": len(rows),
         "pair_role_counts": dict(sorted(Counter(r["pair_role"] for r in rows).items())),
+        "n_registered_primary_pairs": len(registered_primary),
         "n_adjudicated_primary_pairs": len(adjudicated_primary),
         "n_registered_case_taxa": len(all_case_taxa),
+        "n_cases_with_registered_primary_control": len(candidate_case_taxa),
+        "cases_without_registered_primary_control": sorted(
+            all_case_taxa - candidate_case_taxa
+        ),
+        "screened_control_coverage_complete": all_case_taxa == candidate_case_taxa,
         "n_cases_with_adjudicated_primary_control": len(closed_case_taxa),
         "unmatched_case_taxa": sorted(all_case_taxa - closed_case_taxa),
         "case_control_layer_closed": all_case_taxa == closed_case_taxa,
