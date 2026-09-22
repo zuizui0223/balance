@@ -32,6 +32,21 @@ def test_current_matched_lane_is_not_conflict_estimand_ready():
     assert out["matched_conflict_estimand_ready"] is False
 
 
-def test_case_and_control_share_serial_module_substrate():
-    rows = load_u3_matched_extraction(EXTRACT, ADJ, PAIRS, CASES, U3)
-    assert {r["module_substrate"] for r in rows} == {"SERIAL_WITHIN_FLOWER"}
+def test_module_substrate_is_extracted_not_forced_to_match():
+    out = build_u3_matched_extraction_readout(EXTRACT, ADJ, PAIRS, CASES, U3)
+    assert out["control_module_substrate_counts"] == {
+        "REPEATED_FLOWERS": 1,
+        "SERIAL_WITHIN_FLOWER": 1,
+    }
+    assert out["n_module_substrate_matched_pairs"] == 1
+
+
+def test_nonheterantherous_controls_are_not_assumed_globally_integrated():
+    out = build_u3_matched_extraction_readout(EXTRACT, ADJ, PAIRS, CASES, U3)
+    assert out["control_architecture_mode_counts"] == {
+        "AMONG_FLOWER_MODULE_DIVISION": 1,
+        "UNRESOLVED": 1,
+    }
+    assert out["n_controls_shared_integrated"] == 0
+    assert out["n_controls_with_alternative_resolved_architecture"] == 1
+    assert out["matched_integrated_control_contrast_ready"] is False
