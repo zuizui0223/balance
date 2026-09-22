@@ -21,15 +21,32 @@ Two PRIMARY pairs have passed matched-control adjudication:
 For both pairs:
 
 - the case has within-flower structural division of labour;
-- the control has an integrated/nonheterantherous stamen architecture;
-- both have serial stamen modules;
+- the control is source-secure as nonheterantherous;
 - animal-pollination eligibility is source-secure.
+
+However, nonheteranthery does **not** imply globally integrated reproductive architecture, and module substrate was deliberately not used as a matching variable.
+
+Current control extraction:
+
+```text
+Solanum lycocarpum:
+  architecture_mode = AMONG_FLOWER_MODULE_DIVISION
+  module_substrate  = REPEATED_FLOWERS
+
+Osbeckia chinensis:
+  architecture_mode = UNRESOLVED
+  module_substrate  = SERIAL_WITHIN_FLOWER
+```
+
+Thus only one of the two current pairs shares the same `SERIAL_WITHIN_FLOWER` substrate, and neither control is presently coded `SHARED_INTEGRATED`.
+
+This is not a matching failure. The U3 protocol freezes controls before BALANCE predictor extraction; forcing `module_substrate` to match after seeing the case would condition on a primary predictor and create design leakage.
 
 ## Critical result
 
-The matched architecture contrast is source-secure, but the matched **conflict** contrast is not.
+The heteranthery contrast is source-secure, but two broader estimands remain open.
 
-Current extraction:
+### Conflict contrast
 
 ```text
 CASE conflict:
@@ -47,23 +64,43 @@ Therefore:
 matched_conflict_estimand_ready = false
 ```
 
+### Integrated-architecture contrast
+
+```text
+CONTROL architecture:
+  AMONG_FLOWER_MODULE_DIVISION  1 / 2
+  UNRESOLVED                    1 / 2
+  SHARED_INTEGRATED             0 / 2
+```
+
+Therefore:
+
+```text
+matched_integrated_control_contrast_ready = false
+```
+
+The current U3 lane is a matched **heteranthery-present versus heteranthery-absent** comparison. It is not yet a clean comparison of structural division versus globally retained integration.
+
 ## Why this matters
 
-A nonheterantherous flower is not automatically a low-conflict state.
+A nonheterantherous flower is not automatically a low-conflict or integrated system.
 
-The absence of feeding-versus-pollinating anther differentiation can arise under at least three observational possibilities:
+The absence of feeding-versus-pollinating anther differentiation can coexist with at least four possibilities:
 
 1. pollen-reward/gamete conflict is genuinely weak;
 2. conflict is strong but retained within a shared architecture;
-3. the relevant conflict has never been measured.
+3. conflict is routed into another architecture, such as among-flower division;
+4. the relevant conflict or broader architecture has not been measured.
 
-Treating all nonheterantherous controls as "low conflict" would mechanically create the desired association.
+`Solanum lycocarpum` already demonstrates possibility 3 in the current extraction: the case-defining within-flower heteranthery is absent, but broader reproductive division occurs among flowers.
 
-The programme therefore leaves control-side conflict as `UNRESOLVED` rather than imputing it from architecture.
+Treating all nonheterantherous controls as both "low conflict" and "integrated" would therefore create the desired association by coding rule.
+
+The programme leaves control-side conflict as `UNRESOLVED` and preserves any independently recovered alternative architecture.
 
 ## Consequence for U3
 
-U3 is now split into two separate closure problems:
+U3 now has three separate closure problems.
 
 ### Matching closure
 
@@ -82,15 +119,27 @@ case-side direct conflict evidence       2 / 2
 control-side matched conflict evidence   0 / 2
 ```
 
-The U3 matched effect is not estimable until conflict evidence is recovered for controls or a different estimand is prospectively frozen.
+### General-architecture closure
+
+Among the two adjudicated controls:
+
+```text
+shared-integrated controls               0 / 2
+alternative resolved architecture        1 / 2
+broader architecture unresolved          1 / 2
+```
+
+The U3 matched conflict effect is not estimable until conflict evidence is recovered for controls or a different estimand is prospectively frozen. A structural-division-versus-integration effect is also not licensed by the current controls.
 
 ## Legitimate near-term uses
 
 The current U3 data can support:
 
-- architecture/source audits;
-- module-substrate matching;
+- source and architecture audits;
+- a matched heteranthery-present versus heteranthery-absent design;
 - testing whether control selection can be done without predictor leakage;
+- documenting whether module substrate matches or differs after blinded matching;
+- identifying alternative conflict-routing architectures;
 - identifying exactly which control experiments are missing.
 
 It cannot yet support:
@@ -99,7 +148,7 @@ It cannot yet support:
 heteranthery ~ conflict strength
 ```
 
-or a matched estimate that interprets control architecture as evidence of weak conflict.
+or a matched estimate that interprets control architecture as evidence of weak conflict or global integration.
 
 ## Next empirical search target
 
@@ -113,12 +162,14 @@ pollen allocation or viability among equivalent stamens
 pollen limitation / reward removal
 ```
 
+For controls with broader architecture unresolved, also recover source-secure evidence on sex-function partitioning among flowers or modules before assigning `SHARED_INTEGRATED`.
+
 The target is not merely another floral-description paper.
 
-The target is evidence capable of adjudicating whether one undifferentiated stamen system experiences measurable pollen-reward versus gamete-function conflict.
+The target is evidence capable of adjudicating whether one nonheterantherous system experiences measurable pollen-reward versus gamete-function conflict and where that conflict is routed.
 
 ## Claim ceiling
 
-This diagnostic identifies missing matched measurement.
+This diagnostic identifies missing matched measurement and protects predictor-blind matching.
 
-It does not imply that conflict is absent in `Solanum lycocarpum` or `Osbeckia chinensis`.
+It does not imply that conflict is absent in `Solanum lycocarpum` or `Osbeckia chinensis`, and it does not equate nonheteranthery with globally integrated architecture.
