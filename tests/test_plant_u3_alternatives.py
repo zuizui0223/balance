@@ -19,8 +19,8 @@ ALTS = ROOT / "data" / "BALANCE_PLANT_U3_CONTROL_ALTERNATIVES_V1.csv"
 def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
-    assert len(rows) == 8
-    assert out["status_counts"] == {"OPEN": 6, "REJECTED": 2}
+    assert len(rows) == 12
+    assert out["status_counts"] == {"OPEN": 6, "REJECTED": 6}
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
         "Monochoria korsakowii",
@@ -38,10 +38,12 @@ def test_monochoria_cyanea_is_explicitly_in_closest_control_search():
         "Monochoria vaginalis",
     }
     assert all(r["heteranthery_absence_status"] == "PASS" for r in cyanea)
+    assert all(r["animal_pollination_status"] == "OPEN" for r in cyanea)
+    assert all(r["phylogenetic_proximity_status"] == "OPEN" for r in cyanea)
     assert all(r["selection_status"] == "OPEN" for r in cyanea)
 
 
-def test_rejected_senna_control_cannot_reenter_as_open():
+def test_rejected_senna_surattensis_cannot_reenter_as_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     surattensis = [r for r in rows if r["candidate_control"] == "Senna surattensis"]
     assert len(surattensis) == 2
@@ -49,14 +51,45 @@ def test_rejected_senna_control_cannot_reenter_as_open():
     assert all(r["selection_status"] == "REJECTED" for r in surattensis)
 
 
-def test_senna_rugosa_is_candidate_only_not_promoted():
+def test_senna_rugosa_is_rejected_after_primary_morphology_audit():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     rugosa = [r for r in rows if r["candidate_control"] == "Senna rugosa"]
     assert len(rugosa) == 2
-    assert all(r["candidate_role"] == "REPLACEMENT" for r in rugosa)
-    assert all(r["evidence_tier"] == "SECONDARY" for r in rugosa)
-    assert all(r["selection_status"] == "OPEN" for r in rugosa)
-    assert all(r["heteranthery_absence_status"] == "OPEN" for r in rugosa)
+    assert all(r["heteranthery_absence_status"] == "FAIL" for r in rugosa)
+    assert all(r["selection_status"] == "REJECTED" for r in rugosa)
+    assert all("Irwin_Barneby_1982" in r["source_id"] for r in rugosa)
+
+
+def test_close_senna_candidates_are_rejected_when_heteranthery_persists():
+    rows = load_u3_control_alternatives(ALTS, CASES, U3)
+    siamea = next(r for r in rows if r["candidate_control"] == "Senna siamea")
+    assert siamea["case_taxon"] == "Senna alata"
+    assert siamea["phylogenetic_proximity_status"] == "PASS"
+    assert siamea["heteranthery_absence_status"] == "FAIL"
+    assert siamea["selection_status"] == "REJECTED"
+
+    corymbosa = next(r for r in rows if r["candidate_control"] == "Senna corymbosa")
+    assert corymbosa["case_taxon"] == "Senna bicapsularis"
+    assert corymbosa["phylogenetic_proximity_status"] == "PASS"
+    assert corymbosa["heteranthery_absence_status"] == "FAIL"
+    assert corymbosa["selection_status"] == "REJECTED"
+
+
+def test_first_plausible_homomorphic_senna_replacements_remain_open():
+    rows = load_u3_control_alternatives(ALTS, CASES, U3)
+    atomaria = next(r for r in rows if r["candidate_control"] == "Senna atomaria")
+    assert atomaria["case_taxon"] == "Senna alata"
+    assert atomaria["heteranthery_absence_status"] == "PASS"
+    assert atomaria["animal_pollination_status"] == "OPEN"
+    assert atomaria["phylogenetic_proximity_status"] == "OPEN"
+    assert atomaria["selection_status"] == "OPEN"
+
+    armata = next(r for r in rows if r["candidate_control"] == "Senna armata")
+    assert armata["case_taxon"] == "Senna bicapsularis"
+    assert armata["heteranthery_absence_status"] == "PASS"
+    assert armata["animal_pollination_status"] == "OPEN"
+    assert armata["phylogenetic_proximity_status"] == "OPEN"
+    assert armata["selection_status"] == "OPEN"
 
 
 def _read_rows():
