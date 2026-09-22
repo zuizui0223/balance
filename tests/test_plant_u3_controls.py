@@ -68,7 +68,7 @@ def test_screened_pair_can_remain_unresolved(tmp_path):
         [
             _row(
                 selection_status="SCREENED",
-                animal_pollination_eligible="false",
+                animal_pollination_eligible="unresolved",
                 heteranthery_absence_confirmed="false",
                 predictor_blinding_status="UNCERTAIN",
             )
