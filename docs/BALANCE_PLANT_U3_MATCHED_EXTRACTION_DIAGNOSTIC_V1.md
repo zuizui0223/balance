@@ -32,30 +32,61 @@ Current control extraction:
 Solanum lycocarpum:
   architecture_mode = AMONG_FLOWER_MODULE_DIVISION
   module_substrate  = REPEATED_FLOWERS
+  conflict_status   = POSITIVE
 
 Osbeckia chinensis:
   architecture_mode = UNRESOLVED
   module_substrate  = SERIAL_WITHIN_FLOWER
+  conflict_status   = UNRESOLVED
 ```
 
 Thus only one of the two current pairs shares the same `SERIAL_WITHIN_FLOWER` substrate, and neither control is presently coded `SHARED_INTEGRATED`.
 
 This is not a matching failure. The U3 protocol freezes controls before BALANCE predictor extraction; forcing `module_substrate` to match after seeing the case would condition on a primary predictor and create design leakage.
 
+## New control-side conflict resolution: Solanum lycocarpum
+
+The `S. lycocarpum` control no longer remains conflict-unresolved.
+
+Two source-resolved results jointly establish the relevant pollen-reward versus gamete-transfer conflict:
+
+```text
+Tavares et al. 2018, Entomological News
+DOI 10.3157/021.127.0410
+  - pollen is the only floral reward;
+  - anther presence strongly increases visitation;
+  - pollen availability declines rapidly under bee visitation;
+  - much of the pollen is groomed from the bee body into pollen-carrying structures.
+
+Tavares et al. 2017, Interciencia 42:375-379
+  - visitor body size and behavior determine stigma contact;
+  - single visits by the strongest pollinators produce high fruit-set success;
+  - visitor species therefore differ in how much removed pollen contributes to gamete transfer.
+```
+
+The control is therefore coded:
+
+```text
+pollen_fate_conflict_status = POSITIVE
+conflict_evidence_class =
+  DIRECT_POLLEN_REWARD_REMOVAL_AND_VISITOR_EFFECTIVENESS
+```
+
+This update does not infer conflict from andromonoecy or from the absence of heteranthery. It uses independent pollen-removal and pollination-effectiveness evidence.
+
 ## Critical result
 
-The heteranthery contrast is source-secure, but two broader estimands remain open.
+The heteranthery contrast is source-secure, but the full matched conflict estimand remains open.
 
 ### Conflict contrast
 
 ```text
 CASE conflict:
   POSITIVE 2 / 2
-  direct functional division / pollen-fate experiment
 
 CONTROL conflict:
-  UNRESOLVED 2 / 2
-  no matched pollen-reward-versus-gamete conflict experiment recovered
+  POSITIVE    1 / 2
+  UNRESOLVED  1 / 2
 ```
 
 Therefore:
@@ -63,6 +94,8 @@ Therefore:
 ```text
 matched_conflict_estimand_ready = false
 ```
+
+The sole remaining control-side conflict blocker among adjudicated pairs is `Osbeckia chinensis`.
 
 ### Integrated-architecture contrast
 
@@ -92,11 +125,17 @@ The absence of feeding-versus-pollinating anther differentiation can coexist wit
 3. conflict is routed into another architecture, such as among-flower division;
 4. the relevant conflict or broader architecture has not been measured.
 
-`Solanum lycocarpum` already demonstrates possibility 3 in the current extraction: the case-defining within-flower heteranthery is absent, but broader reproductive division occurs among flowers.
+`Solanum lycocarpum` now demonstrates a particularly informative combination in the current extraction:
+
+```text
+heteranthery absent
+conflict positive
+broader architecture = among-flower module division
+```
+
+That is stronger than treating the control merely as "not heterantherous." It shows that one lineage can retain the pollen-reward/gamete conflict while routing functional differentiation to a different architectural level.
 
 Treating all nonheterantherous controls as both "low conflict" and "integrated" would therefore create the desired association by coding rule.
-
-The programme leaves control-side conflict as `UNRESOLVED` and preserves any independently recovered alternative architecture.
 
 ## Consequence for U3
 
@@ -116,7 +155,8 @@ Among the two adjudicated pairs:
 
 ```text
 case-side direct conflict evidence       2 / 2
-control-side matched conflict evidence   0 / 2
+control-side conflict resolved           1 / 2
+control-side conflict unresolved         1 / 2
 ```
 
 ### General-architecture closure
@@ -129,7 +169,7 @@ alternative resolved architecture        1 / 2
 broader architecture unresolved          1 / 2
 ```
 
-The U3 matched conflict effect is not estimable until conflict evidence is recovered for controls or a different estimand is prospectively frozen. A structural-division-versus-integration effect is also not licensed by the current controls.
+The U3 matched conflict effect is not estimable until conflict evidence is recovered for `O. chinensis` or a different estimand is prospectively frozen. A structural-division-versus-integration effect is also not licensed by the current controls.
 
 ## Legitimate near-term uses
 
@@ -140,9 +180,10 @@ The current U3 data can support:
 - testing whether control selection can be done without predictor leakage;
 - documenting whether module substrate matches or differs after blinded matching;
 - identifying alternative conflict-routing architectures;
-- identifying exactly which control experiments are missing.
+- showing that positive pollen-fate conflict can persist without heteranthery in `S. lycocarpum`;
+- identifying exactly which control experiments are still missing.
 
-It cannot yet support:
+It cannot yet support a complete matched estimate of:
 
 ```text
 heteranthery ~ conflict strength
@@ -152,7 +193,9 @@ or a matched estimate that interprets control architecture as evidence of weak c
 
 ## Next empirical search target
 
-For each adjudicated control, search specifically for experiments or quantitative observations on:
+The immediate control-side search target is now `Osbeckia chinensis`.
+
+Search specifically for experiments or quantitative observations on:
 
 ```text
 pollen removal by visitors
@@ -162,14 +205,14 @@ pollen allocation or viability among equivalent stamens
 pollen limitation / reward removal
 ```
 
-For controls with broader architecture unresolved, also recover source-secure evidence on sex-function partitioning among flowers or modules before assigning `SHARED_INTEGRATED`.
+For broader architecture, also recover source-secure evidence on sex-function partitioning among flowers or modules before assigning `SHARED_INTEGRATED`.
 
 The target is not merely another floral-description paper.
 
-The target is evidence capable of adjudicating whether one nonheterantherous system experiences measurable pollen-reward versus gamete-function conflict and where that conflict is routed.
+The target is evidence capable of adjudicating whether this nonheterantherous system experiences measurable pollen-reward versus gamete-function conflict and where that conflict is routed.
 
 ## Claim ceiling
 
 This diagnostic identifies missing matched measurement and protects predictor-blind matching.
 
-It does not imply that conflict is absent in `Solanum lycocarpum` or `Osbeckia chinensis`, and it does not equate nonheteranthery with globally integrated architecture.
+It does not imply that conflict is absent in `Osbeckia chinensis`, and it does not equate nonheteranthery with globally integrated architecture.
