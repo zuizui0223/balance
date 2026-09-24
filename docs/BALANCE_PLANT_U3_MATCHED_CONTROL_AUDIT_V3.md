@@ -7,11 +7,11 @@ U3 has six species-level case records, but the latest source audit rejects the p
 ```text
 source-resolved heteranthery cases             6
 PRIMARY pair records retained                  6
-registered eligible PRIMARY controls           4
-adjudicated PRIMARY pairs                      2
+registered eligible PRIMARY controls           5
+adjudicated PRIMARY pairs                      3
 screened PRIMARY pairs still open              2
-rejected PRIMARY control proposals             2
-cases needing replacement controls             2
+rejected PRIMARY control proposals             1
+cases needing replacement controls             1
 screened-control coverage complete?           NO
 case-control adjudication closed?              NO
 ```
@@ -31,27 +31,22 @@ The pair record is retained when a proposed control is rejected so the failed co
 
 ## Frozen alternative-control search
 
-Replacement/closest-control discovery is now a separate fail-closed registry rather than an informal literature search.
+Replacement/closest-control discovery is a separate fail-closed registry rather than an informal literature search.
 
 ```text
-alternative-control receipts    12
-OPEN                              6
-REJECTED                          6
-SCREENED / promoted               0
+alternative-control receipts    22
+OPEN                              5
+REJECTED                         16
+SCREENED / selected               1
 ```
 
-The registry explicitly contains:
+The search now records three different outcomes rather than forcing every close relative into a negative-control role.
 
-- `Monochoria australasica` as the incumbent OPEN candidate for both Monochoria cases;
-- `Monochoria cyanea` as an equal-stamen alternative whose direct pollination evidence and relative phylogenetic proximity remain OPEN;
-- rejected `Senna surattensis` receipts for both Senna cases;
-- rejected `Senna rugosa` receipts after direct morphology contradicted a later "non-heterantherous" synthesis label;
-- `Senna siamea` as a phylogenetically close but heterantherous REJECTED candidate for `S. alata`;
-- `Senna corymbosa` as a sister but heterantherous REJECTED candidate for `S. bicapsularis`;
-- `Senna atomaria` as the first source-secure homomorphic replacement candidate for `S. alata`, still OPEN on direct pollination and closest-eligible placement;
-- `Senna armata` as the first source-secure homomorphic replacement candidate for `S. bicapsularis`, still OPEN on direct pollination and closest-eligible placement.
+For `S. alata`, every sampled clade-II candidate audited so far fails the frozen heteranthery-absence gate, including `S. paradictyon`. The homomorphic `S. atomaria` is rejected because it is a clade-III jump while the search is being defined phylogenetically. `S. spectabilis` is the current OPEN candidate: its seven fertile anthers are approximately equal and direct reproductive work establishes animal pollination, but relative proximity and the closest-eligible search remain open.
 
-A candidate can become `SCREENED` only when heteranthery absence, animal-pollination eligibility, and phylogenetic proximity all pass. No candidate is promoted merely because it repairs the current design.
+For `S. bicapsularis`, the closest known species `S. corymbosa` is rejected because heteranthery persists. The sister subclade VIIb was then audited explicitly. `S. bauhinioides` and `S. villosa` fail the strict absence criterion; `S. armata` has acceptable morphology and phylogenetic grain but loses the preregistered SOURCE_QUALITY tie-break. `S. covesii` is therefore the sole SCREENED replacement candidate and has now been promoted into the formal PRIMARY pair registry.
+
+A candidate becomes `SCREENED` only when heteranthery absence, animal-pollination eligibility, phylogenetic proximity, and the closest-eligible/tie-break search all pass.
 
 ## PASS — Solanum rostratum -> Solanum lycocarpum
 
@@ -171,6 +166,29 @@ The same source problem applies.
 
 The previous shared-control convenience is not retained at the cost of violating the outcome definition.
 
+## PASS — Senna bicapsularis -> Senna covesii
+
+Decision:
+
+```text
+PASS
+```
+
+This is a replacement of the rejected `S. surattensis` proposal, not a relabeling of the old pair.
+
+The case lies in heterantherous VIIa. The next eligible lineage is sister subclade VIIb, characterized by fertile stamens of approximately the same length and shape. The sampled VIIb candidate audit then gives:
+
+```text
+S. bauhinioides   REJECTED   differentiated stamens + autogamy signal
+S. villosa        REJECTED   discrete median versus abaxial stamens
+S. armata         REJECTED   same phylogenetic grain, weaker pollination evidence
+S. covesii        SCREENED   morphology PASS + bee buzz-pollination PASS
+```
+
+With phylogenetic grain tied among the remaining admissible VIIb candidates, the preregistered SOURCE_QUALITY rule selects `S. covesii`. The formal pair is now ADJUDICATED.
+
+Matched extraction is also registered, but it deliberately keeps both the `S. bicapsularis` case-side pollen-fate conflict and the `S. covesii` control-side conflict as `UNRESOLVED`. Closing the architecture match does not manufacture a functional-conflict effect.
+
 ## Why the Senna rejection improves the design
 
 A case-control study of structural differentiation becomes circular if controls are allowed to be merely "less differentiated" while being labeled "absence."
@@ -271,11 +289,10 @@ A documentation edit cannot silently promote a pair.
 The remaining U3 matching work is now precisely:
 
 1. resolve direct animal-pollination + nearest-eligible search for `M. australasica`, explicitly comparing `M. cyanea`;
-2. close effective animal-pollination evidence and closest-eligible placement for the OPEN `S. alata -> S. atomaria` candidate;
-3. close effective animal-pollination evidence and closest-eligible placement for the OPEN `S. bicapsularis -> S. armata` candidate;
-4. resolve the five Table-S1-dependent U3 family representative identities for broader structural discovery.
+2. resolve the single remaining replacement problem, `S. alata`, after the sampled clade-II negative-control search returned no admissible control; `S. spectabilis` is currently OPEN;
+3. resolve the five Table-S1-dependent U3 family representative identities for broader structural discovery.
 
-Separately, the matched conflict-estimand lane still needs direct pollen-fate evidence for `Osbeckia chinensis`.
+Separately, the matched conflict-estimand lane still needs direct pollen-fate evidence for `Osbeckia chinensis`, and the newly adjudicated `S. bicapsularis -> S. covesii` pair remains conflict-unresolved on both sides.
 
 ## Claim ceiling
 
