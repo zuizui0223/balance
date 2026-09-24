@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "balance_domain/monochoria_common_marker.py"
+      - "balance_domain/monochoria_sequence_inventory.py"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
       - ".github/workflows/monochoria-common-marker.yml"
   push:
@@ -13,6 +14,7 @@ on:
       - feature/macro-persistent-compromise
     paths:
       - "balance_domain/monochoria_common_marker.py"
+      - "balance_domain/monochoria_sequence_inventory.py"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
       - ".github/workflows/monochoria-common-marker.yml"
   workflow_dispatch:
@@ -40,6 +42,10 @@ jobs:
             --output /tmp/monochoria-common-marker/readout.json \
             --workdir /tmp/monochoria-common-marker/work
           cat /tmp/monochoria-common-marker/readout.json
+      - name: Inventory exact-taxon NCBI nucleotide records
+        run: |
+          python -m balance_domain.monochoria_sequence_inventory \
+            --output /tmp/monochoria-common-marker/ncbi_inventory.json
       - name: Upload audit receipt
         uses: actions/upload-artifact@v4
         with:
