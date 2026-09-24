@@ -56,7 +56,11 @@ EXPECTED_ORDERS = {
     "Solanales",
 }
 
-REP_STATUS = {"BODY_TEXT_NAMED", "TABLE_S1_REPRESENTATIVE_PENDING"}
+REP_STATUS = {
+    "BODY_TEXT_NAMED",
+    "SOURCE_RESOLVED_INDEPENDENTLY",
+    "TABLE_S1_REPRESENTATIVE_PENDING",
+}
 
 
 def load_u3_universe(path: Path) -> list[dict[str, str]]:
@@ -121,6 +125,9 @@ def build_u3_readout_from_rows(rows: list[dict[str, str]]) -> dict:
         "order_counts": dict(sorted(orders.items())),
         "representative_taxa_status_counts": dict(sorted(rep.items())),
         "n_body_text_representative_families": rep.get("BODY_TEXT_NAMED", 0),
+        "n_independently_resolved_representative_families": rep.get(
+            "SOURCE_RESOLVED_INDEPENDENTLY", 0
+        ),
         "n_table_s1_representative_pending": rep.get("TABLE_S1_REPRESENTATIVE_PENDING", 0),
         "matched_control_layer_ready": False,
         "confirmatory_denominator_ready": False,
