@@ -19,8 +19,8 @@ ALTS = ROOT / "data" / "BALANCE_PLANT_U3_CONTROL_ALTERNATIVES_V1.csv"
 def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
-    assert len(rows) == 20
-    assert out["status_counts"] == {"OPEN": 5, "REJECTED": 14, "SCREENED": 1}
+    assert len(rows) == 22
+    assert out["status_counts"] == {"OPEN": 5, "REJECTED": 16, "SCREENED": 1}
     assert out["n_screened"] == 1
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
@@ -118,6 +118,20 @@ def test_close_senna_bicapsularis_candidate_is_rejected_when_heteranthery_persis
     assert corymbosa["closest_eligible_search_status"] == "PASS"
     assert corymbosa["heteranthery_absence_status"] == "FAIL"
     assert corymbosa["selection_status"] == "REJECTED"
+
+
+def test_other_sampled_vii_b_candidates_fail_before_covesii_selection():
+    rows = load_u3_control_alternatives(ALTS, CASES, U3)
+    bauhinioides = next(
+        r for r in rows if r["candidate_control"] == "Senna bauhinioides"
+    )
+    assert bauhinioides["heteranthery_absence_status"] == "FAIL"
+    assert bauhinioides["animal_pollination_status"] == "FAIL"
+    assert bauhinioides["selection_status"] == "REJECTED"
+
+    villosa = next(r for r in rows if r["candidate_control"] == "Senna villosa")
+    assert villosa["heteranthery_absence_status"] == "FAIL"
+    assert villosa["selection_status"] == "REJECTED"
 
 
 def test_vii_b_source_quality_tiebreak_selects_senna_covesii():
