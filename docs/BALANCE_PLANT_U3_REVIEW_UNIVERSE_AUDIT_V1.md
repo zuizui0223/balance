@@ -18,9 +18,37 @@ The Figure-2 extraction matters because later reviews often mention Bignoniaceae
 
 ## Representative-taxon status
 
-The accessible article body names representative genera/species for 11 families. Five families remain dependent on Supporting Table S1 for the exact representative taxon identity: Lythraceae, Malvaceae, Bixaceae, Brassicaceae and Scrophulariaceae.
+The accessible article body names representative genera/species for 11 families.
 
-Those five are retained as `TABLE_S1_REPRESENTATIVE_PENDING`; no species name is guessed.
+The Wiley page exposes the supporting-file identity (`NPH_3430_sm_TableS1.doc`) but the file itself is not retrievable through the current public access path. The repository therefore does **not** claim that Supporting Table S1 was inspected.
+
+Two of the five previously pending families can nevertheless be resolved independently from pre-2010 primary literature plus the review's statement that each contributes a single reported heterantherous species:
+
+```text
+Lythraceae     Lagerstroemia indica
+  Nepi, Guarnieri & Pacini 2003
+  Plant Biology 5:311-314
+  DOI 10.1055/s-2003-40797
+  direct heteranthery: long reproductive stamens + short feed-pollen stamens
+
+Brassicaceae   Brassica rapa
+  Kudo 2003
+  Functional Ecology 17:349-355
+  DOI 10.1046/j.1365-2435.2003.00736.x
+  direct manipulation of long vs short stamens with different pollination contributions
+```
+
+These rows are coded `SOURCE_RESOLVED_INDEPENDENTLY`, not `TABLE_S1_RESOLVED`.
+
+Three families remain genuinely pending because the accessible evidence does not yet identify the exact 2010 representative without ambiguity:
+
+```text
+Malvaceae
+Bixaceae
+Scrophulariaceae
+```
+
+No species name is guessed for those three.
 
 ## Biological role in BALANCE
 
