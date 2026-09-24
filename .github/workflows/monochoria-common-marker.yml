@@ -1,6 +1,13 @@
 name: Monochoria common-marker audit
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "balance_domain/monochoria_common_marker.py"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
+      - ".github/workflows/monochoria-common-marker.yml"
   push:
     branches:
       - feature/macro-persistent-compromise
