@@ -35,3 +35,13 @@ def test_u1_is_explicitly_incomplete_full_review_frame():
     assert u1["registered_units"] == 44
     assert u1["target_units"] == 47
     assert u1["source_closed"] is False
+    assert "INGEST_LOCATED_SUPPLEMENT_TABLES" in u1["current_blocker"]
+
+
+def test_u3_blocker_uses_frozen_plastome_ranking_not_obsolete_marker_tie():
+    rows = {r["universe_id"]: r for r in load_plant_universe_status(STATUS)}
+    u3 = rows["U3_VALLEJOMARIN_2010"]
+    blocker = u3["current_blocker"]
+    assert "68_CDS_PLASTOME_RANKING" in blocker
+    assert "DIRECT_SPECIES_LEVEL_EFFECTIVE_POLLINATION" in blocker
+    assert "HIGHER_RESOLUTION_PHYLOGENY" not in blocker
