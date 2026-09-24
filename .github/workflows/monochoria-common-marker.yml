@@ -49,6 +49,7 @@ jobs:
             --workdir /tmp/monochoria-common-marker/work
           cat /tmp/monochoria-common-marker/readout.json
       - name: Inventory exact-taxon NCBI nucleotide records
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           python -m balance_domain.monochoria_sequence_inventory \
             --output /tmp/monochoria-common-marker/ncbi_inventory.json
