@@ -3,6 +3,7 @@ import zipfile
 
 from balance_domain.plant_u1_supplement_audit import (
     discover_figshare_files,
+    discover_pmc_package_url,
     discover_relevant_links,
     extract_scientific_names,
     summarize_csv_bytes,
@@ -39,6 +40,13 @@ def test_discover_figshare_files_extracts_named_downloads_deterministically():
         {"name": "supp-1.docx", "download_url": "https://files.example/a"},
         {"name": "supp-2.csv", "download_url": "https://files.example/b"},
     ]
+
+
+def test_discover_pmc_package_url_converts_ncbi_ftp_to_https():
+    xml = b"""<OA><records><record><link format="tgz" href="ftp://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_package/aa/bb/example.tar.gz"/></record></records></OA>"""
+    assert discover_pmc_package_url(xml) == (
+        "https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_package/aa/bb/example.tar.gz"
+    )
 
 
 def test_extract_scientific_names_is_conservative_and_counts_duplicates():
