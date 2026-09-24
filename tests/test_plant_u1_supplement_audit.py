@@ -2,6 +2,7 @@ import io
 import zipfile
 
 from balance_domain.plant_u1_supplement_audit import (
+    discover_figshare_files,
     discover_relevant_links,
     extract_scientific_names,
     summarize_csv_bytes,
@@ -21,6 +22,22 @@ def test_discover_relevant_links_keeps_supplements_and_files_only():
         "https://peerj.com/articles/9049/supp-1/",
         "https://example.org/peerj-9049-supp-2.csv",
         "https://figshare.com/articles/dataset/example/123",
+    ]
+
+
+def test_discover_figshare_files_extracts_named_downloads_deterministically():
+    payload = {
+        "title": "example",
+        "files": [
+            {"name": "supp-2.csv", "download_url": "https://files.example/b"},
+            {"name": "supp-1.docx", "download_url": "https://files.example/a"},
+            {"name": "", "download_url": "https://files.example/ignored"},
+            {"name": "duplicate.csv", "download_url": "https://files.example/b"},
+        ],
+    }
+    assert discover_figshare_files(payload) == [
+        {"name": "supp-1.docx", "download_url": "https://files.example/a"},
+        {"name": "supp-2.csv", "download_url": "https://files.example/b"},
     ]
 
 
