@@ -1,0 +1,56 @@
+name: U3 Table S1 audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/macro-persistent-compromise
+    paths:
+      - "scripts/fetch_u3_table_s1.py"
+      - ".github/workflows/u3-table-s1-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  retrieve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch Wiley Table S1
+        id: fetch
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/u3-table-s1
+          python scripts/fetch_u3_table_s1.py \
+            --output /tmp/u3-table-s1/retrieval.json \
+            --workdir /tmp/u3-table-s1
+
+      - name: Decode legacy Word table
+        if: steps.fetch.outcome == 'success'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq antiword
+          antiword /tmp/u3-table-s1/NPH_3430_sm_TableS1.doc \
+            > /tmp/u3-table-s1/TableS1.txt
+          grep -n -i -E 'Malvaceae|Bixaceae|Scrophulariaceae' \
+            /tmp/u3-table-s1/TableS1.txt || true
+          cat /tmp/u3-table-s1/TableS1.txt
+
+      - name: Upload retrieval evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: u3-table-s1-audit
+          path: /tmp/u3-table-s1
+          if-no-files-found: error
+
+      - name: Fail if supporting file remains blocked
+        if: steps.fetch.outcome != 'success'
+        run: exit 1
