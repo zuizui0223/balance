@@ -6,7 +6,7 @@ import pytest
 from balance_domain.monochoria_common_marker import (
     CANDIDATE_TAXA,
     FIELDS,
-    choose_candidate,
+    compare_candidates_on_common_sites,
     load_accession_ledger,
     p_distance,
 )
@@ -33,40 +33,48 @@ def test_p_distance_masks_gaps_and_ambiguity():
     assert out["p_distance"] == pytest.approx(1 / 7)
 
 
-def test_candidate_choice_reports_lower_distance_without_promoting_control():
-    distances = {
-        "Pontederia australasica || Pontederia korsakowii": {
-            "comparable_sites": 1000,
-            "differences": 12,
-            "p_distance": 0.012,
-        },
-        "Pontederia cyanea || Pontederia korsakowii": {
-            "comparable_sites": 1000,
-            "differences": 8,
-            "p_distance": 0.008,
-        },
+def test_candidate_comparison_uses_one_joint_site_mask():
+    aligned = {
+        "Pontederia korsakowii": "ACGTACGT--AA",
+        "Pontederia australasica": "ACGAACGTGGAA",
+        "Pontederia cyanea": "ACGTTCGT--AA",
     }
-    out = choose_candidate(distances, "Pontederia korsakowii")
-    assert out["closest_candidate_by_p_distance"] == "Pontederia cyanea"
-    assert out["distance_outcome"] == "LOWER_COMMON_MARKER_P_DISTANCE"
+    out = compare_candidates_on_common_sites(aligned, "Pontederia korsakowii")
+    # Sites with a gap in cyanea are excluded for *both* candidates.
+    assert out["jointly_comparable_sites"] == 10
+    assert out["candidate_distances"]["Pontederia australasica"]["comparable_sites"] == 10
+    assert out["candidate_distances"]["Pontederia cyanea"]["comparable_sites"] == 10
+    assert out["candidate_distances"]["Pontederia australasica"]["differences"] == 1
+    assert out["candidate_distances"]["Pontederia cyanea"]["differences"] == 1
+    assert out["distance_outcome"] == "TIE"
+    assert out["closest_candidate_by_p_distance"] is None
+
+
+def test_candidate_comparison_reports_lower_distance_on_same_sites():
+    aligned = {
+        "Pontederia korsakowii": "ACGTACGT",
+        "Pontederia australasica": "ACGAACGT",
+        "Pontederia cyanea": "ACGGTCGT",
+    }
+    out = compare_candidates_on_common_sites(aligned, "Pontederia korsakowii")
+    assert out["jointly_comparable_sites"] == 8
+    assert out["candidate_distances"]["Pontederia australasica"]["differences"] == 1
+    assert out["candidate_distances"]["Pontederia cyanea"]["differences"] == 2
+    assert out["closest_candidate_by_p_distance"] == "Pontederia australasica"
+    assert out["distance_outcome"] == "LOWER_COMMON_SITE_P_DISTANCE"
     assert "not_control_adjudication" in out["claim_ceiling"]
 
 
-def test_candidate_choice_can_fail_closed_on_tie():
-    distances = {
-        "Pontederia australasica || Pontederia vaginalis": {
-            "comparable_sites": 1000,
-            "differences": 8,
-            "p_distance": 0.008,
-        },
-        "Pontederia cyanea || Pontederia vaginalis": {
-            "comparable_sites": 1000,
-            "differences": 8,
-            "p_distance": 0.008,
-        },
+def test_identical_candidates_on_joint_sites_fail_closed_as_tie():
+    aligned = {
+        "Pontederia vaginalis": "ACGTACGT",
+        "Pontederia australasica": "ACGAACGT",
+        "Pontederia cyanea": "ACGAACGT",
     }
-    out = choose_candidate(distances, "Pontederia vaginalis")
-    assert out["closest_candidate_by_p_distance"] is None
+    out = compare_candidates_on_common_sites(aligned, "Pontederia vaginalis")
+    assert out["candidate_pair_differences_on_joint_sites"] == 0
+    assert out["candidate_distances"]["Pontederia australasica"]["differences"] == 1
+    assert out["candidate_distances"]["Pontederia cyanea"]["differences"] == 1
     assert out["distance_outcome"] == "TIE"
 
 
