@@ -1,9 +1,8 @@
 """Recover and inspect the Haas-Lortie 2020 U1 supplementary surfaces.
 
-The local ChatGPT runtime may not have outbound network access, so this module is
-intended to run in GitHub Actions. It discovers PeerJ supplement links from the
-article and the stable supp-1/supp-2 landing endpoints, downloads file-like
-resources, and emits a deterministic JSON receipt with CSV/DOCX summaries.
+GitHub Actions is used as the network-capable execution environment. The
+primary route is the public Figshare API for dataset 12397772; PeerJ landing
+pages are retained only as fallback discovery surfaces.
 
 The audit is discovery only: it never promotes taxa into the canonical U1
 universe. Repository adjudication must compare recovered supplement taxa
@@ -28,7 +27,8 @@ LANDING_URLS = (
     "https://peerj.com/articles/9049/supp-1/",
     "https://peerj.com/articles/9049/supp-2/",
 )
-USER_AGENT = "BALANCE-U1-supplement-audit/1.0 (+https://github.com/zuizui0223/balance)"
+FIGSHARE_API_URL = "https://api.figshare.com/v2/articles/12397772"
+USER_AGENT = "BALANCE-U1-supplement-audit/1.1 (+https://github.com/zuizui0223/balance)"
 
 FILE_SUFFIXES = (".csv", ".docx", ".xlsx", ".xls", ".tsv", ".txt", ".zip")
 LINK_RE = re.compile(r"""href=["']([^"']+)["']""", re.IGNORECASE)
@@ -54,6 +54,28 @@ def discover_relevant_links(html: str, base_url: str) -> list[str]:
             seen.add(url)
             out.append(url)
     return out
+
+
+def discover_figshare_files(payload: object) -> list[dict[str, str]]:
+    """Extract deterministic file name/download URL pairs from Figshare JSON."""
+    if not isinstance(payload, dict):
+        raise ValueError("Figshare article payload must be a JSON object")
+    raw_files = payload.get("files")
+    if not isinstance(raw_files, list):
+        raise ValueError("Figshare article payload must contain a files list")
+
+    out: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for item in raw_files:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name") or "").strip()
+        download_url = str(item.get("download_url") or "").strip()
+        if not name or not download_url or download_url in seen:
+            continue
+        seen.add(download_url)
+        out.append({"name": name, "download_url": download_url})
+    return sorted(out, key=lambda x: (x["name"].casefold(), x["download_url"]))
 
 
 def extract_scientific_names(text: str) -> dict[str, int]:
@@ -109,8 +131,14 @@ def summarize_docx_bytes(data: bytes) -> dict:
     }
 
 
-def summarize_payload(data: bytes, final_url: str, content_type: str) -> dict:
-    low = final_url.lower().split("?", 1)[0]
+def summarize_payload(
+    data: bytes,
+    final_url: str,
+    content_type: str,
+    *,
+    filename_hint: str = "",
+) -> dict:
+    low = (filename_hint or final_url).lower().split("?", 1)[0]
     ctype = content_type.lower()
     if low.endswith((".csv", ".tsv", ".txt")) or "csv" in ctype:
         return summarize_csv_bytes(data)
@@ -120,7 +148,13 @@ def summarize_payload(data: bytes, final_url: str, content_type: str) -> dict:
 
 
 def _fetch(url: str) -> tuple[bytes, str, str, str]:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "*/*",
+        },
+    )
     with urllib.request.urlopen(req, timeout=45) as response:  # noqa: S310 - frozen HTTPS sources
         data = response.read()
         final_url = response.geturl()
@@ -129,7 +163,16 @@ def _fetch(url: str) -> tuple[bytes, str, str, str]:
     return data, final_url, content_type, content_disposition
 
 
-def _safe_name(index: int, final_url: str, content_type: str) -> str:
+def _safe_name(
+    index: int,
+    final_url: str,
+    content_type: str,
+    *,
+    filename_hint: str = "",
+) -> str:
+    hint = Path(filename_hint).name if filename_hint else ""
+    if hint and "." in hint:
+        return f"{index:02d}_{hint}"
     path_name = Path(urllib.parse.urlparse(final_url).path).name
     if path_name and "." in path_name:
         return f"{index:02d}_{path_name}"
@@ -144,16 +187,58 @@ def _safe_name(index: int, final_url: str, content_type: str) -> str:
     return f"{index:02d}_supplement{ext}"
 
 
+def _fetch_figshare_inventory() -> tuple[list[dict[str, str]], dict]:
+    data, final_url, content_type, disposition = _fetch(FIGSHARE_API_URL)
+    payload = json.loads(data.decode("utf-8"))
+    files = discover_figshare_files(payload)
+    receipt = {
+        "requested_url": FIGSHARE_API_URL,
+        "final_url": final_url,
+        "content_type": content_type,
+        "content_disposition": disposition,
+        "size_bytes": len(data),
+        "status": "FETCHED",
+        "source_type": "FIGSHARE_API_INVENTORY",
+        "dataset_title": str(payload.get("title") or ""),
+        "dataset_doi": str(payload.get("doi") or ""),
+        "files": files,
+    }
+    return files, receipt
+
+
 def run_audit(output_path: Path, workdir: Path) -> dict:
     workdir.mkdir(parents=True, exist_ok=True)
 
-    queue = [ARTICLE_URL, *LANDING_URLS]
-    queued = set(queue)
-    visited: set[str] = set()
-    receipts = []
+    receipts: list[dict] = []
+    queue: list[tuple[str, str, str]] = []
+    queued: set[str] = set()
 
-    while queue and len(visited) < 30:
-        url = queue.pop(0)
+    try:
+        figshare_files, figshare_receipt = _fetch_figshare_inventory()
+        receipts.append(figshare_receipt)
+        for item in figshare_files:
+            url = item["download_url"]
+            if url not in queued:
+                queued.add(url)
+                queue.append((url, item["name"], "FIGSHARE_FILE"))
+    except Exception as exc:  # pragma: no cover - network path
+        receipts.append(
+            {
+                "requested_url": FIGSHARE_API_URL,
+                "status": "FETCH_ERROR",
+                "source_type": "FIGSHARE_API_INVENTORY",
+                "error": repr(exc),
+            }
+        )
+
+    for url in (ARTICLE_URL, *LANDING_URLS):
+        if url not in queued:
+            queued.add(url)
+            queue.append((url, "", "PEERJ_FALLBACK"))
+
+    visited: set[str] = set()
+    while queue and len(visited) < 60:
+        url, filename_hint, source_type = queue.pop(0)
         if url in visited:
             continue
         visited.add(url)
@@ -161,7 +246,13 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
             data, final_url, content_type, disposition = _fetch(url)
         except Exception as exc:  # pragma: no cover - network path
             receipts.append(
-                {"requested_url": url, "status": "FETCH_ERROR", "error": repr(exc)}
+                {
+                    "requested_url": url,
+                    "status": "FETCH_ERROR",
+                    "source_type": source_type,
+                    "filename_hint": filename_hint,
+                    "error": repr(exc),
+                }
             )
             continue
 
@@ -172,7 +263,10 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
             "content_disposition": disposition,
             "size_bytes": len(data),
             "status": "FETCHED",
+            "source_type": source_type,
         }
+        if filename_hint:
+            receipt["filename_hint"] = filename_hint
 
         is_html = "html" in content_type.lower() or data.lstrip().startswith(b"<")
         if is_html:
@@ -183,14 +277,24 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
             for link in links:
                 if link not in queued and link not in visited:
                     queued.add(link)
-                    queue.append(link)
+                    queue.append((link, "", "DISCOVERED_LINK"))
         else:
-            filename = _safe_name(len(receipts), final_url, content_type)
+            filename = _safe_name(
+                len(receipts),
+                final_url,
+                content_type,
+                filename_hint=filename_hint,
+            )
             saved = workdir / filename
             saved.write_bytes(data)
             receipt["saved_path"] = str(saved)
             try:
-                receipt["summary"] = summarize_payload(data, final_url, content_type)
+                receipt["summary"] = summarize_payload(
+                    data,
+                    final_url,
+                    content_type,
+                    filename_hint=filename_hint,
+                )
             except Exception as exc:  # pragma: no cover - malformed external file
                 receipt["summary"] = {"kind": "parse_error", "error": repr(exc)}
         receipts.append(receipt)
@@ -205,9 +309,10 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
         all_names.update(receipt["summary"].get("scientific_name_candidates", {}))
 
     out = {
-        "analysis": "balance_u1_haas_lortie_supplement_discovery_v1",
+        "analysis": "balance_u1_haas_lortie_supplement_discovery_v2",
         "article_url": ARTICLE_URL,
         "landing_urls": list(LANDING_URLS),
+        "figshare_api_url": FIGSHARE_API_URL,
         "n_urls_visited": len(visited),
         "n_receipts": len(receipts),
         "n_parsed_supplement_files": len(parsed),
