@@ -7,7 +7,9 @@ on:
     paths:
       - "balance_domain/monochoria_common_marker.py"
       - "balance_domain/monochoria_sequence_inventory.py"
+      - "balance_domain/monochoria_plastome_audit.py"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
       - ".github/workflows/monochoria-common-marker.yml"
   push:
     branches:
@@ -15,7 +17,9 @@ on:
     paths:
       - "balance_domain/monochoria_common_marker.py"
       - "balance_domain/monochoria_sequence_inventory.py"
+      - "balance_domain/monochoria_plastome_audit.py"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
       - ".github/workflows/monochoria-common-marker.yml"
   workflow_dispatch:
 
@@ -46,6 +50,13 @@ jobs:
         run: |
           python -m balance_domain.monochoria_sequence_inventory \
             --output /tmp/monochoria-common-marker/ncbi_inventory.json
+      - name: Run shared plastome-CDS audit
+        run: |
+          mkdir -p /tmp/monochoria-common-marker/plastome
+          python -m balance_domain.monochoria_plastome_audit \
+            --ledger data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv \
+            --output /tmp/monochoria-common-marker/plastome_readout.json \
+            --workdir /tmp/monochoria-common-marker/plastome
       - name: Upload audit receipt
         uses: actions/upload-artifact@v4
         with:
