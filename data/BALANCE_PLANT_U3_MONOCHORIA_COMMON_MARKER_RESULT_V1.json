@@ -1,0 +1,59 @@
+{
+  "analysis": "balance_u3_monochoria_common_marker_result_v1",
+  "workflow_run_id": 35972984652,
+  "workflow_run_number": 5,
+  "source_commit": "926493b35a05ca14942a42b21ad182eb155d7f9d",
+  "markers": [
+    "ndhF",
+    "rbcL"
+  ],
+  "comparison_method": "MAFFT per marker, concatenation, then one joint A/C/G/T site mask shared by case plus both candidates",
+  "aligned_marker_lengths": {
+    "ndhF": 2232,
+    "rbcL": 1455
+  },
+  "candidate_pair_overlap": {
+    "candidate_a": "Pontederia australasica",
+    "candidate_b": "Pontederia cyanea",
+    "comparable_sites": 1833,
+    "differences": 0,
+    "p_distance": 0
+  },
+  "case_comparisons": {
+    "Pontederia korsakowii": {
+      "jointly_comparable_sites": 1825,
+      "candidates": {
+        "Pontederia australasica": {
+          "differences": 36,
+          "p_distance": 0.019726027397260273
+        },
+        "Pontederia cyanea": {
+          "differences": 36,
+          "p_distance": 0.019726027397260273
+        }
+      },
+      "candidate_pair_differences_on_joint_sites": 0,
+      "outcome": "TIE",
+      "closest_candidate": null
+    },
+    "Pontederia vaginalis": {
+      "jointly_comparable_sites": 1786,
+      "candidates": {
+        "Pontederia australasica": {
+          "differences": 30,
+          "p_distance": 0.0167973124300112
+        },
+        "Pontederia cyanea": {
+          "differences": 30,
+          "p_distance": 0.0167973124300112
+        }
+      },
+      "candidate_pair_differences_on_joint_sites": 0,
+      "outcome": "TIE",
+      "closest_candidate": null
+    }
+  },
+  "scientific_interpretation": "The registered ndhF+rbcL public-accession surface contains no candidate-ranking information on the sites jointly comparable between P. australasica and P. cyanea. It cannot close the closest-eligible-control gate for either Monochoria case.",
+  "next_gate": "Use a higher-resolution common phylogenetic surface or retain the closest-control gate OPEN; independently recover species-level effective-pollination evidence.",
+  "claim_ceiling": "common_marker_identification_limit_only_not_species_tree_not_pollination_receipt_not_control_adjudication"
+}
