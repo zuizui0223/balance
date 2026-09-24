@@ -20,7 +20,7 @@ def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
     assert len(rows) == 20
-    assert out["status_counts"] == {"OPEN": 6, "REJECTED": 13, "SCREENED": 1}
+    assert out["status_counts"] == {"OPEN": 5, "REJECTED": 14, "SCREENED": 1}
     assert out["n_screened"] == 1
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
@@ -53,7 +53,7 @@ def test_monochoria_cyanea_is_explicitly_in_closest_control_search():
     assert all(r["selection_status"] == "OPEN" for r in cyanea)
 
 
-def test_sampled_clade_ii_candidates_are_mostly_rejected_before_clade_jump():
+def test_sampled_clade_ii_candidates_are_rejected_before_clade_jump():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     rejected = {
         r["candidate_control"]
@@ -75,8 +75,9 @@ def test_sampled_clade_ii_candidates_are_mostly_rejected_before_clade_jump():
     paradictyon = next(
         r for r in rows if r["candidate_control"] == "Senna paradictyon"
     )
-    assert paradictyon["heteranthery_absence_status"] == "OPEN"
-    assert paradictyon["selection_status"] == "OPEN"
+    assert paradictyon["heteranthery_absence_status"] == "FAIL"
+    assert paradictyon["phylogenetic_proximity_status"] == "PASS"
+    assert paradictyon["selection_status"] == "REJECTED"
 
     atomaria = next(r for r in rows if r["candidate_control"] == "Senna atomaria")
     assert atomaria["heteranthery_absence_status"] == "PASS"
