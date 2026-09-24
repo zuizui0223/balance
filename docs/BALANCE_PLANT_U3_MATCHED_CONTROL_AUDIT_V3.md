@@ -102,9 +102,11 @@ Open gates:
 DIRECT_ANIMAL_POLLINATION_AND_CLOSEST_ELIGIBLE_CONGENER_SEARCH_OPEN
 ```
 
-The current evidence makes `M. australasica` a plausible control candidate, but the programme still requires source-secure direct animal-pollination eligibility and an explicit search excluding a closer eligible nonheterantherous congener.
+The morphology gate is secure: developmental work shows no distinct pollinating anther and six yellow feeding anthers, and recent synthesis classifies the species as non-reciprocal enantiostylous.
 
-The latter search must explicitly consider `M. cyanea`, which has been described as lacking the case-defining stamen dimorphism in secondary syntheses but is not placed in the 2021 plastid sampling used for the current control receipt.
+The pollination gate is deliberately still OPEN. Pontederiaceae synthesis links the Monochoria floral syndrome to bee/buzz pollination, but the source-secure Amegilla record for `M. australasica` is male territorial behaviour above water, not a flower visit or pollen-transfer observation. A genus-level syndrome is not substituted for a species-level pollination receipt.
+
+The closest-control gate is also OPEN. The 2021 plastome tree places `M. australasica` sister to the sampled remainder of Monochoria and `M. korsakowii` at the second split, but it does not sample the equal-stamen `M. cyanea`. The 2018 total-evidence analysis samples `M. cyanea`, `M. korsakowii`, and `M. vaginalis`, but the frozen registry still lacks a source-secure common-tree comparison resolving whether `M. cyanea` outranks the incumbent control.
 
 ## OPEN — Monochoria vaginalis -> Monochoria australasica
 
@@ -118,8 +120,10 @@ The same biological control is shared with `M. korsakowii`; that dependence is r
 
 The same two gates remain open:
 
-- direct animal-pollination source closure;
-- closest-eligible-control closure, including the `M. cyanea` candidate.
+- direct species-level animal-pollination closure for `M. australasica`;
+- common-tree closest-eligible closure against the equal-stamen `M. cyanea`.
+
+The 2018 family synthesis explicitly treats Monochoria as a pollen-reward lineage with floral modifications associated with bee visitation, but that is retained as mechanism-level background rather than promoted to a direct species receipt.
 
 The two Monochoria pairs cannot be treated as two independent negative-control lineages merely because there are two case species.
 
@@ -243,18 +247,14 @@ S. spectabilis   SCREENED   morphology PASS + animal pollination PASS
 
 `S. corymbosa` is especially diagnostic: recent ITS evidence recovers it as the sister of `S. bicapsularis`, but direct floral work retains differentiated stamen functions. It is therefore rejected despite excellent phylogenetic proximity.
 
-`S. rugosa` fails for the same direct-morphology reason noted above.
-
-The first plausible absence candidate is now `S. armata`:
+The next eligible lineage is sister subclade VIIb. The frozen audit rejects `S. bauhinioides` and `S. villosa` on biological gates. Both `S. armata` and `S. covesii` reach the appropriate phylogenetic grain, but `S. covesii` has the stronger direct pollination receipt. SOURCE_QUALITY therefore closes the tie:
 
 ```text
-heteranthery_absence_status = PASS
-animal_pollination_status   = OPEN
-phylogenetic_proximity      = OPEN
-selection_status            = OPEN
+S. armata   REJECTED   same VIIb grain, weaker pollination evidence
+S. covesii  SCREENED   morphology PASS + direct buzz-pollination PASS
 ```
 
-Irwin-Barneby morphology explicitly states that the fertile stamens are not differentiated into two sets. The remaining work is to close effective animal-pollination evidence and the closest-eligible comparison within/around the VIIb lineage.
+`S. covesii` is now the formal ADJUDICATED control for `S. bicapsularis`.
 
 ### Biological implication
 
