@@ -22,11 +22,12 @@ FIELDS = (
 
 MEMBERSHIP = {"U1", "U2", "U1;U2"}
 OVERLAP = {"SINGLE_UNIVERSE", "MULTI_UNIVERSE_SAME_DEPENDENCY_GROUP"}
-EXPECTED_U1_NETWORK_VISIBLE = 44
+FROZEN_FRAME_STATUS = "FROZEN_SOURCE_CLOSED_U1_FULL47_PLUS_SOURCE_CLOSED_U2"
+EXPECTED_U1_FULL47 = 47
 EXPECTED_U2_SOURCE_CLOSED = 22
 EXPECTED_OVERLAPS = 2
 EXPECTED_UNION = (
-    EXPECTED_U1_NETWORK_VISIBLE + EXPECTED_U2_SOURCE_CLOSED - EXPECTED_OVERLAPS
+    EXPECTED_U1_FULL47 + EXPECTED_U2_SOURCE_CLOSED - EXPECTED_OVERLAPS
 )
 
 
@@ -59,6 +60,8 @@ def load_cross_universe_map(path: Path) -> list[dict[str, str]]:
             raise ValueError(f"row {n} invalid universe_membership {membership!r}")
         if overlap not in OVERLAP:
             raise ValueError(f"row {n} invalid overlap_status {overlap!r}")
+        if (row.get("union_frame_status") or "").strip() != FROZEN_FRAME_STATUS:
+            raise ValueError(f"row {n} union_frame_status must be the frozen full47+U2 frame")
 
         both = membership == "U1;U2"
         if both != (overlap == "MULTI_UNIVERSE_SAME_DEPENDENCY_GROUP"):
@@ -102,7 +105,7 @@ def build_cross_universe_readout_from_rows(rows: list[dict[str, str]]) -> dict:
         "multi_universe_overlap_groups": sorted(r["dependency_group"] for r in overlap),
         "n_groups_with_any_source_screen": len(screened_any),
         "claim_ceiling": (
-            "deduplicated_discovery_universe_accounting_only_"
+            "deduplicated_source_closed_discovery_universe_accounting_only_"
             "not_prevalence_not_independent_replication_not_confirmatory"
         ),
     }
