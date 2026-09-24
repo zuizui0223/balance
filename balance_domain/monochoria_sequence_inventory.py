@@ -133,7 +133,22 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = run_inventory(args.output)
-    print(json.dumps(result, indent=2, sort_keys=True))
+    compact = {
+        "analysis": result["analysis"],
+        "taxa": {
+            label: {
+                "taxid": taxon["taxid"],
+                "nucleotide_record_count": taxon["nucleotide_record_count"],
+                "sequence_class_counts": taxon["sequence_class_counts"],
+                "potentially_informative_beyond_ndhF_rbcL": taxon[
+                    "potentially_informative_beyond_ndhF_rbcL"
+                ],
+            }
+            for label, taxon in result["taxa"].items()
+        },
+        "claim_ceiling": result["claim_ceiling"],
+    }
+    print(json.dumps(compact, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":
