@@ -18,6 +18,7 @@ import re
 import urllib.parse
 import urllib.request
 import zipfile
+import tarfile
 from collections import Counter
 from pathlib import Path
 from xml.etree import ElementTree
@@ -28,6 +29,7 @@ LANDING_URLS = (
     "https://peerj.com/articles/9049/supp-2/",
 )
 FIGSHARE_API_URL = "https://api.figshare.com/v2/articles/12397772"
+PMC_OA_INDEX_URL = "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=PMC7289145"
 USER_AGENT = "BALANCE-U1-supplement-audit/1.1 (+https://github.com/zuizui0223/balance)"
 
 FILE_SUFFIXES = (".csv", ".docx", ".xlsx", ".xls", ".tsv", ".txt", ".zip")
@@ -206,6 +208,93 @@ def _fetch_figshare_inventory() -> tuple[list[dict[str, str]], dict]:
     return files, receipt
 
 
+def discover_pmc_package_url(xml_bytes: bytes) -> str:
+    """Return the HTTPS NCBI OA tarball URL from the PMC OA index response."""
+    root = ElementTree.fromstring(xml_bytes)
+    href = ""
+    for elem in root.iter():
+        if not elem.tag.endswith("link"):
+            continue
+        candidate = (elem.attrib.get("href") or "").strip()
+        fmt = (elem.attrib.get("format") or "").strip().casefold()
+        if candidate and (fmt == "tgz" or candidate.lower().endswith((".tgz", ".tar.gz"))):
+            href = candidate
+            break
+    if not href:
+        raise ValueError("PMC OA index did not expose a tgz package link")
+    parsed = urllib.parse.urlparse(href)
+    if parsed.scheme == "ftp" and parsed.netloc == "ftp.ncbi.nlm.nih.gov":
+        return urllib.parse.urlunparse(
+            ("https", parsed.netloc, parsed.path, "", parsed.query, parsed.fragment)
+        )
+    return href
+
+
+def _fetch_pmc_oa_package(workdir: Path, start_index: int) -> list[dict]:
+    index_data, index_final, index_type, index_disp = _fetch(PMC_OA_INDEX_URL)
+    package_url = discover_pmc_package_url(index_data)
+    package_data, package_final, package_type, package_disp = _fetch(package_url)
+
+    receipts: list[dict] = [
+        {
+            "requested_url": PMC_OA_INDEX_URL,
+            "final_url": index_final,
+            "content_type": index_type,
+            "content_disposition": index_disp,
+            "size_bytes": len(index_data),
+            "status": "FETCHED",
+            "source_type": "PMC_OA_INDEX",
+            "package_url": package_url,
+        },
+        {
+            "requested_url": package_url,
+            "final_url": package_final,
+            "content_type": package_type,
+            "content_disposition": package_disp,
+            "size_bytes": len(package_data),
+            "status": "FETCHED",
+            "source_type": "PMC_OA_PACKAGE",
+        },
+    ]
+
+    with tarfile.open(fileobj=io.BytesIO(package_data), mode="r:gz") as tf:
+        members = [
+            member
+            for member in tf.getmembers()
+            if member.isfile()
+            and Path(member.name).suffix.lower() in {".csv", ".tsv", ".txt", ".docx"}
+            and member.size <= 10_000_000
+        ]
+        for offset, member in enumerate(sorted(members, key=lambda x: x.name.casefold())):
+            handle = tf.extractfile(member)
+            if handle is None:
+                continue
+            data = handle.read()
+            filename_hint = Path(member.name).name
+            saved = workdir / f"{start_index + offset:02d}_{filename_hint}"
+            saved.write_bytes(data)
+            receipt = {
+                "requested_url": package_url,
+                "archive_member": member.name,
+                "filename_hint": filename_hint,
+                "size_bytes": len(data),
+                "status": "FETCHED",
+                "source_type": "PMC_OA_MEMBER",
+                "saved_path": str(saved),
+            }
+            try:
+                receipt["summary"] = summarize_payload(
+                    data,
+                    filename_hint,
+                    "",
+                    filename_hint=filename_hint,
+                )
+            except Exception as exc:  # pragma: no cover - malformed external file
+                receipt["summary"] = {"kind": "parse_error", "error": repr(exc)}
+            receipts.append(receipt)
+    return receipts
+
+
 def run_audit(output_path: Path, workdir: Path) -> dict:
     workdir.mkdir(parents=True, exist_ok=True)
 
@@ -227,6 +316,18 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
                 "requested_url": FIGSHARE_API_URL,
                 "status": "FETCH_ERROR",
                 "source_type": "FIGSHARE_API_INVENTORY",
+                "error": repr(exc),
+            }
+        )
+
+    try:
+        receipts.extend(_fetch_pmc_oa_package(workdir, len(receipts)))
+    except Exception as exc:  # pragma: no cover - network path
+        receipts.append(
+            {
+                "requested_url": PMC_OA_INDEX_URL,
+                "status": "FETCH_ERROR",
+                "source_type": "PMC_OA_PACKAGE",
                 "error": repr(exc),
             }
         )
@@ -313,6 +414,7 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
         "article_url": ARTICLE_URL,
         "landing_urls": list(LANDING_URLS),
         "figshare_api_url": FIGSHARE_API_URL,
+        "pmc_oa_index_url": PMC_OA_INDEX_URL,
         "n_urls_visited": len(visited),
         "n_receipts": len(receipts),
         "n_parsed_supplement_files": len(parsed),
