@@ -67,6 +67,8 @@ The original `Senna surattensis` proposals were rejected because "little morphol
 
 The valid U3 role is matched case-control development for structural division of labour with fail-closed control eligibility.
 
+The remaining Monochoria closest-control problem has now been tested directly on a reproducible public-accession `ndhF+rbcL` surface. After enforcing one identical joint-site mask across each case and both candidate controls, `M. australasica` and `M. cyanea` are tied for both cases and differ at zero candidate-candidate sites on the shared marker surface. The two-marker result is therefore an explicit identification limit, not evidence for choosing either control.
+
 ## U4 — pollinator-prey mechanism stress test
 
 Current high-information species series:
@@ -120,7 +122,7 @@ The programme is not yet model-ready because:
 
 1. U1 full-47 reconstruction is formally open;
 2. U2 independent double coding has not been completed;
-3. U3 control matching is open only for the two Monochoria cases, and three review-family representative identities remain supplement-dependent;
+3. U3 control matching is open only for the two Monochoria cases: direct species-level pollination is unresolved and the frozen ndhF+rbcL comparison is non-identifying, so a higher-resolution common phylogenetic surface is required; three review-family representative identities also remain supplement-dependent;
 4. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
 5. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
 
