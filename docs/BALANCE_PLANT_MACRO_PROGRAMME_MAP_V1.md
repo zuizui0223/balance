@@ -55,16 +55,18 @@ Current species-level case/control registry:
 ```text
 6 source-resolved heteranthery cases
 6 retained PRIMARY pair records
-2 adjudicated controls
-2 screened controls still open
-2 proposed Senna controls rejected
-4 cases currently retain eligible registered controls
-2 Senna cases require replacement controls
+3 adjudicated controls
+2 Monochoria controls still open
+1 rejected PRIMARY control proposal
+5 cases currently retain eligible registered controls
+1 Senna case still requires a replacement control
 ```
 
 U3 is outcome-selected by architecture and therefore cannot estimate prevalence.
 
-The `Senna surattensis` proposals are now rejected because Luo et al. (2009) explicitly distinguish long and short stamen sets and include the species among heteromorphic-stamen taxa. "Little morphological differentiation" is not evidence of heteranthery absence.
+The original `Senna surattensis` proposals were rejected because "little morphological differentiation" is not evidence of heteranthery absence. A frozen replacement search has now recovered and adjudicated `S. covesii` for `S. bicapsularis`: the closer heterantherous lineage was rejected, sampled VIIb alternatives were audited, and a source-quality tie-break selected the directly buzz-pollinated homomorphic candidate.
+
+The `S. alata` replacement remains open after all sampled clade-II candidates failed the heteranthery-absence gate.
 
 The valid U3 role is matched case-control development for structural division of labour with fail-closed control eligibility.
 
@@ -121,7 +123,7 @@ The programme is not yet model-ready because:
 
 1. U1 full-47 reconstruction is formally open;
 2. U2 independent double coding has not been completed;
-3. U3 has two open Monochoria controls and two Senna cases requiring replacement controls;
+3. U3 has two open Monochoria controls and one remaining Senna replacement problem (S. alata);
 4. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
 5. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
 
