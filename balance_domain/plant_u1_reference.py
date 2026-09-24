@@ -24,6 +24,8 @@ REVIEW_SIGNAL = {
     "ARTICLE_MECHANISTIC_CITATION",
     "REFERENCE_ONLY",
     "NO_DIRECT_REVIEW_MAPPING_RECOVERED",
+    "SUPPLEMENT_DATASET_CONFIRMED",
+    "SUPPLEMENT_DATASET_EXCLUDED",
 }
 FIGURE4 = {"PRESENT", "ABSENT"}
 COVERAGE = {
@@ -33,11 +35,13 @@ COVERAGE = {
     "BACKGROUND_OR_INCLUDED_UNRESOLVED",
     "NO_DIRECT_MAPPING",
     "SUPPLEMENT_CONFIRMED_NONNETWORK",
+    "DIRECT_SUPPLEMENT_ABSENT",
 }
 PROMOTION = {
     "CANONICAL_NETWORK_VISIBLE",
     "SUPPLEMENT_CONFIRMATION_REQUIRED",
     "CANONICAL_SUPPLEMENT_ONLY",
+    "SUPPLEMENT_RECONCILIATION_EXCLUDED",
 }
 
 
@@ -83,9 +87,13 @@ def load_u1_reference_coverage(path: Path) -> list[dict[str, str]]:
                     f"row {n} supplement-only promotion requires direct supplement confirmation"
                 )
 
+        if row["full47_promotion_status"] == "SUPPLEMENT_RECONCILIATION_EXCLUDED":
+            if row["figure4_status"] != "ABSENT" or row["coverage_status"] != "DIRECT_SUPPLEMENT_ABSENT":
+                raise ValueError(f"row {n} direct supplement exclusion requires absent + direct-absence evidence")
+
         if (
             row["figure4_status"] == "ABSENT"
-            and row["coverage_status"] != "SUPPLEMENT_CONFIRMED_NONNETWORK"
+            and row["coverage_status"] not in {"SUPPLEMENT_CONFIRMED_NONNETWORK", "DIRECT_SUPPLEMENT_ABSENT"}
             and row["full47_promotion_status"] != "SUPPLEMENT_CONFIRMATION_REQUIRED"
         ):
             raise ValueError(
@@ -103,13 +111,11 @@ def build_u1_reference_readout_from_rows(rows: list[dict[str, str]]) -> dict:
         r for r in rows
         if r["full47_promotion_status"] == "SUPPLEMENT_CONFIRMATION_REQUIRED"
     ]
+    excluded = [r for r in rows if r["full47_promotion_status"] == "SUPPLEMENT_RECONCILIATION_EXCLUDED"]
     leading = [
         r["taxon_raw"]
-        for r in rows
-        if r["coverage_status"] in {
-            "ARTICLE_BODY_INCLUDED_NONNETWORK",
-            "ARTICLE_TRIANGULATED_NONNETWORK",
-        }
+        for r in pending
+        if r["coverage_status"] in {"ARTICLE_BODY_INCLUDED_NONNETWORK", "ARTICLE_TRIANGULATED_NONNETWORK"}
     ]
     return {
         "analysis": "balance_plant_u1_reference_coverage",
@@ -120,12 +126,11 @@ def build_u1_reference_readout_from_rows(rows: list[dict[str, str]]) -> dict:
         "n_canonical_supplement_only_taxa": len(supplement_only),
         "canonical_supplement_only_taxa": sorted(r["taxon_raw"] for r in supplement_only),
         "n_pending_supplement_confirmation": len(pending),
+        "n_direct_reconciliation_excluded": len(excluded),
+        "direct_reconciliation_excluded_taxa": sorted(r["taxon_raw"] for r in excluded),
         "leading_nonnetwork_candidates": sorted(leading),
-        "full47_supplement_gap_closed": len(supplement_only) == 3,
-        "claim_ceiling": (
-            "article_and_figure4_evidence_triage_only_"
-            "supplement_only_taxa_require_direct_supplement_confirmation"
-        ),
+        "full47_supplement_gap_closed": len(supplement_only) == 3 and not pending,
+        "claim_ceiling": "direct_supplement_reconciliation_and_reference_triage_only_not_conflict_adjudication_not_prevalence",
     }
 
 
