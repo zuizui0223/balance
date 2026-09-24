@@ -4,13 +4,16 @@ The audit places P. australasica and P. cyanea on the same chloroplast
 coordinates as the two U3 case taxa using ndhF + rbcL. Network access and
 MAFFT are required only by the CLI execution path; schema and distance helpers
 remain testable without external dependencies.
+
+Candidate ranking is deliberately restricted to sites that are comparable in
+the case and *all* candidate controls. Pairwise p-distances over different site
+sets are retained as diagnostics only and are never used to choose a control.
 """
 from __future__ import annotations
 
 import argparse
 import csv
 import json
-import math
 import subprocess
 import time
 from pathlib import Path
@@ -96,39 +99,80 @@ def p_distance(aligned_a: str, aligned_b: str) -> dict[str, float | int]:
     }
 
 
-def choose_candidate(
-    distances: dict[str, dict[str, float | int]],
+def compare_candidates_on_common_sites(
+    aligned_sequences: dict[str, str],
     case_taxon: str,
     candidate_taxa: Iterable[str] = CANDIDATE_TAXA,
 ) -> dict:
-    rows = []
-    for candidate in candidate_taxa:
-        key = _pair_key(case_taxon, candidate)
-        if key not in distances:
-            raise ValueError(f"missing distance for {case_taxon} vs {candidate}")
-        d = distances[key]
-        rows.append((candidate, float(d["p_distance"]), int(d["differences"])))
-    rows.sort(key=lambda x: (x[1], x[2], x[0]))
-    if len(rows) < 2:
+    """Compare candidates only on the exact same sites for every focal taxon.
+
+    This prevents a long complete-plastome-derived gene from gaining an
+    artificial advantage over a historical partial-gene accession merely
+    because its pairwise comparison uses more sites.
+    """
+    candidates = tuple(candidate_taxa)
+    if len(candidates) < 2:
         raise ValueError("at least two candidate controls are required")
-    best, second = rows[0], rows[1]
-    if math.isclose(best[1], second[1], rel_tol=0.0, abs_tol=1e-15):
+    focal = (case_taxon, *candidates)
+    missing = [taxon for taxon in focal if taxon not in aligned_sequences]
+    if missing:
+        raise ValueError("missing aligned focal taxa: " + ", ".join(missing))
+
+    lengths = {len(aligned_sequences[taxon]) for taxon in focal}
+    if len(lengths) != 1:
+        raise ValueError("all focal sequences must come from one equal-length alignment")
+
+    valid = set("ACGT")
+    comparable = 0
+    differences = {candidate: 0 for candidate in candidates}
+    candidate_pair_differences = 0
+
+    seqs = {taxon: aligned_sequences[taxon].upper() for taxon in focal}
+    for chars in zip(*(seqs[taxon] for taxon in focal)):
+        if any(char not in valid for char in chars):
+            continue
+        comparable += 1
+        case_base = chars[0]
+        for idx, candidate in enumerate(candidates, start=1):
+            differences[candidate] += chars[idx] != case_base
+        if len(candidates) == 2:
+            candidate_pair_differences += chars[1] != chars[2]
+
+    if comparable == 0:
+        raise ValueError("case and candidates have no jointly comparable A/C/G/T sites")
+
+    distances = {
+        candidate: {
+            "comparable_sites": comparable,
+            "differences": differences[candidate],
+            "p_distance": differences[candidate] / comparable,
+        }
+        for candidate in candidates
+    }
+    ordered = sorted(candidates, key=lambda taxon: (differences[taxon], taxon))
+    best, second = ordered[0], ordered[1]
+    if differences[best] == differences[second]:
         outcome = "TIE"
         winner = None
     else:
-        outcome = "LOWER_COMMON_MARKER_P_DISTANCE"
-        winner = best[0]
+        outcome = "LOWER_COMMON_SITE_P_DISTANCE"
+        winner = best
+
     return {
         "case_taxon": case_taxon,
-        "candidate_distances": {
-            taxon: {"p_distance": dist, "differences": diffs}
-            for taxon, dist, diffs in rows
-        },
+        "jointly_comparable_sites": comparable,
+        "candidate_distances": distances,
+        "candidate_pair_differences_on_joint_sites": (
+            candidate_pair_differences if len(candidates) == 2 else None
+        ),
         "distance_outcome": outcome,
         "closest_candidate_by_p_distance": winner,
-        "p_distance_delta": second[1] - best[1],
+        "difference_count_delta": differences[second] - differences[best],
+        "p_distance_delta": (
+            differences[second] - differences[best]
+        ) / comparable,
         "claim_ceiling": (
-            "two_plastid_marker_proximity_diagnostic_only_"
+            "joint_site_two_plastid_marker_proximity_diagnostic_only_"
             "not_species_tree_not_pollination_receipt_not_control_adjudication"
         ),
     }
@@ -248,13 +292,16 @@ def run_common_marker_audit(ledger_path: Path, output_path: Path, workdir: Path)
     concat_path = workdir / "ndhF_rbcL.aligned.fasta"
     _write_fasta(concatenated, concat_path)
 
+    # Pairwise distances are descriptive only because historical accessions have
+    # different sequence spans. Candidate ranking below uses one identical site
+    # mask across the case and both candidates.
     distances: dict[str, dict[str, float | int]] = {}
     for i, a in enumerate(taxa):
         for b in taxa[i + 1 :]:
             distances[_pair_key(a, b)] = p_distance(concatenated[a], concatenated[b])
 
     comparisons = {
-        case: choose_candidate(distances, case)
+        case: compare_candidates_on_common_sites(concatenated, case)
         for case in CASE_TAXA
     }
     readout = {
@@ -267,10 +314,10 @@ def run_common_marker_audit(ledger_path: Path, output_path: Path, workdir: Path)
             for gene in GENES
         },
         "concatenated_alignment_length": len(next(iter(concatenated.values()))),
-        "pairwise_distances": distances,
-        "candidate_comparisons": comparisons,
+        "pairwise_distances_descriptive_only": distances,
+        "candidate_comparisons_joint_site_mask": comparisons,
         "claim_ceiling": (
-            "public_accession_ndhF_rbcL_common_marker_proximity_only_"
+            "public_accession_ndhF_rbcL_joint_site_proximity_only_"
             "not_species_tree_not_pollination_evidence_not_historical_causation"
         ),
     }
