@@ -80,10 +80,10 @@ def load_plant_universe_status(path: Path) -> list[dict]:
         by_id["U3_VALLEJOMARIN_2010"],
     )
 
-    if u1["source_closed"] or u1["double_code_ready"]:
-        raise ValueError("U1 cannot close before the full 47-taxon review universe is reconciled")
-    if not u1["outcome_blind_architecture_sampling"]:
-        raise ValueError("U1 must remain outcome-blind")
+    if not (u1["source_closed"] and u1["double_code_ready"] and u1["outcome_blind_architecture_sampling"]):
+        raise ValueError("U1 full47 universe and frozen first20 reliability frame must be ready")
+    if u1["registered_units"] != 47 or u1["target_units"] != 47:
+        raise ValueError("U1 source closure requires exactly 47 of 47 registered taxa")
 
     if not (u2["source_closed"] and u2["outcome_blind_architecture_sampling"]):
         raise ValueError("U2 is the source-closed outcome-blind review universe")

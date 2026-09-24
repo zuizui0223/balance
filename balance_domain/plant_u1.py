@@ -54,6 +54,10 @@ SCREEN_READY = {"true", "false"}
 EXPECTED_REVIEW_TAXA = 47
 EXPECTED_NETWORK_VISIBLE_LABELS = 44
 EXPECTED_PROVISIONAL_SAMPLE_SIZE = 20
+NETWORK_SURFACE = "FIGURE4_NETWORK_VISIBLE_TAXON"
+SUPPLEMENT_SURFACE = "FIGSHARE_ANALYSIS_LIST_SUPPLEMENT_ONLY_TAXON"
+FROZEN_SELECTION_RULE = "FROZEN_FIRST_20_FULL47_TAXON_LABELS_LEXICOGRAPHIC"
+FROZEN_DOUBLE_CODE_STATUS = "SOURCE_READY_SAMPLE_FROZEN_AWAITING_INDEPENDENT_CODING"
 
 
 def _load_exact(path: Path, fields: tuple[str, ...]) -> list[dict[str, str]]:
@@ -77,11 +81,18 @@ def load_u1_universe(path: Path) -> list[dict[str, str]]:
         raise ValueError("U1 universe_record_id must be unique")
     if {r["universe_id"] for r in rows} != {"U1_HAAS_LORTIE_2020"}:
         raise ValueError("U1 universe must use one frozen source-universe id")
-    if len(rows) != EXPECTED_NETWORK_VISIBLE_LABELS:
-        raise ValueError(
-            "U1 network-visible extraction must remain at 44 labels until "
-            "supplement-only taxa are explicitly recovered rather than silently mixed in"
-        )
+    if len(rows) != EXPECTED_REVIEW_TAXA:
+        raise ValueError("U1 full review universe must contain exactly 47 plant taxa")
+    source_counts = Counter(r["source_surface"] for r in rows)
+    if source_counts.get(NETWORK_SURFACE, 0) != EXPECTED_NETWORK_VISIBLE_LABELS:
+        raise ValueError("U1 full universe must retain exactly 44 Figure-4 network-visible taxa")
+    if source_counts.get(SUPPLEMENT_SURFACE, 0) != 3:
+        raise ValueError("U1 full universe must contain exactly three direct supplement-only taxa")
+    if set(source_counts) != {NETWORK_SURFACE, SUPPLEMENT_SURFACE}:
+        raise ValueError("U1 universe contains an unregistered source surface")
+    taxa = [r["taxon_raw"].strip().casefold() for r in rows]
+    if len(taxa) != len(set(taxa)):
+        raise ValueError("U1 full review taxon labels must be unique")
     return rows
 
 
@@ -94,6 +105,11 @@ def load_u1_sample(path: Path) -> list[dict[str, str]]:
         raise ValueError("U1 sample_order must be exactly 1..20")
     if len({r["universe_record_id"] for r in rows}) != len(rows):
         raise ValueError("U1 sample universe_record_id must be unique")
+    for n, row in enumerate(rows, start=2):
+        if row["selection_rule"] != FROZEN_SELECTION_RULE:
+            raise ValueError(f"row {n} U1 sample selection_rule must be frozen on the full 47")
+        if row["double_code_status"] != FROZEN_DOUBLE_CODE_STATUS:
+            raise ValueError(f"row {n} U1 double-code status must be frozen and source-ready")
     return rows
 
 
@@ -148,8 +164,9 @@ def validate_u1_handoff(
         if sample["primary_source_status"] != resolution["source_status"]:
             raise ValueError(f"U1 sample source status drift for {uid!r}")
 
-    # The current sample is deliberately the first 20 raw network-visible taxon labels
-    # while the supplement-only taxa and taxonomic grain remain unresolved.
+    # The current sample is the first 20 labels from the complete 47-taxon review
+    # universe. Direct supplement recovery added three taxa after the twentieth
+    # lexicographic position, so the previously source-resolved first 20 did not change.
     expected = sorted(
         universe_rows,
         key=lambda r: (r["taxon_raw"].casefold(), r["universe_record_id"]),
@@ -166,15 +183,14 @@ def validate_u1_handoff(
         if r["taxon_reconciliation"].startswith("TAXON_GRAIN_CONFLICT")
     ]
 
-    # Haas & Lortie report 47 taxa overall. Figure 4 omits plant species from studies
-    # without actual herbivore/pollinator taxa (e.g. artificial damage/hand pollination),
-    # so the current 44 labels are a network-visible subset, not an extraction-completeness claim.
+    network_visible = sum(r["source_surface"] == NETWORK_SURFACE for r in universe_rows)
+    supplement_only = sum(r["source_surface"] == SUPPLEMENT_SURFACE for r in universe_rows)
     supplement_only_taxa_needed = EXPECTED_REVIEW_TAXA - len(universe_rows)
-    if supplement_only_taxa_needed < 0:
-        raise ValueError("U1 network-visible extraction exceeds review-reported taxon count")
 
     sample_frozen = (
-        supplement_only_taxa_needed == 0
+        len(universe_rows) == EXPECTED_REVIEW_TAXA
+        and network_visible == EXPECTED_NETWORK_VISIBLE_LABELS
+        and supplement_only == 3
         and not taxon_conflicts
         and all(r["screen_ready"] == "true" for r in resolution_rows)
     )
@@ -182,8 +198,10 @@ def validate_u1_handoff(
     return {
         "analysis": "balance_plant_u1_handoff",
         "review_reported_taxa": EXPECTED_REVIEW_TAXA,
-        "network_visible_taxon_labels": len(universe_rows),
+        "full_review_registered_taxa": len(universe_rows),
+        "network_visible_taxon_labels": network_visible,
         "network_visible_expected_labels": EXPECTED_NETWORK_VISIBLE_LABELS,
+        "supplement_only_taxa_recovered": supplement_only,
         "supplement_only_taxa_to_recover": supplement_only_taxa_needed,
         "provisional_sample_size": len(sample_rows),
         "source_status_counts": dict(
@@ -194,8 +212,8 @@ def validate_u1_handoff(
         "taxon_grain_conflict_records": sorted(taxon_conflicts),
         "double_code_sample_frozen": sample_frozen,
         "claim_ceiling": (
-            "outcome_blind_network_visible_review_subset_only_"
-            "not_confirmatory_until_supplement_taxa_taxon_grain_and_sources_reconcile"
+            "source_closed_outcome_blind_full47_review_universe_and_frozen_first20_"
+            "reliability_frame_only_not_independently_double_coded_not_prevalence"
         ),
     }
 

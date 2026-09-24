@@ -4,27 +4,23 @@
   "review_doi": "10.7717/peerj.9049",
   "reported_plant_taxa": 47,
   "current_network_visible_taxa": 44,
-  "reconciliation_gap": 3,
-  "supplemental_information_1": {
-    "doi": "10.7717/peerj.9049/supp-1",
-    "description": "List of all pollinator, herbivore, and plant species included in the review",
-    "format": "DOCX",
-    "status": "LOCATED_NOT_INGESTED"
-  },
-  "supplemental_information_2": {
-    "doi": "10.7717/peerj.9049/supp-2",
-    "description": "Types of analyses, species used, and outcome for every relevant analysis within each study included in the review",
-    "format": "CSV",
-    "status": "LOCATED_NOT_INGESTED"
-  },
+  "reconciliation_gap": 0,
   "figshare_dataset": {
     "doi": "10.6084/m9.figshare.12397772.v1",
-    "title": "Data from a systematic review of the direct and indirect effects of herbivory on plant reproduction mediated by pollination",
-    "status": "LOCATED_NOT_INGESTED"
+    "status": "INGESTED_AND_RECONCILED",
+    "workflow_run_id": 36072131257,
+    "artifact_id": 10838463002,
+    "analysis_list_file_id": 22837367,
+    "analysis_list_sha256": "d00ac0af1d3acb6ce8e7c6937b67a616f27b9e8ae817b2a6231a38faa618cfca",
+    "study_list_file_id": 22837373,
+    "study_list_sha256": "36bf4a383b602b866d31622f8f015b34436e2150abaa233df73829deeb3e5b29"
   },
-  "canonical_universe_status": "OPEN",
-  "candidate_registry_status": "PROVISIONAL_ONLY",
-  "promotion_rule": "Do not add any supplement-only candidate to the canonical 47-taxon universe until supplement or Figshare content directly confirms membership and the full 47-taxon reconciliation is reproducible.",
-  "next_gate": "Ingest Supplemental Information 1 or 2, or the equivalent Figshare raw data, then reconcile the three missing taxa exactly before freezing the U1 double-code frame.",
-  "claim_ceiling": "source_surface_location_only_not_supplement_membership_not_taxon_promotion_not_confirmatory_frame_freeze"
+  "canonical_universe_status": "SOURCE_CLOSED_FULL47",
+  "recovered_supplement_only_taxa": [
+    "Eichhornia crassipes",
+    "Nemophila menziesii",
+    "Ruellia nudiflora"
+  ],
+  "next_gate": "Independent second-coder classification on the frozen first-20 reliability frame.",
+  "claim_ceiling": "full_review_taxon_reconciliation_and_reliability_frame_freeze_only_not_independent_coding_not_prevalence_not_BALANCE_positive"
 }

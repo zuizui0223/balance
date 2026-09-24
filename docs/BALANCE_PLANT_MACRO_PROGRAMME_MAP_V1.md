@@ -17,7 +17,7 @@ tests/test_plant_programme.py
 
 ## U1 — broad interaction specificity
 
-The provisional strict blind first-20 screen currently returns:
+The full 47-taxon U1 review universe is now source-closed by direct Figshare reconciliation. The three Figure-4-omitted taxa are `Eichhornia crassipes`, `Nemophila menziesii`, and `Ruellia nudiflora`. All three sort after the existing twentieth taxon, so the deterministic first-20 frame is unchanged and now frozen.\n\nThe existing pre-independent-coding first-20 specificity screen returns:
 
 ```text
 20 records
@@ -30,7 +30,7 @@ The provisional strict blind first-20 screen currently returns:
 
 U1's value is specificity.
 
-It shows that a broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset. The full review denominator is still open at 44/47 registered taxa. The three supplement-only taxa are not promoted from article-level triangulation: the located PeerJ/Figshare source tables must be ingested first, after which the deterministic first-20 frame is recomputed.
+It shows that a broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset. Denominator reconstruction is closed; the remaining U1 gate is genuinely independent second-coder classification of the frozen first 20.
 
 ## U2 — mechanism-targeted sexual interference
 
@@ -125,7 +125,7 @@ This defines the empirical target of BALANCE macro:
 
 The programme is not yet model-ready because:
 
-1. U1 full-47 reconstruction is formally open; the located supplement/Figshare tables still need direct ingestion before the missing taxa and formal first-20 frame can be frozen;
+1. U1 independent double coding has not been completed, although the 47-taxon universe and first-20 reliability frame are now frozen;
 2. U2 independent double coding has not been completed;
 3. U3 control matching is open only for the two Monochoria cases: molecular distance ranking is frozen, but direct species-level effective animal-pollination eligibility is unresolved; three review-family representative identities also remain unresolved;
 4. U3 matched pollen-fate conflict remains incomplete for `Osbeckia chinensis` and both Senna case-control pairs;
