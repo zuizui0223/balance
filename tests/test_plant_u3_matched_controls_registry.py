@@ -111,7 +111,7 @@ def test_monochoria_pollination_eligibility_is_not_promoted_from_amegilla_territ
     assert all(r["selection_status"] == "SCREENED" for r in mon)
 
 
-def test_monochoria_pair_receipts_use_plastome_distance_tiebreak_without_promoting_pollination():
+def test_monochoria_pair_receipts_record_conditional_plastome_ranking_without_closing_selection():
     rows = load_u3_matched_controls(PAIRS, CASES, U3)
     mon = [r for r in rows if r["control_taxon"] == "Monochoria australasica"]
     assert len(mon) == 2
@@ -119,6 +119,7 @@ def test_monochoria_pair_receipts_use_plastome_distance_tiebreak_without_promoti
     assert all(r["animal_pollination_eligible"] is None for r in mon)
     assert all(r["selection_status"] == "SCREENED" for r in mon)
     assert all("68-shared-single-copy-CDS" in r["phylogenetic_basis"] for r in mon)
+    assert all("closest-eligible selection is not closed" in r["notes"] for r in mon)
 
 
 def test_bicapsularis_replacement_is_source_quality_selected_covesii():

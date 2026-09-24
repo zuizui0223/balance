@@ -20,7 +20,7 @@ def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
     assert len(rows) == 22
-    assert out["status_counts"] == {"OPEN": 2, "REJECTED": 18, "SCREENED": 2}
+    assert out["status_counts"] == {"OPEN": 4, "REJECTED": 16, "SCREENED": 2}
     assert out["n_screened"] == 2
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
@@ -38,7 +38,7 @@ def test_closest_eligible_search_is_separate_from_phylogenetic_proximity():
     assert "SENNA_COVESII" in armata["blocker"]
 
 
-def test_monochoria_plastome_tiebreak_selects_australasica_but_pollination_stays_open():
+def test_monochoria_plastome_ranking_is_resolved_but_closest_eligible_search_stays_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     incumbents = [
         r for r in rows if r["candidate_control"] == "Monochoria australasica"
@@ -50,15 +50,12 @@ def test_monochoria_plastome_tiebreak_selects_australasica_but_pollination_stays
     assert all(r["heteranthery_absence_status"] == "PASS" for r in incumbents)
     assert all(r["animal_pollination_status"] == "OPEN" for r in incumbents)
     assert all(r["phylogenetic_proximity_status"] == "PASS" for r in incumbents)
-    assert all(r["closest_eligible_search_status"] == "PASS" for r in incumbents)
+    assert all(r["closest_eligible_search_status"] == "OPEN" for r in incumbents)
     assert all(r["selection_status"] == "OPEN" for r in incumbents)
-    assert all(
-        r["blocker"] == "DIRECT_SPECIES_LEVEL_EFFECTIVE_POLLINATION_OPEN"
-        for r in incumbents
-    )
+    assert all("ELIGIBILITY_CONDITIONAL" in r["blocker"] for r in incumbents)
 
 
-def test_monochoria_cyanea_loses_registered_plastome_proximity_tiebreak():
+def test_monochoria_cyanea_stays_open_after_losing_conditional_plastome_ranking():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     cyanea = [r for r in rows if r["candidate_control"] == "Monochoria cyanea"]
     assert {r["case_taxon"] for r in cyanea} == {
@@ -68,9 +65,9 @@ def test_monochoria_cyanea_loses_registered_plastome_proximity_tiebreak():
     assert all(r["heteranthery_absence_status"] == "PASS" for r in cyanea)
     assert all(r["animal_pollination_status"] == "OPEN" for r in cyanea)
     assert all(r["phylogenetic_proximity_status"] == "PASS" for r in cyanea)
-    assert all(r["closest_eligible_search_status"] == "FAIL" for r in cyanea)
-    assert all(r["selection_status"] == "REJECTED" for r in cyanea)
-    assert all("AUSTRALASICA" in r["blocker"] for r in cyanea)
+    assert all(r["closest_eligible_search_status"] == "OPEN" for r in cyanea)
+    assert all(r["selection_status"] == "OPEN" for r in cyanea)
+    assert all("ELIGIBILITY_CONDITIONAL" in r["blocker"] for r in cyanea)
 
 
 def test_sampled_clade_ii_candidates_are_rejected_before_clade_jump():

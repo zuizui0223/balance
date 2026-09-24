@@ -81,7 +81,7 @@ jobs:
               assert expected["difference_count_delta"] == observed["difference_count_delta"]
               assert expected["p_distance_delta"] == observed["p_distance_delta"]
               assert expected["gene_wise_support"] == live["gene_wise_support"][case]["support_counts"]
-          assert frozen["adjudication_use"] == "closest_control_candidate_ranking_tiebreak_only"
+          assert frozen["adjudication_use"] == "conditional_phylogenetic_candidate_ranking_only"
           assert frozen["remaining_gate"].startswith("direct_species_level_effective_animal_pollination")
           PY
       - name: Upload audit receipt

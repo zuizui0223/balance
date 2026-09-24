@@ -39,7 +39,7 @@ def test_frozen_plastome_result_ranks_australasica_for_both_cases_without_specie
             comparison["candidate_distances"]["Pontederia australasica"]["p_distance"]
             < comparison["candidate_distances"]["Pontederia cyanea"]["p_distance"]
         )
-    assert result["adjudication_use"] == "closest_control_candidate_ranking_tiebreak_only"
+    assert result["adjudication_use"] == "conditional_phylogenetic_candidate_ranking_only"
     assert "not_nuclear_species_tree" in result["claim_ceiling"]
     assert result["remaining_gate"].startswith(
         "direct_species_level_effective_animal_pollination"

@@ -57,18 +57,15 @@ def test_senna_alata_spectabilis_pair_passes_all_matching_gates():
         assert row[field] == "PASS"
 
 
-def test_monochoria_candidate_ranking_is_closed_but_pollination_gate_remains_open():
+def test_monochoria_phylogenetic_ranking_is_resolved_but_closest_eligible_gate_stays_open():
     rows = load_u3_control_adjudication(ADJ, PAIRS, CASES, U3)
     mon = [r for r in rows if r["case_taxon"].startswith("Monochoria ")]
     assert len(mon) == 2
     assert all(r["phylogenetic_proximity_status"] == "PASS" for r in mon)
-    assert all(r["closer_eligible_alternative_search"] == "PASS" for r in mon)
+    assert all(r["closer_eligible_alternative_search"] == "OPEN" for r in mon)
     assert all(r["animal_pollination_status"] == "OPEN" for r in mon)
     assert all(r["decision"] == "OPEN" for r in mon)
-    assert all(
-        r["blocker"] == "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION_OPEN"
-        for r in mon
-    )
+    assert all("ELIGIBILITY_CONDITIONAL" in r["blocker"] for r in mon)
 
 
 def _read_rows():
