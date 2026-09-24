@@ -1,0 +1,7 @@
+taxon,role,record_type,ndhf_accession,rbcl_accession,source_basis,notes
+Pontederia australasica,CANDIDATE,COMPLETE_PLASTOME,NC_063307.1,NC_063307.1,Li_et_al_2021_JSE;Magar_et_al_2025_Limnology,"Extract ndhF and rbcL CDS from the AU44 complete plastome. The 2025 barcode table independently identifies NC_063307.1 as the P. australasica rbcL source."
+Pontederia cyanea,CANDIDATE,GENE_ACCESSIONS,U41613.1,U41588.1,Pellegrini_Horn_Almeida_2018_PhytoKeys,"The same ndhF/rbcL accessions used in the 2018 Pontederiaceae plastid analysis."
+Pontederia korsakowii,CASE,GENE_ACCESSIONS,U41615.2,U41590.1,Pellegrini_Horn_Almeida_2018_PhytoKeys,"Case taxon; spelling normalized to accepted Pontederia korsakowii."
+Pontederia vaginalis,CASE,GENE_ACCESSIONS,U41616.1,KX527476.1,Pellegrini_Horn_Almeida_2018_PhytoKeys,"Case taxon; same two-marker source used in the 2018 analysis."
+Pontederia hastata,REFERENCE,GENE_ACCESSIONS,U41614.1,U41589.1,Pellegrini_Horn_Almeida_2018_PhytoKeys,"Within-subgenus reference taxon."
+Pontederia cordata,OUTGROUP,GENE_ACCESSIONS,U41617.1,U41592.1,Pellegrini_Horn_Almeida_2018_PhytoKeys,"Pontederia sensu stricto reference used only to root/inspect the common-marker tree."
