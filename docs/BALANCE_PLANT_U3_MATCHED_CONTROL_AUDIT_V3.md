@@ -7,12 +7,11 @@ U3 has six species-level case records, but the latest source audit rejects the p
 ```text
 source-resolved heteranthery cases             6
 PRIMARY pair records retained                  6
-registered eligible PRIMARY controls           5
-adjudicated PRIMARY pairs                      3
+registered eligible PRIMARY controls           6
+adjudicated PRIMARY pairs                      4
 screened PRIMARY pairs still open              2
-rejected PRIMARY control proposals             1
-cases needing replacement controls             1
-screened-control coverage complete?           NO
+cases needing replacement controls             0
+screened-control coverage complete?           YES
 case-control adjudication closed?              NO
 ```
 
@@ -35,14 +34,14 @@ Replacement/closest-control discovery is a separate fail-closed registry rather 
 
 ```text
 alternative-control receipts    22
-OPEN                              5
+OPEN                              4
 REJECTED                         16
-SCREENED / selected               1
+SCREENED / selected               2
 ```
 
 The search now records three different outcomes rather than forcing every close relative into a negative-control role.
 
-For `S. alata`, every sampled clade-II candidate audited so far fails the frozen heteranthery-absence gate, including `S. paradictyon`. The homomorphic `S. atomaria` is rejected because it is a clade-III jump while the search is being defined phylogenetically. `S. spectabilis` is the current OPEN candidate: its seven fertile anthers are approximately equal and direct reproductive work establishes animal pollination, but relative proximity and the closest-eligible search remain open.
+For `S. alata`, every sampled clade-II candidate in the frozen search fails the heteranthery-absence gate, including `S. paradictyon`. The next eligible phylogenetic grain is clade III. Both `S. atomaria` and `S. spectabilis` satisfy the homomorphic-stamen criterion there, but `S. spectabilis` has direct reproductive evidence of cross-pollination and major bee visitors. The preregistered SOURCE_QUALITY tie-break therefore selects `S. spectabilis`; `S. atomaria` is retained as a rejected same-grain alternative rather than being called phylogenetically ineligible.
 
 For `S. bicapsularis`, the closest known species `S. corymbosa` is rejected because heteranthery persists. The sister subclade VIIb was then audited explicitly. `S. bauhinioides` and `S. villosa` fail the strict absence criterion; `S. armata` has acceptable morphology and phylogenetic grain but loses the preregistered SOURCE_QUALITY tie-break. `S. covesii` is therefore the sole SCREENED replacement candidate and has now been promoted into the formal PRIMARY pair registry.
 
@@ -123,6 +122,22 @@ The same two gates remain open:
 - closest-eligible-control closure, including the `M. cyanea` candidate.
 
 The two Monochoria pairs cannot be treated as two independent negative-control lineages merely because there are two case species.
+
+## PASS — Senna alata -> Senna spectabilis
+
+Decision:
+
+```text
+PASS
+```
+
+This replaces the rejected `S. surattensis` proposal after a frozen phylogenetic search.
+
+All sampled clade-II candidates audited in the search fail the heteranthery-absence gate. The next eligible grain is clade III, where both `S. atomaria` and `S. spectabilis` have source-secure homomorphic fertile stamens. `S. spectabilis` additionally has direct reproductive-biology evidence for a cross-pollinating system with bee visitors, so the preregistered SOURCE_QUALITY rule selects it over `S. atomaria`.
+
+The formal pair is now ADJUDICATED.
+
+Matched extraction is registered, but both case-side and control-side pollen-fate conflict remain `UNRESOLVED`. The control match therefore closes architecture selection without manufacturing a conflict-strength contrast.
 
 ## FAIL — Senna alata -> Senna surattensis
 
@@ -213,20 +228,16 @@ The replacement search now shows a biologically informative pattern: the nearest
 
 ### S. alata
 
-`S. siamea` is phylogenetically close in a recent plastome comparison, but its seven fertile stamens are divided into long and short sets. It therefore fails the heteranthery-absence gate despite good phylogenetic proximity.
+The sampled clade-II search is exhausted as a negative-control search: `S. surattensis`, `S. siamea`, `S. martiana`, `S. pleurocarpa`, `S. didymobotrya`, `S. italica`, `S. nicaraguensis`, and `S. paradictyon` all fail the frozen heteranthery-absence criterion.
 
-`S. rugosa` is also rejected. Direct Irwin-Barneby morphology describes three long and four short fertile stamens with different anther dimensions. A later synthesis calling the species non-heterantherous does not override the directly described discrete fertile-stamen sets.
-
-The first plausible absence candidate is now `S. atomaria`:
+The next eligible grain is clade III. There, both `S. atomaria` and `S. spectabilis` satisfy the morphology gate. The direct reproductive evidence is stronger for `S. spectabilis`, so SOURCE_QUALITY closes the tie:
 
 ```text
-heteranthery_absence_status = PASS
-animal_pollination_status   = OPEN
-phylogenetic_proximity      = OPEN
-selection_status            = OPEN
+S. atomaria      REJECTED   same clade-III grain, weaker pollination evidence
+S. spectabilis   SCREENED   morphology PASS + animal pollination PASS
 ```
 
-Its seven fertile anthers are described as isomorphic, but bee-resource records are not yet equivalent to source-secure effective pollination, and the closest-eligible phylogenetic search is not closed.
+`S. spectabilis` is now the formal ADJUDICATED control for `S. alata`.
 
 ### S. bicapsularis
 
@@ -286,13 +297,15 @@ A documentation edit cannot silently promote a pair.
 
 ## Current bottleneck
 
-The remaining U3 matching work is now precisely:
+The remaining U3 **control-matching** work is now only the two Monochoria cases:
 
-1. resolve direct animal-pollination + nearest-eligible search for `M. australasica`, explicitly comparing `M. cyanea`;
-2. resolve the single remaining replacement problem, `S. alata`, after the sampled clade-II negative-control search returned no admissible control; `S. spectabilis` is currently OPEN;
-3. resolve the five Table-S1-dependent U3 family representative identities for broader structural discovery.
+1. resolve direct animal-pollination evidence for `M. australasica`;
+2. close the common-tree closest-eligible comparison against `M. cyanea`;
+3. retain the shared-control dependence between the two Monochoria cases.
 
-Separately, the matched conflict-estimand lane still needs direct pollen-fate evidence for `Osbeckia chinensis`, and the newly adjudicated `S. bicapsularis -> S. covesii` pair remains conflict-unresolved on both sides.
+The broader U3 discovery lane also still has five Table-S1-dependent family representative identities to resolve.
+
+Separately, the matched conflict-estimand lane remains much less complete: `Osbeckia chinensis`, `S. alata -> S. spectabilis`, and `S. bicapsularis -> S. covesii` do not yet provide matched pollen-fate conflict contrasts. Architecture matching and conflict measurement remain separate gates.
 
 ## Claim ceiling
 
