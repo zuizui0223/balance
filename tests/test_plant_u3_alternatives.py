@@ -20,13 +20,12 @@ def test_real_u3_alternative_registry_keeps_search_open():
     rows = load_u3_control_alternatives(ALTS, CASES, U3)
     out = build_u3_control_alternatives_readout(ALTS, CASES, U3)
     assert len(rows) == 22
-    assert out["status_counts"] == {"OPEN": 5, "REJECTED": 16, "SCREENED": 1}
-    assert out["n_screened"] == 1
+    assert out["status_counts"] == {"OPEN": 4, "REJECTED": 16, "SCREENED": 2}
+    assert out["n_screened"] == 2
     assert out["candidate_search_closed"] is False
     assert set(out["open_case_taxa"]) == {
         "Monochoria korsakowii",
         "Monochoria vaginalis",
-        "Senna alata",
     }
 
 
@@ -81,16 +80,20 @@ def test_sampled_clade_ii_candidates_are_rejected_before_clade_jump():
 
     atomaria = next(r for r in rows if r["candidate_control"] == "Senna atomaria")
     assert atomaria["heteranthery_absence_status"] == "PASS"
-    assert atomaria["phylogenetic_proximity_status"] == "FAIL"
+    assert atomaria["phylogenetic_proximity_status"] == "PASS"
+    assert atomaria["closest_eligible_search_status"] == "FAIL"
     assert atomaria["selection_status"] == "REJECTED"
+    assert "SENNA_SPECTABILIS" in atomaria["blocker"]
 
     spectabilis = next(
         r for r in rows if r["candidate_control"] == "Senna spectabilis"
     )
     assert spectabilis["heteranthery_absence_status"] == "PASS"
     assert spectabilis["animal_pollination_status"] == "PASS"
-    assert spectabilis["phylogenetic_proximity_status"] == "OPEN"
-    assert spectabilis["selection_status"] == "OPEN"
+    assert spectabilis["phylogenetic_proximity_status"] == "PASS"
+    assert spectabilis["closest_eligible_search_status"] == "PASS"
+    assert spectabilis["selection_status"] == "SCREENED"
+    assert spectabilis["blocker"] == ""
 
 
 def test_rejected_senna_surattensis_cannot_reenter_as_open():
