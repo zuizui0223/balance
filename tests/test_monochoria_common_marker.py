@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import csv
+import json
 import pytest
 
 from balance_domain.monochoria_common_marker import (
@@ -14,6 +15,7 @@ from balance_domain.monochoria_common_marker import (
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "data" / "BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
+RESULT = ROOT / "data" / "BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_RESULT_V1.json"
 
 
 def test_real_common_marker_accession_ledger_validates():
@@ -88,3 +90,31 @@ def test_complete_plastome_row_cannot_mix_accessions(tmp_path):
         writer.writerows(rows)
     with pytest.raises(ValueError, match="one genome accession"):
         load_accession_ledger(path)
+
+
+def test_frozen_real_data_receipt_is_nonidentifying_for_both_cases():
+    result = json.loads(RESULT.read_text(encoding="utf-8"))
+    assert result["workflow_run_id"] == 35972634288
+    assert result["comparison_method"].startswith("MAFFT per marker")
+
+    kors = result["case_comparisons"]["Pontederia korsakowii"]
+    assert kors["jointly_comparable_sites"] == 1825
+    assert kors["candidates"]["Pontederia australasica"]["differences"] == 36
+    assert kors["candidates"]["Pontederia cyanea"]["differences"] == 36
+    assert kors["candidate_pair_differences_on_joint_sites"] == 0
+    assert kors["outcome"] == "TIE"
+    assert kors["closest_candidate"] is None
+
+    vag = result["case_comparisons"]["Pontederia vaginalis"]
+    assert vag["jointly_comparable_sites"] == 1786
+    assert vag["candidates"]["Pontederia australasica"]["differences"] == 30
+    assert vag["candidates"]["Pontederia cyanea"]["differences"] == 30
+    assert vag["candidate_pair_differences_on_joint_sites"] == 0
+    assert vag["outcome"] == "TIE"
+    assert vag["closest_candidate"] is None
+
+    pair = result["candidate_pair_overlap"]
+    assert pair["comparable_sites"] == 1833
+    assert pair["differences"] == 0
+    assert pair["p_distance"] == 0.0
+    assert "identification_limit" in result["claim_ceiling"]
