@@ -58,6 +58,7 @@ Current species-level case/control registry:
 4 adjudicated controls
 2 Monochoria controls still open
 0 cases currently lacking a registered eligible control
+16 review families: 11 body-text representatives + 2 independently resolved + 3 pending
 ```
 
 U3 is outcome-selected by architecture and therefore cannot estimate prevalence.
@@ -119,7 +120,7 @@ The programme is not yet model-ready because:
 
 1. U1 full-47 reconstruction is formally open;
 2. U2 independent double coding has not been completed;
-3. U3 control matching is open only for the two Monochoria cases;
+3. U3 control matching is open only for the two Monochoria cases, and three review-family representative identities remain supplement-dependent;
 4. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
 5. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
 
