@@ -94,7 +94,9 @@ def test_complete_plastome_row_cannot_mix_accessions(tmp_path):
 
 def test_frozen_real_data_receipt_is_nonidentifying_for_both_cases():
     result = json.loads(RESULT.read_text(encoding="utf-8"))
-    assert result["workflow_run_id"] == 35972634288
+    assert result["workflow_run_id"] == 35972984652
+    assert result["workflow_run_number"] == 5
+    assert result["source_commit"] == "926493b35a05ca14942a42b21ad182eb155d7f9d"
     assert result["comparison_method"].startswith("MAFFT per marker")
 
     kors = result["case_comparisons"]["Pontederia korsakowii"]
