@@ -1,0 +1,67 @@
+{
+  "accessions": {
+    "Pontederia australasica": "NC_063307.1",
+    "Pontederia cyanea": "PQ010091.1",
+    "Pontederia korsakowii": "PQ010093.1",
+    "Pontederia vaginalis": "PQ010094.1"
+  },
+  "adjudication_use": "closest_control_candidate_ranking_tiebreak_only",
+  "analysis": "balance_u3_monochoria_plastome_result_v1",
+  "candidate_pair_differences_on_shared_cds": 158,
+  "case_comparisons": {
+    "Pontederia korsakowii": {
+      "candidate_distances": {
+        "Pontederia australasica": {
+          "comparable_sites": 51357,
+          "differences": 460,
+          "p_distance": 0.008956909476799658
+        },
+        "Pontederia cyanea": {
+          "comparable_sites": 51357,
+          "differences": 475,
+          "p_distance": 0.00924898261191269
+        }
+      },
+      "closest_candidate_by_p_distance": "Pontederia australasica",
+      "difference_count_delta": 15,
+      "gene_wise_support": {
+        "Pontederia australasica": 24,
+        "Pontederia cyanea": 14,
+        "TIE": 30
+      },
+      "jointly_comparable_sites": 51357,
+      "p_distance_delta": 0.0002920731351130323
+    },
+    "Pontederia vaginalis": {
+      "candidate_distances": {
+        "Pontederia australasica": {
+          "comparable_sites": 51357,
+          "differences": 484,
+          "p_distance": 0.00942422649298051
+        },
+        "Pontederia cyanea": {
+          "comparable_sites": 51357,
+          "differences": 501,
+          "p_distance": 0.009755242712775279
+        }
+      },
+      "closest_candidate_by_p_distance": "Pontederia australasica",
+      "difference_count_delta": 17,
+      "gene_wise_support": {
+        "Pontederia australasica": 24,
+        "Pontederia cyanea": 15,
+        "TIE": 29
+      },
+      "jointly_comparable_sites": 51357,
+      "p_distance_delta": 0.00033101621979476995
+    }
+  },
+  "claim_ceiling": "shared_single_copy_plastome_CDS_proximity_diagnostic_only_not_nuclear_species_tree_not_pollination_receipt_not_historical_causation",
+  "concatenated_alignment_length": 51807,
+  "interpretation": "On the registered shared-plastome-CDS proximity surface, Pontederia australasica has the lower common-site p-distance to both focal cases than P. cyanea. This closes the registered candidate-ranking tie-break in favor of P. australasica, but it is not a nuclear species-tree result and does not establish animal-pollination eligibility.",
+  "method": "68 shared single-copy plastome CDS; per-gene MAFFT alignment; concatenation; one joint A/C/G/T site mask for each case plus both candidate controls",
+  "remaining_gate": "direct_species_level_effective_animal_pollination_for_Pontederia_australasica",
+  "shared_gene_count": 68,
+  "source_commit": "9f9e7feea2b3d015b5c243f5977bbfcf7e4aa9e2",
+  "workflow_run_id": 35974282211
+}

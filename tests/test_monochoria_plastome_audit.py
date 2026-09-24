@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import csv
+import json
 import pytest
 
 from balance_domain.monochoria_plastome_audit import (
@@ -13,6 +14,7 @@ from balance_domain.monochoria_plastome_audit import (
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "data" / "BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
+RESULT = ROOT / "data" / "BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json"
 
 
 def test_plastome_ledger_has_four_unique_complete_records():
@@ -23,6 +25,25 @@ def test_plastome_ledger_has_four_unique_complete_records():
     assert by_taxon["Pontederia korsakowii"]["accession"] == "PQ010093.1"
     assert by_taxon["Pontederia vaginalis"]["accession"] == "PQ010094.1"
     assert len({r["accession"] for r in rows}) == 4
+
+
+def test_frozen_plastome_result_ranks_australasica_for_both_cases_without_species_tree_claim():
+    result = json.loads(RESULT.read_text(encoding="utf-8"))
+    assert result["shared_gene_count"] == 68
+    assert result["concatenated_alignment_length"] == 51807
+    assert result["candidate_pair_differences_on_shared_cds"] == 158
+    for case in ("Pontederia korsakowii", "Pontederia vaginalis"):
+        comparison = result["case_comparisons"][case]
+        assert comparison["closest_candidate_by_p_distance"] == "Pontederia australasica"
+        assert (
+            comparison["candidate_distances"]["Pontederia australasica"]["p_distance"]
+            < comparison["candidate_distances"]["Pontederia cyanea"]["p_distance"]
+        )
+    assert result["adjudication_use"] == "closest_control_candidate_ranking_tiebreak_only"
+    assert "not_nuclear_species_tree" in result["claim_ceiling"]
+    assert result["remaining_gate"].startswith(
+        "direct_species_level_effective_animal_pollination"
+    )
 
 
 def test_core_gene_set_excludes_ir_and_trans_splicing_traps():

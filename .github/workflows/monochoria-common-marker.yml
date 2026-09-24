@@ -10,6 +10,7 @@ on:
       - "balance_domain/monochoria_plastome_audit.py"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json"
       - ".github/workflows/monochoria-common-marker.yml"
   push:
     branches:
@@ -20,6 +21,7 @@ on:
       - "balance_domain/monochoria_plastome_audit.py"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json"
       - ".github/workflows/monochoria-common-marker.yml"
   workflow_dispatch:
 
@@ -57,6 +59,31 @@ jobs:
             --ledger data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv \
             --output /tmp/monochoria-common-marker/plastome_readout.json \
             --workdir /tmp/monochoria-common-marker/plastome
+      - name: Validate frozen plastome ranking receipt
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          live = json.loads(Path("/tmp/monochoria-common-marker/plastome_readout.json").read_text())
+          frozen = json.loads(Path("data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json").read_text())
+
+          assert frozen["accessions"] == live["accessions"]
+          assert frozen["shared_gene_count"] == live["shared_gene_count"]
+          assert frozen["concatenated_alignment_length"] == live["concatenated_alignment_length"]
+          assert frozen["candidate_pair_differences_on_shared_cds"] == live["candidate_pair_differences_on_shared_cds"]
+          assert frozen["claim_ceiling"] == live["claim_ceiling"]
+          for case, expected in frozen["case_comparisons"].items():
+              observed = live["case_comparisons"][case]
+              assert expected["jointly_comparable_sites"] == observed["jointly_comparable_sites"]
+              assert expected["candidate_distances"] == observed["candidate_distances"]
+              assert expected["closest_candidate_by_p_distance"] == observed["closest_candidate_by_p_distance"]
+              assert expected["difference_count_delta"] == observed["difference_count_delta"]
+              assert expected["p_distance_delta"] == observed["p_distance_delta"]
+              assert expected["gene_wise_support"] == live["gene_wise_support"][case]["support_counts"]
+          assert frozen["adjudication_use"] == "closest_control_candidate_ranking_tiebreak_only"
+          assert frozen["remaining_gate"].startswith("direct_species_level_effective_animal_pollination")
+          PY
       - name: Upload audit receipt
         uses: actions/upload-artifact@v4
         with:
