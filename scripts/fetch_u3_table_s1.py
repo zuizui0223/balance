@@ -18,6 +18,9 @@ from pathlib import Path
 ARTICLE_URL = "https://nph.onlinelibrary.wiley.com/doi/10.1111/j.1469-8137.2010.03430.x"
 FILENAME = "NPH_3430_sm_TableS1.doc"
 URLS = (
+    "https://mysite.science.uottawa.ca/rsargent/NPH_3430_sm_TableS1.doc",
+    "https://mysite.science.uottawa.ca/rsargent/Vallejo-Marin%20et%20al%202010_NPH_3430_sm_TableS1.doc",
+    "https://mysite.science.uottawa.ca/rsargent/Vallejo-Marin%20et%20al%202010_TableS1.doc",
     "https://nph.onlinelibrary.wiley.com/action/downloadSupplement"
     "?doi=10.1111%2Fj.1469-8137.2010.03430.x&file=NPH_3430_sm_TableS1.doc",
     "https://onlinelibrary.wiley.com/action/downloadSupplement"
