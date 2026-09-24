@@ -106,7 +106,27 @@ The morphology gate is secure: developmental work shows no distinct pollinating 
 
 The pollination gate is deliberately still OPEN. Pontederiaceae synthesis links the Monochoria floral syndrome to bee/buzz pollination, but the source-secure Amegilla record for `M. australasica` is male territorial behaviour above water, not a flower visit or pollen-transfer observation. A genus-level syndrome is not substituted for a species-level pollination receipt.
 
-The closest-control gate is also OPEN. The 2021 plastome tree places `M. australasica` sister to the sampled remainder of Monochoria and `M. korsakowii` at the second split, but it does not sample the equal-stamen `M. cyanea`. The 2018 total-evidence analysis samples `M. cyanea`, `M. korsakowii`, and `M. vaginalis`, but the frozen registry still lacks a source-secure common-tree comparison resolving whether `M. cyanea` outranks the incumbent control.
+The closest-control gate is also OPEN, but the reason is now experimentally sharper. A reproducible public-accession audit placed both candidates and both cases on the same `ndhF+rbcL` alignment. The first implementation exposed a comparability trap: pairwise distances used different numbers of sites because `M. australasica` has a complete plastome while historical `M. cyanea` accessions are partial. The audit was therefore corrected to rank candidates only on sites readable in the case and **both** candidates.
+
+The corrected result is non-identifying:
+
+```text
+M. korsakowii:
+  jointly comparable sites        1825
+  M. australasica differences       36
+  M. cyanea differences              36
+  candidate-candidate differences     0
+  outcome                           TIE
+
+M. vaginalis:
+  jointly comparable sites        1786
+  M. australasica differences       30
+  M. cyanea differences              30
+  candidate-candidate differences     0
+  outcome                           TIE
+```
+
+Across the broader candidate overlap, `M. australasica` and `M. cyanea` differ at 0 of 1833 jointly comparable `ndhF+rbcL` sites. Thus these two plastid markers contain no information for choosing the closest negative control. This is not promoted into a species-tree conclusion; the closest-control gate now explicitly requires a higher-resolution common phylogenetic surface.
 
 ## OPEN — Monochoria vaginalis -> Monochoria australasica
 
@@ -121,9 +141,9 @@ The same biological control is shared with `M. korsakowii`; that dependence is r
 The same two gates remain open:
 
 - direct species-level animal-pollination closure for `M. australasica`;
-- common-tree closest-eligible closure against the equal-stamen `M. cyanea`.
+- higher-resolution closest-eligible closure against the equal-stamen `M. cyanea`.
 
-The 2018 family synthesis explicitly treats Monochoria as a pollen-reward lineage with floral modifications associated with bee visitation, but that is retained as mechanism-level background rather than promoted to a direct species receipt.
+The public-accession `ndhF+rbcL` audit cannot resolve the second gate: both candidates are exactly tied for `M. vaginalis` on 1786 joint sites and are identical to one another on all candidate-overlap sites used by the diagnostic. The 2018 family synthesis explicitly treats Monochoria as a pollen-reward lineage with floral modifications associated with bee visitation, but that remains mechanism-level background rather than a direct species receipt.
 
 The two Monochoria pairs cannot be treated as two independent negative-control lineages merely because there are two case species.
 
@@ -299,9 +319,11 @@ A documentation edit cannot silently promote a pair.
 
 The remaining U3 **control-matching** work is now only the two Monochoria cases:
 
-1. resolve direct animal-pollination evidence for `M. australasica`;
-2. close the common-tree closest-eligible comparison against `M. cyanea`;
+1. resolve direct species-level effective-pollination evidence for `M. australasica` or an alternative admissible control;
+2. move beyond `ndhF+rbcL`, which is formally non-identifying for `M. australasica` versus `M. cyanea`, and obtain a higher-resolution common phylogenetic surface;
 3. retain the shared-control dependence between the two Monochoria cases.
+
+The current literature search recovered family-level insect-pollination coding and a Monochoria bee/buzz-pollination syndrome, but no direct `M. australasica` flower-visitation/pollen-transfer study. The published Amegilla record remains territorial behaviour above water rather than pollination evidence, so the pollination gate is not relaxed.
 
 The broader U3 discovery lane also still has five Table-S1-dependent family representative identities to resolve.
 
