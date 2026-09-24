@@ -14,19 +14,6 @@ on:
       - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json"
       - "data/BALANCE_PLANT_U3_MONOCHORIA_TOPOLOGY_V1.csv"
       - ".github/workflows/monochoria-common-marker.yml"
-  push:
-    branches:
-      - feature/macro-persistent-compromise
-    paths:
-      - "balance_domain/monochoria_common_marker.py"
-      - "balance_domain/monochoria_sequence_inventory.py"
-      - "balance_domain/monochoria_plastome_audit.py"
-      - "balance_domain/monochoria_topology_audit.py"
-      - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
-      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
-      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json"
-      - "data/BALANCE_PLANT_U3_MONOCHORIA_TOPOLOGY_V1.csv"
-      - ".github/workflows/monochoria-common-marker.yml"
   workflow_dispatch:
 
 jobs:
@@ -44,6 +31,15 @@ jobs:
           python -m pip install biopython
           sudo apt-get update -qq
           sudo apt-get install -y mafft
+      - name: Run rooted plastome-topology audit
+        run: |
+          mkdir -p /tmp/monochoria-common-marker/topology
+          python -m balance_domain.monochoria_topology_audit \
+            --ledger data/BALANCE_PLANT_U3_MONOCHORIA_TOPOLOGY_V1.csv \
+            --output /tmp/monochoria-common-marker/topology_readout.json \
+            --workdir /tmp/monochoria-common-marker/topology \
+            --bootstrap-replicates 500
+          cat /tmp/monochoria-common-marker/topology_readout.json
       - name: Run public-accession common-marker audit
         run: |
           mkdir -p /tmp/monochoria-common-marker
@@ -88,15 +84,6 @@ jobs:
           assert frozen["adjudication_use"] == "conditional_phylogenetic_candidate_ranking_only"
           assert frozen["remaining_gate"].startswith("direct_species_level_effective_animal_pollination")
           PY
-      - name: Run rooted plastome-topology audit
-        run: |
-          mkdir -p /tmp/monochoria-common-marker/topology
-          python -m balance_domain.monochoria_topology_audit \
-            --ledger data/BALANCE_PLANT_U3_MONOCHORIA_TOPOLOGY_V1.csv \
-            --output /tmp/monochoria-common-marker/topology_readout.json \
-            --workdir /tmp/monochoria-common-marker/topology \
-            --bootstrap-replicates 500
-          cat /tmp/monochoria-common-marker/topology_readout.json
       - name: Upload audit receipt
         uses: actions/upload-artifact@v4
         with:
