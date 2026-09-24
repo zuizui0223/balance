@@ -31,7 +31,7 @@ def test_real_u3_matched_control_registry_has_one_primary_record_per_case():
         "Melastoma malabathricum": "Osbeckia chinensis",
         "Monochoria korsakowii": "Monochoria australasica",
         "Monochoria vaginalis": "Monochoria australasica",
-        "Senna alata": "Senna surattensis",
+        "Senna alata": "Senna spectabilis",
         "Senna bicapsularis": "Senna covesii",
     }
     statuses = {
@@ -39,7 +39,7 @@ def test_real_u3_matched_control_registry_has_one_primary_record_per_case():
         "Melastoma malabathricum": "ADJUDICATED",
         "Monochoria korsakowii": "SCREENED",
         "Monochoria vaginalis": "SCREENED",
-        "Senna alata": "REJECTED",
+        "Senna alata": "ADJUDICATED",
         "Senna bicapsularis": "ADJUDICATED",
     }
     for case, control in expected_controls.items():
@@ -54,16 +54,19 @@ def test_real_u3_matched_control_registry_has_one_primary_record_per_case():
     assert by_case["Monochoria korsakowii"]["animal_pollination_eligible"] is None
     assert by_case["Monochoria vaginalis"]["animal_pollination_eligible"] is None
     assert by_case["Senna alata"]["animal_pollination_eligible"] is True
+    assert by_case["Senna alata"]["heteranthery_absence_confirmed"] is True
     assert by_case["Senna bicapsularis"]["animal_pollination_eligible"] is True
     assert by_case["Senna bicapsularis"]["heteranthery_absence_confirmed"] is True
 
 
-def test_senna_surattensis_is_not_a_registered_negative_control():
+def test_senna_alata_replacement_is_source_quality_selected_spectabilis():
     rows = load_u3_matched_controls(PAIRS, CASES, U3)
-    senna = [r for r in rows if r["control_taxon"] == "Senna surattensis"]
-    assert len(senna) == 1
-    assert all(r["selection_status"] == "REJECTED" for r in senna)
-    assert all(r["heteranthery_absence_confirmed"] is False for r in senna)
+    row = next(r for r in rows if r["case_taxon"] == "Senna alata")
+    assert row["control_taxon"] == "Senna spectabilis"
+    assert row["selection_status"] == "ADJUDICATED"
+    assert row["tie_break_used"] == "SOURCE_QUALITY"
+    assert row["animal_pollination_eligible"] is True
+    assert row["heteranthery_absence_confirmed"] is True
 
 
 def test_melastoma_control_is_same_tribe_sister_lineage_not_fake_congener():
@@ -83,22 +86,19 @@ def test_monochoria_shared_control_remains_explicitly_nonindependent():
     ]["control_taxon"]
 
 
-def test_real_u3_matched_control_layer_recovers_bicapsularis_coverage():
+def test_real_u3_matched_control_layer_has_only_monochoria_open():
     readout = build_u3_matched_control_readout(PAIRS, CASES, U3)
     assert readout["n_pairs"] == 6
-    assert readout["n_registered_primary_pairs"] == 5
-    assert readout["n_adjudicated_primary_pairs"] == 3
+    assert readout["n_registered_primary_pairs"] == 6
+    assert readout["n_adjudicated_primary_pairs"] == 4
     assert readout["n_registered_case_taxa"] == 6
-    assert readout["n_cases_with_registered_primary_control"] == 5
-    assert set(readout["cases_without_registered_primary_control"]) == {
-        "Senna alata",
-    }
-    assert readout["screened_control_coverage_complete"] is False
-    assert readout["n_cases_with_adjudicated_primary_control"] == 3
+    assert readout["n_cases_with_registered_primary_control"] == 6
+    assert readout["cases_without_registered_primary_control"] == []
+    assert readout["screened_control_coverage_complete"] is True
+    assert readout["n_cases_with_adjudicated_primary_control"] == 4
     assert set(readout["unmatched_case_taxa"]) == {
         "Monochoria korsakowii",
         "Monochoria vaginalis",
-        "Senna alata",
     }
     assert readout["case_control_layer_closed"] is False
 
