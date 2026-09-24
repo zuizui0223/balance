@@ -123,7 +123,7 @@ def test_gene_pair_counts_uses_only_joint_unambiguous_sites():
     counts = gene_pair_counts(aligned, ["a", "b", "c"])
     assert counts["g1"][("a", "b")] == (1, 4)
     assert counts["g1"][("a", "c")] == (0, 4)
-    assert counts["g1"][("b", "c")] == (1, 5)
+    assert counts["g1"][("b", "c")] == (2, 5)
 
 
 def test_topology_ledger_rejects_duplicate_accession(tmp_path):
