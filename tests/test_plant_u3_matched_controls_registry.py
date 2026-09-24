@@ -23,6 +23,7 @@ def test_real_u3_matched_control_registry_has_one_primary_record_per_case():
         "Monochoria korsakowii",
         "Monochoria vaginalis",
         "Senna alata",
+        "Senna bicapsularis",
     }
 
     expected_controls = {
@@ -98,7 +99,6 @@ def test_real_u3_matched_control_layer_recovers_bicapsularis_coverage():
         "Monochoria korsakowii",
         "Monochoria vaginalis",
         "Senna alata",
-        "Senna bicapsularis",
     }
     assert readout["case_control_layer_closed"] is False
 
