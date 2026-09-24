@@ -23,13 +23,14 @@ The provisional strict blind first-20 screen currently returns:
 20 records
 0 positive conflict
 1 aligned no-conflict
-18 no-demonstrated-conflict
-1 unresolved candidate
+5 no-demonstrated-conflict
+14 unresolved
+13 records excluded at the shared-coordinate gate
 ```
 
 U1's value is specificity.
 
-It shows that a broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset.
+It shows that a broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset. The full review denominator is still open at 44/47 registered taxa. The three supplement-only taxa are not promoted from article-level triangulation: the located PeerJ/Figshare source tables must be ingested first, after which the deterministic first-20 frame is recomputed.
 
 ## U2 — mechanism-targeted sexual interference
 
@@ -38,8 +39,8 @@ Current source-closed review universe:
 ```text
 22 dependency groups
 8 strict conflict-gate positives
-3 no-demonstrated-conflict
-11 unresolved candidates
+2 no-demonstrated-conflict
+12 unresolved candidates
 ```
 
 U2 is the first lane with a formal, outcome-blind, source-closed first-20 double-coding packet.
@@ -57,17 +58,21 @@ Current species-level case/control registry:
 6 registered PRIMARY controls
 4 adjudicated controls
 2 Monochoria controls still open
-0 cases currently lacking a registered eligible control
+0 cases currently lacking a registered primary control
 16 review families: 11 body-text representatives + 2 independently resolved + 3 pending
 ```
 
 U3 is outcome-selected by architecture and therefore cannot estimate prevalence.
 
-The original `Senna surattensis` proposals were rejected because "little morphological differentiation" is not evidence of heteranthery absence. Frozen replacement searches have now recovered and adjudicated both Senna controls: `S. covesii` for `S. bicapsularis` after a VIIb audit, and `S. spectabilis` for `S. alata` after all sampled clade-II candidates failed and a clade-III SOURCE_QUALITY tie-break was closed.
+The original `Senna surattensis` proposals were rejected because "little morphological differentiation" is not evidence of heteranthery absence. Frozen replacement searches recovered and adjudicated both Senna controls: `S. covesii` for `S. bicapsularis` after a VIIb audit, and `S. spectabilis` for `S. alata` after all sampled clade-II candidates failed and a clade-III SOURCE_QUALITY tie-break was closed.
 
 The valid U3 role is matched case-control development for structural division of labour with fail-closed control eligibility.
 
-The remaining Monochoria closest-control problem has now been tested directly on a reproducible public-accession `ndhF+rbcL` surface. After enforcing one identical joint-site mask across each case and both candidate controls, `M. australasica` and `M. cyanea` are tied for both cases and differ at zero candidate-candidate sites on the shared marker surface. The two-marker result is therefore an explicit identification limit, not evidence for choosing either control.
+The Monochoria molecular problem now has two registered resolution levels. The original public-accession `ndhF+rbcL` surface is non-identifying: `M. australasica` and `M. cyanea` tie for both focal cases on an identical joint-site mask. A subsequent complete-plastome audit uses 68 shared single-copy CDS and 51,357 jointly comparable sites per case. On that frozen plastid-proximity surface, `M. australasica` has lower p-distance than `M. cyanea` to both `M. korsakowii` (460 versus 475 differences) and `M. vaginalis` (484 versus 501 differences). Gene-wise support also favors `M. australasica` (24 versus 14 with 30 ties; 24 versus 15 with 29 ties, respectively).
+
+That result closes the **conditional phylogenetic-distance ranking**, not the control adjudication. It is a plastid-proximity diagnostic rather than a nuclear species-tree result. Direct species-level effective animal-pollination eligibility remains unresolved for the Monochoria candidate set; until eligibility is known, `M. cyanea` must remain available in case the closer candidate fails the ecological gate.
+
+Among the four PASS-adjudicated U3 pairs, matched extraction currently contains eight rows. Case-side pollen-fate conflict is `POSITIVE` in 2/4 and `UNRESOLVED` in 2/4; control-side conflict is `POSITIVE` in 1/4 and `UNRESOLVED` in 3/4. No control is yet source-secure as `SHARED_INTEGRATED`; one control (`Solanum lycocarpum`) instead resolves to `AMONG_FLOWER_MODULE_DIVISION`.
 
 ## U4 — pollinator-prey mechanism stress test
 
@@ -120,11 +125,12 @@ This defines the empirical target of BALANCE macro:
 
 The programme is not yet model-ready because:
 
-1. U1 full-47 reconstruction is formally open;
+1. U1 full-47 reconstruction is formally open; the located supplement/Figshare tables still need direct ingestion before the missing taxa and formal first-20 frame can be frozen;
 2. U2 independent double coding has not been completed;
-3. U3 control matching is open only for the two Monochoria cases: direct species-level pollination is unresolved and the frozen ndhF+rbcL comparison is non-identifying, so a higher-resolution common phylogenetic surface is required; three review-family representative identities also remain supplement-dependent;
-4. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
-5. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
+3. U3 control matching is open only for the two Monochoria cases: molecular distance ranking is frozen, but direct species-level effective animal-pollination eligibility is unresolved; three review-family representative identities also remain unresolved;
+4. U3 matched pollen-fate conflict remains incomplete for `Osbeckia chinensis` and both Senna case-control pairs;
+5. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
+6. phylogenetic dependence has not yet been frozen across the final confirmatory species set.
 
 The repository therefore explicitly reports:
 
