@@ -32,6 +32,11 @@ def test_programme_map_preserves_distinct_sampling_roles():
 def test_u1_is_specificity_heavy_and_has_no_positive_conflict_in_provisional20():
     u1 = _readout()["lanes"]["U1"]
     assert u1["n_records"] == 20
+    assert u1["conflict_status_counts"] == {
+        "ALIGNED_NO_CONFLICT": 1,
+        "NO_DEMONSTRATED_CONFLICT": 5,
+        "UNRESOLVED": 14,
+    }
     assert u1["conflict_status_counts"].get("POSITIVE", 0) == 0
     assert u1["n_excluded"] == 13
 
