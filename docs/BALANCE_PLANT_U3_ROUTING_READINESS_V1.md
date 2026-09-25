@@ -2,11 +2,18 @@
 
 ## Why the next U3 question changes
 
-The current four-pair lane has established a negative result for the simplest proposed explanatory variable:
+The current four-pair lane has established an identification result for the simplest proposed explanatory variable:
 
-> binary pollen-fate conflict presence does not deterministically distinguish heteranthery from nonheteranthery.
+> binary pollen-fate conflict presence does not identify heteranthery in this matched lane.
 
-All four cases are conflict-positive and three nonheterantherous controls are also conflict-positive. The remaining Osbeckia state cannot make a finite matched binary conflict coefficient estimable.
+All four cases are conflict-positive and three nonheterantherous controls are also conflict-positive. An exhaustive completion certificate shows that the remaining Osbeckia state cannot produce a finite matched binary conflict coefficient: if positive there is no within-pair predictor variation; if negative there is one-direction separation.
+
+Canonical certificate:
+
+```text
+docs/BALANCE_PLANT_U3_BINARY_CONFLICT_IDENTIFICATION_V1.md
+balance_domain/plant_u3_conflict_identification.py
+```
 
 The next biologically informative target is therefore **routing architecture conditional on conflict**, not another binary presence test.
 

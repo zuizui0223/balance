@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from .plant_u3_conflict_identification import build_u3_binary_conflict_identification
 from .plant_u3_dependence import load_u3_dependence
 from .plant_u3_matched_extraction import load_u3_matched_extraction
 from .plant_u3_routing_expansion import build_u3_routing_expansion_readout
@@ -40,6 +41,14 @@ def build_u3_routing_readiness(
         extraction_path.parent / "BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
     )
     expansion = build_u3_routing_expansion_readout(expansion_path, universe_path)
+    conflict_identification = build_u3_binary_conflict_identification(
+        extraction_path,
+        dependence_path,
+        adjudication_path,
+        pair_path,
+        case_path,
+        universe_path,
+    )
 
     dep_by_pair = {r["pair_id"]: r["dependence_block_id"] for r in dependence}
 
@@ -99,6 +108,18 @@ def build_u3_routing_readiness(
             r["architecture_mode"] == "SHARED_INTEGRATED"
             for r in positive_controls
         ),
+        "binary_conflict_identification_certificate": (
+            "docs/BALANCE_PLANT_U3_BINARY_CONFLICT_IDENTIFICATION_V1.md"
+        ),
+        "binary_conflict_discriminant_status": conflict_identification[
+            "binary_conflict_discriminant_status"
+        ],
+        "binary_conflict_any_completion_finite_mle": conflict_identification[
+            "any_completion_has_finite_matched_log_odds_mle"
+        ],
+        "binary_conflict_sufficiency_falsified": conflict_identification[
+            "sufficiency_falsified_by_positive_controls"
+        ],
         "routing_measurement_complete": routing_measurement_complete,
         "prospective_routing_model_contract_frozen": False,
         "routing_model_ready": routing_model_ready,

@@ -42,6 +42,15 @@ def test_resolved_positive_controls_already_show_two_routing_architectures():
 
 def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     out = _readout()
+    assert out["binary_conflict_identification_certificate"] == (
+        "docs/BALANCE_PLANT_U3_BINARY_CONFLICT_IDENTIFICATION_V1.md"
+    )
+    assert (
+        out["binary_conflict_discriminant_status"]
+        == "NONIDENTIFYING_UNDER_ALL_REGISTERED_COMPLETIONS"
+    )
+    assert out["binary_conflict_any_completion_finite_mle"] is False
+    assert out["binary_conflict_sufficiency_falsified"] is True
     assert out["routing_measurement_complete"] is False
     assert out["prospective_routing_model_contract_frozen"] is False
     assert out["routing_model_ready"] is False
