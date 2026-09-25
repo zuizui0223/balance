@@ -56,7 +56,7 @@ EXPECTED_NETWORK_VISIBLE_LABELS = 44
 EXPECTED_PROVISIONAL_SAMPLE_SIZE = 20
 NETWORK_SURFACE = "FIGURE4_NETWORK_VISIBLE_TAXON"
 SUPPLEMENT_SURFACE = "FIGSHARE_ANALYSIS_LIST_SUPPLEMENT_ONLY_TAXON"
-FROZEN_SELECTION_RULE = "FROZEN_FIRST_20_FULL47_TAXON_LABELS_LEXICOGRAPHIC"
+FROZEN_SELECTION_RULE = "FIRST_20_DEPENDENCY_GROUPS_BY_FROZEN_U1_RECORD_ID"
 FROZEN_DOUBLE_CODE_STATUS = "SOURCE_READY_SAMPLE_FROZEN_AWAITING_INDEPENDENT_CODING"
 
 
@@ -164,12 +164,12 @@ def validate_u1_handoff(
         if sample["primary_source_status"] != resolution["source_status"]:
             raise ValueError(f"U1 sample source status drift for {uid!r}")
 
-    # The current sample is the first 20 labels from the complete 47-taxon review
-    # universe. Direct supplement recovery added three taxa after the twentieth
-    # lexicographic position, so the previously source-resolved first 20 did not change.
+    # The shared double-coding protocol preregisters first-20 selection by frozen
+    # screening-frame record identifier. U1_001..U1_020 are also the first 20 taxa
+    # lexicographically after full-47 closure, so protocol alignment changes no membership.
     expected = sorted(
         universe_rows,
-        key=lambda r: (r["taxon_raw"].casefold(), r["universe_record_id"]),
+        key=lambda r: r["universe_record_id"],
     )[:EXPECTED_PROVISIONAL_SAMPLE_SIZE]
     if [r["universe_record_id"] for r in sample_rows] != [
         r["universe_record_id"] for r in expected
