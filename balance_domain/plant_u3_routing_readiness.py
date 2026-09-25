@@ -63,12 +63,14 @@ def build_u3_routing_readiness(
         len(positive_resolved_architecture) / n_positive if n_positive else 0.0
     )
 
-    routing_model_ready = (
+    routing_measurement_complete = (
         not unresolved_conflict_controls
         and not positive_unresolved_architecture
-        and len(resolved_blocks) >= 4
-        and len(resolved_architectures) >= 2
     )
+    # No arbitrary minimum-n threshold is invented here. A confirmatory routing
+    # model requires a separately frozen prospective model/sample-size contract
+    # after measurement completeness; that contract does not yet exist.
+    routing_model_ready = False
 
     return {
         "analysis": "balance_u3_conflict_conditioned_routing_readiness",
@@ -91,6 +93,8 @@ def build_u3_routing_readiness(
             r["architecture_mode"] == "SHARED_INTEGRATED"
             for r in positive_controls
         ),
+        "routing_measurement_complete": routing_measurement_complete,
+        "prospective_routing_model_contract_frozen": False,
         "routing_model_ready": routing_model_ready,
         "next_evidence_targets": [
             "resolve_Senna_covesii_broader_routing_architecture",
@@ -100,6 +104,11 @@ def build_u3_routing_readiness(
         "acquisition_guard": (
             "new controls must be selected under the frozen predictor-blind matching "
             "protocol before conflict strength or routing architecture extraction"
+        ),
+        "model_readiness_rule": (
+            "do not invent a minimum-n threshold post hoc; after routing measurement "
+            "is complete, freeze a prospective model and sample-size/estimability "
+            "contract before fitting a confirmatory routing effect"
         ),
         "claim_ceiling": (
             "routing_readiness_and_acquisition_priority_only_not_fitted_routing_effect_"
