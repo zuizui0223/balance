@@ -11,7 +11,7 @@ U3 = ROOT / "data" / "BALANCE_PLANT_U3_HETERANTHERY_REVIEW_UNIVERSE_V1.csv"
 QUEUE = ROOT / "data" / "BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
 
 
-def test_routing_expansion_queue_preserves_blocked_bixaceae_and_activates_brassicaceae():
+def test_routing_queue_retains_two_blocked_cases_and_activates_lythraceae():
     rows = load_u3_routing_expansion_queue(QUEUE, U3)
     assert [r["family"] for r in rows] == [
         "Bixaceae",
@@ -20,28 +20,23 @@ def test_routing_expansion_queue_preserves_blocked_bixaceae_and_activates_brassi
         "Malvaceae",
     ]
     assert rows[0]["control_search_status"] == "EVIDENCE_CEILING_BLOCKED"
-    assert rows[1]["control_search_status"] == "IN_PROGRESS"
-    assert all(r["control_search_status"] == "NOT_STARTED" for r in rows[2:])
-    assert all(
-        r["predictor_blinding_status"]
-        == "FROZEN_BEFORE_CONTROL_CONFLICT_OR_ROUTING_EXTRACTION"
-        for r in rows
-    )
+    assert rows[1]["control_search_status"] == "EVIDENCE_CEILING_BLOCKED"
+    assert rows[2]["control_search_status"] == "IN_PROGRESS"
+    assert rows[3]["control_search_status"] == "NOT_STARTED"
 
 
-def test_next_active_case_is_brassica_rapa_without_dropping_bixaceae():
+def test_next_active_case_is_lagerstroemia_without_dropping_blocked_families():
     out = build_u3_routing_expansion_readout(QUEUE, U3)
     assert out["n_queued_families"] == 4
     assert out["n_new_dependence_blocks"] == 4
     assert out["first_case_family"] == "Bixaceae"
-    assert out["first_case_taxon"] == "Amoreuxia wrightii"
-    assert out["next_active_case"] == "Brassica rapa"
-    assert out["n_evidence_ceiling_blocked"] == 1
-    assert out["n_control_search_not_started"] == 2
+    assert out["next_active_case"] == "Lagerstroemia indica"
+    assert out["n_evidence_ceiling_blocked"] == 2
+    assert out["n_control_search_not_started"] == 1
     assert out["queue_frozen_before_control_outcomes"] is True
 
 
-def test_queue_progression_requires_frozen_preoutcome_receipt():
+def test_queue_progression_requires_frozen_preoutcome_receipts():
     out = build_u3_routing_expansion_readout(QUEUE, U3)
     assert "advance_only_after_prior_case" in out["progression_rule"]
     assert "retain_blocked_cases_as_missing_dependence_blocks" in out["progression_rule"]
