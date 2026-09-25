@@ -113,6 +113,32 @@ The remaining uncertainty is now partially identified rather than treated as all
 
 Measurement completion and effect estimability are now separated explicitly. If Osbeckia is ultimately POSITIVE there are zero conflict-status-discordant matched pairs; if it is NO_DEMONSTRATED_CONFLICT there is exactly one discordant pair and it is case-positive/control-negative, with no reverse discordance. Therefore a finite conditional binary conflict-presence coefficient is not estimable under either admissible completion. Osbeckia remains worth resolving for evidence completeness, quantitative strength and routing architecture—not as a route to a binary presence effect.
 
+### Prospective matched-control expansion
+
+A second U3 exercise prospectively froze four additional species-level case families before any prospective control conflict or routing outcome was inspected:
+
+```text
+Bixaceae        Amoreuxia wrightii
+Brassicaceae    Brassica rapa
+Lythraceae      Lagerstroemia indica
+Malvaceae       Mollia lepidota
+```
+
+The matching-stage result is:
+
+```text
+controls CLOSED                    0 / 4
+EVIDENCE_CEILING_BLOCKED           4 / 4
+dependence blocks retained         4 / 4
+prospective_queue_exhausted        true
+```
+
+The blockers are heterogeneous rather than one generic failure: nearest-candidate animal-pollination eligibility in Bixaceae; retained tetradynamy plus unresolved family-level closest ranking in Brassicaceae; an unranked monomorphic congener in Lythraceae; and unresolved current-species morphology plus infrageneric phylogeny in Mollia.
+
+This is **not** a biological null and does not show that valid controls do not exist. It shows that, under the frozen predictor-blind matching rules and current public evidence, adding heteranthery-positive cases is easier than identifying defensible negative controls. The four blocked dependence units therefore remain explicit missingness rather than being replaced by more convenient distant taxa.
+
+This changes the practical U3 strategy: do not enlarge the positive-case list merely to increase sample size. New U3 replication should enter only when new morphology, pollination or phylogenetic evidence genuinely reopens one of the frozen matching blocks.
+
 ### Architecture result already visible
 
 The nonheterantherous controls do not collapse into one "integrated" state:
@@ -191,8 +217,9 @@ The programme is not yet model-ready because:
 2. U2 independent double coding has not been completed;
 3. the two Monochoria matched controls remain OPEN at the direct species-level effective-pollination eligibility gate; the conditional 68-CDS ranking is already frozen;
 4. the four-pair U3 matched conflict extraction is missing only the `Osbeckia chinensis` control-side pollen-fate measurement;
-5. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
-6. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
+5. the prospectively frozen four-family U3 expansion is exhausted at the matching-stage public evidence ceiling (0/4 controls closed, 4/4 blocks retained as missingness) and must not be rescued by convenience matching;
+6. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
+7. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
 
 The repository therefore explicitly reports:
 
