@@ -27,6 +27,12 @@ def test_current_binary_conflict_bounds_are_narrow_despite_osbeckia_unknown():
     assert out["case_minus_control_positive_fraction_bounds"] == [0.0, 0.25]
     assert out["case_positive_control_negative_pair_count_bounds"] == [0, 1]
     assert out["case_positive_control_negative_pair_fraction_bounds"] == [0.0, 0.25]
+    assert out["case_negative_control_positive_pair_count_bounds"] == [0, 0]
+    assert out["binary_informative_pair_count_bounds"] == [0, 1]
+    assert (
+        out["finite_conditional_binary_effect_estimable_under_any_admissible_completion"]
+        is False
+    )
 
 
 def test_binary_conflict_presence_cannot_deterministically_separate_heteranthery():
