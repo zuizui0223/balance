@@ -54,7 +54,7 @@ This prevents a later analysis from silently falling back to the obsolete 44-lab
 
 The denominator is source-closed, but source screening is intentionally asymmetric:
 
-- U1 has a frozen, source-ready first-20 reliability frame; later U1 taxa remain unscreened;
+- U1 has a frozen, source-ready first-20 reliability frame; the remaining 27 taxa are still unscreened, but their exact review-primary study identities are now mapped from the direct Figshare Analysis List × Study List join; primary full-text/evidence retrieval remains pending;
 - U2 has conservative source screening for all 22 groups.
 
 Therefore source closure does not imply that every one of the 67 groups is conflict-adjudicated.

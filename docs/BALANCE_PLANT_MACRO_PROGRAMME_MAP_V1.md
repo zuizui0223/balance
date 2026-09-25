@@ -32,7 +32,7 @@ The existing pre-independent-coding first-20 specificity screen returns:
 
 U1's value is specificity plus a source-closed outcome-blind denominator.
 
-It shows that broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset. Denominator reconstruction is closed; the remaining U1 gate is genuinely independent second-coder classification of the frozen first 20.
+It shows that broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset. Denominator reconstruction is closed. The frozen first 20 are source-ready for the independent reliability exercise, and the remaining 27 taxa now have exact review-primary study identities mapped from Figshare. Those 27 still require primary full-text/evidence retrieval before production coding.
 
 ## U2 — mechanism-targeted sexual interference
 
@@ -183,7 +183,7 @@ This defines the empirical target of BALANCE macro:
 
 The programme is not yet model-ready because:
 
-1. U1 independent double coding has not been completed, although the 47-taxon universe and first-20 reliability frame are frozen;
+1. U1 independent double coding has not been completed; separately, the 27 non-reliability-frame taxa have mapped primary-study identities but still require primary full-text/evidence retrieval before production coding;
 2. U2 independent double coding has not been completed;
 3. the two Monochoria matched controls remain OPEN at the direct species-level effective-pollination eligibility gate; the conditional 68-CDS ranking is already frozen;
 4. the four-pair U3 matched conflict extraction is missing only the `Osbeckia chinensis` control-side pollen-fate measurement;
