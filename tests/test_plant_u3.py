@@ -32,10 +32,10 @@ def test_u3_is_explicitly_positive_architecture_discovery_not_denominator():
 def test_u3_representative_taxa_keep_provenance_classes_separate():
     readout = build_u3_readout(U3)
     assert readout["n_body_text_representative_families"] == 11
-    assert readout["n_independently_resolved_representative_families"] == 3
+    assert readout["n_independently_resolved_representative_families"] == 4
     assert readout["n_postreview_independently_resolved_representative_families"] == 1
-    assert readout["n_total_resolved_representative_families"] == 15
-    assert readout["n_table_s1_representative_pending"] == 1
+    assert readout["n_total_resolved_representative_families"] == 16
+    assert readout["n_table_s1_representative_pending"] == 0
 
 
 def test_pre2010_independent_resolutions_do_not_claim_table_s1_access():
@@ -43,7 +43,8 @@ def test_pre2010_independent_resolutions_do_not_claim_table_s1_access():
     assert rows["Lythraceae"]["representative_taxa"] == "Lagerstroemia indica"
     assert rows["Brassicaceae"]["representative_taxa"] == "Brassica rapa"
     assert rows["Bixaceae"]["representative_taxa"] == "Amoreuxia wrightii"
-    for family in ("Lythraceae", "Brassicaceae", "Bixaceae"):
+    assert rows["Malvaceae"]["representative_taxa"] == "Mollia lepidota"
+    for family in ("Lythraceae", "Brassicaceae", "Bixaceae", "Malvaceae"):
         assert rows[family]["representative_taxa_status"] == "SOURCE_RESOLVED_INDEPENDENTLY"
         assert "Table S1" in rows[family]["notes"]
 
@@ -57,13 +58,15 @@ def test_scrophulariaceae_postreview_resolution_is_explicitly_separate():
     assert "not a claim" in row["notes"]
 
 
-def test_only_malvaceae_remains_exact_representative_pending():
+def test_no_family_representative_remains_pending():
     rows = {r["family"]: r for r in load_u3_universe(U3)}
     pending = {
         family
         for family, row in rows.items()
         if row["representative_taxa_status"] == "TABLE_S1_REPRESENTATIVE_PENDING"
     }
-    assert pending == {"Malvaceae"}
-    assert "Mollia" in rows["Malvaceae"]["notes"]
-    assert "remains OPEN" in rows["Malvaceae"]["notes"]
+    assert pending == set()
+    malv = rows["Malvaceae"]
+    assert malv["representative_taxa"] == "Mollia lepidota"
+    assert malv["representative_taxa_status"] == "SOURCE_RESOLVED_INDEPENDENTLY"
+    assert "not Table S1 transcription" in malv["notes"]

@@ -1,0 +1,27 @@
+{
+  "analysis": "balance_plant_u3_malvaceae_representative_v1",
+  "family": "Malvaceae",
+  "representative": "Mollia lepidota",
+  "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+  "evidence": [
+    {
+      "source": "Darwin herbarium manuscript CUL-DAR110.B12",
+      "result": "Mollia lepidota certainly has two stamen lengths within the same flower"
+    },
+    {
+      "source": "Richard Spruce correspondence 1876-77",
+      "result": "M. lepidota is among Mollia species with five longer outer stamen cohorts bearing green pollen and five shorter inner cohorts bearing yellow pollen"
+    },
+    {
+      "source": "Maguire 1978, The botany of the Guayana Highland part X",
+      "result": "five outer stamen phalanges about 2 cm long and five inner phalanges about 1.5 cm long"
+    },
+    {
+      "source": "Plants of the World Online",
+      "result": "Mollia lepidota is accepted in Malvaceae"
+    }
+  ],
+  "table_s1_identity_claim": false,
+  "interpretation": "This is a species-level independent family representative. It does not assert that the inaccessible 2010 Table S1 Malvaceae row was Mollia lepidota.",
+  "claim_ceiling": "independent_Malvaceae_representative_only_not_TableS1_identity_not_prevalence_not_historical_causation"
+}

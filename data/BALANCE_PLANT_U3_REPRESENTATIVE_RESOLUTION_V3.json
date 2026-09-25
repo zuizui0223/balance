@@ -1,0 +1,41 @@
+{
+  "analysis": "balance_plant_u3_representative_resolution_v3",
+  "review_doi": "10.1111/j.1469-8137.2010.03430.x",
+  "resolutions": {
+    "Bixaceae": {
+      "representative": "Amoreuxia wrightii",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+      "evidence": [
+        "Flora of North America / Hodgson Bixaceae treatment: Amoreuxia has two dimorphic fertile stamen sets",
+        "A. wrightii species description: distal filaments 5-10 mm with yellow anthers; proximal filaments 11-17 mm with usually dark-red anthers",
+        "2010 review explicitly treats former Cochlospermaceae within Bixaceae under APG III"
+      ],
+      "table_s1_identity_claim": false
+    },
+    "Scrophulariaceae": {
+      "representative": "Verbascum phoeniceum",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY_POST_REVIEW",
+      "evidence": [
+        "Lunau et al. 2017 explicitly figures Verbascum phoeniceum (Scrophulariaceae) with within-flower heteranthery",
+        "Current Kew taxonomy retains Verbascum phoeniceum in Scrophulariaceae"
+      ],
+      "table_s1_identity_claim": false,
+      "timing_guard": "Evidence postdates the 2010 review and is used only as an independent family representative, not as reconstruction of Table S1."
+    },
+    "Malvaceae": {
+      "representative": "Mollia lepidota",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+      "evidence": [
+        "Darwin herbarium manuscript CUL-DAR110.B12: M. lepidota certainly has two stamen lengths within the same flower",
+        "Richard Spruce 1876-77 correspondence: M. lepidota is among Mollia species with five longer outer cohorts bearing green pollen and five shorter inner cohorts bearing yellow pollen",
+        "Maguire 1978 species treatment: five outer stamen phalanges about 2 cm long and five inner phalanges about 1.5 cm long",
+        "Current Kew taxonomy places Mollia lepidota in Malvaceae"
+      ],
+      "table_s1_identity_claim": false,
+      "selection_basis": "Chosen as an independent family representative because it has multiple species-specific pre-2010 morphology receipts; this does not identify the inaccessible 2010 Table S1 row."
+    }
+  },
+  "resolved_family_representatives": 16,
+  "pending_exact_representative_families": [],
+  "claim_ceiling": "all_16_family_representatives_resolved_at_explicit_provenance_levels_not_table_s1_transcription_not_prevalence_not_historical_causation"
+}
