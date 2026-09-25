@@ -40,7 +40,7 @@ def test_resolved_positive_controls_already_show_two_routing_architectures():
     assert out["n_shared_integrated_positive_controls"] == 0
 
 
-def test_current_routing_model_is_not_ready_and_acquisition_remains_blinded():
+def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     out = _readout()
     assert out["routing_measurement_complete"] is False
     assert out["prospective_routing_model_contract_frozen"] is False
@@ -48,11 +48,14 @@ def test_current_routing_model_is_not_ready_and_acquisition_remains_blinded():
     assert out["public_retrieval_ceilings_frozen_for_current_unresolved_targets"] is True
     assert out["public_retrieval_ceiling_ledger"] == "data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv"
     assert out["prospective_expansion_queue"] == "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
+    assert out["prospective_expansion_queue_exhausted"] is True
+    assert out["n_prospective_expansion_blocks"] == 4
+    assert out["n_prospective_expansion_evidence_ceiling_blocked"] == 4
     assert out["next_evidence_targets"] == [
-        "process_frozen_expansion_queue_starting_Amoreuxia_wrightii",
         "accept_new_direct_or_empirical_Senna_covesii_routing_evidence_if_generated",
         "accept_new_direct_or_empirical_Osbeckia_conflict_evidence_if_generated",
+        "reopen_frozen_expansion_blocks_only_with_new_matching_stage_evidence",
     ]
     assert "selected under the frozen predictor-blind matching" in out["acquisition_guard"]
     assert "do not invent a minimum-n threshold post hoc" in out["model_readiness_rule"]
-    assert "frozen public-retrieval ceilings" in out["model_readiness_rule"]
+    assert "prospective four-family expansion is exhausted" in out["model_readiness_rule"]
