@@ -23,6 +23,7 @@ from http.cookiejar import CookieJar
 from pathlib import Path
 
 ARTICLE_URL = "https://nph.onlinelibrary.wiley.com/doi/10.1111/j.1469-8137.2010.03430.x"
+WAYBACK_CDX_URL = "https://web.archive.org/cdx/search/cdx"
 FILENAME = "NPH_3430_sm_TableS1.doc"
 TARGET_FAMILIES = ("Malvaceae", "Bixaceae", "Scrophulariaceae")
 USER_AGENT = (
@@ -129,6 +130,52 @@ def _looks_like_document(data: bytes, content_type: str) -> bool:
     return True
 
 
+def parse_wayback_cdx(payload: bytes) -> list[dict[str, str]]:
+    """Parse CDX JSON rows into unique archived snapshot records."""
+    raw = json.loads(payload.decode("utf-8"))
+    if not isinstance(raw, list) or not raw:
+        return []
+    header = raw[0]
+    if not isinstance(header, list):
+        return []
+    out = []
+    seen = set()
+    for row in raw[1:]:
+        if not isinstance(row, list) or len(row) != len(header):
+            continue
+        rec = {str(k): str(v) for k, v in zip(header, row)}
+        timestamp = rec.get("timestamp", "")
+        original = rec.get("original", "")
+        if not timestamp or not original:
+            continue
+        key = (timestamp, original)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(rec)
+    return out
+
+
+def discover_wayback_snapshots(opener, original_url: str) -> list[dict[str, str]]:
+    query = urllib.parse.urlencode(
+        {
+            "url": original_url,
+            "output": "json",
+            "fl": "timestamp,original,mimetype,statuscode,digest,length",
+            "filter": "statuscode:200",
+            "collapse": "digest",
+        }
+    )
+    data, _, _ = _request(opener, f"{WAYBACK_CDX_URL}?{query}")
+    return parse_wayback_cdx(data)
+
+
+def _wayback_raw_url(snapshot: dict[str, str]) -> str:
+    timestamp = snapshot["timestamp"]
+    original = snapshot["original"]
+    return f"https://web.archive.org/web/{timestamp}id_/{original}"
+
+
 def _antiword(path: Path) -> str:
     proc = subprocess.run(
         ["antiword", str(path)],
@@ -176,6 +223,74 @@ def run_audit(output: Path, workdir: Path) -> dict:
 
     recovered = None
     recovered_text = ""
+
+    # Archive fallback is independent of the publisher's live anti-bot response.
+    # We query each stable supplement URL and try raw archived payloads first.
+    archive_index = 0
+    for original_url in list(queue):
+        try:
+            snapshots = discover_wayback_snapshots(opener, original_url)
+            receipts.append(
+                {
+                    "url": original_url,
+                    "status": "WAYBACK_CDX_FETCHED",
+                    "snapshot_count": len(snapshots),
+                    "snapshots": snapshots,
+                }
+            )
+        except Exception as exc:  # pragma: no cover - network path
+            receipts.append(
+                {
+                    "url": original_url,
+                    "status": "WAYBACK_CDX_ERROR",
+                    "error": repr(exc),
+                }
+            )
+            continue
+        for snapshot in snapshots:
+            archive_index += 1
+            archive_url = _wayback_raw_url(snapshot)
+            try:
+                data, final_url, ctype = _request(opener, archive_url)
+                receipt = {
+                    "url": archive_url,
+                    "original_url": original_url,
+                    "status": "WAYBACK_FETCHED",
+                    "final_url": final_url,
+                    "content_type": ctype,
+                    "size_bytes": len(data),
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                    "document_like": _looks_like_document(data, ctype),
+                    "snapshot": snapshot,
+                }
+                if receipt["document_like"] and recovered is None:
+                    raw = workdir / f"wayback_{archive_index:02d}_{FILENAME}"
+                    raw.write_bytes(data)
+                    receipt["saved_path"] = str(raw)
+                    try:
+                        recovered_text = _antiword(raw)
+                        txt = workdir / f"wayback_{archive_index:02d}_TableS1.txt"
+                        txt.write_text(recovered_text, encoding="utf-8")
+                        receipt["text_path"] = str(txt)
+                        receipt["antiword_status"] = "PASS"
+                        recovered = receipt
+                    except Exception as exc:
+                        receipt["antiword_status"] = "FAIL"
+                        receipt["antiword_error"] = repr(exc)
+                receipts.append(receipt)
+            except Exception as exc:  # pragma: no cover - network path
+                receipts.append(
+                    {
+                        "url": archive_url,
+                        "original_url": original_url,
+                        "status": "WAYBACK_FETCH_ERROR",
+                        "snapshot": snapshot,
+                        "error": repr(exc),
+                    }
+                )
+        if recovered is not None:
+            break
+
     for index, url in enumerate(queue, start=1):
         try:
             data, final_url, ctype = _request(opener, url, referer=ARTICLE_URL)
@@ -225,6 +340,7 @@ def run_audit(output: Path, workdir: Path) -> dict:
         "article_url": ARTICLE_URL,
         "supplement_filename": FILENAME,
         "target_families": list(TARGET_FAMILIES),
+        "wayback_cdx_url": WAYBACK_CDX_URL,
         "recovered_document": recovered is not None,
         "receipts": receipts,
         "family_contexts": contexts,
