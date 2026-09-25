@@ -57,10 +57,10 @@ It is:
 ```text
 new direct primary source or new empirical measurement
 OR
-prospectively matched positive-conflict controls in new dependence blocks
+the frozen prospective routing-expansion queue
 ```
 
-New controls must still be selected before conflict strength or routing architecture is extracted.
+The prospective queue is now registered at `data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv` and starts with `Amoreuxia wrightii` (Bixaceae). New controls must still be selected before conflict strength or routing architecture is extracted.
 
 ## Why no routing model is fit yet
 
@@ -73,8 +73,10 @@ No arbitrary minimum-n threshold is introduced after seeing these data. A prospe
 ```text
 balance_domain/plant_u3_routing_readiness.py
 balance_domain/plant_u3_evidence_ceiling.py
+balance_domain/plant_u3_routing_expansion.py
 tests/test_plant_u3_routing_readiness.py
 tests/test_plant_u3_evidence_ceiling.py
+tests/test_plant_u3_routing_expansion.py
 ```
 
 ## Claim ceiling

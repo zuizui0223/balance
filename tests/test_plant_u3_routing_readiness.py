@@ -47,10 +47,11 @@ def test_current_routing_model_is_not_ready_and_acquisition_remains_blinded():
     assert out["routing_model_ready"] is False
     assert out["public_retrieval_ceilings_frozen_for_current_unresolved_targets"] is True
     assert out["public_retrieval_ceiling_ledger"] == "data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv"
+    assert out["prospective_expansion_queue"] == "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
     assert out["next_evidence_targets"] == [
-        "Senna_covesii_routing_requires_new_direct_primary_or_empirical_evidence",
-        "Osbeckia_chinensis_conflict_requires_new_direct_primary_or_empirical_evidence",
-        "expand_with_prospectively_matched_positive_conflict_controls_in_new_dependence_blocks",
+        "process_frozen_expansion_queue_starting_Amoreuxia_wrightii",
+        "accept_new_direct_or_empirical_Senna_covesii_routing_evidence_if_generated",
+        "accept_new_direct_or_empirical_Osbeckia_conflict_evidence_if_generated",
     ]
     assert "selected under the frozen predictor-blind matching" in out["acquisition_guard"]
     assert "do not invent a minimum-n threshold post hoc" in out["model_readiness_rule"]

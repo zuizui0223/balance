@@ -98,10 +98,11 @@ def build_u3_routing_readiness(
         "routing_model_ready": routing_model_ready,
         "public_retrieval_ceiling_ledger": "data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv",
         "public_retrieval_ceilings_frozen_for_current_unresolved_targets": True,
+        "prospective_expansion_queue": "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv",
         "next_evidence_targets": [
-            "Senna_covesii_routing_requires_new_direct_primary_or_empirical_evidence",
-            "Osbeckia_chinensis_conflict_requires_new_direct_primary_or_empirical_evidence",
-            "expand_with_prospectively_matched_positive_conflict_controls_in_new_dependence_blocks",
+            "process_frozen_expansion_queue_starting_Amoreuxia_wrightii",
+            "accept_new_direct_or_empirical_Senna_covesii_routing_evidence_if_generated",
+            "accept_new_direct_or_empirical_Osbeckia_conflict_evidence_if_generated",
         ],
         "acquisition_guard": (
             "new controls must be selected under the frozen predictor-blind matching "
