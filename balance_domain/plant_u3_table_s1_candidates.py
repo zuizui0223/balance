@@ -23,7 +23,7 @@ TARGET_FAMILIES = {"Malvaceae", "Bixaceae", "Scrophulariaceae"}
 ROLE = {"LINEAGE_CANDIDATE", "SPECIES_CANDIDATE", "SPECIES_ALTERNATIVE", "NEGATIVE_EXCLUSION"}
 GRAIN = {"SPECIES", "GENUS"}
 MORPH = {"PASS", "FAIL", "OPEN"}
-SELECTION = {"OPEN", "REJECTED"}
+SELECTION = {"ARCHIVAL_OPEN", "REJECTED"}
 
 
 def load_u3_table_s1_candidates(path: Path) -> list[dict[str, str]]:
@@ -57,26 +57,26 @@ def load_u3_table_s1_candidates(path: Path) -> list[dict[str, str]]:
         if not clean["candidate_taxon"] or not clean["source_id"]:
             raise ValueError(f"row {n} candidate taxon/source must be frozen")
 
-        if clean["selection_status"] == "OPEN":
+        if clean["selection_status"] == "ARCHIVAL_OPEN":
             if clean["heteranthery_morphology_status"] == "FAIL":
-                raise ValueError(f"row {n} OPEN candidate cannot fail morphology")
+                raise ValueError(f"row {n} ARCHIVAL_OPEN candidate cannot fail morphology")
             if not clean["blocker"]:
-                raise ValueError(f"row {n} OPEN candidate requires exact-identity blocker")
+                raise ValueError(f"row {n} ARCHIVAL_OPEN candidate requires exact-identity blocker")
         else:
             if clean["heteranthery_morphology_status"] != "FAIL":
                 raise ValueError(f"row {n} REJECTED candidate requires morphology FAIL")
             if not clean["blocker"]:
                 raise ValueError(f"row {n} REJECTED candidate requires blocker")
 
-    open_families = {r["family"] for r in rows if r["selection_status"] == "OPEN"}
+    open_families = {r["family"] for r in rows if r["selection_status"] == "ARCHIVAL_OPEN"}
     if open_families != TARGET_FAMILIES:
-        raise ValueError("candidate registry must retain at least one OPEN route for every pending family")
+        raise ValueError("archival registry must retain at least one ARCHIVAL_OPEN route for each family")
     return rows
 
 
 def build_u3_table_s1_candidate_readout(path: Path) -> dict:
     rows = load_u3_table_s1_candidates(path)
-    open_rows = [r for r in rows if r["selection_status"] == "OPEN"]
+    open_rows = [r for r in rows if r["selection_status"] == "ARCHIVAL_OPEN"]
     rejected = [r for r in rows if r["selection_status"] == "REJECTED"]
     exact_species_open = [
         r for r in open_rows if r["candidate_grain"] == "SPECIES"
@@ -85,13 +85,13 @@ def build_u3_table_s1_candidate_readout(path: Path) -> dict:
         "analysis": "balance_u3_table_s1_candidate_reduction_v1",
         "n_rows": len(rows),
         "status_counts": dict(sorted(Counter(r["selection_status"] for r in rows).items())),
-        "open_families": sorted({r["family"] for r in open_rows}),
-        "open_lineages": sorted({r["candidate_taxon"] for r in open_rows}),
+        "archival_open_families": sorted({r["family"] for r in open_rows}),
+        "archival_open_lineages": sorted({r["candidate_taxon"] for r in open_rows}),
         "rejected_taxa": sorted({r["candidate_taxon"] for r in rejected}),
-        "n_open_species_level_candidates": len(exact_species_open),
-        "exact_representative_identity_closed": False,
+        "n_archival_open_species_level_candidates": len(exact_species_open),
+        "exact_table_s1_identity_closed": False,
         "claim_ceiling": (
-            "candidate_space_reduction_only_not_table_s1_identity_"
+            "archival_candidate_space_reduction_only_not_table_s1_identity_"
             "not_representative_promotion_not_prevalence"
         ),
     }

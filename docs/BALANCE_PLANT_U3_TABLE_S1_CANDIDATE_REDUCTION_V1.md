@@ -1,49 +1,53 @@
-# BALANCE U3 Table-S1 candidate reduction v1
+# BALANCE U3 Table-S1 archival candidate reduction v1
 
-## Why this exists
+## Scope
 
-Supporting Table S1 for Vallejo-Marín et al. (2010) is identified exactly as `NPH_3430_sm_TableS1.doc`, but live Wiley routes return HTTP 403 and the registered Wayback audit found no usable archived snapshot.
+This is an **archival provenance** ledger, not an empirical readiness gate.
 
-The repository therefore narrows the three unresolved representative identities without pretending the table was recovered.
+The canonical U3 review universe already has representative coverage for all 16 families at explicit provenance levels:
 
-## Malvaceae
+- 11 body-text named families;
+- 4 pre-2010 independently resolved representatives;
+- 1 post-review independently resolved representative.
 
-The 2010 body states that only one Malvaceae species was counted as heterantherous, but historical sources describe differentiated stamen cohorts in multiple `Mollia` species.
+In particular, the canonical independent representatives are:
 
-Current state:
+- Malvaceae — `Mollia lepidota`;
+- Bixaceae — `Amoreuxia wrightii`;
+- Scrophulariaceae — `Verbascum phoeniceum` (explicitly post-review provenance).
 
-- `Mollia speciosa`: strong species candidate; direct/pre-2010 androecial evidence;
-- `Mollia lepidota`: genuine historical alternative;
-- `Mollia spp.`: lineage-level support;
-- `Lasiopetalum spp.`: explicit rejection because genus descriptions report stamens all alike.
+None is claimed to be a transcription of the inaccessible 2010 Supporting Table S1.
 
-The tension between "one species" in the 2010 review and multiple historical Mollia observations is retained as evidence that exact identity cannot be inferred from plausibility.
+## Why this ledger remains useful
 
-## Bixaceae
+The publisher identifies the original supplement as `NPH_3430_sm_TableS1.doc`, but live Wiley routes return HTTP 403 and the registered Wayback audit recovered no usable archived copy.
 
-APG III includes former Cochlospermaceae within Bixaceae. Comparative morphology narrows the heteranthery route to `Amoreuxia`:
+The candidate ledger therefore records what can be said about the **exact original Table-S1 identity** without reopening family-level representative coverage.
 
-- `Amoreuxia spp.`: OPEN lineage candidate with dimorphic stamens;
-- `Cochlospermum spp.`: REJECTED as the uniform-stamen side of the lineage comparison.
+Rows marked `ARCHIVAL_OPEN` mean:
 
-The exact Amoreuxia representative species remains open.
+> the lineage/species is relevant to reconstructing the exact 2010 supporting table, but failure to recover that archival identity does not block the current U3 programme.
 
-## Scrophulariaceae
+## Candidate-space reduction
 
-`Verbascum` is retained as the current lineage candidate. Endress-era morphology and later comparative work document repeated stamen/anther dimorphism in this genus, but no source recovered so far identifies which species occupies the 2010 Table-S1 representative row.
+### Malvaceae
 
-## Consequence
+Historical evidence narrows the source lineage to `Mollia`. `Mollia speciosa` and `M. lepidota` retain species-level archival candidacy, while `Lasiopetalum` is explicitly rejected as a false route because its stamens are described as all alike.
 
-The search is no longer "any species in three families". It is now a bounded source problem:
+The canonical representative remains `Mollia lepidota` from independent evidence regardless of whether Table S1 is ever recovered.
 
-```text
-Malvaceae          Mollia lineage; exact reviewed species unresolved
-Bixaceae           Amoreuxia lineage; exact reviewed species unresolved
-Scrophulariaceae   Verbascum lineage; exact reviewed species unresolved
-```
+### Bixaceae
 
-No canonical U3 representative row is changed by this audit.
+Comparative morphology narrows the heteranthery lineage to `Amoreuxia` and rejects `Cochlospermum` as the uniform-stamen side of the lineage contrast.
+
+The canonical independent representative is already `Amoreuxia wrightii`; the archival question is only whether that same species was the 2010 Table-S1 row.
+
+### Scrophulariaceae
+
+`Verbascum` is the narrowed archival lineage. The canonical representative `Verbascum phoeniceum` is deliberately labelled post-review independent evidence, not a reconstruction of the 2010 table.
 
 ## Claim ceiling
 
-This ledger reduces candidate space and records negative exclusions. It does not establish the exact Table-S1 representative for any of the three families.
+This ledger can reduce the search space for the inaccessible original supporting table and preserve rejected archival routes.
+
+It cannot alter canonical U3 family membership, reopen already resolved independent representative coverage, or claim the exact Table-S1 species identities.
