@@ -64,6 +64,7 @@ COVERAGE_STATUS = {"MAPPED", "NO_NEW_GROUP_REQUIRED", "PENDING"}
 EXPECTED_GROUPS = 22
 EXPECTED_REFERENCES = 37
 EXPECTED_DOUBLE_CODE_SAMPLE = 20
+FROZEN_DOUBLE_CODE_SELECTION_RULE = "FIRST_20_DEPENDENCY_GROUPS_BY_FROZEN_U2_RECORD_ID"
 
 
 def load_u2_universe(path: Path) -> list[dict[str, str]]:
@@ -274,6 +275,8 @@ def load_u2_double_code_sample(path: Path) -> list[dict[str, str]]:
         raise ValueError("U2 double-code sample record IDs must be unique")
     if not all(r["double_code_status"] == "READY_FOR_INDEPENDENT_DOUBLE_CODING" for r in rows):
         raise ValueError("every U2 sampled group must be source-ready before coding")
+    if not all(r["selection_rule"] == FROZEN_DOUBLE_CODE_SELECTION_RULE for r in rows):
+        raise ValueError("U2 double-code sample must follow the preregistered record-ID rule")
     return rows
 
 
@@ -304,13 +307,13 @@ def validate_u2_double_code_handoff(
     by_id = {r["universe_record_id"]: r for r in universe_rows}
     expected = sorted(
         universe_rows,
-        key=lambda r: (r["taxon_raw"].casefold(), r["universe_record_id"]),
+        key=lambda r: r["universe_record_id"],
     )[:EXPECTED_DOUBLE_CODE_SAMPLE]
 
     if [r["universe_record_id"] for r in sample_rows] != [
         r["universe_record_id"] for r in expected
     ]:
-        raise ValueError("U2 sample no longer matches frozen lexicographic selection rule")
+        raise ValueError("U2 sample no longer matches preregistered record-ID selection rule")
 
     packet_by_id = {r["universe_record_id"]: r for r in packet_rows}
     for sample in sample_rows:
