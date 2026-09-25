@@ -109,6 +109,8 @@ The sole remaining matched conflict measurement blocker is `Osbeckia chinensis`.
 
 Its historical source establishes pollen extraction from poricidal anthers plus visitor-body stigma contact, but not the registered reward-removal versus export/deposition or reproductive-consequence measurement. That absence is now frozen as an evidence-ceiling receipt rather than repeatedly treated as an unsearched gap.
 
+The remaining uncertainty is now partially identified rather than treated as all-or-nothing. In the current four-pair matched sample, case conflict-positive fraction is fixed at 1.00, while the control fraction is bounded at 0.75-1.00 depending on the unresolved Osbeckia state. The raw case-minus-control binary-positive difference is therefore bounded at 0.00-0.25. This is a matched-sample logical bound, not a population prevalence or causal estimate. Crucially, three directly positive nonheterantherous controls already falsify binary conflict presence as a deterministic separator of heteranthery.
+
 ### Architecture result already visible
 
 The nonheterantherous controls do not collapse into one "integrated" state:
