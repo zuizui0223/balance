@@ -1,5 +1,7 @@
 # BALANCE U3 unresolved representative candidate audit v3
 
+> Historical archival-candidate snapshot. Canonical family representative coverage is now 16/16 CLOSED at explicit provenance levels; this file concerns reconstruction of the exact inaccessible 2010 Table-S1 identities only. See `BALANCE_PLANT_U3_REPRESENTATIVE_PROVENANCE_AUDIT_V4.md`.
+
 ## Status
 
 The three exact Supporting Table S1 representative identities remain open because Wiley blocks the supplement bytes, but the search space is now substantially narrower.
