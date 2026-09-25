@@ -48,9 +48,11 @@ Likewise, positive pollen-fate conflict does not force one architectural solutio
 
 ## Why no routing model is fit yet
 
-Only two positive controls currently have resolved routing architecture, and they occupy only two frozen dependence blocks. No positive control is currently source-secure as `SHARED_INTEGRATED`.
+Only two positive controls currently have resolved routing architecture, and they occupy two frozen dependence blocks. No positive control is currently source-secure as `SHARED_INTEGRATED`.
 
 A fitted multinomial or binary architecture model at this stage would therefore be numerically fragile and heavily determined by the cases already used to discover the pattern.
+
+No arbitrary minimum sample-size threshold is introduced after seeing these data. Routing measurement must first be completed, and then a separate prospective model plus sample-size/estimability contract must be frozen before any confirmatory routing effect is fit.
 
 The current result is a readiness diagnostic, not an effect estimate.
 
