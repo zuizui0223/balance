@@ -2,6 +2,7 @@ from balance_domain.plant_u3_table_s1_audit import (
     discover_supplement_hrefs,
     extract_family_contexts,
     extract_scientific_names,
+    parse_wayback_cdx,
 )
 
 
@@ -33,3 +34,23 @@ def test_family_contexts_fail_closed_when_family_absent():
     assert out["Bixaceae"]["found"] is True
     assert out["Scrophulariaceae"]["found"] is False
     assert out["Scrophulariaceae"]["scientific_name_candidates"] == []
+
+
+def test_parse_wayback_cdx_deduplicates_snapshots_and_ignores_malformed_rows():
+    payload = b'''[
+      ["timestamp","original","mimetype","statuscode","digest","length"],
+      ["20110101000000","https://example.org/TableS1.doc","application/msword","200","ABC","1234"],
+      ["20110101000000","https://example.org/TableS1.doc","application/msword","200","ABC","1234"],
+      ["bad"]
+    ]'''
+    out = parse_wayback_cdx(payload)
+    assert out == [
+        {
+            "timestamp": "20110101000000",
+            "original": "https://example.org/TableS1.doc",
+            "mimetype": "application/msword",
+            "statuscode": "200",
+            "digest": "ABC",
+            "length": "1234",
+        }
+    ]
