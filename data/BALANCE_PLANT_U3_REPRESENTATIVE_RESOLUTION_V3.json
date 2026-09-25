@@ -1,6 +1,10 @@
 {
   "analysis": "balance_plant_u3_representative_resolution_v3",
   "review_doi": "10.1111/j.1469-8137.2010.03430.x",
+  "resolution_semantics": {
+    "canonical_representative": "A source-secure heterantherous taxon that can represent the Figure-2 family at an explicitly recorded provenance level.",
+    "exact_table_s1_identity": "The exact species name printed in the inaccessible 2010 Supporting Table S1; this is an archival provenance question and is not required for current U3 matched-case identification."
+  },
   "resolutions": {
     "Bixaceae": {
       "representative": "Amoreuxia wrightii",
@@ -36,6 +40,16 @@
     }
   },
   "resolved_family_representatives": 16,
-  "pending_exact_representative_families": [],
-  "claim_ceiling": "all_16_family_representatives_resolved_at_explicit_provenance_levels_not_table_s1_transcription_not_prevalence_not_historical_causation"
+  "pending_independent_representative_families": [],
+  "canonical_representative_coverage_closed": true,
+  "exact_table_s1_identity_unrecovered_families": [
+    "Malvaceae",
+    "Bixaceae",
+    "Scrophulariaceae"
+  ],
+  "exact_table_s1_identity_closed": false,
+  "exact_table_s1_identity_blocks_current_u3_analysis": false,
+  "legacy_pending_exact_representative_families": [],
+  "legacy_field_note": "The former pending_exact_representative_families field referred to missing independent family representatives, not exact Table-S1 archival identity.",
+  "claim_ceiling": "all_16_family_representatives_resolved_at_explicit_provenance_levels_exact_TableS1_identity_still_archivally_open_for_three_families_not_prevalence_not_historical_causation"
 }
