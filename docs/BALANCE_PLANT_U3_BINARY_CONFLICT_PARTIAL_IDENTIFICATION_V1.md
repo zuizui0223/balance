@@ -31,6 +31,32 @@ case-positive / control-negative matched pairs
 
 These are deterministic bounds for this matched sample, not confidence intervals and not population prevalence estimates.
 
+## Measurement completeness is not estimability
+
+Resolving `Osbeckia chinensis` would complete the binary conflict measurements, but it cannot make a finite matched binary conflict coefficient estimable.
+
+There are only two admissible completions:
+
+```text
+Osbeckia = POSITIVE
+  informative discordant pairs = 0
+
+Osbeckia = NO_DEMONSTRATED_CONFLICT
+  case-positive / control-negative pairs = 1
+  case-negative / control-positive pairs = 0
+```
+
+The first completion has no within-pair predictor variation. The second has discordance in only one direction, which gives complete separation for a conditional binary coefficient. Because every case is already conflict-positive, no completion of the remaining control can create the reverse discordance direction.
+
+Therefore:
+
+```text
+measurement completion after Osbeckia resolution: possible
+finite conditional binary conflict effect:        not estimable under either completion
+```
+
+This is a structural estimability result, not a power calculation.
+
 ## Biological result
 
 Binary conflict presence already fails as a deterministic separator of heteranthery.
