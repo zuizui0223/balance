@@ -77,18 +77,14 @@ def test_u2_source_closed_first20_is_ready_for_independent_double_coding():
     assert handoff["independent_double_coding_ready"] is True
 
 
-def test_u2_double_code_sample_retains_first20_lexicographic_groups():
+def test_u2_double_code_sample_retains_preregistered_record_id_first20():
     rows = load_u2_double_code_sample(SAMPLE)
-    taxa = [r["taxon_raw"] for r in rows]
-    assert taxa[:5] == [
-        "Alpinia kwangsiensis",
-        "Asclepias exaltata",
-        "Campsis radicans",
-        "Chamaecrista fasciculata (Todd: Cassia chamaecrista)",
-        "Eichhornia paniculata",
+    assert [r["universe_record_id"] for r in rows] == [
+        f"U2_{i:03d}" for i in range(1, 21)
     ]
-    assert taxa[-3:] == [
-        "Wachendorfia brachyandra",
-        "Wachendorfia paniculata",
-        "Wachendorfia parviflora",
-    ]
+    assert rows[8]["taxon_raw"] == "Wahlenbergia albomarginata"
+    assert rows[19]["taxon_raw"] == "Wachendorfia thyrsiflora"
+    assert all(
+        r["selection_rule"] == "FIRST_20_DEPENDENCY_GROUPS_BY_FROZEN_U2_RECORD_ID"
+        for r in rows
+    )
