@@ -37,7 +37,13 @@ CURRENT_MATCHED_FAMILIES = {
     "Solanaceae",
 }
 REP_STATUS = "SOURCE_RESOLVED_INDEPENDENTLY"
-CONTROL_SEARCH = {"NOT_STARTED", "IN_PROGRESS", "CLOSED", "FAILED"}
+CONTROL_SEARCH = {
+    "NOT_STARTED",
+    "IN_PROGRESS",
+    "CLOSED",
+    "FAILED",
+    "EVIDENCE_CEILING_BLOCKED",
+}
 EXPECTED_FAMILIES = ["Bixaceae", "Brassicaceae", "Lythraceae", "Malvaceae"]
 
 
@@ -111,12 +117,25 @@ def load_u3_routing_expansion_queue(
             raise ValueError(f"row {n} case_source_basis must be frozen")
         if row["family"] not in by_family:
             raise ValueError(f"row {n} family absent from U3 universe")
+    in_progress = [i for i, r in enumerate(rows) if r["control_search_status"] == "IN_PROGRESS"]
+    if len(in_progress) > 1:
+        raise ValueError("U3 routing expansion queue allows at most one IN_PROGRESS case")
+    if in_progress:
+        active_i = in_progress[0]
+        terminal = {"CLOSED", "FAILED", "EVIDENCE_CEILING_BLOCKED"}
+        if any(r["control_search_status"] not in terminal for r in rows[:active_i]):
+            raise ValueError(
+                "all cases before the active queue row must have a frozen terminal/blocking receipt"
+            )
+        if any(r["control_search_status"] != "NOT_STARTED" for r in rows[active_i + 1 :]):
+            raise ValueError("cases after the active queue row must remain NOT_STARTED")
+
     return rows
 
 
 def build_u3_routing_expansion_readout(path: Path, universe_path: Path) -> dict:
     rows = load_u3_routing_expansion_queue(path, universe_path)
-    active = [r for r in rows if r["control_search_status"] in {"NOT_STARTED", "IN_PROGRESS"}]
+    active = [r for r in rows if r["control_search_status"] == "IN_PROGRESS"]
     return {
         "analysis": "balance_u3_prospective_routing_expansion_queue",
         "n_queued_families": len(rows),
@@ -129,10 +148,14 @@ def build_u3_routing_expansion_readout(path: Path, universe_path: Path) -> dict:
         "n_control_search_not_started": sum(
             r["control_search_status"] == "NOT_STARTED" for r in rows
         ),
+        "n_evidence_ceiling_blocked": sum(
+            r["control_search_status"] == "EVIDENCE_CEILING_BLOCKED" for r in rows
+        ),
         "next_active_case": active[0]["case_taxon"] if active else None,
-        "skip_rule": (
-            "do_not_skip_a_failed_or_difficult_case_to_select_a_later_case_for_"
-            "desired_conflict_or_routing_outcome"
+        "progression_rule": (
+            "advance_only_after_prior_case_has_CLOSED_FAILED_or_"
+            "EVIDENCE_CEILING_BLOCKED_matching_stage_receipt; retain_blocked_cases_"
+            "as_missing_dependence_blocks_and_never_drop_them_for_outcome_convenience"
         ),
         "claim_ceiling": (
             "prospective_case_order_and_blinded_control_acquisition_only_"
