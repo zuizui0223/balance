@@ -120,15 +120,24 @@ def load_u3_routing_expansion_queue(
     in_progress = [i for i, r in enumerate(rows) if r["control_search_status"] == "IN_PROGRESS"]
     if len(in_progress) > 1:
         raise ValueError("U3 routing expansion queue allows at most one IN_PROGRESS case")
+    terminal = {"CLOSED", "FAILED", "EVIDENCE_CEILING_BLOCKED"}
     if in_progress:
         active_i = in_progress[0]
-        terminal = {"CLOSED", "FAILED", "EVIDENCE_CEILING_BLOCKED"}
         if any(r["control_search_status"] not in terminal for r in rows[:active_i]):
             raise ValueError(
                 "all cases before the active queue row must have a frozen terminal/blocking receipt"
             )
         if any(r["control_search_status"] != "NOT_STARTED" for r in rows[active_i + 1 :]):
             raise ValueError("cases after the active queue row must remain NOT_STARTED")
+    else:
+        statuses = {r["control_search_status"] for r in rows}
+        if "NOT_STARTED" in statuses:
+            raise ValueError(
+                "queue without an active case cannot retain NOT_STARTED rows; "
+                "every row must have a frozen terminal/blocking receipt"
+            )
+        if any(r["control_search_status"] not in terminal for r in rows):
+            raise ValueError("queue without an active case must be fully terminal")
 
     return rows
 
@@ -136,6 +145,11 @@ def load_u3_routing_expansion_queue(
 def build_u3_routing_expansion_readout(path: Path, universe_path: Path) -> dict:
     rows = load_u3_routing_expansion_queue(path, universe_path)
     active = [r for r in rows if r["control_search_status"] == "IN_PROGRESS"]
+    terminal = {"CLOSED", "FAILED", "EVIDENCE_CEILING_BLOCKED"}
+    queue_exhausted = (
+        not active
+        and all(r["control_search_status"] in terminal for r in rows)
+    )
     return {
         "analysis": "balance_u3_prospective_routing_expansion_queue",
         "n_queued_families": len(rows),
@@ -152,6 +166,10 @@ def build_u3_routing_expansion_readout(path: Path, universe_path: Path) -> dict:
             r["control_search_status"] == "EVIDENCE_CEILING_BLOCKED" for r in rows
         ),
         "next_active_case": active[0]["case_taxon"] if active else None,
+        "prospective_queue_exhausted": queue_exhausted,
+        "n_terminal_or_blocked": sum(
+            r["control_search_status"] in terminal for r in rows
+        ),
         "progression_rule": (
             "advance_only_after_prior_case_has_CLOSED_FAILED_or_"
             "EVIDENCE_CEILING_BLOCKED_matching_stage_receipt; retain_blocked_cases_"
