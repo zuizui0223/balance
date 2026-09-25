@@ -25,17 +25,17 @@ def test_matched_extraction_covers_four_pass_pairs():
     }
 
 
-def test_current_matched_lane_has_two_fully_resolved_conflict_pairs_but_is_not_ready():
+def test_current_matched_lane_has_three_fully_resolved_conflict_pairs_but_is_not_ready():
     out = build_u3_matched_extraction_readout(EXTRACT, ADJ, PAIRS, CASES, U3)
     assert out["n_pairs"] == 4
     assert out["case_conflict_status_counts"] == {"POSITIVE": 4}
     assert out["control_conflict_status_counts"] == {
-        "POSITIVE": 2,
-        "UNRESOLVED": 2,
+        "POSITIVE": 3,
+        "UNRESOLVED": 1,
     }
     assert out["n_cases_with_resolved_conflict"] == 4
-    assert out["n_controls_with_resolved_conflict"] == 2
-    assert out["n_pairs_with_both_conflict_resolved"] == 2
+    assert out["n_controls_with_resolved_conflict"] == 3
+    assert out["n_pairs_with_both_conflict_resolved"] == 3
     assert out["matched_conflict_estimand_ready"] is False
 
 
@@ -44,9 +44,6 @@ def test_matched_conflict_ready_requires_both_case_and_control_resolution(tmp_pa
     rows = rows.replace(
         "U3_PAIR_MELMA_001,CONTROL,Osbeckia chinensis,UNRESOLVED,SERIAL_WITHIN_FLOWER,UNRESOLVED,NO_MATCHED_POLLEN_FATE_CONFLICT_EXPERIMENT",
         "U3_PAIR_MELMA_001,CONTROL,Osbeckia chinensis,UNRESOLVED,SERIAL_WITHIN_FLOWER,POSITIVE,DIRECT_TEST_FIXTURE",
-    ).replace(
-        "U3_PAIR_SENBI_001,CONTROL,Senna covesii,UNRESOLVED,SERIAL_WITHIN_FLOWER,UNRESOLVED,NO_MATCHED_POLLEN_FATE_CONFLICT_EXPERIMENT",
-        "U3_PAIR_SENBI_001,CONTROL,Senna covesii,UNRESOLVED,SERIAL_WITHIN_FLOWER,POSITIVE,DIRECT_TEST_FIXTURE",
     ).replace(
         "U3_PAIR_SENBI_001,CASE,Senna bicapsularis,WITHIN_FLOWER_DIVISION_OF_LABOUR,SERIAL_WITHIN_FLOWER,POSITIVE,DIRECT_BEE_BEHAVIOR_AND_DIFFERENTIAL_POLLEN_ROUTING",
         "U3_PAIR_SENBI_001,CASE,Senna bicapsularis,WITHIN_FLOWER_DIVISION_OF_LABOUR,SERIAL_WITHIN_FLOWER,UNRESOLVED,DIRECT_TEST_FIXTURE",
@@ -93,7 +90,7 @@ def test_alata_spectabilis_pair_has_direct_conflict_on_both_sides():
     assert "nonheterantherous" in control["notes"]
 
 
-def test_bicapsularis_case_is_directly_resolved_but_covesii_control_remains_open():
+def test_bicapsularis_covesii_pair_has_positive_conflict_on_both_sides():
     rows = load_u3_matched_extraction(EXTRACT, ADJ, PAIRS, CASES, U3)
     pair = [r for r in rows if r["pair_id"] == "U3_PAIR_SENBI_001"]
     case = next(r for r in pair if r["taxon_role"] == "CASE")
@@ -101,4 +98,7 @@ def test_bicapsularis_case_is_directly_resolved_but_covesii_control_remains_open
     assert case["pollen_fate_conflict_status"] == "POSITIVE"
     assert case["conflict_evidence_class"] == "DIRECT_BEE_BEHAVIOR_AND_DIFFERENTIAL_POLLEN_ROUTING"
     assert "Huang_Gong_2022" in case["source_id"]
-    assert control["pollen_fate_conflict_status"] == "UNRESOLVED"
+    assert control["pollen_fate_conflict_status"] == "POSITIVE"
+    assert control["conflict_evidence_class"] == "DIRECT_BUZZ_POLLEN_REWARD_AND_TRANSFER_ROUTE"
+    assert "Marazzi_2011_PlantPress" in control["source_id"]
+    assert control["architecture_mode"] == "UNRESOLVED"
