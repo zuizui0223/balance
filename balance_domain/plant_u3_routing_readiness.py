@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .plant_u3_dependence import load_u3_dependence
 from .plant_u3_matched_extraction import load_u3_matched_extraction
+from .plant_u3_routing_expansion import build_u3_routing_expansion_readout
 
 
 def build_u3_routing_readiness(
@@ -35,6 +36,11 @@ def build_u3_routing_readiness(
         case_path,
         universe_path,
     )
+    expansion_path = (
+        extraction_path.parent / "BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
+    )
+    expansion = build_u3_routing_expansion_readout(expansion_path, universe_path)
+
     dep_by_pair = {r["pair_id"]: r["dependence_block_id"] for r in dependence}
 
     controls = [r for r in extraction if r["taxon_role"] == "CONTROL"]
@@ -99,10 +105,17 @@ def build_u3_routing_readiness(
         "public_retrieval_ceiling_ledger": "data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv",
         "public_retrieval_ceilings_frozen_for_current_unresolved_targets": True,
         "prospective_expansion_queue": "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv",
+        "prospective_expansion_queue_exhausted": expansion[
+            "prospective_queue_exhausted"
+        ],
+        "n_prospective_expansion_blocks": expansion["n_new_dependence_blocks"],
+        "n_prospective_expansion_evidence_ceiling_blocked": expansion[
+            "n_evidence_ceiling_blocked"
+        ],
         "next_evidence_targets": [
-            "process_frozen_expansion_queue_starting_Amoreuxia_wrightii",
             "accept_new_direct_or_empirical_Senna_covesii_routing_evidence_if_generated",
             "accept_new_direct_or_empirical_Osbeckia_conflict_evidence_if_generated",
+            "reopen_frozen_expansion_blocks_only_with_new_matching_stage_evidence",
         ],
         "acquisition_guard": (
             "new controls must be selected under the frozen predictor-blind matching "
@@ -110,9 +123,11 @@ def build_u3_routing_readiness(
         ),
         "model_readiness_rule": (
             "do not invent a minimum-n threshold post hoc; current unresolved targets "
-            "have frozen public-retrieval ceilings, so new direct or empirical evidence "
-            "or prospectively selected new dependence blocks are required; before fitting "
-            "a confirmatory routing effect freeze a prospective model and estimability contract"
+            "have frozen public-retrieval ceilings and the prospective four-family "
+            "expansion is exhausted at matching-stage evidence ceilings, so new direct "
+            "or empirical measurement evidence or genuinely new matching evidence is "
+            "required; before fitting a confirmatory routing effect freeze a prospective "
+            "model and estimability contract"
         ),
         "claim_ceiling": (
             "routing_readiness_and_acquisition_priority_only_not_fitted_routing_effect_"
