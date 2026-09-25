@@ -22,6 +22,6 @@ def test_u1_is_closed_at_full47():
 def test_u3_blocker_distinguishes_frozen_retrieval_ceiling_from_new_evidence_need():
     u3 = {r["universe_id"]: r for r in load_plant_universe_status(STATUS)}["U3_VALLEJOMARIN_2010"]
     blocker = u3["current_blocker"]
-    assert "PUBLIC_RETRIEVAL_CEILINGS_FROZEN" in blocker
-    assert "PROSPECTIVE_ROUTING_EXPANSION_QUEUE_FROZEN_START_BIXACEAE_AMOREUXIA_WRIGHTII" in blocker
+    assert "PROSPECTIVE_BIXACEAE_CONTROL_SEARCH_IN_PROGRESS" in blocker
+    assert "CLOSEST_C_TETRAPORUM_ANIMAL_POLLINATION_ELIGIBILITY_AT_FROZEN_PUBLIC_RETRIEVAL_CEILING" in blocker
     assert "EVIDENCE_CEILING_OPEN" not in blocker

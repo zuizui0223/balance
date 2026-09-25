@@ -31,6 +31,7 @@ EXPECTED_TARGETS = {
     "U3_EC_MON_CYA_POLLINATION",
     "U3_EC_OSB_CHI_CONFLICT",
     "U3_EC_SEN_COV_ROUTING",
+    "U3_EC_COC_TET_POLLINATION",
 }
 STATUS = {"PUBLIC_RETRIEVAL_CEILING_FROZEN_UNRESOLVED"}
 NEXT_ACTION = {
@@ -48,7 +49,7 @@ def load_u3_evidence_ceilings(path: Path) -> list[dict[str, str | bool]]:
         rows = list(reader)
 
     if {r["target_id"] for r in rows} != EXPECTED_TARGETS:
-        raise ValueError("U3 evidence-ceiling ledger must contain exactly the four frozen targets")
+        raise ValueError("U3 evidence-ceiling ledger must contain exactly the five frozen targets")
 
     out: list[dict[str, str | bool]] = []
     seen: set[str] = set()
