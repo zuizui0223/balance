@@ -127,9 +127,15 @@ def build_u3_representative_candidate_readout(path: Path) -> dict:
         "strongest_open_candidates": strongest_open,
         "open_families": open_families,
         "n_open_families": len(open_families),
+        "exact_table_s1_candidate_identity_closed": not open_families,
+        "canonical_representative_coverage_not_assessed_here": True,
+        # Legacy key retained for downstream compatibility. In this candidate
+        # ledger "identity" means exact/archival Table-S1 identity, not the
+        # independently resolved 16-family canonical representative coverage.
         "representative_identity_closed": not open_families,
         "claim_ceiling": (
-            "representative_candidate_search_and_exclusion_receipts_only_"
-            "not_table_s1_identity_without_exact_linkage_or_review_unique_independent_resolution"
+            "archival_table_s1_candidate_search_and_exclusion_receipts_only_"
+            "canonical_16_family_representative_coverage_is_out_of_scope_here_"
+            "not_exact_table_s1_identity_without_linkage"
         ),
     }
