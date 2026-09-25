@@ -6,14 +6,15 @@ on:
     branches:
       - feature/macro-persistent-compromise
     paths:
-      - "scripts/fetch_u3_table_s1.py"
+      - "balance_domain/plant_u3_table_s1_audit.py"
+      - "tests/test_plant_u3_table_s1_audit.py"
       - ".github/workflows/u3-table-s1-audit.yml"
 
 permissions:
   contents: read
 
 jobs:
-  retrieve:
+  table-s1:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -23,34 +24,22 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch Wiley Table S1
-        id: fetch
-        continue-on-error: true
-        run: |
-          mkdir -p /tmp/u3-table-s1
-          python scripts/fetch_u3_table_s1.py \
-            --output /tmp/u3-table-s1/retrieval.json \
-            --workdir /tmp/u3-table-s1
-
-      - name: Decode legacy Word table
-        if: steps.fetch.outcome == 'success'
+      - name: Install legacy Word extractor
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq antiword
-          antiword /tmp/u3-table-s1/NPH_3430_sm_TableS1.doc \
-            > /tmp/u3-table-s1/TableS1.txt
-          grep -n -i -E 'Malvaceae|Bixaceae|Scrophulariaceae' \
-            /tmp/u3-table-s1/TableS1.txt || true
-          cat /tmp/u3-table-s1/TableS1.txt
+          sudo apt-get install -y antiword
 
-      - name: Upload retrieval evidence
-        if: always()
+      - name: Run Table S1 recovery audit
+        run: |
+          mkdir -p /tmp/u3-table-s1/files
+          python -m balance_domain.plant_u3_table_s1_audit \
+            --output /tmp/u3-table-s1/audit.json \
+            --workdir /tmp/u3-table-s1/files
+          cat /tmp/u3-table-s1/audit.json
+
+      - name: Upload audit receipt
         uses: actions/upload-artifact@v4
         with:
-          name: u3-table-s1-audit
+          name: u3-vallejo-marin-table-s1-audit
           path: /tmp/u3-table-s1
           if-no-files-found: error
-
-      - name: Fail if supporting file remains blocked
-        if: steps.fetch.outcome != 'success'
-        run: exit 1
