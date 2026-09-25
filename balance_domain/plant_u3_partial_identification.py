@@ -51,6 +51,8 @@ def build_u3_conflict_partial_identification(
 
     definite_case_positive_control_negative = 0
     possible_case_positive_control_negative = 0
+    definite_case_negative_control_positive = 0
+    possible_case_negative_control_positive = 0
     for roles in pair_roles.values():
         case_status = roles["CASE"]["pollen_fate_conflict_status"]
         control_status = roles["CONTROL"]["pollen_fate_conflict_status"]
@@ -59,6 +61,14 @@ def build_u3_conflict_partial_identification(
             possible_case_positive_control_negative += 1
         elif case_status == RESOLVED_POSITIVE and control_status == UNRESOLVED:
             possible_case_positive_control_negative += 1
+
+        if case_status == RESOLVED_NEGATIVE and control_status == RESOLVED_POSITIVE:
+            definite_case_negative_control_positive += 1
+            possible_case_negative_control_positive += 1
+        elif case_status == RESOLVED_NEGATIVE and control_status == UNRESOLVED:
+            possible_case_negative_control_positive += 1
+        elif case_status == UNRESOLVED and control_status == RESOLVED_POSITIVE:
+            possible_case_negative_control_positive += 1
 
     n_pairs = len(pair_roles)
     contrast_lower = case_lower - control_upper
@@ -90,6 +100,20 @@ def build_u3_conflict_partial_identification(
             definite_case_positive_control_negative / n_pairs,
             possible_case_positive_control_negative / n_pairs,
         ],
+        "case_negative_control_positive_pair_count_bounds": [
+            definite_case_negative_control_positive,
+            possible_case_negative_control_positive,
+        ],
+        "binary_informative_pair_count_bounds": [
+            definite_case_positive_control_negative
+            + definite_case_negative_control_positive,
+            possible_case_positive_control_negative
+            + possible_case_negative_control_positive,
+        ],
+        "finite_conditional_binary_effect_estimable_under_any_admissible_completion": (
+            possible_case_positive_control_negative > 0
+            and possible_case_negative_control_positive > 0
+        ),
         "positive_control_taxa": positive_controls,
         "unresolved_control_taxa": unresolved_controls,
         "binary_conflict_presence_deterministically_separates_heteranthery": (
@@ -100,7 +124,10 @@ def build_u3_conflict_partial_identification(
             "cannot deterministically distinguish heteranthery because multiple "
             "nonheterantherous controls are directly conflict-positive. The single "
             "unresolved control can change the raw case-control positive-fraction "
-            "contrast only within the reported bounds."
+            "contrast only within the reported bounds. Because all case-side conflict "
+            "states are already positive, resolving the remaining control cannot create "
+            "discordant pairs in both directions; a finite conditional matched binary "
+            "coefficient is therefore unavailable under every admissible completion."
         ),
         "claim_ceiling": (
             "matched_sample_partial_identification_only_not_population_prevalence_"
