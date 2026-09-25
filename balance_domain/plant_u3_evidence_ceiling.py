@@ -1,102 +1,96 @@
-"""Fail-closed evidence ceilings for the remaining U3 empirical gates."""
+"""Frozen public-evidence ceilings for unresolved U3 measurements.
+
+A frozen ceiling means that the registered public-source audit has not recovered
+qualifying evidence for the target. It does not prove that the biology is absent
+or that no unpublished/new source exists. It prevents repeated retrieval from
+being mistaken for unresolved design work.
+"""
 from __future__ import annotations
 
 import csv
-from collections import Counter
 from pathlib import Path
 
 
 FIELDS = (
-    "ceiling_id",
+    "target_id",
     "taxon",
-    "gate",
-    "strongest_evidence_status",
-    "search_scope_status",
-    "decision",
-    "missing_evidence",
-    "source_id",
+    "evidence_target",
+    "registered_gate",
+    "audit_date",
+    "search_languages",
+    "source_ids",
+    "best_available_evidence",
+    "qualifying_direct_evidence",
+    "status",
+    "next_action",
     "notes",
 )
 
-EXPECTED = {
-    "U3CEIL_MONAUS_001": (
-        "Monochoria australasica",
-        "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION",
-    ),
-    "U3CEIL_MONCYA_001": (
-        "Monochoria cyanea",
-        "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION",
-    ),
-    "U3CEIL_OSBCHI_001": (
-        "Osbeckia chinensis",
-        "CONTROL_POLLEN_FATE_CONFLICT",
-    ),
+EXPECTED_TARGETS = {
+    "U3_EC_MON_AUS_POLLINATION",
+    "U3_EC_MON_CYA_POLLINATION",
+    "U3_EC_OSB_CHI_CONFLICT",
+    "U3_EC_SEN_COV_ROUTING",
+}
+STATUS = {"PUBLIC_RETRIEVAL_CEILING_FROZEN_UNRESOLVED"}
+NEXT_ACTION = {
+    "NEW_DIRECT_PRIMARY_OR_FIELD_EVIDENCE_REQUIRED",
+    "NEW_DIRECT_PRIMARY_OR_EMPIRICAL_EVIDENCE_REQUIRED",
+    "NEW_DIRECT_PRIMARY_OR_EMPIRICAL_ROUTING_EVIDENCE_REQUIRED",
 }
 
-SEARCH_STATUS = {
-    "PUBLIC_LITERATURE_SEARCHED_NO_DIRECT_RECEIPT",
-    "PUBLIC_LITERATURE_SEARCHED_NO_MATCHED_FATE_RECEIPT",
-}
-DECISION = {"OPEN", "PASS"}
 
-
-def load_u3_evidence_ceiling(path: Path) -> list[dict[str, str]]:
+def load_u3_evidence_ceilings(path: Path) -> list[dict[str, str | bool]]:
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         if tuple(reader.fieldnames or ()) != FIELDS:
             raise ValueError("U3 evidence-ceiling columns must match canonical order")
         rows = list(reader)
 
-    if len(rows) != len(EXPECTED):
-        raise ValueError("U3 evidence-ceiling ledger must contain exactly three registered targets")
+    if {r["target_id"] for r in rows} != EXPECTED_TARGETS:
+        raise ValueError("U3 evidence-ceiling ledger must contain exactly the four frozen targets")
 
-    seen = set()
+    out: list[dict[str, str | bool]] = []
+    seen: set[str] = set()
     for n, row in enumerate(rows, start=2):
         if None in row:
             raise ValueError(f"row {n} has fields outside U3 evidence-ceiling schema")
         clean = {k: (v or "").strip() for k, v in row.items()}
-        row.update(clean)
-        ceiling_id = row["ceiling_id"]
-        if ceiling_id not in EXPECTED or ceiling_id in seen:
-            raise ValueError(f"row {n} ceiling_id must be unique and registered")
-        seen.add(ceiling_id)
-
-        expected_taxon, expected_gate = EXPECTED[ceiling_id]
-        if row["taxon"] != expected_taxon or row["gate"] != expected_gate:
-            raise ValueError(f"row {n} target identity disagrees with frozen ceiling")
-        if row["search_scope_status"] not in SEARCH_STATUS:
-            raise ValueError(f"row {n} invalid search_scope_status")
-        if row["decision"] not in DECISION:
-            raise ValueError(f"row {n} invalid decision")
-        if not row["strongest_evidence_status"] or not row["source_id"]:
-            raise ValueError(f"row {n} evidence provenance must be frozen")
-
-        if row["decision"] == "OPEN":
-            if not row["missing_evidence"]:
-                raise ValueError(f"row {n} OPEN ceiling requires explicit missing evidence")
-            if "NO_" not in row["search_scope_status"]:
-                raise ValueError(f"row {n} OPEN ceiling requires a fail-closed search status")
-        else:
-            if row["missing_evidence"]:
-                raise ValueError(f"row {n} PASS ceiling cannot retain missing evidence")
-    return rows
+        target = clean["target_id"]
+        if target in seen:
+            raise ValueError(f"duplicate evidence-ceiling target {target!r}")
+        seen.add(target)
+        for field in FIELDS:
+            if field not in {"notes"} and not clean[field]:
+                raise ValueError(f"row {n} {field} must be frozen")
+        q = clean["qualifying_direct_evidence"].casefold()
+        if q not in {"true", "false"}:
+            raise ValueError(f"row {n} qualifying_direct_evidence must be true/false")
+        if q != "false":
+            raise ValueError(f"row {n} frozen unresolved ceiling cannot claim qualifying evidence")
+        if clean["status"] not in STATUS:
+            raise ValueError(f"row {n} invalid evidence-ceiling status")
+        if clean["next_action"] not in NEXT_ACTION:
+            raise ValueError(f"row {n} invalid next_action")
+        out.append({**clean, "qualifying_direct_evidence": False})
+    return out
 
 
 def build_u3_evidence_ceiling_readout(path: Path) -> dict:
-    rows = load_u3_evidence_ceiling(path)
-    decisions = Counter(r["decision"] for r in rows)
-    open_rows = [r for r in rows if r["decision"] == "OPEN"]
+    rows = load_u3_evidence_ceilings(path)
     return {
-        "analysis": "balance_plant_u3_evidence_ceiling",
+        "analysis": "balance_plant_u3_public_evidence_ceiling",
         "n_targets": len(rows),
-        "decision_counts": dict(sorted(decisions.items())),
-        "open_taxa": sorted(r["taxon"] for r in open_rows),
-        "open_gates": {
-            r["taxon"]: r["gate"] for r in sorted(open_rows, key=lambda x: x["taxon"])
-        },
-        "evidence_ceiling_closed": not open_rows,
+        "n_frozen_unresolved": len(rows),
+        "n_qualifying_direct_evidence": 0,
+        "public_retrieval_ceiling_frozen": True,
+        "retrieval_open": False,
+        "taxa_requiring_new_direct_or_empirical_evidence": sorted(
+            {str(r["taxon"]) for r in rows}
+        ),
+        "targets": sorted(str(r["target_id"]) for r in rows),
         "claim_ceiling": (
-            "search_ceiling_and_missing_evidence_receipts_only_"
-            "not_negative_biological_evidence_not_effect_estimate"
+            "registered_public_retrieval_ceiling_only_not_biological_absence_"
+            "not_exhaustive_global_literature_proof_not_measurement_completion"
         ),
     }

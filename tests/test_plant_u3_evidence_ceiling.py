@@ -1,12 +1,8 @@
 from pathlib import Path
 
-import csv
-import pytest
-
 from balance_domain.plant_u3_evidence_ceiling import (
-    FIELDS,
     build_u3_evidence_ceiling_readout,
-    load_u3_evidence_ceiling,
+    load_u3_evidence_ceilings,
 )
 
 
@@ -14,38 +10,26 @@ ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "data" / "BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv"
 
 
-def test_current_u3_evidence_ceiling_has_three_explicit_open_targets():
-    rows = load_u3_evidence_ceiling(LEDGER)
+def test_u3_public_evidence_ceiling_has_four_frozen_unresolved_targets():
+    rows = load_u3_evidence_ceilings(LEDGER)
+    assert len(rows) == 4
+    assert all(r["qualifying_direct_evidence"] is False for r in rows)
+    assert all(r["status"] == "PUBLIC_RETRIEVAL_CEILING_FROZEN_UNRESOLVED" for r in rows)
+
+
+def test_u3_public_retrieval_is_no_longer_an_open_development_gate():
     out = build_u3_evidence_ceiling_readout(LEDGER)
-    assert len(rows) == 3
-    assert out["decision_counts"] == {"OPEN": 3}
-    assert out["open_taxa"] == [
+    assert out["public_retrieval_ceiling_frozen"] is True
+    assert out["retrieval_open"] is False
+    assert out["n_frozen_unresolved"] == 4
+    assert out["taxa_requiring_new_direct_or_empirical_evidence"] == [
         "Monochoria australasica",
         "Monochoria cyanea",
         "Osbeckia chinensis",
+        "Senna covesii",
     ]
-    assert out["evidence_ceiling_closed"] is False
 
 
-def test_monochoria_open_gate_is_species_level_effective_pollination():
+def test_ceiling_is_not_misread_as_biological_absence():
     out = build_u3_evidence_ceiling_readout(LEDGER)
-    for taxon in ("Monochoria australasica", "Monochoria cyanea"):
-        assert out["open_gates"][taxon] == "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION"
-
-
-def test_osbeckia_open_gate_is_control_pollen_fate_measurement():
-    out = build_u3_evidence_ceiling_readout(LEDGER)
-    assert out["open_gates"]["Osbeckia chinensis"] == "CONTROL_POLLEN_FATE_CONFLICT"
-
-
-def test_open_ceiling_cannot_drop_missing_evidence(tmp_path):
-    with LEDGER.open(encoding="utf-8", newline="") as handle:
-        rows = list(csv.DictReader(handle))
-    rows[0]["missing_evidence"] = ""
-    path = tmp_path / "ceil.csv"
-    with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELDS)
-        writer.writeheader()
-        writer.writerows(rows)
-    with pytest.raises(ValueError, match="OPEN ceiling requires explicit missing evidence"):
-        load_u3_evidence_ceiling(path)
+    assert "not_biological_absence" in out["claim_ceiling"]

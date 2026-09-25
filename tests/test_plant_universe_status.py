@@ -19,7 +19,9 @@ def test_u1_is_closed_at_full47():
     assert u1["source_closed"] is True and u1["double_code_ready"] is True
     assert u1["current_blocker"] == "INDEPENDENT_SECOND_CODER_REQUIRED"
 
-def test_u3_blocker_uses_frozen_plastome_ranking():
+def test_u3_blocker_distinguishes_frozen_retrieval_ceiling_from_new_evidence_need():
     u3 = {r["universe_id"]: r for r in load_plant_universe_status(STATUS)}["U3_VALLEJOMARIN_2010"]
-    assert "68_CDS_PLASTOME_RANKING" in u3["current_blocker"]
-    assert "HIGHER_RESOLUTION_PHYLOGENY" not in u3["current_blocker"]
+    blocker = u3["current_blocker"]
+    assert "PUBLIC_RETRIEVAL_CEILINGS_FROZEN_UNRESOLVED" in blocker
+    assert "NEW_DIRECT_EMPIRICAL_EVIDENCE_OR_PROSPECTIVE_NEW_BLOCKS_REQUIRED" in blocker
+    assert "EVIDENCE_CEILING_OPEN" not in blocker

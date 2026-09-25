@@ -96,9 +96,11 @@ def build_u3_routing_readiness(
         "routing_measurement_complete": routing_measurement_complete,
         "prospective_routing_model_contract_frozen": False,
         "routing_model_ready": routing_model_ready,
+        "public_retrieval_ceiling_ledger": "data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv",
+        "public_retrieval_ceilings_frozen_for_current_unresolved_targets": True,
         "next_evidence_targets": [
-            "resolve_Senna_covesii_broader_routing_architecture",
-            "resolve_Osbeckia_chinensis_conflict_then_routing_architecture",
+            "Senna_covesii_routing_requires_new_direct_primary_or_empirical_evidence",
+            "Osbeckia_chinensis_conflict_requires_new_direct_primary_or_empirical_evidence",
             "expand_with_prospectively_matched_positive_conflict_controls_in_new_dependence_blocks",
         ],
         "acquisition_guard": (
@@ -106,9 +108,10 @@ def build_u3_routing_readiness(
             "protocol before conflict strength or routing architecture extraction"
         ),
         "model_readiness_rule": (
-            "do not invent a minimum-n threshold post hoc; after routing measurement "
-            "is complete, freeze a prospective model and sample-size/estimability "
-            "contract before fitting a confirmatory routing effect"
+            "do not invent a minimum-n threshold post hoc; current unresolved targets "
+            "have frozen public-retrieval ceilings, so new direct or empirical evidence "
+            "or prospectively selected new dependence blocks are required; before fitting "
+            "a confirmatory routing effect freeze a prospective model and estimability contract"
         ),
         "claim_ceiling": (
             "routing_readiness_and_acquisition_priority_only_not_fitted_routing_effect_"

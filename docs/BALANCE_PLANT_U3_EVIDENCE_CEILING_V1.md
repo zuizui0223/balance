@@ -1,104 +1,43 @@
-# BALANCE plant U3 evidence ceiling v1
+# BALANCE U3 public-evidence ceiling v1
 
 ## Purpose
 
-The remaining U3 empirical blockers are no longer recorded as generic "search more" tasks.
+Freeze the current public-literature retrieval ceiling for U3 measurements that remained OPEN after repeated source audit.
 
-This receipt freezes the strongest public evidence recovered so far, the exact evidence still missing, and the reason each gate remains OPEN. An OPEN evidence ceiling means **insufficient evidence was recovered**, not that the biological process is absent.
+A ceiling status means:
 
-Canonical surfaces:
+> no qualifying direct evidence was recovered on the registered public-source surface as of 2026-09-25.
 
-```text
-data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv
-balance_domain/plant_u3_evidence_ceiling.py
-tests/test_plant_u3_evidence_ceiling.py
-```
+It does not mean that the biological state is negative, that unpublished evidence does not exist, or that future publications cannot resolve the gate.
 
-## Monochoria australasica
+## Frozen unresolved targets
 
-Strongest recovered evidence:
+### Monochoria australasica — effective animal pollination
 
-- species-level floral morphology is source-secure;
-- comparative literature places the system in the enantiostyly / buzz-pollination context;
-- the Amegilla source records male territorial behaviour over water vegetated with `M. australasica`.
+Morphology and phylogenetic position are resolved. The Amegilla record documents male territorial behaviour above water with `M. australasica`; it is not a flower-visitation or effective-pollination event.
 
-What is **not** recovered:
+### Monochoria cyanea — effective animal pollination
 
-```text
-species-level flower visit
-+
-pollen transfer / stigma deposition / reproductive effectiveness
-```
+A legitimate nonheterantherous congener, but no species-level direct flower visit, stigma contact, pollen transfer, or reproductive-effect receipt was recovered.
 
-Territorial behaviour above the plant is not promoted to a flower visit.
+### Osbeckia chinensis — pollen-fate conflict
 
-Decision:
+Historical observations resolve bee pollen extraction and stigma contact, and modern flora resolves isomorphic equal/subequal stamens. No registered quantitative partition of reward removal versus gamete export/deposition, nor reproductive-fitness manipulation, was recovered.
 
-```text
-DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION = OPEN
-```
+### Senna covesii — routing architecture
 
-## Monochoria cyanea
+Binary pollen-reward versus gamete-transfer conflict is positive. Seven fertile poricidal stamens, bee buzz pollination, and monosymmetric flowers are source-resolved.
 
-Species morphology and phylogenetic placement are recoverable, but no source-secure species-level effective-pollination study was recovered.
+Broader routing stays unresolved. Equal or weakly differentiated stamens are not enough to assign `SHARED_INTEGRATED`: `S. spectabilis` provides the internal counterexample, with equal fertile-stamen morphology but directly demonstrated positional within-flower routing.
 
-General family/genus statements about buzz pollination do not satisfy the frozen matched-control eligibility gate.
+## Development consequence
 
-Decision:
+These targets should not trigger repeated retrieval loops. They now require either:
 
-```text
-DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION = OPEN
-```
-
-The frozen 68-shared-CDS plastome ranking remains conditional: if both candidates pass ecological eligibility, `M. australasica` ranks before `M. cyanea`.
-
-## Osbeckia chinensis
-
-The historical observation is real and useful:
-
-- Hymenoptera handle the stamen bundle;
-- pollen is extracted from poricidal anthers;
-- visitor body position can contact the stigma.
-
-But the registered matched conflict estimand needs a stronger pollen-fate receipt.
-
-Still missing:
-
-```text
-reward removal / grooming
-versus
-export or stigma deposition
-or
-reproductive consequence of altered pollen removal
-```
-
-Decision:
-
-```text
-CONTROL_POLLEN_FATE_CONFLICT = OPEN
-```
-
-This is deliberately stricter than merely showing that bees take pollen while touching the stigma.
-
-## Consequence
-
-The current U3 programme has:
-
-```text
-family representatives source-resolved     16 / 16
-heteranthery case-side conflict positive     4 / 4
-matched controls adjudicated PASS            4 / 6
-matched pairs conflict-resolved both sides   3 / 4 PASS pairs
-U3 dependence structure                      FROZEN
-```
-
-The two genuine empirical ceilings are now:
-
-1. Monochoria control ecological eligibility;
-2. Osbeckia control pollen-fate measurement.
-
-Repeated retrieval should resume only when a new source surface, citation trail, dataset, or targeted field measurement can supply the missing registered evidence.
+- a newly identified direct primary source;
+- new empirical measurement;
+- or, for the routing programme, prospectively selected matched controls in new dependence blocks.
 
 ## Claim ceiling
 
-This receipt documents search ceilings and missing measurements. It does not convert failure to recover a study into evidence that pollination or pollen-fate conflict is absent.
+This audit freezes a retrieval limit. It is not evidence of biological absence, a complete global systematic review, or measurement completion.
