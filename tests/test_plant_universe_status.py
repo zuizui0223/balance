@@ -19,9 +19,9 @@ def test_u1_is_closed_at_full47():
     assert u1["source_closed"] is True and u1["double_code_ready"] is True
     assert u1["current_blocker"] == "INDEPENDENT_SECOND_CODER_REQUIRED"
 
-def test_u3_blocker_distinguishes_frozen_retrieval_ceiling_from_new_evidence_need():
+def test_u3_blocker_tracks_active_lythraceae_and_two_frozen_missing_blocks():
     u3 = {r["universe_id"]: r for r in load_plant_universe_status(STATUS)}["U3_VALLEJOMARIN_2010"]
     blocker = u3["current_blocker"]
-    assert "PROSPECTIVE_BRASSICACEAE_CONTROL_SEARCH_IN_PROGRESS" in blocker
-    assert "BIXACEAE_RETAINED_AS_EVIDENCE_CEILING_BLOCKED_MATCHING_STAGE_MISSINGNESS" in blocker
+    assert "PROSPECTIVE_LYTHRACEAE_CONTROL_SEARCH_IN_PROGRESS" in blocker
+    assert "BIXACEAE_AND_BRASSICACEAE_RETAINED_AS_EVIDENCE_CEILING_BLOCKED" in blocker
     assert "EVIDENCE_CEILING_OPEN" not in blocker
