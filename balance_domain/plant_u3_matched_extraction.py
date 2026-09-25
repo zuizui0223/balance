@@ -169,6 +169,24 @@ def build_u3_matched_extraction_readout(
         and roles["CONTROL"]["pollen_fate_conflict_status"] in resolved_conflict
         for roles in pair_roles.values()
     )
+    n_case_positive_control_negative = sum(
+        roles["CASE"]["pollen_fate_conflict_status"] == "POSITIVE"
+        and roles["CONTROL"]["pollen_fate_conflict_status"] == "NO_DEMONSTRATED_CONFLICT"
+        for roles in pair_roles.values()
+    )
+    n_case_negative_control_positive = sum(
+        roles["CASE"]["pollen_fate_conflict_status"] == "NO_DEMONSTRATED_CONFLICT"
+        and roles["CONTROL"]["pollen_fate_conflict_status"] == "POSITIVE"
+        for roles in pair_roles.values()
+    )
+    matched_conflict_measurement_complete = all(
+        r["pollen_fate_conflict_status"] != "UNRESOLVED" for r in rows
+    )
+    matched_binary_conflict_effect_finitely_estimable = (
+        matched_conflict_measurement_complete
+        and n_case_positive_control_negative > 0
+        and n_case_negative_control_positive > 0
+    )
 
     return {
         "analysis": "balance_plant_u3_matched_extraction",
@@ -196,15 +214,21 @@ def build_u3_matched_extraction_readout(
         "n_cases_with_resolved_conflict": n_cases_with_resolved_conflict,
         "n_controls_with_resolved_conflict": n_controls_with_resolved_conflict,
         "n_pairs_with_both_conflict_resolved": n_pairs_with_both_conflict_resolved,
+        "n_case_positive_control_negative_pairs": n_case_positive_control_negative,
+        "n_case_negative_control_positive_pairs": n_case_negative_control_positive,
         "matched_integrated_control_contrast_ready": (
             n_controls_shared_integrated == len(controls)
         ),
-        "matched_conflict_estimand_ready": all(
-            r["pollen_fate_conflict_status"] != "UNRESOLVED" for r in rows
+        "matched_conflict_measurement_complete": matched_conflict_measurement_complete,
+        # Legacy key retained for compatibility. It means measurement completeness,
+        # not statistical estimability of a finite matched binary coefficient.
+        "matched_conflict_estimand_ready": matched_conflict_measurement_complete,
+        "matched_binary_conflict_effect_finitely_estimable": (
+            matched_binary_conflict_effect_finitely_estimable
         ),
         "claim_ceiling": (
-            "matched_heteranthery_source_extraction_only_no_conflict_effect_estimate_"
-            "until_control_conflict_evidence_is_resolved_and_no_integrated_control_"
-            "contrast_without_shared_integrated_controls"
+            "matched_heteranthery_source_extraction_and_measurement_completeness_only_"
+            "binary_effect_estimability_requires_two_discordance_directions_"
+            "and_no_integrated_control_contrast_without_shared_integrated_controls"
         ),
     }
