@@ -36,7 +36,11 @@ def test_current_matched_lane_has_three_fully_resolved_conflict_pairs_but_is_not
     assert out["n_cases_with_resolved_conflict"] == 4
     assert out["n_controls_with_resolved_conflict"] == 3
     assert out["n_pairs_with_both_conflict_resolved"] == 3
+    assert out["n_case_positive_control_negative_pairs"] == 0
+    assert out["n_case_negative_control_positive_pairs"] == 0
+    assert out["matched_conflict_measurement_complete"] is False
     assert out["matched_conflict_estimand_ready"] is False
+    assert out["matched_binary_conflict_effect_finitely_estimable"] is False
 
 
 def test_matched_conflict_ready_requires_both_case_and_control_resolution(tmp_path):
@@ -54,6 +58,36 @@ def test_matched_conflict_ready_requires_both_case_and_control_resolution(tmp_pa
     assert out["n_controls_with_resolved_conflict"] == 4
     assert out["case_conflict_status_counts"]["UNRESOLVED"] == 1
     assert out["matched_conflict_estimand_ready"] is False
+
+
+def test_resolving_osbeckia_positive_completes_measurement_but_gives_zero_informative_pairs(tmp_path):
+    rows = EXTRACT.read_text(encoding="utf-8").replace(
+        "U3_PAIR_MELMA_001,CONTROL,Osbeckia chinensis,UNRESOLVED,SERIAL_WITHIN_FLOWER,UNRESOLVED,NO_MATCHED_POLLEN_FATE_CONFLICT_EXPERIMENT",
+        "U3_PAIR_MELMA_001,CONTROL,Osbeckia chinensis,UNRESOLVED,SERIAL_WITHIN_FLOWER,POSITIVE,DIRECT_TEST_FIXTURE",
+    )
+    path = tmp_path / "extract.csv"
+    path.write_text(rows, encoding="utf-8")
+    out = build_u3_matched_extraction_readout(path, ADJ, PAIRS, CASES, U3)
+    assert out["matched_conflict_measurement_complete"] is True
+    assert out["matched_conflict_estimand_ready"] is True
+    assert out["n_case_positive_control_negative_pairs"] == 0
+    assert out["n_case_negative_control_positive_pairs"] == 0
+    assert out["matched_binary_conflict_effect_finitely_estimable"] is False
+
+
+def test_resolving_osbeckia_negative_creates_one_direction_only_and_complete_separation(tmp_path):
+    rows = EXTRACT.read_text(encoding="utf-8").replace(
+        "U3_PAIR_MELMA_001,CONTROL,Osbeckia chinensis,UNRESOLVED,SERIAL_WITHIN_FLOWER,UNRESOLVED,NO_MATCHED_POLLEN_FATE_CONFLICT_EXPERIMENT",
+        "U3_PAIR_MELMA_001,CONTROL,Osbeckia chinensis,UNRESOLVED,SERIAL_WITHIN_FLOWER,NO_DEMONSTRATED_CONFLICT,DIRECT_TEST_FIXTURE",
+    )
+    path = tmp_path / "extract.csv"
+    path.write_text(rows, encoding="utf-8")
+    out = build_u3_matched_extraction_readout(path, ADJ, PAIRS, CASES, U3)
+    assert out["matched_conflict_measurement_complete"] is True
+    assert out["matched_conflict_estimand_ready"] is True
+    assert out["n_case_positive_control_negative_pairs"] == 1
+    assert out["n_case_negative_control_positive_pairs"] == 0
+    assert out["matched_binary_conflict_effect_finitely_estimable"] is False
 
 
 def test_module_substrate_is_extracted_not_forced_to_match():
