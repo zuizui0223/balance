@@ -157,6 +157,18 @@ def build_u3_matched_extraction_readout(
         r["architecture_mode"] not in {"SHARED_INTEGRATED", "UNRESOLVED"}
         for r in controls
     )
+    resolved_conflict = {"POSITIVE", "NO_DEMONSTRATED_CONFLICT"}
+    n_cases_with_resolved_conflict = sum(
+        r["pollen_fate_conflict_status"] in resolved_conflict for r in cases
+    )
+    n_controls_with_resolved_conflict = sum(
+        r["pollen_fate_conflict_status"] in resolved_conflict for r in controls
+    )
+    n_pairs_with_both_conflict_resolved = sum(
+        roles["CASE"]["pollen_fate_conflict_status"] in resolved_conflict
+        and roles["CONTROL"]["pollen_fate_conflict_status"] in resolved_conflict
+        for roles in pair_roles.values()
+    )
 
     return {
         "analysis": "balance_plant_u3_matched_extraction",
@@ -181,15 +193,14 @@ def build_u3_matched_extraction_readout(
         "n_controls_with_alternative_resolved_architecture": (
             n_controls_with_alternative_resolved_architecture
         ),
-        "n_controls_with_resolved_conflict": sum(
-            r["pollen_fate_conflict_status"] in {"POSITIVE", "NO_DEMONSTRATED_CONFLICT"}
-            for r in controls
-        ),
+        "n_cases_with_resolved_conflict": n_cases_with_resolved_conflict,
+        "n_controls_with_resolved_conflict": n_controls_with_resolved_conflict,
+        "n_pairs_with_both_conflict_resolved": n_pairs_with_both_conflict_resolved,
         "matched_integrated_control_contrast_ready": (
             n_controls_shared_integrated == len(controls)
         ),
         "matched_conflict_estimand_ready": all(
-            r["pollen_fate_conflict_status"] != "UNRESOLVED" for r in controls
+            r["pollen_fate_conflict_status"] != "UNRESOLVED" for r in rows
         ),
         "claim_ceiling": (
             "matched_heteranthery_source_extraction_only_no_conflict_effect_estimate_"
