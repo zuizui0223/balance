@@ -20,6 +20,8 @@ def test_current_candidate_audit_keeps_all_three_families_open():
     assert len(rows) == 8
     assert out["selection_status_counts"] == {"OPEN": 4, "REJECTED": 4}
     assert out["open_families"] == ["Bixaceae", "Malvaceae", "Scrophulariaceae"]
+    assert out["exact_table_s1_candidate_identity_closed"] is False
+    assert out["canonical_representative_coverage_not_assessed_here"] is True
     assert out["representative_identity_closed"] is False
 
 
