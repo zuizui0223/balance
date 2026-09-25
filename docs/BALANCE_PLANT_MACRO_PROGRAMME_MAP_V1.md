@@ -111,6 +111,8 @@ Its historical source establishes pollen extraction from poricidal anthers plus 
 
 The remaining uncertainty is now partially identified rather than treated as all-or-nothing. In the current four-pair matched sample, case conflict-positive fraction is fixed at 1.00, while the control fraction is bounded at 0.75-1.00 depending on the unresolved Osbeckia state. The raw case-minus-control binary-positive difference is therefore bounded at 0.00-0.25. This is a matched-sample logical bound, not a population prevalence or causal estimate. Crucially, three directly positive nonheterantherous controls already falsify binary conflict presence as a deterministic separator of heteranthery.
 
+Measurement completion and effect estimability are now separated explicitly. If Osbeckia is ultimately POSITIVE there are zero conflict-status-discordant matched pairs; if it is NO_DEMONSTRATED_CONFLICT there is exactly one discordant pair and it is case-positive/control-negative, with no reverse discordance. Therefore a finite conditional binary conflict-presence coefficient is not estimable under either admissible completion. Osbeckia remains worth resolving for evidence completeness, quantitative strength and routing architecture—not as a route to a binary presence effect.
+
 ### Architecture result already visible
 
 The nonheterantherous controls do not collapse into one "integrated" state:
