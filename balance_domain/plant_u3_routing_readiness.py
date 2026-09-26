@@ -242,7 +242,6 @@ def build_u3_routing_readiness(
         "diascia_figure_ceiling_receipt": "data/BALANCE_PLANT_U3_DIASCIA_FIGURE_CEILING_V1.json",
         "next_evidence_targets": [
             "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
-            "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
             "collect_or_adjudicate_Osbeckia_conflict_under_U3MEAS_OSBCHI_001",
             "collect_or_adjudicate_Monochoria_pollination_under_frozen_exact_species_routes",
             "reopen_frozen_expansion_blocks_only_with_new_matching_stage_evidence",
