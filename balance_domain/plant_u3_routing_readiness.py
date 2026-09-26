@@ -13,6 +13,7 @@ from .plant_u3_conflict_identification import build_u3_binary_conflict_identific
 from .plant_u3_dependence import load_u3_dependence
 from .plant_u3_matched_extraction import load_u3_matched_extraction
 from .plant_u3_routing_expansion import build_u3_routing_expansion_readout
+from .plant_u3_targeted_measurement import build_u3_targeted_measurement_readout
 
 
 def build_u3_routing_readiness(
@@ -48,6 +49,12 @@ def build_u3_routing_readiness(
         pair_path,
         case_path,
         universe_path,
+    )
+    targeted_measurement_path = (
+        extraction_path.parent / "BALANCE_PLANT_U3_TARGETED_MEASUREMENT_SPEC_V2.json"
+    )
+    targeted_measurement = build_u3_targeted_measurement_readout(
+        targeted_measurement_path
     )
 
     dep_by_pair = {r["pair_id"]: r["dependence_block_id"] for r in dependence}
@@ -125,6 +132,14 @@ def build_u3_routing_readiness(
         "routing_model_ready": routing_model_ready,
         "public_retrieval_ceiling_ledger": "data/BALANCE_PLANT_U3_EVIDENCE_CEILING_V1.csv",
         "public_retrieval_ceilings_frozen_for_current_unresolved_targets": True,
+        "targeted_measurement_contract": "data/BALANCE_PLANT_U3_TARGETED_MEASUREMENT_SPEC_V2.json",
+        "targeted_measurement_targets": targeted_measurement["target_taxa"],
+        "senna_covesii_routing_contract_frozen": targeted_measurement[
+            "senna_covesii_routing_contract_frozen"
+        ],
+        "senna_covesii_shared_integrated_requires_equivalence": targeted_measurement[
+            "senna_covesii_shared_integrated_requires_equivalence"
+        ],
         "prospective_expansion_queue": "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv",
         "prospective_expansion_queue_exhausted": expansion[
             "prospective_queue_exhausted"
@@ -134,8 +149,9 @@ def build_u3_routing_readiness(
             "n_evidence_ceiling_blocked"
         ],
         "next_evidence_targets": [
-            "accept_new_direct_or_empirical_Senna_covesii_routing_evidence_if_generated",
-            "accept_new_direct_or_empirical_Osbeckia_conflict_evidence_if_generated",
+            "collect_or_adjudicate_Senna_covesii_routing_under_U3MEAS_SENCOV_001",
+            "collect_or_adjudicate_Osbeckia_conflict_under_U3MEAS_OSBCHI_001",
+            "collect_or_adjudicate_Monochoria_pollination_under_frozen_exact_species_routes",
             "reopen_frozen_expansion_blocks_only_with_new_matching_stage_evidence",
         ],
         "acquisition_guard": (
