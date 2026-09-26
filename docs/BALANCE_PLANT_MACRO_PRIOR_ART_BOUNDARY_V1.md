@@ -35,6 +35,14 @@ BALANCE therefore must not claim as its novelty:
 - that heteranthery correlates with poricidal anthers, nectar state or enantiostyly;
 - that developmental constraints could limit heteranthery.
 
+The U3 result that remains distinct from this prior art is narrower and
+matched-design based: among systems with source-resolved pollen-fate conflict,
+visible heteranthery morphology and functional routing are not one-to-one
+proxies. The current evidence contains both (i) the same within-flower routing
+state with and without heteranthery and (ii) different routing states among
+nonheterantherous controls in separate dependence blocks. This does not claim
+a transition direction or that heteranthery caused either routing state.
+
 ## BALANCE-owned comparative question
 
 The independent macro claim to test is broader:
