@@ -182,6 +182,23 @@ conflict presence / strength
 These are distinct estimands and should not be collapsed into one binary
 "heteranthery as conflict resolution" variable.
 
+The mapping is now non-identifying in **both directions** on the registered
+matched evidence surface:
+
+```text
+same morphology, different routing:
+  nonheterantherous S. spectabilis -> WITHIN_FLOWER_DIVISION_OF_LABOUR
+  nonheterantherous S. lycocarpum  -> AMONG_FLOWER_MODULE_DIVISION
+
+same routing, different morphology:
+  heterantherous S. alata          -> WITHIN_FLOWER_DIVISION_OF_LABOUR
+  nonheterantherous S. spectabilis -> WITHIN_FLOWER_DIVISION_OF_LABOUR
+```
+
+Thus visible fertile-stamen morphology is neither a deterministic predictor of
+routing architecture nor recoverable from routing state. The ecological object
+is a three-layer state: conflict, routing and implementation.
+
 ## U4 — pollinator-prey mechanism stress test
 
 Current high-information species series:
