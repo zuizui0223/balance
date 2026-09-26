@@ -44,7 +44,7 @@ CONTROL_SEARCH = {
     "FAILED",
     "EVIDENCE_CEILING_BLOCKED",
 }
-EXPECTED_FAMILIES = ["Bixaceae", "Brassicaceae", "Lythraceae", "Malvaceae"]
+EXPECTED_FAMILIES = ["Bixaceae", "Brassicaceae", "Lythraceae", "Malvaceae", "Scrophulariaceae"]
 
 
 def _is_species_level(name: str) -> bool:
