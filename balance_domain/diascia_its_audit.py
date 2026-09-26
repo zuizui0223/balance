@@ -254,12 +254,55 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
 
     missing_high_value = [taxon for taxon in HIGH_VALUE_TAXA if taxon not in selected]
 
+    raw_counts = defaultdict(int)
+    for row in raw_records:
+        taxon = " ".join(row["taxon"].split())
+        if taxon:
+            raw_counts[taxon] += 1
+
     sequences = {
         taxon: row["sequence"]
         for taxon, row in selected.items()
     }
     if CASE_TAXON not in sequences:
-        raise ValueError("Diascia ITS audit cannot proceed without D. anastrepta")
+        output = {
+            "analysis": "balance_u3_diascia_public_its_proximity_audit_v1",
+            "status": "CASE_ITS_UNAVAILABLE",
+            "ncbi_genus_taxid": DIASCIA_TAXID,
+            "n_nucleotide_records_in_genus_inventory": len(raw_records),
+            "n_exact_species_with_selected_its": len(selected),
+            "high_value_raw_record_counts": {
+                taxon: raw_counts.get(taxon, 0) for taxon in HIGH_VALUE_TAXA
+            },
+            "selection_rule": (
+                "one_exact_species_record_selected_without_distance_outcomes_by_"
+                "ITS1_ITS2_title_completeness_then_full_length_window_then_"
+                "ambiguity_then_length_then_accession"
+            ),
+            "selected_records": {
+                taxon: {
+                    "accession": row["accession"],
+                    "description": row["description"],
+                    "length": row["length"],
+                }
+                for taxon, row in sorted(selected.items())
+            },
+            "missing_high_value_taxa": missing_high_value,
+            "case_taxon": CASE_TAXON,
+            "next_gate": (
+                "public_NCBI_ITS_cannot_rank_controls_without_case_sequence; "
+                "use source-published topology or a higher-resolution public surface"
+            ),
+            "claim_ceiling": (
+                "public_NCBI_ITS_availability_ceiling_only_not_phylogenetic_ranking_"
+                "not_control_adjudication"
+            ),
+        }
+        output_path.write_text(
+            json.dumps(output, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        return output
     aligned = _align(sequences, workdir)
 
     pairwise = _pairwise_case_distances(aligned)
@@ -298,6 +341,7 @@ def run_audit(output_path: Path, workdir: Path) -> dict:
 
     output = {
         "analysis": "balance_u3_diascia_public_its_proximity_audit_v1",
+        "status": "PROXIMITY_DIAGNOSTIC_AVAILABLE",
         "ncbi_genus_taxid": DIASCIA_TAXID,
         "n_nucleotide_records_in_genus_inventory": len(raw_records),
         "n_exact_species_with_selected_its": len(selected),
@@ -344,29 +388,24 @@ def main() -> None:
     args = parser.parse_args()
     result = run_audit(args.output, args.workdir)
     compact = {
-        "analysis": result["analysis"],
-        "n_nucleotide_records_in_genus_inventory": result[
-            "n_nucleotide_records_in_genus_inventory"
-        ],
-        "n_exact_species_with_selected_its": result[
-            "n_exact_species_with_selected_its"
-        ],
-        "missing_high_value_taxa": result["missing_high_value_taxa"],
-        "selected_records": result["selected_records"],
-        "nearest_case_taxa_by_pairwise_p_distance": result[
-            "nearest_case_taxa_by_pairwise_p_distance"
-        ],
-        "close_heteranthery_exclusion_distances": result[
-            "close_heteranthery_exclusion_distances"
-        ],
-        "registered_control_candidate_distances": result[
-            "registered_control_candidate_distances"
-        ],
-        "registered_control_candidates_joint_site_comparison": result[
-            "registered_control_candidates_joint_site_comparison"
-        ],
-        "nj_tree": result["nj_tree"],
-        "claim_ceiling": result["claim_ceiling"],
+        key: result[key]
+        for key in (
+            "analysis",
+            "status",
+            "n_nucleotide_records_in_genus_inventory",
+            "n_exact_species_with_selected_its",
+            "high_value_raw_record_counts",
+            "missing_high_value_taxa",
+            "selected_records",
+            "nearest_case_taxa_by_pairwise_p_distance",
+            "close_heteranthery_exclusion_distances",
+            "registered_control_candidate_distances",
+            "registered_control_candidates_joint_site_comparison",
+            "nj_tree",
+            "next_gate",
+            "claim_ceiling",
+        )
+        if key in result
     }
     print(json.dumps(compact, indent=2, sort_keys=True))
 
