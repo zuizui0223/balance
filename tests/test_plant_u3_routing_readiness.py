@@ -113,4 +113,13 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     assert out["sencov_stage0_nuisance_template"].endswith(
         "BALANCE_PLANT_U3_SENCOV_STAGE0_NUISANCE_TEMPLATE_V1.json"
     )
+    assert out["osbeckia_conflict_estimability_contract"] == (
+        "docs/BALANCE_PLANT_U3_OSBECKIA_CONFLICT_ESTIMABILITY_V1.md"
+    )
+    assert out["osbeckia_conflict_targets_template"].endswith(
+        "BALANCE_PLANT_U3_OSBECKIA_CONFLICT_POWER_TARGETS_TEMPLATE_V1.json"
+    )
+    assert out["osbeckia_stage0_nuisance_template"].endswith(
+        "BALANCE_PLANT_U3_OSBECKIA_STAGE0_NUISANCE_TEMPLATE_V1.json"
+    )
     assert "prospective four-family expansion is exhausted" in out["model_readiness_rule"]
