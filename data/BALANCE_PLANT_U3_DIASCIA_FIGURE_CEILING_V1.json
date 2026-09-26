@@ -1,0 +1,15 @@
+{
+  "analysis": "balance_u3_diascia_2016_tree_figure_recovery_v1",
+  "status": "PUBLIC_PREVIEW_FETCH_BLOCKED",
+  "source_workflow_run_id": 36271460842,
+  "source_artifact_id": 10916040883,
+  "source_publication": "Hattingh et al. 2016 A forgotten biodiversity hotspot: Using Diascia to understand drivers of diversification in the Drakensberg Alpine Centre",
+  "attempted_surfaces": [
+    "ResearchGate direct figure download",
+    "rgstatic largepreview.png",
+    "rgstatic mediumpreview.png",
+    "rgstatic smallpreview.png"
+  ],
+  "result": "All machine retrieval routes were HTTP 403 in GitHub Actions; no topology was promoted from an unreadable preview.",
+  "claim_ceiling": "published_tree_source_located_but_machine_readable_topology_unavailable_not_control_ranking"
+}

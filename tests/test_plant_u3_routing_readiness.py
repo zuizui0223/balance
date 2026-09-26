@@ -40,7 +40,7 @@ def test_resolved_positive_controls_already_show_two_routing_architectures():
     assert out["n_shared_integrated_positive_controls"] == 0
 
 
-def test_current_routing_model_is_not_ready_and_diascia_expansion_is_active():
+def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     out = _readout()
     assert out["binary_conflict_identification_certificate"] == (
         "docs/BALANCE_PLANT_U3_BINARY_CONFLICT_IDENTIFICATION_V1.md"
@@ -100,10 +100,10 @@ def test_current_routing_model_is_not_ready_and_diascia_expansion_is_active():
     assert out["prospective_expansion_queue"] == (
         "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
     )
-    assert out["prospective_expansion_queue_exhausted"] is False
+    assert out["prospective_expansion_queue_exhausted"] is True
     assert out["n_prospective_expansion_blocks"] == 5
-    assert out["n_prospective_expansion_evidence_ceiling_blocked"] == 4
-    assert out["prospective_expansion_next_active_case"] == "Diascia anastrepta"
+    assert out["n_prospective_expansion_evidence_ceiling_blocked"] == 5
+    assert out["prospective_expansion_next_active_case"] is None
     assert out["next_evidence_targets"] == [
         "complete_predictor_blind_Diascia_anastrepta_control_search",
         "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
@@ -113,8 +113,11 @@ def test_current_routing_model_is_not_ready_and_diascia_expansion_is_active():
     ]
     assert "selected under the frozen predictor-blind matching" in out["acquisition_guard"]
     assert "do not invent a minimum-n threshold post hoc" in out["model_readiness_rule"]
-    assert "Diascia anastrepta" in out["model_readiness_rule"]
-    assert "no routing outcome may be used" in out["model_readiness_rule"]
+    assert "all five prospective expansion blocks" in out["model_readiness_rule"]
+    assert "closest-eligible ranking is not source-closed" in out["model_readiness_rule"]
+    assert out["diascia_control_audit"].endswith("BALANCE_PLANT_U3_DIASCIA_CONTROL_AUDIT_V1.csv")
+    assert out["diascia_its_ceiling_receipt"].endswith("BALANCE_PLANT_U3_DIASCIA_ITS_CEILING_V1.json")
+    assert out["diascia_figure_ceiling_receipt"].endswith("BALANCE_PLANT_U3_DIASCIA_FIGURE_CEILING_V1.json")
 
     assert out["sencov_estimability_contract"] == (
         "docs/BALANCE_PLANT_U3_SENCOV_ROUTING_ESTIMABILITY_V1.md"
