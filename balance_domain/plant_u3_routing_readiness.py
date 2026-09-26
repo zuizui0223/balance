@@ -13,6 +13,7 @@ from .plant_u3_conflict_identification import build_u3_binary_conflict_identific
 from .plant_u3_dependence import load_u3_dependence
 from .plant_u3_matched_extraction import load_u3_matched_extraction
 from .plant_u3_routing_expansion import build_u3_routing_expansion_readout
+from .plant_u3_routing_diversity import build_u3_routing_diversity_identification
 from .plant_u3_targeted_measurement import build_u3_targeted_measurement_readout
 
 
@@ -43,6 +44,14 @@ def build_u3_routing_readiness(
     )
     expansion = build_u3_routing_expansion_readout(expansion_path, universe_path)
     conflict_identification = build_u3_binary_conflict_identification(
+        extraction_path,
+        dependence_path,
+        adjudication_path,
+        pair_path,
+        case_path,
+        universe_path,
+    )
+    routing_diversity = build_u3_routing_diversity_identification(
         extraction_path,
         dependence_path,
         adjudication_path,
@@ -127,6 +136,18 @@ def build_u3_routing_readiness(
         "binary_conflict_sufficiency_falsified": conflict_identification[
             "sufficiency_falsified_by_positive_controls"
         ],
+        "routing_diversity_identification_certificate": (
+            "docs/BALANCE_PLANT_U3_ROUTING_DIVERSITY_IDENTIFICATION_V1.md"
+        ),
+        "minimum_observed_positive_control_routing_states": routing_diversity[
+            "minimum_observed_distinct_routing_states"
+        ],
+        "minimum_observed_routing_dependence_blocks": routing_diversity[
+            "minimum_observed_dependence_blocks"
+        ],
+        "routing_non_degenerate_under_all_unresolved_completions": routing_diversity[
+            "routing_non_degenerate_under_all_unresolved_completions"
+        ],
         "routing_measurement_complete": routing_measurement_complete,
         "prospective_routing_model_contract_frozen": False,
         "routing_model_ready": routing_model_ready,
@@ -157,6 +178,15 @@ def build_u3_routing_readiness(
         "acquisition_guard": (
             "new controls must be selected under the frozen predictor-blind matching "
             "protocol before conflict strength or routing architecture extraction"
+        ),
+        "sencov_estimability_contract": (
+            "docs/BALANCE_PLANT_U3_SENCOV_ROUTING_ESTIMABILITY_V1.md"
+        ),
+        "sencov_estimability_targets_template": (
+            "data/BALANCE_PLANT_U3_SENCOV_ROUTING_POWER_TARGETS_TEMPLATE_V1.json"
+        ),
+        "sencov_stage0_nuisance_template": (
+            "data/BALANCE_PLANT_U3_SENCOV_STAGE0_NUISANCE_TEMPLATE_V1.json"
         ),
         "model_readiness_rule": (
             "do not invent a minimum-n threshold post hoc; current unresolved targets "

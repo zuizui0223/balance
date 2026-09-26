@@ -51,6 +51,12 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     )
     assert out["binary_conflict_any_completion_finite_mle"] is False
     assert out["binary_conflict_sufficiency_falsified"] is True
+    assert out["routing_diversity_identification_certificate"] == (
+        "docs/BALANCE_PLANT_U3_ROUTING_DIVERSITY_IDENTIFICATION_V1.md"
+    )
+    assert out["minimum_observed_positive_control_routing_states"] == 2
+    assert out["minimum_observed_routing_dependence_blocks"] == 2
+    assert out["routing_non_degenerate_under_all_unresolved_completions"] is True
     assert out["routing_measurement_complete"] is False
     assert out["prospective_routing_model_contract_frozen"] is False
     assert out["routing_model_ready"] is False
@@ -77,4 +83,13 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     ]
     assert "selected under the frozen predictor-blind matching" in out["acquisition_guard"]
     assert "do not invent a minimum-n threshold post hoc" in out["model_readiness_rule"]
+    assert out["sencov_estimability_contract"] == (
+        "docs/BALANCE_PLANT_U3_SENCOV_ROUTING_ESTIMABILITY_V1.md"
+    )
+    assert out["sencov_estimability_targets_template"].endswith(
+        "BALANCE_PLANT_U3_SENCOV_ROUTING_POWER_TARGETS_TEMPLATE_V1.json"
+    )
+    assert out["sencov_stage0_nuisance_template"].endswith(
+        "BALANCE_PLANT_U3_SENCOV_STAGE0_NUISANCE_TEMPLATE_V1.json"
+    )
     assert "prospective four-family expansion is exhausted" in out["model_readiness_rule"]
