@@ -1,0 +1,45 @@
+name: U3 Table S1 audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/macro-persistent-compromise
+    paths:
+      - "balance_domain/plant_u3_table_s1_audit.py"
+      - "tests/test_plant_u3_table_s1_audit.py"
+      - ".github/workflows/u3-table-s1-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  table-s1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install legacy Word extractor
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y antiword
+
+      - name: Run Table S1 recovery audit
+        run: |
+          mkdir -p /tmp/u3-table-s1/files
+          python -m balance_domain.plant_u3_table_s1_audit \
+            --output /tmp/u3-table-s1/audit.json \
+            --workdir /tmp/u3-table-s1/files
+          cat /tmp/u3-table-s1/audit.json
+
+      - name: Upload audit receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: u3-vallejo-marin-table-s1-audit
+          path: /tmp/u3-table-s1
+          if-no-files-found: error

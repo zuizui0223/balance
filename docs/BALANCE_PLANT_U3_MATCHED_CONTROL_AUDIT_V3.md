@@ -1,0 +1,338 @@
+# BALANCE plant U3 matched-control audit v3
+
+## Current state
+
+U3 has six species-level case records, but the latest source audit rejects the previously proposed `Senna surattensis` negative controls.
+
+```text
+source-resolved heteranthery cases             6
+PRIMARY pair records retained                  6
+registered eligible PRIMARY controls           6
+adjudicated PRIMARY pairs                      4
+screened PRIMARY pairs still open              2
+cases needing replacement controls             0
+screened-control coverage complete?           YES
+case-control adjudication closed?              NO
+```
+
+Canonical machine-readable surfaces:
+
+```text
+data/BALANCE_PLANT_U3_MATCHED_CONTROLS_V1.csv
+data/BALANCE_PLANT_U3_CONTROL_ADJUDICATION_V1.csv
+data/BALANCE_PLANT_U3_CONTROL_ALTERNATIVES_V1.csv
+balance_domain/plant_u3_controls.py
+balance_domain/plant_u3_adjudication.py
+balance_domain/plant_u3_alternatives.py
+```
+
+The pair record is retained when a proposed control is rejected so the failed comparison remains auditable rather than disappearing from the history.
+
+## Frozen alternative-control search
+
+Replacement/closest-control discovery is a separate fail-closed registry rather than an informal literature search.
+
+```text
+alternative-control receipts    22
+OPEN                              4
+REJECTED                         16
+SCREENED / selected               2
+```
+
+The search now records three different outcomes rather than forcing every close relative into a negative-control role.
+
+For `S. alata`, every sampled clade-II candidate in the frozen search fails the heteranthery-absence gate, including `S. paradictyon`. The next eligible phylogenetic grain is clade III. Both `S. atomaria` and `S. spectabilis` satisfy the homomorphic-stamen criterion there, but `S. spectabilis` has direct reproductive evidence of cross-pollination and major bee visitors. The preregistered SOURCE_QUALITY tie-break therefore selects `S. spectabilis`; `S. atomaria` is retained as a rejected same-grain alternative rather than being called phylogenetically ineligible.
+
+For `S. bicapsularis`, the closest known species `S. corymbosa` is rejected because heteranthery persists. The sister subclade VIIb was then audited explicitly. `S. bauhinioides` and `S. villosa` fail the strict absence criterion; `S. armata` has acceptable morphology and phylogenetic grain but loses the preregistered SOURCE_QUALITY tie-break. `S. covesii` is therefore the sole SCREENED replacement candidate and has now been promoted into the formal PRIMARY pair registry.
+
+A candidate becomes `SCREENED` only when heteranthery absence, animal-pollination eligibility, phylogenetic proximity, and the closest-eligible/tie-break search all pass.
+
+## PASS — Solanum rostratum -> Solanum lycocarpum
+
+Decision:
+
+```text
+PASS
+```
+
+The case belongs to heterantherous section Androceras.
+
+The registered control is from section Crinitum, recovered as the sister section in the relevant Solanum phylogenetic context. Crinitum representatives are actinomorphic and isantherous, and `S. lycocarpum` has independent bee/buzz-pollination evidence.
+
+More than one Crinitum candidate can be defended at similar phylogenetic grain, so the preregistered `SOURCE_QUALITY` tie-break is used rather than pretending the control is a unique species sister.
+
+No BALANCE predictor value was used in the match.
+
+## PASS — Melastoma malabathricum -> Osbeckia chinensis
+
+Decision:
+
+```text
+PASS
+```
+
+Three independent source surfaces close the match:
+
+1. modern Melastomateae phylogenomics places the `O. chinensis/O. nepalensis` lineage sister to `Melastoma`;
+2. Flora of China describes `Osbeckia` stamens as isomorphic and equal/subequal, excluding the discrete feeding-versus-pollinating heteranthery that defines the case;
+3. direct hymenopteran flower-visitation observations support animal-pollination eligibility.
+
+The registered match level remains `SAME_TRIBE_SUBFAMILY`; no false congeneric or species-sister claim is made.
+
+This closes control selection only. The separate pollen-fate conflict extraction for `O. chinensis` remains unresolved.
+
+## OPEN — Monochoria korsakowii -> Monochoria australasica
+
+Decision:
+
+```text
+OPEN
+```
+
+Closed gates:
+
+- congeneric phylogenetic placement;
+- absence of a morphologically distinct pollinating anther in the proposed control;
+- predictor blinding;
+- registered tie-break.
+
+Open gates:
+
+```text
+DIRECT_ANIMAL_POLLINATION_AND_CLOSEST_ELIGIBLE_CONGENER_SEARCH_OPEN
+```
+
+The morphology gate is secure: developmental work shows no distinct pollinating anther and six yellow feeding anthers, and recent synthesis classifies the species as non-reciprocal enantiostylous.
+
+The pollination gate is deliberately still OPEN. Pontederiaceae synthesis links the Monochoria floral syndrome to bee/buzz pollination, but the source-secure Amegilla record for `M. australasica` is male territorial behaviour above water, not a flower visit or pollen-transfer observation. A genus-level syndrome is not substituted for a species-level pollination receipt.
+
+The closest-control gate is also OPEN, but the reason is now experimentally sharper. A reproducible public-accession audit placed both candidates and both cases on the same `ndhF+rbcL` alignment. The first implementation exposed a comparability trap: pairwise distances used different numbers of sites because `M. australasica` has a complete plastome while historical `M. cyanea` accessions are partial. The audit was therefore corrected to rank candidates only on sites readable in the case and **both** candidates.
+
+The corrected result is non-identifying:
+
+```text
+M. korsakowii:
+  jointly comparable sites        1825
+  M. australasica differences       36
+  M. cyanea differences              36
+  candidate-candidate differences     0
+  outcome                           TIE
+
+M. vaginalis:
+  jointly comparable sites        1786
+  M. australasica differences       30
+  M. cyanea differences              30
+  candidate-candidate differences     0
+  outcome                           TIE
+```
+
+Across the broader candidate overlap, `M. australasica` and `M. cyanea` differ at 0 of 1833 jointly comparable `ndhF+rbcL` sites. Thus these two plastid markers contain no information for choosing the closest negative control. This is not promoted into a species-tree conclusion; the closest-control gate now explicitly requires a higher-resolution common phylogenetic surface.
+
+## OPEN — Monochoria vaginalis -> Monochoria australasica
+
+Decision:
+
+```text
+OPEN
+```
+
+The same biological control is shared with `M. korsakowii`; that dependence is retained explicitly.
+
+The same two gates remain open:
+
+- direct species-level animal-pollination closure for `M. australasica`;
+- higher-resolution closest-eligible closure against the equal-stamen `M. cyanea`.
+
+The public-accession `ndhF+rbcL` audit cannot resolve the second gate: both candidates are exactly tied for `M. vaginalis` on 1786 joint sites and are identical to one another on all candidate-overlap sites used by the diagnostic. The 2018 family synthesis explicitly treats Monochoria as a pollen-reward lineage with floral modifications associated with bee visitation, but that remains mechanism-level background rather than a direct species receipt.
+
+The two Monochoria pairs cannot be treated as two independent negative-control lineages merely because there are two case species.
+
+## PASS — Senna alata -> Senna spectabilis
+
+Decision:
+
+```text
+PASS
+```
+
+This replaces the rejected `S. surattensis` proposal after a frozen phylogenetic search.
+
+All sampled clade-II candidates audited in the search fail the heteranthery-absence gate. The next eligible grain is clade III, where both `S. atomaria` and `S. spectabilis` have source-secure homomorphic fertile stamens. `S. spectabilis` additionally has direct reproductive-biology evidence for a cross-pollinating system with bee visitors, so the preregistered SOURCE_QUALITY rule selects it over `S. atomaria`.
+
+The formal pair is now ADJUDICATED.
+
+Matched extraction is registered, but both case-side and control-side pollen-fate conflict remain `UNRESOLVED`. The control match therefore closes architecture selection without manufacturing a conflict-strength contrast.
+
+## FAIL — Senna alata -> Senna surattensis
+
+Decision:
+
+```text
+FAIL
+heteranthery_absence_status = FAIL
+selection_status = REJECTED
+```
+
+The earlier screen over-interpreted the statement that `S. surattensis` has all 10 stamens fertile and similar in size.
+
+Luo et al. (2009) explicitly sampled seven species with heteromorphic stamens. Their Table 1 codes `S. surattensis` as having `long, short` stamen differentiation, and the discussion describes its androecium as having **little** morphological differentiation.
+
+Therefore:
+
+```text
+weak differentiation
+!=
+confirmed heteranthery absence
+```
+
+The proposed control is source-comparable and animal-pollinated, but it is not a valid negative architecture control under the frozen U3 protocol.
+
+A replacement nonheterantherous congener or nearest eligible relative must be registered before this case regains control coverage.
+
+## FAIL — Senna bicapsularis -> Senna surattensis
+
+Decision:
+
+```text
+FAIL
+heteranthery_absence_status = FAIL
+selection_status = REJECTED
+```
+
+The same source problem applies.
+
+`S. surattensis` is less differentiated than `S. bicapsularis`, but the source still distinguishes long and short stamen sets. It is therefore informative as a low-differentiation comparative state, not as a clean absence control.
+
+The previous shared-control convenience is not retained at the cost of violating the outcome definition.
+
+## PASS — Senna bicapsularis -> Senna covesii
+
+Decision:
+
+```text
+PASS
+```
+
+This is a replacement of the rejected `S. surattensis` proposal, not a relabeling of the old pair.
+
+The case lies in heterantherous VIIa. The next eligible lineage is sister subclade VIIb, characterized by fertile stamens of approximately the same length and shape. The sampled VIIb candidate audit then gives:
+
+```text
+S. bauhinioides   REJECTED   differentiated stamens + autogamy signal
+S. villosa        REJECTED   discrete median versus abaxial stamens
+S. armata         REJECTED   same phylogenetic grain, weaker pollination evidence
+S. covesii        SCREENED   morphology PASS + bee buzz-pollination PASS
+```
+
+With phylogenetic grain tied among the remaining admissible VIIb candidates, the preregistered SOURCE_QUALITY rule selects `S. covesii`. The formal pair is now ADJUDICATED.
+
+Matched extraction is also registered, but it deliberately keeps both the `S. bicapsularis` case-side pollen-fate conflict and the `S. covesii` control-side conflict as `UNRESOLVED`. Closing the architecture match does not manufacture a functional-conflict effect.
+
+## Why the Senna rejection improves the design
+
+A case-control study of structural differentiation becomes circular if controls are allowed to be merely "less differentiated" while being labeled "absence."
+
+The fail-closed correction separates two possible future analyses:
+
+```text
+primary U3 matched lane:
+  heteranthery present
+  versus
+  independently confirmed heteranthery absent
+
+possible exploratory continuum lane:
+  degree / geometry of stamen differentiation
+```
+
+The second may ultimately be biologically useful, but it is a different estimand and must not silently replace the preregistered binary control gate.
+
+## Senna replacement-search result
+
+The replacement search now shows a biologically informative pattern: the nearest-looking candidates often retain the very differentiation that the control is meant to lack.
+
+### S. alata
+
+The sampled clade-II search is exhausted as a negative-control search: `S. surattensis`, `S. siamea`, `S. martiana`, `S. pleurocarpa`, `S. didymobotrya`, `S. italica`, `S. nicaraguensis`, and `S. paradictyon` all fail the frozen heteranthery-absence criterion.
+
+The next eligible grain is clade III. There, both `S. atomaria` and `S. spectabilis` satisfy the morphology gate. The direct reproductive evidence is stronger for `S. spectabilis`, so SOURCE_QUALITY closes the tie:
+
+```text
+S. atomaria      REJECTED   same clade-III grain, weaker pollination evidence
+S. spectabilis   SCREENED   morphology PASS + animal pollination PASS
+```
+
+`S. spectabilis` is now the formal ADJUDICATED control for `S. alata`.
+
+### S. bicapsularis
+
+`S. corymbosa` is especially diagnostic: recent ITS evidence recovers it as the sister of `S. bicapsularis`, but direct floral work retains differentiated stamen functions. It is therefore rejected despite excellent phylogenetic proximity.
+
+The next eligible lineage is sister subclade VIIb. The frozen audit rejects `S. bauhinioides` and `S. villosa` on biological gates. Both `S. armata` and `S. covesii` reach the appropriate phylogenetic grain, but `S. covesii` has the stronger direct pollination receipt. SOURCE_QUALITY therefore closes the tie:
+
+```text
+S. armata   REJECTED   same VIIb grain, weaker pollination evidence
+S. covesii  SCREENED   morphology PASS + direct buzz-pollination PASS
+```
+
+`S. covesii` is now the formal ADJUDICATED control for `S. bicapsularis`.
+
+### Biological implication
+
+This search suggests that heteranthery is locally phylogenetically persistent enough that a strict negative control may require moving beyond the closest species.
+
+That is not a reason to relax the control definition. It is itself a result about the architecture landscape and supports keeping a future differentiation-continuum analysis separate from the confirmatory binary case-control estimand.
+
+## Fail-closed contract
+
+The adjudication validator requires:
+
+```text
+decision = PASS
+<=>
+all six gate fields = PASS
+and pair registry selection_status = ADJUDICATED
+and blocker = empty
+```
+
+For an open pair:
+
+```text
+decision = OPEN
+<=>
+no FAIL gate
+and an explicit blocker exists
+and pair registry selection_status = SCREENED
+```
+
+For a rejected pair:
+
+```text
+decision = FAIL
+=>
+at least one biological gate = FAIL
+and pair registry selection_status = REJECTED
+```
+
+A documentation edit cannot silently promote a pair.
+
+## Current bottleneck
+
+The remaining U3 **control-matching** work is now only the two Monochoria cases:
+
+1. resolve direct species-level effective-pollination evidence for `M. australasica` or an alternative admissible control;
+2. move beyond `ndhF+rbcL`, which is formally non-identifying for `M. australasica` versus `M. cyanea`, and obtain a higher-resolution common phylogenetic surface;
+3. retain the shared-control dependence between the two Monochoria cases.
+
+The current literature search recovered family-level insect-pollination coding and a Monochoria bee/buzz-pollination syndrome, but no direct `M. australasica` flower-visitation/pollen-transfer study. The published Amegilla record remains territorial behaviour above water rather than pollination evidence, so the pollination gate is not relaxed.
+
+The broader U3 discovery lane also still has five Table-S1-dependent family representative identities to resolve.
+
+Separately, the matched conflict-estimand lane remains much less complete: `Osbeckia chinensis`, `S. alata -> S. spectabilis`, and `S. bicapsularis -> S. covesii` do not yet provide matched pollen-fate conflict contrasts. Architecture matching and conflict measurement remain separate gates.
+
+## Claim ceiling
+
+Even if all six matched pairs close, U3 remains an outcome-selected case-control lane.
+
+It can compare independently measured conflict/architecture attributes conditional on the registered heteranthery cases and their controls.
+
+It cannot estimate heteranthery prevalence across angiosperms or identify historical transition probabilities.

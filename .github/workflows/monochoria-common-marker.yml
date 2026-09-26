@@ -1,0 +1,92 @@
+name: Monochoria common-marker audit
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "balance_domain/monochoria_common_marker.py"
+      - "balance_domain/monochoria_sequence_inventory.py"
+      - "balance_domain/monochoria_plastome_audit.py"
+      - "balance_domain/monochoria_topology_audit.py"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json"
+      - "data/BALANCE_PLANT_U3_MONOCHORIA_TOPOLOGY_V1.csv"
+      - ".github/workflows/monochoria-common-marker.yml"
+  workflow_dispatch:
+
+jobs:
+  common-marker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install audit dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install biopython
+          sudo apt-get update -qq
+          sudo apt-get install -y mafft
+      - name: Run rooted plastome-topology audit
+        run: |
+          mkdir -p /tmp/monochoria-common-marker/topology
+          python -m balance_domain.monochoria_topology_audit \
+            --ledger data/BALANCE_PLANT_U3_MONOCHORIA_TOPOLOGY_V1.csv \
+            --output /tmp/monochoria-common-marker/topology_readout.json \
+            --workdir /tmp/monochoria-common-marker/topology \
+            --bootstrap-replicates 500
+          cat /tmp/monochoria-common-marker/topology_readout.json
+      - name: Run public-accession common-marker audit
+        run: |
+          mkdir -p /tmp/monochoria-common-marker
+          python -m balance_domain.monochoria_common_marker \
+            --ledger data/BALANCE_PLANT_U3_MONOCHORIA_COMMON_MARKER_V1.csv \
+            --output /tmp/monochoria-common-marker/readout.json \
+            --workdir /tmp/monochoria-common-marker/work
+          cat /tmp/monochoria-common-marker/readout.json
+      - name: Inventory exact-taxon NCBI nucleotide records
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          python -m balance_domain.monochoria_sequence_inventory \
+            --output /tmp/monochoria-common-marker/ncbi_inventory.json
+      - name: Run shared plastome-CDS audit
+        run: |
+          mkdir -p /tmp/monochoria-common-marker/plastome
+          python -m balance_domain.monochoria_plastome_audit \
+            --ledger data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_V1.csv \
+            --output /tmp/monochoria-common-marker/plastome_readout.json \
+            --workdir /tmp/monochoria-common-marker/plastome
+      - name: Validate frozen plastome ranking receipt
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          live = json.loads(Path("/tmp/monochoria-common-marker/plastome_readout.json").read_text())
+          frozen = json.loads(Path("data/BALANCE_PLANT_U3_MONOCHORIA_PLASTOME_RESULT_V1.json").read_text())
+
+          assert frozen["accessions"] == live["accessions"]
+          assert frozen["shared_gene_count"] == live["shared_gene_count"]
+          assert frozen["concatenated_alignment_length"] == live["concatenated_alignment_length"]
+          assert frozen["candidate_pair_differences_on_shared_cds"] == live["candidate_pair_differences_on_shared_cds"]
+          assert frozen["claim_ceiling"] == live["claim_ceiling"]
+          for case, expected in frozen["case_comparisons"].items():
+              observed = live["case_comparisons"][case]
+              assert expected["jointly_comparable_sites"] == observed["jointly_comparable_sites"]
+              assert expected["candidate_distances"] == observed["candidate_distances"]
+              assert expected["closest_candidate_by_p_distance"] == observed["closest_candidate_by_p_distance"]
+              assert expected["difference_count_delta"] == observed["difference_count_delta"]
+              assert expected["p_distance_delta"] == observed["p_distance_delta"]
+              assert expected["gene_wise_support"] == live["gene_wise_support"][case]["support_counts"]
+          assert frozen["adjudication_use"] == "conditional_phylogenetic_candidate_ranking_only"
+          assert frozen["remaining_gate"].startswith("direct_species_level_effective_animal_pollination")
+          PY
+      - name: Upload audit receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: monochoria-common-marker-audit
+          path: /tmp/monochoria-common-marker

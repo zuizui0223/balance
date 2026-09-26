@@ -1,0 +1,39 @@
+name: U1 primary-source metadata audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/macro-persistent-compromise
+    paths:
+      - "balance_domain/plant_u1_primary_source_audit.py"
+      - "tests/test_plant_u1_primary_source_audit.py"
+      - "data/BALANCE_PLANT_U1_PRODUCTION_SOURCE_MAP_V1.csv"
+      - ".github/workflows/u1-primary-source-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run Crossref and Unpaywall source audit
+        run: |
+          mkdir -p /tmp/u1-primary-source
+          python -m balance_domain.plant_u1_primary_source_audit             --map data/BALANCE_PLANT_U1_PRODUCTION_SOURCE_MAP_V1.csv             --output-json /tmp/u1-primary-source/audit.json             --output-csv /tmp/u1-primary-source/studies.csv
+          cat /tmp/u1-primary-source/audit.json | python -c             'import json,sys; x=json.load(sys.stdin); print(json.dumps({k:x[k] for k in ["n_mapped_taxa","n_unique_primary_studies","crossref_status_counts","n_resolved_doi","n_oa_fulltext_candidates"]}, indent=2))'
+
+      - name: Upload primary-source audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: u1-primary-source-metadata-audit
+          path: /tmp/u1-primary-source
+          if-no-files-found: error

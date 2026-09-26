@@ -1,0 +1,64 @@
+{
+  "analysis": "balance_u3_osbeckia_conflict_power_targets_v1",
+  "status": "DO_NOT_RUN_POWER_UNTIL_ALL_REQUIRED_TARGETS_ARE_FROZEN",
+  "target_power": 0.8,
+  "alpha_familywise": 0.05,
+  "target_source_rule": "The minimum reward-fate probability, minimum transfer-fate probability and maximum source-misclassification rate must be justified from assay validation, biological relevance, theory, or independent prior information. Stage-0 focal fate proportions must not be used to choose convenient thresholds; Stage-0 supplies nuisance quantities only and threshold justification must be independent of the focal fate partition.",
+  "nuisance_parameter_source": "BALANCE_PLANT_U3_OSBECKIA_STAGE0_NUISANCE_TEMPLATE_V1.json",
+  "primary_estimand": {
+    "name": "same_visit_source_resolved_pollen_fate_partition",
+    "reward_fate": "source-resolved focal pollen recovered in preregistered groomed/collected reward compartments at the standardized scoring time",
+    "transfer_fate": "source-resolved focal pollen deposited on a conspecific recipient stigma or retained in preregistered transfer-associated visitor-body sectors at the standardized scoring time",
+    "unresolved_or_lost_fate": "tracked separately and never silently reassigned",
+    "classification": "POSITIVE_only_if_simultaneous_lower_bounds_clear_both_frozen_fate_floors"
+  },
+  "minimum_reward_fate_probability": "REQUIRED_BEFORE_USE",
+  "minimum_reward_fate_probability_justification": "REQUIRED_BEFORE_USE",
+  "minimum_transfer_fate_probability": "REQUIRED_BEFORE_USE",
+  "minimum_transfer_fate_probability_justification": "REQUIRED_BEFORE_USE",
+  "maximum_source_misclassification_rate": "REQUIRED_BEFORE_USE",
+  "source_misclassification_ceiling_justification": "REQUIRED_BEFORE_USE",
+  "design": {
+    "cluster_unit": "plant_id",
+    "donor_unit": "single_focal_flower",
+    "visit_unit": "tracked_single_visitor_sequence",
+    "source_assignment_required": true,
+    "donor_pollen_source_method": "REQUIRED_BEFORE_USE",
+    "recipient_sequence": "REQUIRED_BEFORE_USE",
+    "visitor_body_sector_map": "REQUIRED_BEFORE_USE",
+    "reward_compartment_definition": "REQUIRED_BEFORE_USE",
+    "transfer_compartment_definition": "REQUIRED_BEFORE_USE",
+    "reward_and_transfer_fates_mutually_exclusive_at_scoring_time": true,
+    "unresolved_grains_retained_separately": true,
+    "candidate_plants": "REQUIRED_BEFORE_USE",
+    "tracked_visits_per_plant": "REQUIRED_BEFORE_USE",
+    "allocation_rule": "REQUIRED_BEFORE_USE",
+    "attrition_inflation_rule": "REQUIRED_BEFORE_USE"
+  },
+  "nuisance_sensitivity": {
+    "plant_level_icc_range": "REQUIRED_BEFORE_USE",
+    "visitor_class_heterogeneity_range": "REQUIRED_BEFORE_USE",
+    "source_label_recovery_rate_range": "REQUIRED_BEFORE_USE",
+    "background_contamination_rate_range": "REQUIRED_BEFORE_USE",
+    "source_misclassification_rate_range": "REQUIRED_BEFORE_USE",
+    "unresolved_or_lost_fate_fraction_range": "REQUIRED_BEFORE_USE",
+    "recipient_stigma_recovery_rate_range": "REQUIRED_BEFORE_USE",
+    "attrition_fraction_range": "REQUIRED_BEFORE_USE"
+  },
+  "precision_stopping_rule": {
+    "outcome_blinded_for_threshold_selection": true,
+    "thresholds_frozen_before_focal_fate_proportions": true,
+    "negative_call_allowed": false,
+    "classification": "both_simultaneous_CI_lower_bounds_above_frozen_floors_and_source_error_below_ceiling=>POSITIVE;otherwise=>UNRESOLVED",
+    "final_scale_rule": "Choose a design that reaches the registered target power/precision for both fate lower-bound criteria simultaneously across the frozen nuisance sensitivity range while preserving plant-level clustering."
+  },
+  "fail_closed_rules": [
+    "Do not run final power while any REQUIRED_BEFORE_USE field remains.",
+    "Do not use Stage-0 reward or transfer fate proportions to define the biological floors.",
+    "Do not call NO_DEMONSTRATED_CONFLICT because one fate fails significance or precision; failure to meet the positive contract remains UNRESOLVED.",
+    "Do not pool unassigned/lost pollen into either reward or transfer fate.",
+    "Do not treat pollen grains, body sectors, recipient stigmas or visits from the same plant as independent biological replicates.",
+    "Do not close the gate with pollen extraction plus stigma contact unless focal pollen is source-resolved into the registered competing fates."
+  ],
+  "claim_ceiling": "prospective_osbeckia_power_targets_only_not_power_result_not_sample_size_not_conflict_result"
+}

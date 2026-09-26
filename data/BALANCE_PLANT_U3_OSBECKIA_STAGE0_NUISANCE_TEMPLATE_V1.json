@@ -1,0 +1,27 @@
+{
+  "analysis": "balance_u3_osbeckia_stage0_nuisance_v1",
+  "status": "TEMPLATE_NOT_READY",
+  "collection_scope": "Stage-0 calibration only; no focal reward-versus-transfer fate proportion may be used to choose final biological thresholds.",
+  "allowed_outputs": {
+    "n_plants": "REQUIRED_BEFORE_USE",
+    "n_donor_flowers": "REQUIRED_BEFORE_USE",
+    "n_tracked_visits": "REQUIRED_BEFORE_USE",
+    "plant_level_icc": "REQUIRED_BEFORE_USE",
+    "visitor_class_heterogeneity": "REQUIRED_BEFORE_USE",
+    "source_label_recovery_rate": "REQUIRED_BEFORE_USE",
+    "background_contamination_rate": "REQUIRED_BEFORE_USE",
+    "source_misclassification_rate": "REQUIRED_BEFORE_USE",
+    "unresolved_or_lost_fate_fraction": "REQUIRED_BEFORE_USE",
+    "recipient_stigma_recovery_rate": "REQUIRED_BEFORE_USE",
+    "attrition_fraction_and_reasons": "REQUIRED_BEFORE_USE",
+    "focal_flower_pollen_pool_distribution_before_outcome_unblinding": "REQUIRED_BEFORE_USE"
+  },
+  "explicitly_forbidden_outputs": [
+    "observed_reward_fate_probability",
+    "observed_transfer_fate_probability",
+    "observed_transfer_to_reward_log_ratio",
+    "observed_conflict_strength",
+    "a biological fate floor chosen from the focal Stage-0 fate proportions"
+  ],
+  "claim_ceiling": "nuisance_calibration_only_not_conflict_result_not_conflict_strength_not_routing"
+}

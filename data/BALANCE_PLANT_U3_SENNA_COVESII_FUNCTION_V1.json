@@ -1,0 +1,27 @@
+{
+  "analysis": "balance_plant_u3_senna_covesii_function_v1",
+  "taxon": "Senna covesii",
+  "matched_pair": "U3_PAIR_SENBI_001",
+  "evidence": [
+    {
+      "source": "Marazzi 2011, The Plant Press, Nectarless Flowers and Leaves with Extrafloral Nectaries",
+      "result": "Species-level field observation records small bees visiting S. covesii and audible buzz visits; Senna flowers are described as pollen-reward systems in which sonication ejects pollen onto bees and pollen that escapes grooming is transferred to conspecific stigmas."
+    },
+    {
+      "source": "Felger & Rutman 2015, Flora of southwestern Arizona Part 14",
+      "result": "S. covesii has seven fertile poricidal stamens and flowers are buzz-pollinated by bees."
+    },
+    {
+      "source": "Russell, Buchmann & Papaj 2017 Behavioral Ecology 28:988-998",
+      "doi": "10.1093/beheco/arx058",
+      "result": "S. covesii is documented as a poricidal species that conceals pollen within anthers, consistent with pollen as the bee-collected floral resource."
+    }
+  ],
+  "adjudication": {
+    "pollen_fate_conflict_status": "POSITIVE",
+    "evidence_class": "DIRECT_BUZZ_POLLEN_REWARD_AND_TRANSFER_ROUTE",
+    "architecture_mode": "UNRESOLVED",
+    "strength_estimand": "UNRESOLVED"
+  },
+  "claim_ceiling": "binary_pollen_reward_vs_transfer_conflict_presence_for_Senna_covesii_not_quantitative_conflict_strength_not_architecture_not_historical_causation"
+}
