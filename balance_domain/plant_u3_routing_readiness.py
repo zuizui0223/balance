@@ -17,6 +17,10 @@ from .plant_u3_routing_diversity import build_u3_routing_diversity_identificatio
 from .plant_u3_morphology_routing_identification import (
     build_u3_morphology_routing_identification,
 )
+from .plant_u3_morphology_routing_nonidentifiability import (
+    build_u3_morphology_routing_nonidentifiability,
+)
+from .plant_u3_sencov_prediction import build_sencov_prediction_readout
 from .plant_u3_targeted_measurement import build_u3_targeted_measurement_readout
 
 
@@ -69,11 +73,31 @@ def build_u3_routing_readiness(
         case_path,
         universe_path,
     )
+    proxy_nonidentifiability = build_u3_morphology_routing_nonidentifiability(
+        extraction_path,
+        dependence_path,
+        adjudication_path,
+        pair_path,
+        case_path,
+        universe_path,
+    )
     targeted_measurement_path = (
         extraction_path.parent / "BALANCE_PLANT_U3_TARGETED_MEASUREMENT_SPEC_V2.json"
     )
     targeted_measurement = build_u3_targeted_measurement_readout(
         targeted_measurement_path
+    )
+    sencov_prediction_path = (
+        extraction_path.parent / "BALANCE_PLANT_U3_SENCOV_ROUTING_PREDICTION_V1.json"
+    )
+    sencov_prediction = build_sencov_prediction_readout(
+        sencov_prediction_path,
+        extraction_path,
+        dependence_path,
+        adjudication_path,
+        pair_path,
+        case_path,
+        universe_path,
     )
 
     dep_by_pair = {r["pair_id"]: r["dependence_block_id"] for r in dependence}
@@ -169,6 +193,18 @@ def build_u3_routing_readiness(
         "n_same_route_morphology_discordant_pairs": morphology_routing[
             "n_same_route_morphology_discordant_pairs"
         ],
+        "morphology_routing_proxy_nonidentifiability_certificate": (
+            "docs/BALANCE_PLANT_U3_MORPHOLOGY_ROUTING_NONIDENTIFIABILITY_V1.md"
+        ),
+        "morphology_does_not_uniquely_identify_routing": proxy_nonidentifiability[
+            "morphology_does_not_uniquely_identify_routing"
+        ],
+        "routing_does_not_uniquely_identify_morphology": proxy_nonidentifiability[
+            "routing_does_not_uniquely_identify_morphology"
+        ],
+        "bidirectional_proxy_equivalence_rejected": proxy_nonidentifiability[
+            "bidirectional_proxy_equivalence_rejected"
+        ],
         "routing_measurement_complete": routing_measurement_complete,
         "prospective_routing_model_contract_frozen": False,
         "routing_model_ready": routing_model_ready,
@@ -182,6 +218,16 @@ def build_u3_routing_readiness(
         "senna_covesii_shared_integrated_requires_equivalence": targeted_measurement[
             "senna_covesii_shared_integrated_requires_equivalence"
         ],
+        "senna_covesii_prediction_contract": (
+            "data/BALANCE_PLANT_U3_SENCOV_ROUTING_PREDICTION_V1.json"
+        ),
+        "senna_covesii_prediction_status": sencov_prediction["status"],
+        "senna_covesii_predicted_routing_state": sencov_prediction[
+            "predicted_routing_state"
+        ],
+        "senna_covesii_prediction_is_independent_block_replication": (
+            sencov_prediction["target_is_independent_new_dependence_block"]
+        ),
         "prospective_expansion_queue": "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv",
         "prospective_expansion_queue_exhausted": expansion[
             "prospective_queue_exhausted"
@@ -191,7 +237,7 @@ def build_u3_routing_readiness(
             "n_evidence_ceiling_blocked"
         ],
         "next_evidence_targets": [
-            "collect_or_adjudicate_Senna_covesii_routing_under_U3MEAS_SENCOV_001",
+            "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
             "collect_or_adjudicate_Osbeckia_conflict_under_U3MEAS_OSBCHI_001",
             "collect_or_adjudicate_Monochoria_pollination_under_frozen_exact_species_routes",
             "reopen_frozen_expansion_blocks_only_with_new_matching_stage_evidence",
