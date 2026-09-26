@@ -162,6 +162,26 @@ morphological heteranthery
 level at which functional routing occurs
 ```
 
+A matched counterexample now makes the second separation explicit. `Senna alata`
+is heterantherous and `S. spectabilis` is nonheterantherous under the frozen
+fertile-stamen morphology definition, yet both have positive pollen-fate
+conflict and the same source-resolved
+`WITHIN_FLOWER_DIVISION_OF_LABOUR` routing state. Therefore heteranthery is
+not necessary for within-flower functional division, and visible stamen
+morphology does not uniquely identify routing architecture.
+
+Combined with `S. lycocarpum`, which routes positive conflict among flower
+modules, the current evidence supports a hierarchical empirical target:
+
+```text
+conflict presence / strength
+-> routing level
+-> morphological or floral implementation
+```
+
+These are distinct estimands and should not be collapsed into one binary
+"heteranthery as conflict resolution" variable.
+
 ## U4 — pollinator-prey mechanism stress test
 
 Current high-information species series:
