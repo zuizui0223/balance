@@ -62,6 +62,12 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     )
     assert out["heteranthery_not_necessary_for_within_flower_division_of_labour"] is True
     assert out["n_same_route_morphology_discordant_pairs"] == 1
+    assert out["morphology_routing_proxy_nonidentifiability_certificate"] == (
+        "docs/BALANCE_PLANT_U3_MORPHOLOGY_ROUTING_NONIDENTIFIABILITY_V1.md"
+    )
+    assert out["morphology_does_not_uniquely_identify_routing"] is True
+    assert out["routing_does_not_uniquely_identify_morphology"] is True
+    assert out["bidirectional_proxy_equivalence_rejected"] is True
     assert out["routing_measurement_complete"] is False
     assert out["prospective_routing_model_contract_frozen"] is False
     assert out["routing_model_ready"] is False
@@ -76,12 +82,22 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     ]
     assert out["senna_covesii_routing_contract_frozen"] is True
     assert out["senna_covesii_shared_integrated_requires_equivalence"] is True
+    assert out["senna_covesii_prediction_contract"] == (
+        "data/BALANCE_PLANT_U3_SENCOV_ROUTING_PREDICTION_V1.json"
+    )
+    assert out["senna_covesii_prediction_status"] == (
+        "FROZEN_BEFORE_TARGET_ROUTING_OUTCOME"
+    )
+    assert out["senna_covesii_predicted_routing_state"] == (
+        "WITHIN_FLOWER_DIVISION_OF_LABOUR"
+    )
+    assert out["senna_covesii_prediction_is_independent_block_replication"] is False
     assert out["prospective_expansion_queue"] == "data/BALANCE_PLANT_U3_ROUTING_EXPANSION_QUEUE_V1.csv"
     assert out["prospective_expansion_queue_exhausted"] is True
     assert out["n_prospective_expansion_blocks"] == 4
     assert out["n_prospective_expansion_evidence_ceiling_blocked"] == 4
     assert out["next_evidence_targets"] == [
-        "collect_or_adjudicate_Senna_covesii_routing_under_U3MEAS_SENCOV_001",
+        "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
         "collect_or_adjudicate_Osbeckia_conflict_under_U3MEAS_OSBCHI_001",
         "collect_or_adjudicate_Monochoria_pollination_under_frozen_exact_species_routes",
         "reopen_frozen_expansion_blocks_only_with_new_matching_stage_evidence",
