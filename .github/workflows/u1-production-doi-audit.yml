@@ -1,0 +1,38 @@
+name: U1 production DOI audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/macro-persistent-compromise
+    paths:
+      - "data/BALANCE_PLANT_U1_PRODUCTION_SOURCE_INVENTORY_V1.csv"
+      - "balance_domain/plant_u1_production_doi_audit.py"
+      - "tests/test_plant_u1_production_doi_audit.py"
+      - ".github/workflows/u1-production-doi-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  doi-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run Crossref DOI discovery
+        run: |
+          mkdir -p /tmp/u1-production-doi
+          python -m balance_domain.plant_u1_production_doi_audit \
+            --inventory data/BALANCE_PLANT_U1_PRODUCTION_SOURCE_INVENTORY_V1.csv \
+            --output /tmp/u1-production-doi/audit.json
+          cat /tmp/u1-production-doi/audit.json
+      - name: Upload DOI audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: u1-production-doi-audit
+          path: /tmp/u1-production-doi
+          if-no-files-found: error
