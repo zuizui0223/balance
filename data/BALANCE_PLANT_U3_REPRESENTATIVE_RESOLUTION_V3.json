@@ -17,14 +17,15 @@
       "table_s1_identity_claim": false
     },
     "Scrophulariaceae": {
-      "representative": "Verbascum phoeniceum",
-      "status": "SOURCE_RESOLVED_INDEPENDENTLY_POST_REVIEW",
+      "representative": "Diascia anastrepta",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
       "evidence": [
-        "Lunau et al. 2017 explicitly figures Verbascum phoeniceum (Scrophulariaceae) with within-flower heteranthery",
-        "Current Kew taxonomy retains Verbascum phoeniceum in Scrophulariaceae"
+        "Manning & Brothers 1986 directly describe marked heteranthery in Diascia anastrepta: the anticous anther pair is strongly reduced and produces little or no yellow pollen, while the posticous pair associated with the stigma produces copious grey-green pollen",
+        "Hilliard & Burtt 1983 provide the species-level taxonomic diagnosis before the 2010 review",
+        "Current Kew taxonomy retains Diascia anastrepta in Scrophulariaceae"
       ],
       "table_s1_identity_claim": false,
-      "timing_guard": "Evidence postdates the 2010 review and is used only as an independent family representative, not as reconstruction of Table S1."
+      "selection_basis": "Chosen as an independent pre-2010 family representative from direct species-level heteranthery evidence; this does not identify the inaccessible 2010 Table S1 row."
     },
     "Malvaceae": {
       "representative": "Mollia lepidota",
@@ -51,5 +52,5 @@
   "exact_table_s1_identity_blocks_current_u3_analysis": false,
   "legacy_pending_exact_representative_families": [],
   "legacy_field_note": "The former pending_exact_representative_families field referred to missing independent family representatives, not exact Table-S1 archival identity.",
-  "claim_ceiling": "all_16_family_representatives_resolved_at_explicit_provenance_levels_exact_TableS1_identity_still_archivally_open_for_three_families_not_prevalence_not_historical_causation"
+  "claim_ceiling": "all_16_family_representatives_resolved_from_review_body_or_independent_pre2010_species_evidence_exact_TableS1_identity_still_archivally_open_for_three_families_not_prevalence_not_historical_causation"
 }

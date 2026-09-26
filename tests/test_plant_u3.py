@@ -32,8 +32,8 @@ def test_u3_is_explicitly_positive_architecture_discovery_not_denominator():
 def test_u3_representative_taxa_keep_provenance_classes_separate():
     readout = build_u3_readout(U3)
     assert readout["n_body_text_representative_families"] == 11
-    assert readout["n_independently_resolved_representative_families"] == 4
-    assert readout["n_postreview_independently_resolved_representative_families"] == 1
+    assert readout["n_independently_resolved_representative_families"] == 5
+    assert readout["n_postreview_independently_resolved_representative_families"] == 0
     assert readout["n_total_resolved_representative_families"] == 16
     assert readout["n_table_s1_representative_pending"] == 0
 
@@ -44,18 +44,19 @@ def test_pre2010_independent_resolutions_do_not_claim_table_s1_access():
     assert rows["Brassicaceae"]["representative_taxa"] == "Brassica rapa"
     assert rows["Bixaceae"]["representative_taxa"] == "Amoreuxia wrightii"
     assert rows["Malvaceae"]["representative_taxa"] == "Mollia lepidota"
-    for family in ("Lythraceae", "Brassicaceae", "Bixaceae", "Malvaceae"):
+    assert rows["Scrophulariaceae"]["representative_taxa"] == "Diascia anastrepta"
+    for family in ("Lythraceae", "Brassicaceae", "Bixaceae", "Malvaceae", "Scrophulariaceae"):
         assert rows[family]["representative_taxa_status"] == "SOURCE_RESOLVED_INDEPENDENTLY"
         assert "Table S1" in rows[family]["notes"]
 
 
-def test_scrophulariaceae_postreview_resolution_is_explicitly_separate():
+def test_scrophulariaceae_is_pre2010_independently_resolved():
     rows = {r["family"]: r for r in load_u3_universe(U3)}
     row = rows["Scrophulariaceae"]
-    assert row["representative_taxa"] == "Verbascum phoeniceum"
-    assert row["representative_taxa_status"] == "SOURCE_RESOLVED_INDEPENDENTLY_POST_REVIEW"
-    assert "Post-review independent representative" in row["notes"]
-    assert "not a claim" in row["notes"]
+    assert row["representative_taxa"] == "Diascia anastrepta"
+    assert row["representative_taxa_status"] == "SOURCE_RESOLVED_INDEPENDENTLY"
+    assert "Manning & Brothers 1986" in row["notes"]
+    assert "not Table S1 transcription" in row["notes"]
 
 
 def test_no_family_representative_remains_pending():

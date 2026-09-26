@@ -38,7 +38,7 @@ def test_resolution_receipt_matches_canonical_three_family_representatives():
     assert payload["resolutions"]["Bixaceae"]["representative"] == "Amoreuxia wrightii"
     assert (
         payload["resolutions"]["Scrophulariaceae"]["representative"]
-        == "Verbascum phoeniceum"
+        == "Diascia anastrepta"
     )
     assert all(
         payload["resolutions"][family]["table_s1_identity_claim"] is False
@@ -62,3 +62,14 @@ def test_archival_identity_cannot_be_reintroduced_as_analysis_blocker(tmp_path):
     path.write_text(json.dumps(payload), encoding="utf-8")
     with pytest.raises(ValueError, match="must not be a current U3 analysis gate"):
         load_u3_representative_resolution(path, UNIVERSE, CANDIDATES)
+
+
+def test_scrophulariaceae_uses_pre2010_independent_representative():
+    payload = load_u3_representative_resolution(
+        RESOLUTION, UNIVERSE, CANDIDATES
+    )
+    row = payload["resolutions"]["Scrophulariaceae"]
+    assert row["representative"] == "Diascia anastrepta"
+    assert row["status"] == "SOURCE_RESOLVED_INDEPENDENTLY"
+    assert row["table_s1_identity_claim"] is False
+    assert any("Manning & Brothers 1986" in item for item in row["evidence"])

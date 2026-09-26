@@ -12,10 +12,7 @@ ARCHIVAL_FAMILIES = {"Malvaceae", "Bixaceae", "Scrophulariaceae"}
 EXPECTED_CANONICAL = {
     "Malvaceae": ("Mollia lepidota", "SOURCE_RESOLVED_INDEPENDENTLY"),
     "Bixaceae": ("Amoreuxia wrightii", "SOURCE_RESOLVED_INDEPENDENTLY"),
-    "Scrophulariaceae": (
-        "Verbascum phoeniceum",
-        "SOURCE_RESOLVED_INDEPENDENTLY_POST_REVIEW",
-    ),
+    "Scrophulariaceae": ("Diascia anastrepta", "SOURCE_RESOLVED_INDEPENDENTLY"),
 }
 
 
