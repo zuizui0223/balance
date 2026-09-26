@@ -255,6 +255,15 @@ def build_u3_routing_readiness(
         "sencov_stage0_nuisance_template": (
             "data/BALANCE_PLANT_U3_SENCOV_STAGE0_NUISANCE_TEMPLATE_V1.json"
         ),
+        "osbeckia_conflict_estimability_contract": (
+            "docs/BALANCE_PLANT_U3_OSBECKIA_CONFLICT_ESTIMABILITY_V1.md"
+        ),
+        "osbeckia_conflict_targets_template": (
+            "data/BALANCE_PLANT_U3_OSBECKIA_CONFLICT_POWER_TARGETS_TEMPLATE_V1.json"
+        ),
+        "osbeckia_stage0_nuisance_template": (
+            "data/BALANCE_PLANT_U3_OSBECKIA_STAGE0_NUISANCE_TEMPLATE_V1.json"
+        ),
         "model_readiness_rule": (
             "do not invent a minimum-n threshold post hoc; current unresolved targets "
             "have frozen public-retrieval ceilings and the prospective four-family "
