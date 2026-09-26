@@ -105,7 +105,6 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     assert out["n_prospective_expansion_evidence_ceiling_blocked"] == 5
     assert out["prospective_expansion_next_active_case"] is None
     assert out["next_evidence_targets"] == [
-        "complete_predictor_blind_Diascia_anastrepta_control_search",
         "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
         "collect_or_adjudicate_Osbeckia_conflict_under_U3MEAS_OSBCHI_001",
         "collect_or_adjudicate_Monochoria_pollination_under_frozen_exact_species_routes",
