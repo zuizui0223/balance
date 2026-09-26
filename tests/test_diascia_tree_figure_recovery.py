@@ -1,6 +1,8 @@
 from io import BytesIO
 
-from PIL import Image
+import pytest
+
+Image = pytest.importorskip("PIL.Image")
 
 from balance_domain.diascia_tree_figure_recovery import flatten_png_on_white
 
