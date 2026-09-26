@@ -1,0 +1,24 @@
+{
+  "analysis": "balance_u3_sencov_stage0_nuisance_v1",
+  "status": "TEMPLATE_NOT_READY",
+  "collection_scope": "Stage-0 calibration only; no focal routing-effect estimate may be used to set biological targets.",
+  "allowed_outputs": {
+    "n_plants": "REQUIRED_BEFORE_USE",
+    "n_flowers": "REQUIRED_BEFORE_USE",
+    "n_visits_or_sonications": "REQUIRED_BEFORE_USE",
+    "plant_level_icc": "REQUIRED_BEFORE_USE",
+    "flower_or_visit_overdispersion": "REQUIRED_BEFORE_USE",
+    "source_label_recovery_rate": "REQUIRED_BEFORE_USE",
+    "unresolved_fate_fraction": "REQUIRED_BEFORE_USE",
+    "pooled_baseline_transfer_probability": "REQUIRED_BEFORE_USE",
+    "attrition_fraction_and_reasons": "REQUIRED_BEFORE_USE",
+    "pollen_quantity_distribution_by_position_group_before_outcome_unblinding": "REQUIRED_BEFORE_USE"
+  },
+  "explicitly_forbidden_outputs": [
+    "observed_delta_route_log_odds",
+    "observed_position_treatment_effect",
+    "observed_median_vs_abaxial_effect",
+    "a data-derived equivalence margin chosen from the focal positional contrast"
+  ],
+  "claim_ceiling": "nuisance_calibration_only_not_routing_effect_not_architecture_result"
+}
