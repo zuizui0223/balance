@@ -236,7 +236,9 @@ def build_u3_routing_readiness(
         "n_prospective_expansion_evidence_ceiling_blocked": expansion[
             "n_evidence_ceiling_blocked"
         ],
+        "prospective_expansion_next_active_case": expansion["next_active_case"],
         "next_evidence_targets": [
+            "complete_predictor_blind_Diascia_anastrepta_control_search",
             "test_frozen_Senna_covesii_WITHIN_FLOWER_prediction_under_U3MEAS_SENCOV_001",
             "collect_or_adjudicate_Osbeckia_conflict_under_U3MEAS_OSBCHI_001",
             "collect_or_adjudicate_Monochoria_pollination_under_frozen_exact_species_routes",
@@ -266,11 +268,12 @@ def build_u3_routing_readiness(
         ),
         "model_readiness_rule": (
             "do not invent a minimum-n threshold post hoc; current unresolved targets "
-            "have frozen public-retrieval ceilings and the prospective four-family "
-            "expansion is exhausted at matching-stage evidence ceilings, so new direct "
-            "or empirical measurement evidence or genuinely new matching evidence is "
-            "required; before fitting a confirmatory routing effect freeze a prospective "
-            "model and estimability contract"
+            "have frozen public-retrieval ceilings, four prospective expansion blocks "
+            "are retained at matching-stage evidence ceilings, and the fifth block "
+            "Diascia anastrepta is actively undergoing predictor-blind control "
+            "acquisition; no routing outcome may be used to choose that control; before "
+            "fitting a confirmatory routing effect freeze a prospective model and "
+            "estimability contract"
         ),
         "claim_ceiling": (
             "routing_readiness_and_acquisition_priority_only_not_fitted_routing_effect_"

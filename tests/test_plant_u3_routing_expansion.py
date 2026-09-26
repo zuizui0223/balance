@@ -38,7 +38,7 @@ def test_active_last_case_requires_all_prior_rows_terminal(tmp_path):
         writer=csv.DictWriter(handle,fieldnames=FIELDS)
         writer.writeheader()
         writer.writerows(rows)
-    with pytest.raises(ValueError,match="prior case"):
+    with pytest.raises(ValueError,match="before the active queue row"):
         load_u3_routing_expansion_queue(path,U3)
 
 def test_queue_progression_remains_preoutcome():
