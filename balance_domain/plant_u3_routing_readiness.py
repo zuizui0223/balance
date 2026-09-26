@@ -14,6 +14,9 @@ from .plant_u3_dependence import load_u3_dependence
 from .plant_u3_matched_extraction import load_u3_matched_extraction
 from .plant_u3_routing_expansion import build_u3_routing_expansion_readout
 from .plant_u3_routing_diversity import build_u3_routing_diversity_identification
+from .plant_u3_morphology_routing_identification import (
+    build_u3_morphology_routing_identification,
+)
 from .plant_u3_targeted_measurement import build_u3_targeted_measurement_readout
 
 
@@ -54,6 +57,13 @@ def build_u3_routing_readiness(
     routing_diversity = build_u3_routing_diversity_identification(
         extraction_path,
         dependence_path,
+        adjudication_path,
+        pair_path,
+        case_path,
+        universe_path,
+    )
+    morphology_routing = build_u3_morphology_routing_identification(
+        extraction_path,
         adjudication_path,
         pair_path,
         case_path,
@@ -147,6 +157,17 @@ def build_u3_routing_readiness(
         ],
         "routing_non_degenerate_under_all_unresolved_completions": routing_diversity[
             "routing_non_degenerate_under_all_unresolved_completions"
+        ],
+        "morphology_routing_identification_certificate": (
+            "docs/BALANCE_PLANT_U3_MORPHOLOGY_ROUTING_IDENTIFICATION_V1.md"
+        ),
+        "heteranthery_not_necessary_for_within_flower_division_of_labour": (
+            morphology_routing[
+                "heteranthery_not_necessary_for_within_flower_division_of_labour"
+            ]
+        ),
+        "n_same_route_morphology_discordant_pairs": morphology_routing[
+            "n_same_route_morphology_discordant_pairs"
         ],
         "routing_measurement_complete": routing_measurement_complete,
         "prospective_routing_model_contract_frozen": False,

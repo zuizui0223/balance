@@ -57,6 +57,11 @@ def test_current_routing_model_is_not_ready_and_expansion_is_exhausted():
     assert out["minimum_observed_positive_control_routing_states"] == 2
     assert out["minimum_observed_routing_dependence_blocks"] == 2
     assert out["routing_non_degenerate_under_all_unresolved_completions"] is True
+    assert out["morphology_routing_identification_certificate"] == (
+        "docs/BALANCE_PLANT_U3_MORPHOLOGY_ROUTING_IDENTIFICATION_V1.md"
+    )
+    assert out["heteranthery_not_necessary_for_within_flower_division_of_labour"] is True
+    assert out["n_same_route_morphology_discordant_pairs"] == 1
     assert out["routing_measurement_complete"] is False
     assert out["prospective_routing_model_contract_frozen"] is False
     assert out["routing_model_ready"] is False
