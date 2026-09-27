@@ -11,8 +11,8 @@ shared_structure,string,nonempty,descriptor,Reproductive structure or module und
 function_a,string,nonempty,descriptor,First declared biological function
 function_b,string,nonempty,descriptor,Second declared biological function
 conflict_status,categorical,POSITIVE|ALIGNED_NO_CONFLICT|NO_DEMONSTRATED_CONFLICT|UNRESOLVED,screen,Adjudicated evidence for opposing functional demands
-architecture_mode,categorical,SHARED_INTEGRATED|TEMPORAL_SEPARATION|SPATIAL_SEPARATION|SIGNAL_SEPARATION|TEMPORAL_AND_SPATIAL_SEPARATION|WITHIN_FLOWER_DIVISION_OF_LABOUR|AMONG_FLOWER_MODULE_DIVISION|POLYMORPHIC_OR_MOSAIC|UNRESOLVED|NA,outcome,Observed reproductive architecture mode; interpreted as conflict resolution only when conflict_status is POSITIVE
-structural_module_division,categorical,true|false|unresolved|na,primary_outcome,Derived binary response for within-flower or among-flower division of labour
+architecture_mode,categorical,SHARED_INTEGRATED|TEMPORAL_SEPARATION|SPATIAL_SEPARATION|SIGNAL_SEPARATION|TEMPORAL_AND_SPATIAL_SEPARATION|WITHIN_FLOWER_DIVISION_OF_LABOUR|AMONG_FLOWER_MODULE_DIVISION|POLYMORPHIC_OR_MOSAIC|UNRESOLVED|NA,primary_outcome,Observed reproductive architecture mode; mapped prospectively to the frozen four-class routing estimand and interpreted as conflict resolution only when conflict_status is POSITIVE
+structural_module_division,categorical,true|false|unresolved|na,secondary_outcome,Derived binary response for within-flower or among-flower division of labour; not required for MOSAIC primary-outcome rows
 module_substrate,categorical,SINGLE_OR_CONTINUOUS|SERIAL_WITHIN_FLOWER|REPEATED_FLOWERS|PREEXISTING_SEPARATE_ORGANS|MULTILEVEL|UNRESOLVED,predictor,Pre-existing architectural degrees of freedom coded independently of resolution mode
 conflict_timing_geometry,categorical,SIMULTANEOUS|SEQUENTIAL_WITHIN_UNIT|SEASONALLY_ALTERNATING|CONTEXT_DEPENDENT|MIXED|UNRESOLVED,predictor,Temporal geometry of competing functional demands
 conflict_spatial_geometry,categorical,SAME_UNIT|BETWEEN_MODULES|AMONG_INDIVIDUALS|AMONG_POPULATIONS|ENVIRONMENTAL_MOSAIC|MIXED|UNRESOLVED,predictor,Spatial geometry of competing functional demands
@@ -23,7 +23,7 @@ life_history,categorical,ANNUAL|BIENNIAL|PERENNIAL|MIXED|UNRESOLVED,moderator,Pl
 study_design,string,nonempty,bias,Strongest design supporting the row
 evidence_quality,categorical,HIGH|MODERATE|LOW|UNREVIEWED,bias,Prospectively defined evidence-quality class
 adjudication_status,categorical,UNSCREENED|SCREENED|ADJUDICATED|EXCLUDED,design,Plant-macro review status
-primary_model_eligible,boolean,true|false,gate,True only after conflict-positive species-level adjudication with resolved binary outcome and predictor receipts
+primary_model_eligible,boolean,true|false,gate,True only after conflict-positive species-level adjudication with resolved architecture_mode and three independently adjudicated outcome-independent predictor receipts
 exclusion_reason,string,free_text,gate,Reason a screened record is excluded or not eligible
 source_basis,string,nonempty,provenance,Repository receipt DOI PMID or citation basis
 claim_ceiling,string,nonempty,guardrail,Strongest inference licensed by the record
