@@ -49,8 +49,8 @@ class MiddleWorldCertificate:
     def legacy_state(self) -> str:
         """Return the pre-ownership-closure state label for old serialized users."""
         return {
-            "BALANCE_ARCHITECTURE_INTERFACE": "BALANCE_ARCHITECTURE_INTERFACE",
-            "ARCHITECTURE_FAVOURED_WORLD": "ARCHITECTURE_FAVOURED_WORLD",
+            "BALANCE_ARCHITECTURE_INTERFACE": "BALANCE_BITA_INTERFACE",
+            "ARCHITECTURE_FAVOURED_WORLD": "BITA_DIFFERENTIATION_WORLD",
         }.get(self.state, self.state)
 
 
@@ -70,17 +70,17 @@ class BalanceDomainGeometry:
     architecture_to_sch_width_ratio: float | None
 
     @property
-    def finite_architecture_boundary(self) -> bool:
+    def finite_bita_boundary(self) -> bool:
         """Backward-compatible alias; scientific ownership is SLK-facing."""
         return self.finite_architecture_boundary
 
     @property
-    def architecture_limited_width(self) -> float | None:
+    def bita_limited_width(self) -> float | None:
         """Backward-compatible alias for architecture-limited width."""
         return self.architecture_limited_width
 
     @property
-    def architecture_to_sch_width_ratio(self) -> float | None:
+    def bita_to_sch_width_ratio(self) -> float | None:
         """Backward-compatible alias for architecture-to-SCH width ratio."""
         return self.architecture_to_sch_width_ratio
 
@@ -255,7 +255,7 @@ def classify_middle_world(
             xi = L / (L + rho),  rho = K - sL,
 
         so xi -> 0 approaches the SCH-facing boundary and xi -> 1 approaches
-        the SLK-facing architecture-value differentiation boundary. ``two_sided_depth`` is
+        the SLK-facing architecture-value boundary. ``two_sided_depth`` is
         ``min(L, rho)`` and measures how deeply the context lies inside the
         middle world in the common fitness units.
     """
