@@ -1,4 +1,4 @@
-"""Bounded empirical receipts shared by SCH, BALANCE, and BITA."""
+"""Bounded empirical receipts shared by SCH, BALANCE, and SLK-facing value checks."""
 
 from __future__ import annotations
 
@@ -63,6 +63,13 @@ class MiddleWorldReceipt:
     bridge_residual: Interval | None
     bridge_zero_compatible: bool | None
 
+    @property
+    def legacy_direct_state(self) -> str:
+        """Return the pre-ownership-closure state label when needed."""
+        if self.direct_state == "ARCHITECTURE_FAVOURED_IDENTIFIED":
+            return "BITA_SIDE_IDENTIFIED"
+        return self.direct_state
+
 
 def _sub(a: Interval, b: Interval) -> Interval:
     return Interval(a.lower - b.upper, a.upper - b.lower)
@@ -91,7 +98,7 @@ def classify_bounded_receipt(
     - the SCH conflict interval is strictly above zero;
     - the entire direct architecture-gap interval ``W_D* - W_S*`` is below zero.
 
-    Strong direct BITA-side evidence requires a positive SCH conflict and the
+    Strong direct architecture-favoured evidence requires a positive SCH conflict and the
     entire direct architecture-gap interval above zero.  Any interval crossing
     zero is returned as unresolved rather than forced into a state.
 
@@ -111,7 +118,7 @@ def classify_bounded_receipt(
     if conflict_positive and direct.upper < 0:
         state = "BALANCE_IDENTIFIED"
     elif conflict_positive and direct.lower > 0:
-        state = "BITA_SIDE_IDENTIFIED"
+        state = "ARCHITECTURE_FAVOURED_IDENTIFIED"
     elif conflict_positive and direct.lower <= 0 <= direct.upper:
         state = "ARCHITECTURE_ORDER_UNRESOLVED"
     elif conflict_absent:
