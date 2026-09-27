@@ -1,5 +1,7 @@
 # BALANCE plant macro confirmatory scope v2
 
+> **Superseded for model specification.** Biological scope remains current, but the model/fallback section is replaced by `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md`. The frozen primary response is now the four-class architecture-routing estimand; there is no outcome-count-triggered model switch.
+
 ## Decision update
 
 The first confirmatory BALANCE macro study remains focused on flowering-plant reproductive systems.
