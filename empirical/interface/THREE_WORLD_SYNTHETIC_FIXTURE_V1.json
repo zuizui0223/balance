@@ -1,6 +1,6 @@
 {
   "schema_version": "THREE_WORLD_SYNTHETIC_FIXTURE_V1",
-  "purpose": "Regression-only fixture proving that one frozen context and fitness scale can pass through SCH conflict, BALANCE direct worldline, and BITA-compatible decomposition without changing identities.",
+  "purpose": "Regression-only fixture proving that one frozen context and fitness scale can pass through SCH conflict, BALANCE direct worldline, and SLK-compatible architecture-value decomposition without changing identities.",
   "handoff": {
     "receipt_schema_version": "THREE_WORLD_CONFLICT_HANDOFF_V1",
     "status": "THREE_WORLD_CONFLICT_CONTEXT_IDENTIFIED",
@@ -24,7 +24,7 @@
     "shared_optimum_fitness_95": [10.0, 10.0],
     "differentiated_optimum_fitness_95": [9.9, 9.9]
   },
-  "bita_decomposition": {
+  "architecture_decomposition": {
     "context_id": "PEDICULARIS_SYNTHETIC_POP_A_2027",
     "fitness_scale_id": "INTACT_SEEDS_PER_FLOWER",
     "decoupling_95": [0.45, 0.55],
