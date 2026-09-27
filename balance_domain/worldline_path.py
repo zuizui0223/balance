@@ -26,7 +26,7 @@ class WorldlinePathResult:
     def legacy_states(self) -> tuple[str, ...]:
         """Return deprecated BITA-labelled state strings for old consumers."""
         return tuple(
-            "ARCHITECTURE_FAVOURED_WORLD"
+            "BITA_DIFFERENTIATION_WORLD"
             if state == "ARCHITECTURE_FAVOURED_WORLD"
             else state
             for state in self.states
