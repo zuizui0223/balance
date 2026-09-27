@@ -27,7 +27,7 @@ and
 \rho(e)=W_S^*(e)-W_D^*(e)>0.
 \]
 
-The SCH-facing boundary is `L=0`; the BITA-facing boundary is `rho=0`.
+The SCH-facing boundary is `L=0`; the SLK-facing architecture-value boundary is `rho=0`.
 
 ## Fitness-margin depth
 
@@ -74,7 +74,7 @@ is the local environmental distance to the SCH-facing boundary and
 d_2(e)=\frac{\rho(e)}{\|\nabla\rho(e)\|_2}
 \]
 
-is the local environmental distance to the BITA-facing boundary.
+is the local environmental distance to the SLK-facing architecture-value boundary.
 
 Define
 
