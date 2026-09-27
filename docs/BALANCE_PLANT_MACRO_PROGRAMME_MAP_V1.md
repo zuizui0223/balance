@@ -246,6 +246,25 @@ This defines the empirical target of BALANCE macro:
 
 > identify the conditions under which an independently demonstrated functional conflict is associated with shared, temporal, spatial, signal, or structural resolution architecture.
 
+## Frozen confirmatory estimand
+
+The primary response is now fixed before model fitting as:
+
+```text
+SHARED
+NONSTRUCTURAL_SEPARATION
+STRUCTURAL_MODULE_DIVISION
+MOSAIC
+```
+
+`SIGNAL_SEPARATION` is retained inside `NONSTRUCTURAL_SEPARATION`, and
+`POLYMORPHIC_OR_MOSAIC` remains primary-outcome eligible even when the derived
+binary structural field is unresolved. The raw nominal architecture categories
+remain secondary detail.
+
+There is no outcome-count-triggered fallback model. See
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md`.
+
 ## What remains before a confirmatory model
 
 The programme is not yet model-ready because:
@@ -256,7 +275,7 @@ The programme is not yet model-ready because:
 4. the four-pair U3 matched conflict extraction is missing only the `Osbeckia chinensis` control-side pollen-fate measurement;
 5. the prospectively frozen four-family U3 expansion is exhausted at the matching-stage public evidence ceiling (0/4 controls closed, 4/4 blocks retained as missingness) and must not be rescued by convenience matching;
 6. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
-7. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
+7. each admitted cluster still needs three independently adjudicated outcome-independent predictor receipts (`module_substrate`, `conflict_timing_geometry`, `conflict_spatial_geometry`);\n8. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
 
 The repository therefore explicitly reports:
 
