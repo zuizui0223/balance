@@ -1,5 +1,9 @@
 # BALANCE boundary-sensitivity theorem v1
 
+## Status
+
+The implicit-function sensitivities below are analytic bookkeeping for prospective perturbation tests. They are not presented as a novel mathematical theorem.
+
 ## Purpose
 
 Quantify how the SCH-facing boundary, the SLK-facing architecture-value boundary, the BALANCE width, and the deepest middle-world point move under small perturbations of the two directly measurable margins.
@@ -32,7 +36,7 @@ Let `e_0` be the SCH-facing boundary:
 L(e_0)=0,\qquad L'(e_0)\ne0.
 \]
 
-Let `e_2` be the SLK-facing architecture-value architecture boundary:
+Let `e_2` be the SLK-facing architecture-value boundary:
 
 \[
 \rho(e_2)=0,\qquad \rho'(e_2)\ne0.
