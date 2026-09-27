@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Quantify how the SCH-facing boundary, the BITA-facing boundary, the BALANCE width, and the deepest middle-world point move under small perturbations of the two directly measurable margins.
+Quantify how the SCH-facing boundary, the SLK-facing architecture-value boundary, the BALANCE width, and the deepest middle-world point move under small perturbations of the two directly measurable margins.
 
 Work on a scalar environmental axis `e`. Let
 
@@ -16,7 +16,7 @@ be the SCH-facing conflict margin and
 \rho(e)=W_S^*(e)-W_D^*(e)
 \]
 
-be the BITA-facing reserve. Inside BALANCE,
+be the SLK-facing architecture-value reserve. Inside BALANCE,
 
 \[
 L>0,\qquad \rho>0.
@@ -32,7 +32,7 @@ Let `e_0` be the SCH-facing boundary:
 L(e_0)=0,\qquad L'(e_0)\ne0.
 \]
 
-Let `e_2` be the BITA-facing architecture boundary:
+Let `e_2` be the SLK-facing architecture-value architecture boundary:
 
 \[
 \rho(e_2)=0,\qquad \rho'(e_2)\ne0.
@@ -91,7 +91,7 @@ gives
 
 Thus the same additive perturbation produces a larger environmental boundary shift where the SCH margin crosses zero shallowly.
 
-## Theorem 2 — BITA-facing boundary displacement
+## Theorem 2 — SLK-facing architecture-value boundary displacement
 
 Similarly,
 
@@ -181,7 +181,7 @@ If `a=0`,
 =\frac{b}{L'-\rho'}.
 \]
 
-A positive reserve shift moves the deepest point toward the BITA-facing side.
+A positive reserve shift moves the deepest point toward the SLK-facing architecture-value side.
 
 ### Common equal shift
 
