@@ -33,7 +33,7 @@ class WorldlineComparison:
     def legacy_state(self) -> str:
         """Return the deprecated BITA-labelled state for old consumers."""
         if self.state == "ARCHITECTURE_FAVOURED_WORLD":
-            return "ARCHITECTURE_FAVOURED_WORLD"
+            return "BITA_DIFFERENTIATION_WORLD"
         return self.state
 
 
