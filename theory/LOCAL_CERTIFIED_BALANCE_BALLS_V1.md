@@ -205,7 +205,7 @@ The identity of the limiting margin also tells which boundary is locally relevan
 
 ```text
 L/K_L smallest             -> SCH-facing boundary nearby
-rho_j/K_j smallest         -> architecture j is nearest BITA-facing threat
+rho_j/K_j smallest         -> architecture j is nearest SLK-facing architecture-value threat
 ```
 
 ## Empirical consequence
