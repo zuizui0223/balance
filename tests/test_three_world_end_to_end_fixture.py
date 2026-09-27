@@ -50,7 +50,7 @@ def test_fixture_rejects_a_different_architecture_context():
         consume_conflict_handoff(
             data["handoff"],
             expected_context_id="PEDICULARIS_OTHER_POP_2027",
-            expected_fitness_scale_id=data["bita_decomposition"]["fitness_scale_id"],
+            expected_fitness_scale_id=data["architecture_decomposition"]["fitness_scale_id"],
         )
     except ValueError as exc:
         assert "context_id" in str(exc)
