@@ -54,7 +54,7 @@ Once BALANCE is identified, report
 d_F=\min(L,\rho_A).
 \]
 
-These are direct Chapter-2 quantities and do not require BITA `s,K` decomposition.
+These are direct Chapter-2 quantities and do not require a prior SLK architecture-value `s,K` decomposition.
 
 ---
 
