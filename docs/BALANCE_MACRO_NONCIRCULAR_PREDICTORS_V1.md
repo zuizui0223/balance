@@ -4,6 +4,12 @@
 
 Prevent the comparative macro analysis from explaining an architecture outcome with predictors that were inferred from that same outcome.
 
+## Plant-first confirmatory resolution
+
+For the flowering-plant confirmatory study, the broad cross-domain latent constructs `alternative_accessibility` and `functional_coupling` are **not** primary predictors. They are replaced by the more observable, independently receipted fields `module_substrate`, `conflict_timing_geometry`, and `conflict_spatial_geometry`. See `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md` and `balance_domain/plant_confirmatory.py`.
+
+The H1/H2 material below remains a cross-domain pilot framework and must not be substituted for the frozen plant confirmatory predictor set.
+
 The two highest-priority pilot predictors are:
 
 ```text
