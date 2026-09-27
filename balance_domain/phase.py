@@ -24,15 +24,15 @@ class NormalizedPhasePoint:
     def legacy_state(self) -> str:
         """Return the pre-ownership-closure state label for compatibility."""
         return {
-            "BALANCE_ARCHITECTURE_INTERFACE": "BALANCE_ARCHITECTURE_INTERFACE",
-            "ARCHITECTURE_FAVOURED_WORLD": "ARCHITECTURE_FAVOURED_WORLD",
+            "BALANCE_ARCHITECTURE_INTERFACE": "BALANCE_BITA_INTERFACE",
+            "ARCHITECTURE_FAVOURED_WORLD": "BITA_DIFFERENTIATION_WORLD",
         }.get(self.state, self.state)
 
     @property
     def legacy_balance_subregion(self) -> str | None:
         """Return the deprecated BITA-labelled subregion when applicable."""
         if self.balance_subregion == "ARCHITECTURE_BOUNDARY_LIMITED_BALANCE":
-            return "ARCHITECTURE_BOUNDARY_LIMITED_BALANCE"
+            return "BITA_BOUNDARY_LIMITED_BALANCE"
         return self.balance_subregion
 
 
@@ -77,8 +77,7 @@ def normalized_phase_point(
     margin ``c`` and normalized reserve margin ``1-q``. This preserves the
     defining scale invariance of the phase representation even near a boundary.
     Contexts below the deepest ridge are closer to the SCH-facing conflict
-    boundary; contexts above it are closer to the SLK-facing architecture-value architecture
-    boundary in the common fitness-margin geometry.
+    boundary; contexts above it are closer to the SLK-facing architecture-value boundary in the common fitness-margin geometry.
 
     All derived phase coordinates are evaluated exactly at the supplied-float
     level before conversion back to float. ``s=0`` is the sole structural case
