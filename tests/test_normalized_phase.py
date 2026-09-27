@@ -5,18 +5,18 @@ import pytest
 from balance_domain import normalized_phase_point
 
 
-def test_phase_map_separates_sch_limited_deep_and_bita_limited_balance():
+def test_phase_map_separates_sch_limited_deep_and_architecture_limited_balance():
     sch_side = normalized_phase_point(0.1, 0.5, 0.3)
     deep = normalized_phase_point(0.2, 0.5, 0.3)
-    bita_side = normalized_phase_point(0.4, 0.5, 0.3)
+    architecture_side = normalized_phase_point(0.4, 0.5, 0.3)
 
-    assert sch_side.state == deep.state == bita_side.state == "BALANCE_MIDDLE_WORLD"
+    assert sch_side.state == deep.state == architecture_side.state == "BALANCE_MIDDLE_WORLD"
     assert sch_side.balance_subregion == "SCH_BOUNDARY_LIMITED_BALANCE"
     assert deep.balance_subregion == "DEEPEST_BALANCE_RIDGE"
-    assert bita_side.balance_subregion == "BITA_BOUNDARY_LIMITED_BALANCE"
+    assert architecture_side.balance_subregion == "ARCHITECTURE_BOUNDARY_LIMITED_BALANCE"
     assert sch_side.middle_position < 0.5
     assert math.isclose(deep.middle_position, 0.5)
-    assert bita_side.middle_position > 0.5
+    assert architecture_side.middle_position > 0.5
 
 
 def test_normalized_coordinates_are_invariant_to_common_positive_rescaling():
@@ -30,12 +30,12 @@ def test_normalized_coordinates_are_invariant_to_common_positive_rescaling():
 
 def test_phase_map_recovers_architecture_boundary():
     critical = normalized_phase_point(0.6, 0.5, 0.3)
-    assert critical.state == "BALANCE_BITA_INTERFACE"
+    assert critical.state == "BALANCE_ARCHITECTURE_INTERFACE"
     assert math.isclose(critical.normalized_conflict, 2.0)
     assert math.isclose(critical.critical_conflict_ratio, 2.0)
 
 
-def test_zero_decoupling_never_reaches_bita_boundary_at_finite_conflict():
+def test_zero_decoupling_never_reaches_architecture_boundary_at_finite_conflict():
     point = normalized_phase_point(100.0, 0.0, 0.3)
     assert point.state == "BALANCE_MIDDLE_WORLD"
     assert point.critical_conflict_ratio is None
@@ -81,3 +81,10 @@ def test_nonzero_decoupling_ridge_cannot_round_to_zero_decoupling_geometry():
 def test_normalized_phase_requires_positive_architecture_cost():
     with pytest.raises(ValueError):
         normalized_phase_point(0.2, 0.5, 0.0)
+
+
+def test_phase_legacy_labels_remain_available_explicitly():
+    interface = normalized_phase_point(0.6, 0.5, 0.3)
+    architecture_side = normalized_phase_point(0.4, 0.5, 0.3)
+    assert interface.legacy_state == "BALANCE_BITA_INTERFACE"
+    assert architecture_side.legacy_balance_subregion == "BITA_BOUNDARY_LIMITED_BALANCE"
