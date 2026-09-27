@@ -61,7 +61,7 @@ L.lower > 0 and Delta_W.upper < 0
     -> BALANCE_IDENTIFIED
 
 L.lower > 0 and Delta_W.lower > 0
-    -> BITA_SIDE_IDENTIFIED
+    -> ARCHITECTURE_FAVOURED_IDENTIFIED
 
 L.lower > 0 and Delta_W contains 0
     -> ARCHITECTURE_ORDER_UNRESOLVED.
@@ -69,7 +69,7 @@ L.lower > 0 and Delta_W contains 0
 
 Thus uncertainty is not collapsed to a point estimate merely to assign a chapter state.
 
-## Optional BITA decomposition fields
+## Optional SLK architecture-value decomposition fields
 
 ```text
 decoupling.lower
@@ -153,7 +153,7 @@ The flow is intentionally not one-way: Chapter 2 is the reconciliation layer bet
 ```text
 SCH conflict interval
 + BALANCE direct worldline gap
-+ BITA-compatible s,K decomposition
++ SLK-compatible architecture-value s,K decomposition
 ```
 
 can produce the same negative architecture margin without changing context or scale. This fixture is a software contract only and is not an empirical Pedicularis result.
