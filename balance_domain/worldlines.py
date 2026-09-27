@@ -29,6 +29,13 @@ class WorldlineComparison:
     bridge_consistent: bool | None
     state: str
 
+    @property
+    def legacy_state(self) -> str:
+        """Return the deprecated BITA-labelled state for old consumers."""
+        if self.state == "ARCHITECTURE_FAVOURED_WORLD":
+            return "ARCHITECTURE_FAVOURED_WORLD"
+        return self.state
+
 
 def _finite_input(value: object, name: str) -> float:
     """Normalize one public scalar input without accepting booleans as evidence."""
@@ -154,7 +161,7 @@ def compare_worldlines(
     elif direct_point.reserve_position == "INTERFACE":
         state = "ARCHITECTURE_CRITICAL_INTERFACE"
     else:
-        state = "BITA_DIFFERENTIATION_WORLD"
+        state = "ARCHITECTURE_FAVOURED_WORLD"
 
     if direct_point.middle_active:
         direct_reserve = direct_reserve_margin
