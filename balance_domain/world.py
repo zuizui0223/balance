@@ -1,10 +1,10 @@
 """Two-sided world certificate and geometry for Chapter 2 BALANCE.
 
-SCH and BITA contribute complementary inequalities:
+SCH and SLK supply the complementary value boundaries:
 
 - SCH-facing condition: a real shared-axis conflict exists, ``L > 0``.
-- BITA-facing condition: differentiated architecture is not yet favoured,
-  ``Phi = sL - K < 0``.
+- SLK-facing architecture-value condition: differentiated architecture is not
+  yet favoured, ``Phi = sL - K < 0``.
 
 BALANCE is their intersection. When all terms use a common fitness scale,
 this module also locates a point inside the middle world relative to its two
@@ -28,19 +28,37 @@ class MiddleWorldCertificate:
     recoverable_loss: float
     architecture_margin: float
     sch_conflict_active: bool
-    bita_differentiation_favoured: bool
+    architecture_favoured: bool
     state: str
     sch_boundary_distance: float | None
-    bita_boundary_distance: float | None
+    architecture_boundary_distance: float | None
     middle_position: float | None
     two_sided_depth: float | None
+
+    @property
+    def bita_differentiation_favoured(self) -> bool:
+        """Backward-compatible alias; BITA no longer owns this boundary."""
+        return self.architecture_favoured
+
+    @property
+    def bita_boundary_distance(self) -> float | None:
+        """Backward-compatible alias for the SLK-facing architecture distance."""
+        return self.architecture_boundary_distance
+
+    @property
+    def legacy_state(self) -> str:
+        """Return the pre-ownership-closure state label for old serialized users."""
+        return {
+            "BALANCE_ARCHITECTURE_INTERFACE": "BALANCE_ARCHITECTURE_INTERFACE",
+            "ARCHITECTURE_FAVOURED_WORLD": "ARCHITECTURE_FAVOURED_WORLD",
+        }.get(self.state, self.state)
 
 
 @dataclass(frozen=True)
 class BalanceDomainGeometry:
     decoupling: float
     architecture_cost: float
-    finite_bita_boundary: bool
+    finite_architecture_boundary: bool
     critical_conflict_load: float | None
     equal_margin_conflict_load: float | None
     max_two_sided_depth: float | None
@@ -48,8 +66,23 @@ class BalanceDomainGeometry:
     criticality_index_at_equal_margin: float | None
     architecture_pressure_ratio_at_equal_margin: float | None
     sch_limited_width: float | None
-    bita_limited_width: float | None
-    bita_to_sch_width_ratio: float | None
+    architecture_limited_width: float | None
+    architecture_to_sch_width_ratio: float | None
+
+    @property
+    def finite_architecture_boundary(self) -> bool:
+        """Backward-compatible alias; scientific ownership is SLK-facing."""
+        return self.finite_architecture_boundary
+
+    @property
+    def architecture_limited_width(self) -> float | None:
+        """Backward-compatible alias for architecture-limited width."""
+        return self.architecture_limited_width
+
+    @property
+    def architecture_to_sch_width_ratio(self) -> float | None:
+        """Backward-compatible alias for architecture-to-SCH width ratio."""
+        return self.architecture_to_sch_width_ratio
 
 
 def _fraction_to_float(value: F, name: str) -> float:
@@ -95,7 +128,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         0 < L < K/s.
 
     In the common fitness-margin coordinates used by :func:`classify_middle_world`,
-    the point equally far from the SCH boundary and the BITA boundary satisfies
+    the point equally far from the SCH boundary and the SLK-facing architecture boundary satisfies
 
         L = K-sL,
 
@@ -107,7 +140,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     It is *not* generally halfway along the conflict-load interval ``(0, K/s)``.
 
     The interval can be split into a SCH-boundary-limited segment and a
-    BITA-boundary-limited segment. Their widths are
+    architecture-boundary-limited segment. Their widths are
 
         W_S = K/(1+s)
         W_B = K/[s(1+s)]
@@ -119,7 +152,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     ``xi=L/(L+rho)``. The distinct ratio ``sL/K`` is reported separately as
     ``architecture_pressure_ratio_at_equal_margin``.
 
-    When ``s=0`` (with ``K>0``) no finite BITA-facing boundary exists: added
+    When ``s=0`` (with ``K>0``) no finite SLK-facing architecture-value boundary exists: added
     dimensionality recovers none of the conflict load. The finite-interval
     centre quantities are therefore left undefined.
 
@@ -127,7 +160,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     supplied-float level before conversion back to float. If a mathematically
     finite boundary/width/ratio cannot be represented as a finite positive
     float, the helper fails closed rather than returning ``inf`` or ``0`` while
-    still claiming ``finite_bita_boundary=True``.
+    still claiming ``finite_architecture_boundary=True``.
     """
     _reject_boolean_inputs(decoupling, architecture_cost)
     s = float(decoupling)
@@ -143,7 +176,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         return BalanceDomainGeometry(
             decoupling=s,
             architecture_cost=K,
-            finite_bita_boundary=False,
+            finite_architecture_boundary=False,
             critical_conflict_load=None,
             equal_margin_conflict_load=None,
             max_two_sided_depth=None,
@@ -151,8 +184,8 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
             criticality_index_at_equal_margin=None,
             architecture_pressure_ratio_at_equal_margin=None,
             sch_limited_width=None,
-            bita_limited_width=None,
-            bita_to_sch_width_ratio=None,
+            architecture_limited_width=None,
+            architecture_to_sch_width_ratio=None,
         )
 
     s_q = F.from_float(s)
@@ -162,7 +195,7 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     lcrit_q = k_q / s_q
     lequal_q = k_q / (one + s_q)
     sch_width_q = lequal_q
-    bita_width_q = k_q / (s_q * (one + s_q))
+    architecture_width_q = k_q / (s_q * (one + s_q))
     fraction_q = s_q / (one + s_q)
     pressure_q = fraction_q
     skew_q = one / s_q
@@ -170,19 +203,19 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     Lcrit = _positive_fraction_to_float(lcrit_q, "critical conflict load")
     Lequal = _positive_fraction_to_float(lequal_q, "equal-margin conflict load")
     sch_width = _positive_fraction_to_float(sch_width_q, "SCH-limited width")
-    bita_width = _positive_fraction_to_float(bita_width_q, "BITA-limited width")
+    architecture_width = _positive_fraction_to_float(architecture_width_q, "architecture-limited width")
     fraction = _positive_fraction_to_float(
         fraction_q, "equal-margin fraction of conflict width"
     )
     pressure_equal = _positive_fraction_to_float(
         pressure_q, "architecture-pressure ratio at equal margin"
     )
-    skew = _positive_fraction_to_float(skew_q, "BITA-to-SCH width ratio")
+    skew = _positive_fraction_to_float(skew_q, "architecture-to-SCH width ratio")
 
     return BalanceDomainGeometry(
         decoupling=s,
         architecture_cost=K,
-        finite_bita_boundary=True,
+        finite_architecture_boundary=True,
         critical_conflict_load=Lcrit,
         equal_margin_conflict_load=Lequal,
         max_two_sided_depth=Lequal,
@@ -190,8 +223,8 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
         criticality_index_at_equal_margin=0.5,
         architecture_pressure_ratio_at_equal_margin=pressure_equal,
         sch_limited_width=sch_width,
-        bita_limited_width=bita_width,
-        bita_to_sch_width_ratio=skew,
+        architecture_limited_width=architecture_width,
+        architecture_to_sch_width_ratio=skew,
     )
 
 
@@ -222,7 +255,7 @@ def classify_middle_world(
             xi = L / (L + rho),  rho = K - sL,
 
         so xi -> 0 approaches the SCH-facing boundary and xi -> 1 approaches
-        the BITA-facing differentiation boundary. ``two_sided_depth`` is
+        the SLK-facing architecture-value differentiation boundary. ``two_sided_depth`` is
         ``min(L, rho)`` and measures how deeply the context lies inside the
         middle world in the common fitness units.
     """
@@ -254,27 +287,27 @@ def classify_middle_world(
 
     point = classify_two_margin_point(L, rho, tolerance=tol)
     sch_active = point.conflict_active
-    bita_favoured = point.reserve_position == "NEGATIVE"
+    architecture_favoured = point.reserve_position == "NEGATIVE"
 
     if not sch_active:
         state = "SCH_NO_CONFLICT_WORLD"
     elif point.reserve_position == "INTERFACE":
-        state = "BALANCE_BITA_INTERFACE"
+        state = "BALANCE_ARCHITECTURE_INTERFACE"
     elif point.reserve_position == "POSITIVE":
         state = "BALANCE_MIDDLE_WORLD"
     else:
-        state = "BITA_DIFFERENTIATION_WORLD"
+        state = "ARCHITECTURE_FAVOURED_WORLD"
 
     if state == "BALANCE_MIDDLE_WORLD":
         xi = two_margin_middle_position(L, rho)
         depth = min(L, rho)
         sch_distance = L
-        bita_distance = rho
+        architecture_distance = rho
     else:
         xi = None
         depth = None
         sch_distance = None
-        bita_distance = None
+        architecture_distance = None
 
     return MiddleWorldCertificate(
         conflict_load=L,
@@ -283,10 +316,10 @@ def classify_middle_world(
         recoverable_loss=R,
         architecture_margin=phi,
         sch_conflict_active=sch_active,
-        bita_differentiation_favoured=bita_favoured,
+        architecture_favoured=architecture_favoured,
         state=state,
         sch_boundary_distance=sch_distance,
-        bita_boundary_distance=bita_distance,
+        architecture_boundary_distance=architecture_distance,
         middle_position=xi,
         two_sided_depth=depth,
     )
