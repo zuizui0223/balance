@@ -85,9 +85,26 @@ def build_plant_programme_map(
             "observed_separation_does_not_identify_historical_causation",
             "interaction_does_not_imply_shared_coordinate_conflict",
             "sampling_roles_are_not_exchangeable",
+            "focal_architecture_outcome_cannot_license_confirmatory_predictors",
         ],
         "pooled_prevalence_estimate": None,
+        "primary_model_contract": {
+            "response": "architecture_class4",
+            "predictors": [
+                "module_substrate",
+                "conflict_timing_geometry",
+                "conflict_spatial_geometry",
+            ],
+            "predictor_receipts_required": True,
+            "data_dependent_fallback_allowed": False,
+        },
         "primary_model_ready": False,
+        "primary_model_blockers": [
+            "U1 independent double coding incomplete",
+            "U2 independent double coding incomplete",
+            "three outcome-independent predictor receipts per admitted cluster not yet closed",
+            "final cross-universe dependence/covariance ledger not yet frozen",
+        ],
         "claim_ceiling": (
             "programme_map_only_no_cross_lane_prevalence_pooling_"
             "no_direct_R_K_Phi_rho_xi_dB"
