@@ -32,7 +32,7 @@ on the SCH-facing side and
 \rho'(e)<0
 \]
 
-on the BITA-facing side.
+on the SLK-facing architecture-value side.
 
 The total environmental width is
 
