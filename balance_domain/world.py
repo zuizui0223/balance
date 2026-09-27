@@ -117,7 +117,7 @@ def _reject_boolean_inputs(*values: object) -> None:
 def balance_domain_geometry(decoupling: float, architecture_cost: float) -> BalanceDomainGeometry:
     """Return the one-dimensional BALANCE geometry on its theorem domain.
 
-    This helper implements the positive-cost geometry of Propositions 4--5 in
+    This helper implements the positive-cost coordinate identities in
     ``theory/MIDDLE_WORLD_RESULTS_V1.md`` and therefore requires ``K>0``.
     Degenerate ``K=0`` contexts remain valid inputs to :func:`classify_middle_world`,
     but they have no positive-width BALANCE interval and must not be promoted to
@@ -143,9 +143,9 @@ def balance_domain_geometry(decoupling: float, architecture_cost: float) -> Bala
     architecture-boundary-limited segment. Their widths are
 
         W_S = K/(1+s)
-        W_B = K/[s(1+s)]
+        W_A = K/[s(1+s)]
 
-    and therefore ``W_B/W_S = 1/s``. Architecture cost ``K`` scales the whole
+    and therefore ``W_A/W_S = 1/s``. Architecture cost ``K`` scales the whole
     interval, whereas decoupling ``s`` controls its normalized skew/shape.
 
     ``criticality_index_at_equal_margin`` is the manuscript coordinate
