@@ -175,7 +175,7 @@ def test_default_tolerance_agrees_on_near_architecture_boundary_across_routes():
     assert static.states == ("CRITICAL", "CRITICAL")
     assert direct.states == ("ARCHITECTURE_CRITICAL_INTERFACE",) * 2
     assert sampled.balance_indices == ()
-    assert scalar.state == "BALANCE_BITA_INTERFACE"
+    assert scalar.state == "BALANCE_ARCHITECTURE_INTERFACE"
     assert multi.state == "ARCHITECTURE_ENVELOPE_BOUNDARY"
     assert scalar_direct.state == "ARCHITECTURE_CRITICAL_INTERFACE"
 
