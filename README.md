@@ -152,41 +152,44 @@ N_B                       number of connected BALANCE intervals
 N_0                       number of Phi=0 crossings
 ```
 
-## Current theoretical results
+## Coordinates, algebraic consequences, and testable restrictions
 
-1. **Two-sided world certificate.** BALANCE is exactly the intersection `L>0` and `Phi<0`; `xi` and `d_B` locate a context inside that sandwiched region on a common fitness scale.
+BALANCE deliberately separates **coordinate algebra** from **scientific results**.
 
-2. **Direct worldline route.** `L>0` and `W_D*-W_S*<0` identify the middle world without requiring a prior `R,K` decomposition.
+The following are bookkeeping consequences of the registered definitions/bridge and are
+**not claimed as novel theoretical discoveries**:
 
-3. **Deepest BALANCE point under the quadratic bridge.** For fixed `s>0` and `K>0`, the BALANCE interval is `0<L<K/s`, and maximum two-sided depth occurs at
+- the static sandwich `L>0` and `Phi<0`;
+- under the quadratic bridge, `0<L<K/s`;
+- the interior coordinates `rho=K-R`, `xi=L/(L+rho)`, and `d_B=min(L,rho)`;
+- under `R=sL`, the equal-margin point `L=rho=K/(1+s)` with `xi=1/2`;
+- the width ratio `1/s` and positive affine-scale invariance.
 
-```text
-L_deep = K/(1+s)
-rho_deep = K/(1+s)
-xi_deep = 1/2.
-```
+Their role is to provide a common measurement coordinate, not to manufacture a result
+from two linear inequalities.
 
-Relative to the full conflict-load width, the deepest point lies at `s/(1+s)`.
+The scientifically testable layer begins where additional empirical structure is imposed:
 
-4. **Positive affine-scale invariance.** Applying the same positive affine transformation to the common fitness scale leaves the BALANCE state, `xi`, and `q` unchanged. Dimensional quantities such as `rho` and `d_B` rescale.
+1. **Direct worldline identification.** Matched estimates of `W_S*` and `W_D*` can identify
+   persistent compromise without first identifying `R` and `K`.
 
-5. **No-reentry sufficient condition under the quadratic bridge.** If along an ordered environment `L` and `s` are nondecreasing and `K` is nonincreasing, then `Phi=sL-K` is nondecreasing. BALANCE can therefore form at most one connected interval before the positive-margin domain under those sufficient assumptions.
+2. **Bridge concordance.** When direct and decomposed routes are both measured, the registered
+   bridge predicts `Delta_W=R-K` (or `Delta_W=sL-K` under the quadratic bridge). Residual
+   mismatch is a model-audit target.
 
-6. **Switching-cost persistence.** If shared→differentiated switching costs `C_SD`, differentiated→shared costs `C_DS`, and a context persists for horizon `T`, then history dependence occurs for
+3. **Cross-context restrictions.** Registered monotonicity, affine-envelope, or switching-cost
+   assumptions imply no-reentry, bounded threat switching, endpoint certificates, or
+   duration-dependent hysteresis. Those restrictions can be rejected by data.
 
-```text
--C_DS/T <= Phi <= C_SD/T
-```
+4. **Comparative ecology.** Among independently adjudicated conflict-positive systems, the
+   macro programme tests whether pre-existing module structure and the temporal/spatial
+   geometry of competing demands predict shared persistence versus temporal, spatial,
+   signal, or structural separation. These associations are not implied by the coordinate
+   identities above.
 
-with hysteresis-band width
-
-```text
-Delta_Phi_hyst = (C_SD + C_DS)/T.
-```
-
-This persistence halo is distinct from the static BALANCE core and does not by itself identify accessibility, invasion, fixation, or occupancy.
-
-See `theory/MIDDLE_WORLD_RESULTS_V1.md`.
+See `theory/MIDDLE_WORLD_RESULTS_V1.md`,
+`docs/ALGEBRA_EMPIRICAL_CLAIM_BOUNDARY_V1.md`, and
+`docs/BALANCE_MACRO_PROGRAMME_V1.md`.
 
 ## Empirical claim levels
 
@@ -257,7 +260,7 @@ Implemented with regression guards:
 - Peucedanum multi-definition critical-region fixture,
 - explicit functional-state versus structural-architecture claim ceiling.
 
-Legacy code identifiers containing `bita_*` are retained temporarily for backward compatibility only; they no longer define scientific ownership of the `Phi=0` boundary.
+Canonical public fields and state labels now use neutral `architecture_*` terminology. Deprecated `bita_*` properties and legacy state accessors remain read-only compatibility aliases; they no longer define scientific ownership of the `Phi=0` boundary.
 
 ## Literature-synthesis milestone
 
