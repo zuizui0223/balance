@@ -2,7 +2,12 @@ import csv
 
 import pytest
 
-from balance_domain.plant_macro import FIELDS, build_plant_macro_readout, load_plant_macro_ledger
+from balance_domain.plant_macro import (
+    FIELDS,
+    build_plant_macro_readout,
+    load_plant_macro_ledger,
+    primary_architecture_class,
+)
 
 
 def _row(**updates):
@@ -72,7 +77,7 @@ def test_resolution_binary_consistency_is_fail_closed(tmp_path):
         load_plant_macro_ledger(path)
 
 
-def test_polymorphic_or_mosaic_is_not_forced_into_binary(tmp_path):
+def test_polymorphic_or_mosaic_can_enter_nominal_primary_without_binary_outcome(tmp_path):
     path = tmp_path / "plants.csv"
     _write(
         path,
@@ -80,12 +85,14 @@ def test_polymorphic_or_mosaic_is_not_forced_into_binary(tmp_path):
             _row(
                 architecture_mode="POLYMORPHIC_OR_MOSAIC",
                 structural_module_division="unresolved",
-                primary_model_eligible="false",
+                primary_model_eligible="true",
             )
         ],
     )
     rows = load_plant_macro_ledger(path)
+    assert rows[0]["primary_model_eligible"] == "true"
     assert rows[0]["structural_module_division"] == "unresolved"
+    assert primary_architecture_class(rows[0]["architecture_mode"]) == "MOSAIC"
 
 
 def test_primary_gate_requires_outcome_independent_geometry_predictors(tmp_path):
@@ -143,3 +150,24 @@ def test_signal_separation_is_a_nonstructural_architecture_mode(tmp_path):
     rows = load_plant_macro_ledger(path)
     assert rows[0]["architecture_mode"] == "SIGNAL_SEPARATION"
     assert rows[0]["structural_module_division"] == "false"
+
+
+
+def test_signal_separation_maps_to_frozen_nonstructural_primary_class():
+    assert primary_architecture_class("SIGNAL_SEPARATION") == "NONSTRUCTURAL_SEPARATION"
+
+
+def test_unresolved_architecture_cannot_enter_nominal_primary(tmp_path):
+    path = tmp_path / "plants.csv"
+    _write(
+        path,
+        [
+            _row(
+                architecture_mode="UNRESOLVED",
+                structural_module_division="unresolved",
+                primary_model_eligible="true",
+            )
+        ],
+    )
+    with pytest.raises(ValueError, match="resolved architecture_mode"):
+        load_plant_macro_ledger(path)
