@@ -66,9 +66,10 @@ def test_negative_gap_identifies_functional_state_balance() -> None:
     assert out.claim_level == "FUNCTIONAL_STATE_ONLY_NOT_STRUCTURAL_ARCHITECTURE"
 
 
-def test_positive_gap_identifies_bita_side_without_requiring_bita_status() -> None:
+def test_positive_gap_identifies_architecture_favoured_side_without_requiring_bita_status() -> None:
     out = consume_pedicularis_xy_surface(_conflict(), _xy(gap=0.1, lo=0.02, hi=0.2))
-    assert out.state == "FUNCTIONAL_STATE_BITA_SIDE_IDENTIFIED"
+    assert out.state == "FUNCTIONAL_STATE_ARCHITECTURE_FAVOURED_IDENTIFIED"
+    assert out.legacy_state == "FUNCTIONAL_STATE_BITA_SIDE_IDENTIFIED"
     assert out.direct_middle_position is None
 
 
