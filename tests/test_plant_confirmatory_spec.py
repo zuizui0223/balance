@@ -8,6 +8,7 @@ from balance_domain.plant_macro import PRIMARY_ARCHITECTURE_CLASSES, primary_arc
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_PREDICTOR_RECEIPT_TEMPLATE_V1.csv"
+U1_FRAME = ROOT / "data" / "BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 U2_FRAME = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 
 
@@ -52,8 +53,8 @@ def test_predictor_receipt_template_is_schema_valid():
 
 
 
-def test_u2_confirmatory_receipt_frame_is_frozen_outcome_blind():
-    rows = load_plant_predictor_receipts(U2_FRAME)
+def _assert_outcome_blind_receipt_frame(path):
+    rows = load_plant_predictor_receipts(path)
     assert len(rows) == 60
     assert len({row["cluster_id"] for row in rows}) == 20
     by_cluster = {}
@@ -71,3 +72,11 @@ def test_u2_confirmatory_receipt_frame_is_frozen_outcome_blind():
         "conflict_timing_geometry",
         "conflict_spatial_geometry",
     } for predictors in by_cluster.values())
+
+
+def test_u1_confirmatory_receipt_frame_is_frozen_outcome_blind():
+    _assert_outcome_blind_receipt_frame(U1_FRAME)
+
+
+def test_u2_confirmatory_receipt_frame_is_frozen_outcome_blind():
+    _assert_outcome_blind_receipt_frame(U2_FRAME)
