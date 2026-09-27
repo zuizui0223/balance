@@ -78,6 +78,18 @@ STRUCTURAL_FALSE = {
     "SIGNAL_SEPARATION",
     "TEMPORAL_AND_SPATIAL_SEPARATION",
 }
+
+PRIMARY_ARCHITECTURE_CLASSES = {
+    "SHARED": {"SHARED_INTEGRATED"},
+    "NONSTRUCTURAL_SEPARATION": {
+        "TEMPORAL_SEPARATION",
+        "SPATIAL_SEPARATION",
+        "SIGNAL_SEPARATION",
+        "TEMPORAL_AND_SPATIAL_SEPARATION",
+    },
+    "STRUCTURAL_MODULE_DIVISION": STRUCTURAL_TRUE,
+    "MOSAIC": {"POLYMORPHIC_OR_MOSAIC"},
+}
 MODULE_SUBSTRATE = {
     "SINGLE_OR_CONTINUOUS",
     "SERIAL_WITHIN_FLOWER",
@@ -278,9 +290,9 @@ def _validated_rows(reader: csv.DictReader) -> list[dict[str, str]]:
                 raise ValueError(
                     f"row {row_number} primary eligibility requires POSITIVE conflict"
                 )
-            if structural not in {"true", "false"}:
+            if mode in {"UNRESOLVED", "NA"}:
                 raise ValueError(
-                    f"row {row_number} primary eligibility requires resolved binary outcome"
+                    f"row {row_number} primary eligibility requires resolved architecture_mode"
                 )
             if clean["module_substrate"] == "UNRESOLVED":
                 raise ValueError(
@@ -311,7 +323,20 @@ def load_plant_macro_ledger(path: Path) -> list[dict[str, str]]:
         return _validated_rows(reader)
 
 
+def primary_architecture_class(mode: str) -> str:
+    """Map a resolved nominal architecture mode to the frozen four-class estimand."""
+    for class_name, modes in PRIMARY_ARCHITECTURE_CLASSES.items():
+        if mode in modes:
+            return class_name
+    raise ValueError(f"architecture_mode {mode!r} is not resolved for the primary estimand")
+
+
 def build_plant_macro_readout_from_rows(rows: list[dict[str, str]]) -> dict:
+    resolved_primary = [
+        primary_architecture_class(r["architecture_mode"])
+        for r in rows
+        if r["architecture_mode"] not in {"UNRESOLVED", "NA"}
+    ]
     return {
         "analysis": "balance_plant_macro_screening_readout",
         "n_records": len(rows),
@@ -326,8 +351,17 @@ def build_plant_macro_readout_from_rows(rows: list[dict[str, str]]) -> dict:
         "architecture_mode_counts": dict(
             sorted(Counter(r["architecture_mode"] for r in rows).items())
         ),
+        "primary_architecture_class_counts": dict(
+            sorted(Counter(resolved_primary).items())
+        ),
         "module_substrate_counts": dict(
             sorted(Counter(r["module_substrate"] for r in rows).items())
+        ),
+        "conflict_timing_geometry_counts": dict(
+            sorted(Counter(r["conflict_timing_geometry"] for r in rows).items())
+        ),
+        "conflict_spatial_geometry_counts": dict(
+            sorted(Counter(r["conflict_spatial_geometry"] for r in rows).items())
         ),
         "n_primary_model_eligible": sum(
             r["primary_model_eligible"] == "true" for r in rows
