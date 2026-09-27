@@ -188,8 +188,24 @@ The scientifically testable layer begins where additional empirical structure is
    identities above.
 
 See `theory/MIDDLE_WORLD_RESULTS_V1.md`,
-`docs/ALGEBRA_EMPIRICAL_CLAIM_BOUNDARY_V1.md`, and
-`docs/BALANCE_MACRO_PROGRAMME_V1.md`.
+`docs/ALGEBRA_EMPIRICAL_CLAIM_BOUNDARY_V1.md`, `docs/BALANCE_MACRO_PROGRAMME_V1.md`, and
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md`.
+
+### Plant confirmatory contract
+
+The flowering-plant confirmatory lane has a frozen four-class primary response:
+
+```text
+SHARED
+NONSTRUCTURAL_SEPARATION
+STRUCTURAL_MODULE_DIVISION
+MOSAIC
+```
+
+Entry requires independently adjudicated, outcome-independent receipts for
+`module_substrate`, `conflict_timing_geometry`, and
+`conflict_spatial_geometry`. The binary structural outcome is secondary, and
+there is no significance- or sparsity-triggered switch of the primary estimand.
 
 ## Empirical claim levels
 
