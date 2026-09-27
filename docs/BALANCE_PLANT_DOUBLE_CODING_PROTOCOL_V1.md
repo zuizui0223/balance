@@ -109,6 +109,42 @@ conflict_timing_geometry was SEQUENTIAL_WITHIN_UNIT
 
 unless the functional demand timing itself is documented rather than inferred from dichogamy.
 
+## Two distinct predictor gates
+
+Reproducibility and outcome-independence are different requirements.
+
+### Gate A — independent-coder reproducibility
+
+The double-coding exercise asks whether two blinded coders can assign the same predictor
+category from the same primary evidence.
+
+### Gate B — outcome-independent predictor receipt
+
+Even perfect coder agreement does not license a predictor if the evidence used to assign it
+was inferred from the focal architecture outcome.
+
+Therefore every confirmatory row additionally requires a separate adjudicated receipt for:
+
+```text
+module_substrate
+conflict_timing_geometry
+conflict_spatial_geometry
+```
+
+The receipt records source, evidence type, and whether the predictor value is logically
+independent of the focal architecture outcome.
+
+The frozen empty receipt frames are:
+
+- `data/BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv`
+- `data/BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv`
+
+Each contains exactly 20 dependency groups x 3 predictors = 60 slots, all initialized as
+`UNRESOLVED / UNCERTAIN / SCREENED`. They contain no architecture or conflict-status
+columns.
+
+A predictor enters the model only after **both Gate A and Gate B** are closed.
+
 ## Architecture-versus-resolution language
 
 Coders always score `architecture_mode`.
