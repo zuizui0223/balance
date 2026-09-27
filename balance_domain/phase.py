@@ -20,6 +20,21 @@ class NormalizedPhasePoint:
     critical_conflict_ratio: float | None
     deepest_ridge_ratio: float | None
 
+    @property
+    def legacy_state(self) -> str:
+        """Return the pre-ownership-closure state label for compatibility."""
+        return {
+            "BALANCE_ARCHITECTURE_INTERFACE": "BALANCE_ARCHITECTURE_INTERFACE",
+            "ARCHITECTURE_FAVOURED_WORLD": "ARCHITECTURE_FAVOURED_WORLD",
+        }.get(self.state, self.state)
+
+    @property
+    def legacy_balance_subregion(self) -> str | None:
+        """Return the deprecated BITA-labelled subregion when applicable."""
+        if self.balance_subregion == "ARCHITECTURE_BOUNDARY_LIMITED_BALANCE":
+            return "ARCHITECTURE_BOUNDARY_LIMITED_BALANCE"
+        return self.balance_subregion
+
 
 def _finite_fraction_to_float(value: F, name: str) -> float:
     """Convert an exact finite phase quantity without inventing 0/inf."""
@@ -62,7 +77,7 @@ def normalized_phase_point(
     margin ``c`` and normalized reserve margin ``1-q``. This preserves the
     defining scale invariance of the phase representation even near a boundary.
     Contexts below the deepest ridge are closer to the SCH-facing conflict
-    boundary; contexts above it are closer to the BITA-facing architecture
+    boundary; contexts above it are closer to the SLK-facing architecture-value architecture
     boundary in the common fitness-margin geometry.
 
     All derived phase coordinates are evaluated exactly at the supplied-float
@@ -125,7 +140,7 @@ def normalized_phase_point(
         xi = None
         subregion = None
     elif point.reserve_position == "INTERFACE":
-        state = "BALANCE_BITA_INTERFACE"
+        state = "BALANCE_ARCHITECTURE_INTERFACE"
         xi = None
         subregion = None
     elif point.reserve_position == "POSITIVE":
@@ -137,9 +152,9 @@ def normalized_phase_point(
         elif c_q < ridge_q:
             subregion = "SCH_BOUNDARY_LIMITED_BALANCE"
         else:
-            subregion = "BITA_BOUNDARY_LIMITED_BALANCE"
+            subregion = "ARCHITECTURE_BOUNDARY_LIMITED_BALANCE"
     else:
-        state = "BITA_DIFFERENTIATION_WORLD"
+        state = "ARCHITECTURE_FAVOURED_WORLD"
         xi = None
         subregion = None
 
