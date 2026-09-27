@@ -16,7 +16,7 @@ def test_scalar_world_uses_canonical_half_position_at_extreme_equal_margins():
     assert result.state == "BALANCE_MIDDLE_WORLD"
     assert result.middle_position == pytest.approx(0.5)
     assert result.sch_boundary_distance == pytest.approx(1.0e308)
-    assert result.bita_boundary_distance == pytest.approx(1.0e308)
+    assert result.architecture_boundary_distance == pytest.approx(1.0e308)
 
 
 def test_normalized_phase_uses_same_canonical_coordinate():
