@@ -1,5 +1,9 @@
 # BALANCE deepest-middle-world theorem v1
 
+## Status
+
+The argument below is an elementary coordinate result under registered monotonicity assumptions. BALANCE uses it for sampling and model auditing; mathematical novelty is not claimed.
+
 ## Purpose
 
 Characterize the most interior point of a finite BALANCE domain without assuming the quadratic `sL-K` decomposition.
