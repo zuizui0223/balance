@@ -8,6 +8,7 @@ from balance_domain.plant_macro import PRIMARY_ARCHITECTURE_CLASSES, primary_arc
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_PREDICTOR_RECEIPT_TEMPLATE_V1.csv"
+U2_FRAME = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 
 
 def test_frozen_model_spec_matches_executable_primary_mapping():
@@ -48,3 +49,25 @@ def test_predictor_receipt_template_is_schema_valid():
     assert len(rejected) == 1
     assert rejected[0]["evidence_type"] == "OUTCOME_DERIVED"
     assert rejected[0]["outcome_independence"] == "FALSE"
+
+
+
+def test_u2_confirmatory_receipt_frame_is_frozen_outcome_blind():
+    rows = load_plant_predictor_receipts(U2_FRAME)
+    assert len(rows) == 60
+    assert len({row["cluster_id"] for row in rows}) == 20
+    by_cluster = {}
+    for row in rows:
+        by_cluster.setdefault(row["cluster_id"], set()).add(row["predictor"])
+        assert row["reported_value"] == "UNRESOLVED"
+        assert row["evidence_type"] == "UNCLEAR"
+        assert row["outcome_independence"] == "UNCERTAIN"
+        assert row["adjudication_status"] == "SCREENED"
+        assert row["source_id"]
+        assert "architecture" not in row
+        assert "conflict_status" not in row
+    assert all(predictors == {
+        "module_substrate",
+        "conflict_timing_geometry",
+        "conflict_spatial_geometry",
+    } for predictors in by_cluster.values())
