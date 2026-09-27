@@ -1,0 +1,73 @@
+{
+  "schema_version": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1",
+  "status": "FROZEN_BEFORE_CONFIRMATORY_FIT",
+  "primary_response": {
+    "name": "architecture_class4",
+    "mapping": {
+      "SHARED": [
+        "SHARED_INTEGRATED"
+      ],
+      "NONSTRUCTURAL_SEPARATION": [
+        "TEMPORAL_SEPARATION",
+        "SPATIAL_SEPARATION",
+        "SIGNAL_SEPARATION",
+        "TEMPORAL_AND_SPATIAL_SEPARATION"
+      ],
+      "STRUCTURAL_MODULE_DIVISION": [
+        "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+        "AMONG_FLOWER_MODULE_DIVISION"
+      ],
+      "MOSAIC": [
+        "POLYMORPHIC_OR_MOSAIC"
+      ]
+    }
+  },
+  "required_entry_gates": [
+    "species_or_species_context_grain",
+    "adjudication_status_ADJUDICATED",
+    "conflict_status_POSITIVE",
+    "resolved_architecture_mode",
+    "outcome_independent_adjudicated_module_substrate_receipt",
+    "outcome_independent_adjudicated_conflict_timing_geometry_receipt",
+    "outcome_independent_adjudicated_conflict_spatial_geometry_receipt"
+  ],
+  "primary_model": {
+    "family": "hierarchical_multinomial",
+    "formula": "architecture_class4 ~ module_substrate + conflict_timing_geometry + conflict_spatial_geometry + conflict_family",
+    "dependence": "dependency_group clustered/varying intercept where repeated rows survive; one biological dependency group is not counted as independent replication",
+    "no_data_dependent_fallback": true
+  },
+  "registered_interaction_extensions": [
+    {
+      "id": "I1_MODULE_X_TIMING",
+      "formula": "architecture_class4 ~ module_substrate * conflict_timing_geometry + conflict_spatial_geometry + conflict_family",
+      "interpretation": "tests whether module substrate changes routing differently across simultaneous versus temporally structured conflicts"
+    },
+    {
+      "id": "I2_MODULE_X_SPATIAL",
+      "formula": "architecture_class4 ~ module_substrate * conflict_spatial_geometry + conflict_timing_geometry + conflict_family",
+      "interpretation": "tests whether module substrate changes routing differently across same-unit versus spatially distributed conflicts"
+    }
+  ],
+  "secondary_models": [
+    {
+      "response": "structural_module_division",
+      "family": "hierarchical_binary",
+      "eligibility": "rows with structural_module_division true or false only"
+    },
+    {
+      "response": "architecture_mode_full_nominal",
+      "family": "descriptive_or_regularized_multinomial",
+      "eligibility": "resolved raw architecture categories",
+      "claim_role": "secondary_resolution_detail_not_primary_model_switch"
+    }
+  ],
+  "guardrails": [
+    "SIGNAL_SEPARATION is included in NONSTRUCTURAL_SEPARATION",
+    "POLYMORPHIC_OR_MOSAIC remains primary-outcome eligible even when the binary structural response is unresolved",
+    "predictor values cannot be licensed from the focal architecture outcome",
+    "absence of one response class is reported as an estimability limitation rather than triggering post-hoc recoding",
+    "interaction extensions are interpreted separately rather than selected by significance"
+  ],
+  "claim_ceiling": "comparative_association_within_screened_conflict_positive_plant_literature_not_transition_probability_or_causal_identification"
+}
