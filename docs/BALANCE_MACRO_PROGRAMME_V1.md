@@ -17,6 +17,12 @@ what predicts persistence of an integrated compromise versus functional/structur
 
 The primary comparative target is therefore the **resolution of conflict**, not the existence of `Phi=0` itself.
 
+This programme also does not use the closed-form middle-world coordinates as evidence for
+its comparative result. The interval `0<L<K/s`, equal-margin location `K/(1+s)`, and
+related `xi/d_B` identities are descriptive algebra under the registered bridge. The macro
+result must come from architecture variation predicted by independently coded biological
+features.
+
 ## Core question
 
 > Why are some functional conflicts tolerated inside a shared architecture whereas others are resolved by differentiation?
