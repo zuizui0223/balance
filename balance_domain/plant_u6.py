@@ -6,6 +6,8 @@ import json
 from collections import Counter
 from pathlib import Path
 
+from .plant_macro import MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
+
 
 FIELDS = (
     "reference_id",
@@ -373,3 +375,158 @@ def build_u6_pass1_freeze(
             "not_confirmatory_model_ready"
         ),
     }
+
+
+
+PASS1_FREEZE_SCHEMA = "BALANCE_PLANT_U6_PASS1_FREEZE_V1"
+
+
+def load_u6_pass1_freeze_manifest(path: Path) -> dict:
+    """Load the frozen U6 Pass-1 manifest and keep confirmatory admission closed."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if data.get("schema_version") != PASS1_FREEZE_SCHEMA:
+        raise ValueError("U6 Pass-1 freeze manifest schema mismatch")
+    if data.get("status") != "PASS1_CLOSED_PASS2_CODING_OPEN":
+        raise ValueError("U6 Pass-1 freeze manifest must declare Pass 1 closed")
+    contract = data.get("pass1_contract", {})
+    if contract.get("n_anchor_review_references") != 157:
+        raise ValueError("U6 Pass-1 freeze must retain all 157 anchor references")
+    if contract.get("n_unresolved_reference_classifications") != 0:
+        raise ValueError("U6 Pass-1 freeze cannot retain unresolved reference classifications")
+    if contract.get("architecture_used_for_admission") is not False:
+        raise ValueError("U6 Pass-1 admission must remain architecture-blind")
+    if data.get("pass2", {}).get("open") is not True:
+        raise ValueError("U6 Pass-1 freeze must explicitly open Pass 2 coding")
+    if data.get("pass2", {}).get("primary_model_admission") is not False:
+        raise ValueError("U6 Pass-1 freeze cannot directly license the primary model")
+
+    groups = data.get("included_dependency_groups")
+    if not isinstance(groups, list) or not groups:
+        raise ValueError("U6 Pass-1 freeze requires included dependency groups")
+    if groups != sorted(set(groups)):
+        raise ValueError("U6 included dependency groups must be unique and sorted")
+
+    source_map = data.get("source_reference_ids_by_dependency_group")
+    if not isinstance(source_map, dict) or set(source_map) != set(groups):
+        raise ValueError("U6 source-reference map must cover every included dependency group")
+    return data
+
+
+def validate_u6_pass1_freeze_manifest(
+    manifest_path: Path,
+    reference_paths: list[Path],
+    adjudication_paths: list[Path],
+) -> dict:
+    """Require the frozen manifest to equal the executable Pass-1 reconstruction."""
+    manifest = load_u6_pass1_freeze_manifest(manifest_path)
+    live = build_u6_pass1_freeze(reference_paths, adjudication_paths)
+
+    for key in (
+        "included_reference_ids",
+        "excluded_reference_ids",
+        "retained_unresolved_reference_ids",
+    ):
+        expected = manifest["candidate_reference_outcomes"][key]
+        if expected != live[key]:
+            raise ValueError(f"U6 Pass-1 freeze manifest drift for {key}")
+
+    if manifest["included_dependency_groups"] != live["included_dependency_groups"]:
+        raise ValueError("U6 Pass-1 freeze manifest dependency groups drifted")
+    if (
+        manifest["source_reference_ids_by_dependency_group"]
+        != live["source_reference_ids_by_dependency_group"]
+    ):
+        raise ValueError("U6 Pass-1 freeze source-reference mapping drifted")
+    return live
+
+
+PASS2_FIELDS = (
+    "dependency_group",
+    "source_reference_ids",
+    "coder_id",
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+    "coding_status",
+    "notes",
+)
+
+PASS2_CODING_STATUS = {"UNSTARTED", "CODED"}
+
+
+def load_u6_pass2_double_coding(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
+    """Load U6 Pass-2 architecture/predictor coding only for frozen Pass-1 groups."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+    source_map = manifest["source_reference_ids_by_dependency_group"]
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != PASS2_FIELDS:
+            raise ValueError("U6 Pass-2 coding columns must match canonical order")
+        rows = list(reader)
+
+    if not rows:
+        raise ValueError("U6 Pass-2 coding worksheet must contain rows")
+
+    grouped: dict[str, list[dict[str, str]]] = {}
+    coder_ids: set[str] = set()
+    seen: set[tuple[str, str]] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 Pass-2 schema")
+        clean = {key: (row.get(key) or "").strip() for key in PASS2_FIELDS}
+        for key in PASS2_FIELDS[:-1]:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 dependency group {group!r}")
+        expected_sources = ";".join(source_map[group])
+        if clean["source_reference_ids"] != expected_sources:
+            raise ValueError(f"row {row_number} source references disagree with Pass-1 freeze")
+
+        key = (group, clean["coder_id"])
+        if key in seen:
+            raise ValueError(f"duplicate U6 Pass-2 group/coder pair {key!r}")
+        seen.add(key)
+        coder_ids.add(clean["coder_id"])
+        grouped.setdefault(group, []).append(clean)
+
+        if clean["architecture_mode"] not in RESOLUTION - {"NA"}:
+            raise ValueError(f"row {row_number} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {row_number} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {row_number} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
+        if clean["coding_status"] not in PASS2_CODING_STATUS:
+            raise ValueError(f"row {row_number} invalid coding_status")
+
+        if clean["coding_status"] == "UNSTARTED":
+            if any(
+                clean[field] != "UNRESOLVED"
+                for field in (
+                    "architecture_mode",
+                    "module_substrate",
+                    "conflict_timing_geometry",
+                    "conflict_spatial_geometry",
+                )
+            ):
+                raise ValueError(
+                    f"row {row_number} UNSTARTED coding must remain entirely UNRESOLVED"
+                )
+        clean["notes"] = (row.get("notes") or "").strip()
+        out.append(clean)
+
+    if len(coder_ids) != 2:
+        raise ValueError("U6 Pass-2 worksheet requires exactly two independent coder IDs")
+    if set(grouped) != expected_groups:
+        raise ValueError("U6 Pass-2 worksheet must cover every frozen dependency group")
+    if any(len(rows) != 2 for rows in grouped.values()):
+        raise ValueError("each U6 Pass-2 dependency group requires exactly two coder rows")
+    return out
