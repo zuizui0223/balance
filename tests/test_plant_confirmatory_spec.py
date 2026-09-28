@@ -88,10 +88,19 @@ def test_u2_predictor_screen_progress_is_outcome_independent_but_not_adjudicated
     assert all("architecture" not in row and "conflict_status" not in row for row in rows)
 
     coverage = build_receipt_screening_coverage(rows)
-    assert coverage["by_predictor"]["module_substrate"]["n_outcome_independent_resolved"] == 1
+    assert coverage["by_predictor"]["module_substrate"]["n_outcome_independent_resolved"] == 8
     assert coverage["by_predictor"]["conflict_timing_geometry"]["n_outcome_independent_resolved"] == 8
     assert coverage["by_predictor"]["conflict_spatial_geometry"]["n_outcome_independent_resolved"] == 8
-    assert coverage["n_complete_outcome_independent_clusters"] == 1
-    assert coverage["complete_outcome_independent_clusters"] == ["Eichhornia_paniculata"]
+    assert coverage["n_complete_outcome_independent_clusters"] == 8
+    assert coverage["complete_outcome_independent_clusters"] == [
+        "Asclepias_exaltata",
+        "Campsis_radicans",
+        "Eichhornia_paniculata",
+        "Epilobium_obcordatum",
+        "Ipomopsis_aggregata",
+        "Mimulus_aurantiacus",
+        "Polemonium_viscosum",
+        "Pontederia_sagittata",
+    ]
     assert coverage["n_complete_adjudicated_clusters"] == 0
     assert coverage["promotion_rule"].startswith("SCREENED")
