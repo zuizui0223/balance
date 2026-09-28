@@ -708,3 +708,72 @@ def u6_source_packet_ready(rows: list[dict[str, str]]) -> bool:
         and row["packet_status"] == "FROZEN"
         for row in rows
     )
+
+
+
+U6_FROZEN_SOURCE_PACKET_FIELDS = (
+    "dependency_group",
+    "plant_taxon",
+    "admission_reference_ids",
+    "admission_primary_source_basis",
+    "supplemental_primary_source_ids",
+    "source_recovery_status",
+    "coder_instruction",
+)
+
+
+def load_u6_frozen_source_packet(
+    path: Path,
+    freeze_manifest_path: Path,
+    source_recovery_path: Path,
+) -> list[dict[str, str]]:
+    """Validate the final coder packet against Pass-1 and source-recovery freezes."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    recovery = load_u6_pass2_source_recovery(source_recovery_path, freeze_manifest_path)
+    if not u6_source_packet_ready(recovery):
+        raise ValueError("U6 frozen source packet cannot open before source recovery closes")
+    recovery_by_group = {row["dependency_group"]: row for row in recovery}
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_FROZEN_SOURCE_PACKET_FIELDS:
+            raise ValueError("U6 frozen source-packet columns must match canonical order")
+        rows = list(reader)
+
+    expected_groups = set(manifest["included_dependency_groups"])
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 frozen source packet must contain one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 source-packet schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_FROZEN_SOURCE_PACKET_FIELDS}
+        for key in U6_FROZEN_SOURCE_PACKET_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 source-packet group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 frozen source-packet group {group!r}")
+        seen.add(group)
+
+        expected_refs = ";".join(manifest["source_reference_ids_by_dependency_group"][group])
+        if clean["admission_reference_ids"] != expected_refs:
+            raise ValueError(f"row {row_number} admission references drifted")
+
+        recovery_row = recovery_by_group[group]
+        if clean["supplemental_primary_source_ids"] != recovery_row["supplemental_primary_source_ids"]:
+            raise ValueError(f"row {row_number} supplemental sources drifted")
+        if clean["source_recovery_status"] != recovery_row["source_recovery_status"]:
+            raise ValueError(f"row {row_number} source-recovery status drifted")
+        if "DO_NOT_USE_U6_ADMISSION_DECISION_NOTES" not in clean["coder_instruction"]:
+            raise ValueError(f"row {row_number} coder instruction must preserve admission blinding")
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 frozen source packet does not cover every dependency group")
+    return out
