@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import json
+from collections import Counter
 from pathlib import Path
 
 
@@ -94,3 +95,29 @@ def load_u6_reference_classification(path: Path) -> list[dict[str, str]]:
             raise ValueError(f"row {row_number} invalid classification_basis")
         out.append(clean)
     return out
+
+
+
+def build_u6_reference_readout(path: Path) -> dict:
+    """Summarize Pass-1 reconstruction progress without opening architecture fields."""
+    rows = load_u6_reference_classification(path)
+    status_counts = Counter(r["reference_type_status"] for r in rows)
+    inclusion_counts = Counter(r["inclusion_status"] for r in rows)
+    candidate_ids = [
+        r["reference_id"]
+        for r in rows
+        if r["reference_type_status"] == "EMPIRICAL_POLLEN_THEFT_CANDIDATE"
+    ]
+    included = [r["reference_id"] for r in rows if r["inclusion_status"] == "INCLUDE"]
+    return {
+        "analysis": "balance_plant_u6_pass1_reference_reconstruction",
+        "n_references": len(rows),
+        "reference_status_counts": dict(sorted(status_counts.items())),
+        "inclusion_status_counts": dict(sorted(inclusion_counts.items())),
+        "pollen_theft_candidate_reference_ids": candidate_ids,
+        "included_reference_ids": included,
+        "n_included": len(included),
+        "architecture_fields_open": False,
+        "pass2_open": False,
+        "claim_ceiling": "pass1_reference_reconstruction_only",
+    }
