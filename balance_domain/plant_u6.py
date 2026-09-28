@@ -269,3 +269,107 @@ def build_u6_candidate_adjudication_readout(path: Path) -> dict:
         "architecture_fields_open": False,
         "claim_ceiling": "pass1_candidate_adjudication_only",
     }
+
+
+
+def build_u6_pass1_freeze(
+    reference_paths: list[Path],
+    adjudication_paths: list[Path],
+) -> dict:
+    """Close U6 Pass 1 only after the conflict-first universe is fully reconstructed.
+
+    RETAIN_UNRESOLVED is explicit evidence-ceiling missingness and is not silently
+    promoted or replaced. Pass 2 opens only for dependency groups supported by at
+    least one INCLUDE adjudication.
+    """
+    if not reference_paths or not adjudication_paths:
+        raise ValueError("U6 Pass-1 freeze requires reference and adjudication paths")
+
+    references: list[dict[str, str]] = []
+    for path in reference_paths:
+        references.extend(load_u6_reference_classification(path))
+
+    reference_ids = [row["reference_id"] for row in references]
+    expected_ids = [f"U6_REF_{i:03d}" for i in range(1, 158)]
+    if reference_ids != expected_ids:
+        raise ValueError("U6 Pass-1 freeze requires the complete ordered 157-reference universe")
+    if any(row["reference_type_status"] == "UNRESOLVED" for row in references):
+        raise ValueError("U6 Pass-1 freeze cannot retain unresolved reference classifications")
+
+    candidate_ids = {
+        row["reference_id"]
+        for row in references
+        if row["reference_type_status"] == "EMPIRICAL_POLLEN_THEFT_CANDIDATE"
+    }
+
+    adjudications: list[dict[str, str]] = []
+    for path in adjudication_paths:
+        adjudications.extend(load_u6_candidate_adjudication(path))
+
+    adjudicated_ids = {row["reference_id"] for row in adjudications}
+    missing = sorted(candidate_ids - adjudicated_ids)
+    extra = sorted(adjudicated_ids - candidate_ids)
+    if missing:
+        raise ValueError(f"U6 candidate references lack adjudication: {missing}")
+    if extra:
+        raise ValueError(f"U6 adjudication exists for non-candidate references: {extra}")
+
+    by_reference: dict[str, list[dict[str, str]]] = {}
+    for row in adjudications:
+        by_reference.setdefault(row["reference_id"], []).append(row)
+
+    included_reference_ids: list[str] = []
+    excluded_reference_ids: list[str] = []
+    retained_unresolved_reference_ids: list[str] = []
+    for reference_id in sorted(candidate_ids):
+        decisions = {row["decision"] for row in by_reference[reference_id]}
+        if "INCLUDE" in decisions:
+            included_reference_ids.append(reference_id)
+        elif "RETAIN_UNRESOLVED" in decisions:
+            retained_unresolved_reference_ids.append(reference_id)
+        elif decisions == {"EXCLUDE"}:
+            excluded_reference_ids.append(reference_id)
+        else:
+            raise ValueError(
+                f"U6 candidate {reference_id!r} has an unsupported decision mixture: "
+                f"{sorted(decisions)}"
+            )
+
+    included_rows = [row for row in adjudications if row["decision"] == "INCLUDE"]
+    included_dependency_groups = sorted({row["dependency_group"] for row in included_rows})
+    if not included_dependency_groups:
+        raise ValueError("U6 Pass-1 freeze produced no included dependency groups")
+
+    source_refs_by_dependency: dict[str, list[str]] = {}
+    for row in included_rows:
+        source_refs_by_dependency.setdefault(row["dependency_group"], []).append(
+            row["reference_id"]
+        )
+    source_refs_by_dependency = {
+        group: sorted(set(reference_ids))
+        for group, reference_ids in sorted(source_refs_by_dependency.items())
+    }
+
+    return {
+        "analysis": "balance_plant_u6_pass1_freeze",
+        "status": "PASS1_CLOSED_PASS2_CODING_OPEN",
+        "n_references": len(references),
+        "n_candidate_references": len(candidate_ids),
+        "n_candidate_adjudication_rows": len(adjudications),
+        "n_included_reference_ids": len(included_reference_ids),
+        "n_excluded_reference_ids": len(excluded_reference_ids),
+        "n_retained_unresolved_reference_ids": len(retained_unresolved_reference_ids),
+        "included_reference_ids": included_reference_ids,
+        "excluded_reference_ids": excluded_reference_ids,
+        "retained_unresolved_reference_ids": retained_unresolved_reference_ids,
+        "n_included_dependency_groups": len(included_dependency_groups),
+        "included_dependency_groups": included_dependency_groups,
+        "source_reference_ids_by_dependency_group": source_refs_by_dependency,
+        "architecture_used_for_pass1_admission": False,
+        "pass2_open": True,
+        "primary_model_admission": False,
+        "claim_ceiling": (
+            "pass1_conflict_first_universe_closed_pass2_architecture_coding_open_"
+            "not_confirmatory_model_ready"
+        ),
+    }
