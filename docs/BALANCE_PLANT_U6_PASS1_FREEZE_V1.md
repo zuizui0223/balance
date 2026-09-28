@@ -2,7 +2,7 @@
 
 ## Status
 
-`PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN`.
+`PASS1_CLOSED_PASS2_CODING_OPEN`.
 
 Anchor:
 Hargreaves, Harder & Johnson (2009), *Consumptive emasculation: the ecological and
@@ -104,7 +104,7 @@ Canonical frame:
 
 ## Pass 2
 
-Pass 2A source recovery is now open; independent architecture/predictor coding remains locked.
+Pass 2A source recovery is complete and the final source packet is frozen; independent coder A/B architecture/predictor coding is now open.
 
 Two coder rows are frozen for every included dependency group:
 
@@ -137,3 +137,24 @@ Still required:
 5. class-support/estimability check after architecture coding.
 
 No architecture-class result is known at the Pass-1 freeze.
+
+
+## Source-recovery closure
+
+The registered generic search frame is complete for all 21 frozen groups:
+
+```text
+RESOLVED          15
+EVIDENCE_CEILING   6
+PENDING            0
+```
+
+No architecture-category term was permitted in the search queries.
+
+The final coder packet is frozen at:
+
+`data/BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv`.
+
+Independent coder A/B coding is now open. The 42-row worksheet remains entirely
+`UNRESOLVED / UNSTARTED` at freeze. Passing this source gate still does not license the
+confirmatory model.
