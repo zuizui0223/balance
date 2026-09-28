@@ -8,6 +8,7 @@ from balance_domain.plant_u6 import (
     build_u6_candidate_adjudication_readout,
     build_u6_multi_batch_readout,
     load_u6_anchor,
+    load_u6_cross_universe_dependence,
     load_u6_pass1_freeze_manifest,
     load_u6_pass2_double_coding,
     load_u6_reference_classification,
@@ -28,6 +29,8 @@ CANDIDATE_BATCHES = [
 ]
 FREEZE = ROOT / "data" / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json"
 PASS2 = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
+DEPENDENCE = ROOT / "data" / "BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv"
+SOURCE_PACKET = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_PACKET_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -156,3 +159,29 @@ def test_u6_pass2_rejects_nonfrozen_dependency_group(tmp_path):
     path.write_text(source, encoding="utf-8")
     with pytest.raises(ValueError, match="non-frozen U6 dependency group"):
         load_u6_pass2_double_coding(path, FREEZE)
+
+
+
+def test_u6_cross_universe_dependence_freezes_single_species_overlap():
+    rows = load_u6_cross_universe_dependence(DEPENDENCE, FREEZE)
+    shared = [row for row in rows if row["analysis_action"] == "SHARED_SPECIES_BLOCK"]
+    assert len(rows) == 21
+    assert len(shared) == 1
+    assert shared[0]["u6_dependency_group"] == "Impatiens_capensis"
+    assert shared[0]["overlap_universe"] == "U1"
+    assert shared[0]["overlap_record_id"] == "U1_024"
+
+
+def test_u6_pass2_source_packet_covers_frozen_groups_without_architecture_columns():
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    with SOURCE_PACKET.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = set(reader.fieldnames or ())
+        rows = list(reader)
+
+    assert len(rows) == 21
+    assert {row["dependency_group"] for row in rows} == set(
+        manifest["included_dependency_groups"]
+    )
+    assert fields.isdisjoint(FORBIDDEN_PASS1_FIELDS)
+    assert all("DO_NOT_USE_U6_CANDIDATE_ADJUDICATION_NOTES" in row["coder_instruction"] for row in rows)
