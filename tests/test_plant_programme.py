@@ -30,7 +30,8 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert out["primary_model_contract"]["response"] == "architecture_class4"
     assert out["primary_model_contract"]["predictor_receipts_required"] is True
     assert out["primary_model_contract"]["data_dependent_fallback_allowed"] is False
-    assert len(out["primary_model_blockers"]) == 4
+    assert len(out["primary_model_blockers"]) == 5
+    assert any("STRUCTURAL_MODULE_DIVISION" in x for x in out["primary_model_blockers"])
 
 
 def test_u1_is_specificity_heavy_and_has_no_positive_conflict_in_provisional20():
