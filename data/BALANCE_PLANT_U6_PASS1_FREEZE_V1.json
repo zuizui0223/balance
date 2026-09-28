@@ -1,6 +1,6 @@
 {
   "schema_version": "BALANCE_PLANT_U6_PASS1_FREEZE_V1",
-  "status": "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN",
+  "status": "PASS1_CLOSED_PASS2_CODING_OPEN",
   "universe_id": "U6_POLLEN_THEFT_HARGREAVES_2009",
   "anchor_doi": "10.1111/j.1469-185X.2008.00074.x",
   "pass1_contract": {
@@ -141,13 +141,15 @@
     ]
   },
   "pass2": {
-    "source_recovery_open": true,
-    "source_packet_frozen": false,
-    "coding_open": false,
-    "purpose": "outcome-blind generic source recovery before independent architecture and predictor coding",
+    "source_recovery_open": false,
+    "source_packet_frozen": true,
+    "coding_open": true,
+    "frozen_source_packet": "data/BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv",
+    "source_recovery_frame": "data/BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv",
+    "purpose": "independent architecture and predictor coding from frozen source packet",
     "required_coders": 2,
     "primary_model_admission": false
   },
   "evidence_ceiling": "retained_unresolved candidate references remain explicit Pass-1 missingness and are not replaced",
-  "claim_ceiling": "conflict_first_universe_frozen_pass2_source_recovery_open_architecture_not_yet_coded"
+  "claim_ceiling": "conflict_first_universe_and_source_packet_frozen_independent_coding_open_not_model_ready"
 }
