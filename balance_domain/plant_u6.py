@@ -7,6 +7,7 @@ from collections import Counter
 from pathlib import Path
 
 from .plant_macro import MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
+from .plant_macro_agreement import _cohen_kappa, _gwet_ac1
 
 
 FIELDS = (
@@ -792,3 +793,68 @@ def load_u6_frozen_source_packet(
     if seen != expected_groups:
         raise ValueError("U6 frozen source packet does not cover every dependency group")
     return out
+
+
+
+U6_AGREEMENT_FIELDS = (
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+)
+
+
+def build_u6_pass2_agreement_from_rows(rows: list[dict[str, str]]) -> dict:
+    """Compute U6 coder agreement only after both coders have completed every row."""
+    if not rows:
+        raise ValueError("U6 agreement requires coded rows")
+    if any(row["coding_status"] != "CODED" for row in rows):
+        raise ValueError("U6 agreement cannot run while any coding row is UNSTARTED")
+
+    grouped: dict[str, list[dict[str, str]]] = {}
+    coder_ids: set[str] = set()
+    for row in rows:
+        grouped.setdefault(row["dependency_group"], []).append(row)
+        coder_ids.add(row["coder_id"])
+    if len(coder_ids) != 2:
+        raise ValueError("U6 agreement requires exactly two coder IDs")
+    if any(len(group) != 2 for group in grouped.values()):
+        raise ValueError("U6 agreement requires exactly two rows per dependency group")
+
+    fields: dict[str, dict] = {}
+    for field in U6_AGREEMENT_FIELDS:
+        group_ids = sorted(grouped)
+        a = [grouped[g][0][field] for g in group_ids]
+        b = [grouped[g][1][field] for g in group_ids]
+        disagreements = [
+            g for g in group_ids if grouped[g][0][field] != grouped[g][1][field]
+        ]
+        n = len(group_ids)
+        raw = (n - len(disagreements)) / n
+        fields[field] = {
+            "n_pairs": n,
+            "raw_agreement": raw,
+            "cohen_kappa": _cohen_kappa(a, b),
+            "gwet_ac1": _gwet_ac1(a, b),
+            "coder_a_marginals": dict(sorted(Counter(a).items())),
+            "coder_b_marginals": dict(sorted(Counter(b).items())),
+            "disagreement_dependency_groups": disagreements,
+            "codebook_repair_trigger": raw < 0.80,
+        }
+
+    return {
+        "analysis": "balance_u6_pass2_independent_coder_agreement",
+        "n_dependency_groups": len(grouped),
+        "fields": fields,
+        "workflow_threshold_raw_agreement": 0.80,
+        "confirmatory_promotion_allowed": False,
+        "promotion_note": (
+            "agreement closes reproducibility only; predictor outcome-independence, "
+            "adjudication, dependence, and estimability remain separate gates"
+        ),
+    }
+
+
+def build_u6_pass2_agreement(path: Path, freeze_manifest_path: Path) -> dict:
+    rows = load_u6_pass2_double_coding(path, freeze_manifest_path)
+    return build_u6_pass2_agreement_from_rows(rows)
