@@ -71,6 +71,30 @@ PRIMARY_MULTINOMIAL_NOT_ESTIMABLE_UNDER_FROZEN_RESPONSE
 
 not a post-hoc response rewrite.
 
+## Targeted U1 structural recovery result
+
+A bounded four-candidate U1 recovery queue was opened before any candidate was promoted:
+
+```text
+Ruellia nudiflora
+Impatiens capensis
+Isomeris arborea
+Eichhornia crassipes
+```
+
+All four current primary-source screens terminate without promotion. Thus the current
+outcome-blind U1/U2 surface still has:
+
+```text
+STRUCTURAL_MODULE_DIVISION = 0
+```
+
+The empty class is no longer an unspecified search gap. Under the current U1/U2 source
+universe and strict conflict contract, no source-screened route repairs it.
+
+This strengthens the instruction not to use U3 structural-positive cases as silent
+denominator repair.
+
 ## U3 role
 
 U3 currently supplies structural division-of-labour cases, but its review universe is
