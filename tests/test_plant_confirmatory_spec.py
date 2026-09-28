@@ -1,7 +1,10 @@
 import json
 from pathlib import Path
 
-from balance_domain.plant_confirmatory import load_plant_predictor_receipts
+from balance_domain.plant_confirmatory import (
+    build_receipt_screening_coverage,
+    load_plant_predictor_receipts,
+)
 from balance_domain.plant_macro import PRIMARY_ARCHITECTURE_CLASSES, primary_architecture_class
 
 
@@ -78,5 +81,17 @@ def test_u1_confirmatory_receipt_frame_is_frozen_outcome_blind():
     _assert_outcome_blind_receipt_frame(U1_FRAME)
 
 
-def test_u2_confirmatory_receipt_frame_is_frozen_outcome_blind():
-    _assert_outcome_blind_receipt_frame(U2_FRAME)
+def test_u2_predictor_screen_progress_is_outcome_independent_but_not_adjudicated():
+    rows = load_plant_predictor_receipts(U2_FRAME)
+    assert len(rows) == 60
+    assert len({row["cluster_id"] for row in rows}) == 20
+    assert all("architecture" not in row and "conflict_status" not in row for row in rows)
+
+    coverage = build_receipt_screening_coverage(rows)
+    assert coverage["by_predictor"]["module_substrate"]["n_outcome_independent_resolved"] == 1
+    assert coverage["by_predictor"]["conflict_timing_geometry"]["n_outcome_independent_resolved"] == 8
+    assert coverage["by_predictor"]["conflict_spatial_geometry"]["n_outcome_independent_resolved"] == 8
+    assert coverage["n_complete_outcome_independent_clusters"] == 1
+    assert coverage["complete_outcome_independent_clusters"] == ["Eichhornia_paniculata"]
+    assert coverage["n_complete_adjudicated_clusters"] == 0
+    assert coverage["promotion_rule"].startswith("SCREENED")
