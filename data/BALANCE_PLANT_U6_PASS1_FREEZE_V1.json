@@ -1,0 +1,151 @@
+{
+  "schema_version": "BALANCE_PLANT_U6_PASS1_FREEZE_V1",
+  "status": "PASS1_CLOSED_PASS2_CODING_OPEN",
+  "universe_id": "U6_POLLEN_THEFT_HARGREAVES_2009",
+  "anchor_doi": "10.1111/j.1469-185X.2008.00074.x",
+  "pass1_contract": {
+    "n_anchor_review_references": 157,
+    "n_unresolved_reference_classifications": 0,
+    "n_empirical_pollen_theft_candidate_references": 33,
+    "all_candidate_references_have_adjudication": true,
+    "architecture_used_for_admission": false
+  },
+  "candidate_reference_outcomes": {
+    "included_reference_ids": [
+      "U6_REF_022",
+      "U6_REF_023",
+      "U6_REF_029",
+      "U6_REF_031",
+      "U6_REF_033",
+      "U6_REF_036",
+      "U6_REF_038",
+      "U6_REF_040",
+      "U6_REF_046",
+      "U6_REF_078",
+      "U6_REF_083",
+      "U6_REF_091",
+      "U6_REF_095",
+      "U6_REF_102",
+      "U6_REF_110",
+      "U6_REF_123",
+      "U6_REF_133",
+      "U6_REF_140",
+      "U6_REF_149",
+      "U6_REF_153",
+      "U6_REF_155"
+    ],
+    "excluded_reference_ids": [
+      "U6_REF_017",
+      "U6_REF_125",
+      "U6_REF_156"
+    ],
+    "retained_unresolved_reference_ids": [
+      "U6_REF_010",
+      "U6_REF_058",
+      "U6_REF_100",
+      "U6_REF_112",
+      "U6_REF_119",
+      "U6_REF_128",
+      "U6_REF_144",
+      "U6_REF_154",
+      "U6_REF_157"
+    ]
+  },
+  "included_dependency_groups": [
+    "Actinidia_deliciosa",
+    "Amomum_subulatum",
+    "Aphelandra_golfodulcensis",
+    "Banksia_menziesii",
+    "Bromelia_antiacantha",
+    "Campanula_americana",
+    "Campomanesia_pubescens",
+    "Clusia_arrudae",
+    "Crescentia_alata",
+    "Echium_plantagineum",
+    "Grevillea_barklyana",
+    "Hamelia_patens",
+    "Impatiens_capensis",
+    "Melastoma_affine",
+    "Nothofagus_pumilio",
+    "Passiflora_foetida",
+    "Prockia_crucis",
+    "Pseudobombax_ellipticum",
+    "Theobroma_cacao",
+    "Tolmiea_menziesii",
+    "Zea_mays"
+  ],
+  "source_reference_ids_by_dependency_group": {
+    "Actinidia_deliciosa": [
+      "U6_REF_078"
+    ],
+    "Amomum_subulatum": [
+      "U6_REF_123"
+    ],
+    "Aphelandra_golfodulcensis": [
+      "U6_REF_095"
+    ],
+    "Banksia_menziesii": [
+      "U6_REF_110"
+    ],
+    "Bromelia_antiacantha": [
+      "U6_REF_023"
+    ],
+    "Campanula_americana": [
+      "U6_REF_083"
+    ],
+    "Campomanesia_pubescens": [
+      "U6_REF_133"
+    ],
+    "Clusia_arrudae": [
+      "U6_REF_033"
+    ],
+    "Crescentia_alata": [
+      "U6_REF_029"
+    ],
+    "Echium_plantagineum": [
+      "U6_REF_078"
+    ],
+    "Grevillea_barklyana": [
+      "U6_REF_140"
+    ],
+    "Hamelia_patens": [
+      "U6_REF_102"
+    ],
+    "Impatiens_capensis": [
+      "U6_REF_149"
+    ],
+    "Melastoma_affine": [
+      "U6_REF_046"
+    ],
+    "Nothofagus_pumilio": [
+      "U6_REF_031"
+    ],
+    "Passiflora_foetida": [
+      "U6_REF_038"
+    ],
+    "Prockia_crucis": [
+      "U6_REF_022"
+    ],
+    "Pseudobombax_ellipticum": [
+      "U6_REF_036"
+    ],
+    "Theobroma_cacao": [
+      "U6_REF_153",
+      "U6_REF_155"
+    ],
+    "Tolmiea_menziesii": [
+      "U6_REF_040"
+    ],
+    "Zea_mays": [
+      "U6_REF_091"
+    ]
+  },
+  "pass2": {
+    "open": true,
+    "purpose": "independent architecture and predictor coding only",
+    "required_coders": 2,
+    "primary_model_admission": false
+  },
+  "evidence_ceiling": "retained_unresolved candidate references remain explicit Pass-1 missingness and are not replaced",
+  "claim_ceiling": "conflict_first_universe_frozen_architecture_not_yet_coded"
+}
