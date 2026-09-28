@@ -542,7 +542,7 @@ U6_DEPENDENCE_FIELDS = (
     "notes",
 )
 
-U6_ANALYSIS_ACTIONS = {"U6_ONLY", "SHARED_SPECIES_BLOCK"}
+U6_ANALYSIS_ACTIONS = {"U6_ONLY", "SHARED_SPECIES_BLOCK", "SHARED_TAXON_CONCEPT_BLOCK"}
 
 
 def load_u6_cross_universe_dependence(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
@@ -576,7 +576,7 @@ def load_u6_cross_universe_dependence(path: Path, freeze_manifest_path: Path) ->
         seen.add(group)
         if clean["analysis_action"] not in U6_ANALYSIS_ACTIONS:
             raise ValueError(f"row {row_number} invalid analysis_action")
-        if clean["analysis_action"] == "SHARED_SPECIES_BLOCK":
+        if clean["analysis_action"] in {"SHARED_SPECIES_BLOCK", "SHARED_TAXON_CONCEPT_BLOCK"}:
             if clean["overlap_universe"] == "NONE" or clean["overlap_record_id"] == "NONE":
                 raise ValueError(f"row {row_number} shared species block requires overlap identity")
         if clean["analysis_action"] == "U6_ONLY":
