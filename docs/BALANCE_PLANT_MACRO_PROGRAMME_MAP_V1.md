@@ -275,7 +275,9 @@ The programme is not yet model-ready because:
 4. the four-pair U3 matched conflict extraction is missing only the `Osbeckia chinensis` control-side pollen-fate measurement;
 5. the prospectively frozen four-family U3 expansion is exhausted at the matching-stage public evidence ceiling (0/4 controls closed, 4/4 blocks retained as missingness) and must not be rescued by convenience matching;
 6. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
-7. each admitted cluster still needs three independently adjudicated outcome-independent predictor receipts (`module_substrate`, `conflict_timing_geometry`, `conflict_spatial_geometry`);\n8. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
+7. each admitted cluster still needs three independently adjudicated outcome-independent predictor receipts (`module_substrate`, `conflict_timing_geometry`, `conflict_spatial_geometry`);
+8. the current outcome-blind U1/U2 surface still lacks `STRUCTURAL_MODULE_DIVISION`; recovery is bounded to the frozen U1 targeted queue (`U1_047 Ruellia nudiflora`, `U1_024 Impatiens capensis`, `U1_027 Isomeris arborea`, `U1_045 Eichhornia crassipes`) and none is pre-promoted;
+9. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
 
 The repository therefore explicitly reports:
 
