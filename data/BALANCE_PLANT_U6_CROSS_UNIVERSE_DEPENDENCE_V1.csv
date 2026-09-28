@@ -1,0 +1,22 @@
+u6_dependency_group,overlap_universe,overlap_record_id,dependence_block,analysis_action,notes
+Actinidia_deliciosa,NONE,NONE,U6_DEP_ACTINIDIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Amomum_subulatum,NONE,NONE,U6_DEP_AMOMUM_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Aphelandra_golfodulcensis,NONE,NONE,U6_DEP_APHELANDRA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Banksia_menziesii,NONE,NONE,U6_DEP_BANKSIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Bromelia_antiacantha,NONE,NONE,U6_DEP_BROMELIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Campanula_americana,NONE,NONE,U6_DEP_CAMPANULA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Campomanesia_pubescens,NONE,NONE,U6_DEP_CAMPOMANESIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Clusia_arrudae,NONE,NONE,U6_DEP_CLUSIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Crescentia_alata,NONE,NONE,U6_DEP_CRESCENTIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Echium_plantagineum,NONE,NONE,U6_DEP_ECHIUM_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Grevillea_barklyana,NONE,NONE,U6_DEP_GREVILLEA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Hamelia_patens,NONE,NONE,U6_DEP_HAMELIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Impatiens_capensis,U1,U1_024,U6_DEP_IMPATIENS_01,SHARED_SPECIES_BLOCK,Same species appears in U1 florivory universe and U6 pollen-theft universe; distinct conflict contexts but not independent taxonomic replication.
+Melastoma_affine,NONE,NONE,U6_DEP_MELASTOMA_AFFINE_01,U6_ONLY,"U3 contains Melastoma malabathricum, not the same species; no species-level overlap."
+Nothofagus_pumilio,NONE,NONE,U6_DEP_NOTHOFAGUS_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Passiflora_foetida,NONE,NONE,U6_DEP_PASSIFLORA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Prockia_crucis,NONE,NONE,U6_DEP_PROCKIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Pseudobombax_ellipticum,NONE,NONE,U6_DEP_PSEUDOBOMBAX_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Theobroma_cacao,NONE,NONE,U6_DEP_THEOBROMA_01,U6_ONLY,Two U6 source references map to one frozen dependency group; not two replications.
+Tolmiea_menziesii,NONE,NONE,U6_DEP_TOLMIEA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
+Zea_mays,NONE,NONE,U6_DEP_ZEA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
