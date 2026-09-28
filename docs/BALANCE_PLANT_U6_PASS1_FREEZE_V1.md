@@ -2,7 +2,7 @@
 
 ## Status
 
-`PASS1_CLOSED_PASS2_CODING_OPEN`.
+`PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN`.
 
 Anchor:
 Hargreaves, Harder & Johnson (2009), *Consumptive emasculation: the ecological and
@@ -79,9 +79,32 @@ not counted as independent species replication. They share one conservative spec
 Canonical map:
 `data/BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv`.
 
+## Pass 2A source-freeze gate
+
+Admission sources were selected to identify pollen theft, not to document routing architecture
+uniformly. Therefore the two-coder worksheet is staged but locked.
+
+For every frozen dependency group, three generic searches are fixed before any architecture
+coding:
+
+```text
+"<taxon>" pollination biology
+"<taxon>" floral morphology pollination
+"<taxon>" pollen removal deposition
+```
+
+Architecture-category terms such as heteranthery, dichogamy, herkogamy, poricidal,
+division of labour, or the BALANCE response labels are forbidden search terms.
+
+Source recovery must close as `RESOLVED` or `EVIDENCE_CEILING` for all 21 groups and the
+final source packet must be frozen before coder A/B can enter any architecture/predictor value.
+
+Canonical frame:
+`data/BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv`.
+
 ## Pass 2
 
-Pass 2 is now open **only for independent architecture/predictor coding**.
+Pass 2A source recovery is now open; independent architecture/predictor coding remains locked.
 
 Two coder rows are frozen for every included dependency group:
 
