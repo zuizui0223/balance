@@ -6,6 +6,7 @@ import pytest
 from balance_domain.plant_u6 import (
     FIELDS,
     FORBIDDEN_PASS1_FIELDS,
+    build_u6_candidate_adjudication_readout,
     build_u6_multi_batch_readout,
     build_u6_reference_readout,
     load_u6_anchor,
@@ -20,6 +21,8 @@ BATCH_A = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_A_V1.
 BATCH_B = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_B_V1.csv"
 BATCH_C = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_C_V1.csv"
 BATCH_D = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_D_V1.csv"
+CANDIDATE_A = ROOT / "data" / "BALANCE_PLANT_U6_CANDIDATE_ADJUDICATION_BATCH_A_V1.csv"
+CANDIDATE_B = ROOT / "data" / "BALANCE_PLANT_U6_CANDIDATE_ADJUDICATION_BATCH_B_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -158,4 +161,29 @@ def test_u6_pass1_reference_identity_reconstruction_is_complete_and_blinded():
     assert out["n_candidates"] == 24
     assert out["n_included"] == 0
     assert out["architecture_fields_open"] is False
+    assert out["pass2_open"] is False
+
+
+
+def test_u6_candidate_adjudication_batch_a_has_included_dependencies_but_keeps_pass2_closed():
+    out = build_u6_candidate_adjudication_readout(CANDIDATE_A)
+    assert out["n_adjudication_rows"] == 22
+    assert out["decision_counts"] == {
+        "EXCLUDE": 4,
+        "INCLUDE": 12,
+        "RETAIN_UNRESOLVED": 6,
+    }
+    assert out["n_included_dependency_groups"] == 11
+    assert out["architecture_fields_open"] is False
+    assert out["pass2_open"] is False
+
+
+def test_u6_remaining_candidate_batch_closes_one_more_include_and_three_evidence_ceilings():
+    out = build_u6_candidate_adjudication_readout(CANDIDATE_B)
+    assert out["n_adjudication_rows"] == 4
+    assert out["decision_counts"] == {
+        "INCLUDE": 1,
+        "RETAIN_UNRESOLVED": 3,
+    }
+    assert out["included_dependency_groups"] == ["Crescentia_alata"]
     assert out["pass2_open"] is False
