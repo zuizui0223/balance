@@ -162,3 +162,34 @@ STRUCTURAL_MODULE_DIVISION absent from the outcome-blind confirmatory surface
 
 U3 structural cases remain available for their separately registered matched/case-control
 analyses, not for denominator repair.
+
+
+## Source-screen outcome
+
+The frozen four-candidate queue has now been screened against the current primary-source
+surface.
+
+```text
+candidates screened       4 / 4
+promoted                   0 / 4
+independently adjudicated  0 / 4
+```
+
+Source-screen decisions:
+
+- **Ruellia nudiflora** — route-specific CH/CL sensitivity is real, but the current source
+  shows buffering/context dependence rather than a direct opposing-demand receipt on one
+  CH↔CL allocation axis.
+- **Impatiens capensis** — florivory shifts relative CH/selfed reproduction, but the source
+  does not provide the matched opposing pollination-demand receipt needed to identify
+  BALANCE conflict.
+- **Isomeris arborea** — andromonoecious modules and male/female fitness effects are
+  source-resolved, but the studies do not identify male-versus-hermaphroditic allocation as
+  the routing mechanism of a shared conflict.
+- **Eichhornia crassipes** — sexual/asexual routes are present, but pollination does not
+  affect the reported growth/clone/flower outputs; this remains a specificity case.
+
+These are source-screen ceilings, not independent coder/adjudicator decisions.
+
+Canonical screen:
+`data/BALANCE_PLANT_U1_STRUCTURAL_CLASS_RECOVERY_SCREEN_V1.csv`.
