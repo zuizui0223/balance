@@ -530,3 +530,60 @@ def load_u6_pass2_double_coding(path: Path, freeze_manifest_path: Path) -> list[
     if any(len(rows) != 2 for rows in grouped.values()):
         raise ValueError("each U6 Pass-2 dependency group requires exactly two coder rows")
     return out
+
+
+
+U6_DEPENDENCE_FIELDS = (
+    "u6_dependency_group",
+    "overlap_universe",
+    "overlap_record_id",
+    "dependence_block",
+    "analysis_action",
+    "notes",
+)
+
+U6_ANALYSIS_ACTIONS = {"U6_ONLY", "SHARED_SPECIES_BLOCK"}
+
+
+def load_u6_cross_universe_dependence(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
+    """Validate one dependence row for every frozen U6 dependency group."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_DEPENDENCE_FIELDS:
+            raise ValueError("U6 dependence columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 dependence map must contain exactly one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 dependence schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_DEPENDENCE_FIELDS}
+        for key in U6_DEPENDENCE_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+        group = clean["u6_dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 dependency group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 dependence group {group!r}")
+        seen.add(group)
+        if clean["analysis_action"] not in U6_ANALYSIS_ACTIONS:
+            raise ValueError(f"row {row_number} invalid analysis_action")
+        if clean["analysis_action"] == "SHARED_SPECIES_BLOCK":
+            if clean["overlap_universe"] == "NONE" or clean["overlap_record_id"] == "NONE":
+                raise ValueError(f"row {row_number} shared species block requires overlap identity")
+        if clean["analysis_action"] == "U6_ONLY":
+            if clean["overlap_universe"] != "NONE" or clean["overlap_record_id"] != "NONE":
+                raise ValueError(f"row {row_number} U6_ONLY cannot declare external overlap")
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 dependence map does not cover the frozen dependency groups")
+    return out
