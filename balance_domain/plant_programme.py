@@ -103,6 +103,7 @@ def build_plant_programme_map(
             "U1 independent double coding incomplete",
             "U2 independent double coding incomplete",
             "three outcome-independent predictor receipts per admitted cluster not yet closed",
+            "current outcome-blind U1/U2 screening surface has no STRUCTURAL_MODULE_DIVISION class",
             "final cross-universe dependence/covariance ledger not yet frozen",
         ],
         "claim_ceiling": (
