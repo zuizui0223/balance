@@ -2,8 +2,7 @@
 
 ## Status
 
-Prospectively registered recovery universe. No U6 plant taxon is currently admitted to the
-plant confirmatory model.
+Pass 1 is now closed under the prospectively registered architecture-blind contract. The frozen conflict-first universe contains 21 included dependency groups; nine candidate references remain explicit evidence-ceiling missingness. Pass 2 independent architecture/predictor coding is open, but no U6 row is primary-model eligible.
 
 ## Why U6 exists
 
@@ -168,3 +167,28 @@ After Pass 1, it can describe the review-defined pollen-theft evidence universe.
 Only after independent Pass-2 coding and dependence checks can it contribute comparative
 architecture associations. It never estimates natural prevalence of pollen theft across
 angiosperms.
+
+
+## Pass-1 closure update
+
+The complete anchor-review reconstruction is frozen in
+`data/BALANCE_PLANT_U6_PASS1_FREEZE_V1.json`.
+
+```text
+157 / 157 references classified
+33 pollen-theft candidate references
+21 included references / 21 included dependency groups
+3 excluded candidate references
+9 retained-unresolved candidate references
+0 unresolved reference-type classifications
+```
+
+Pass-1 admission did not use architecture variables.
+
+Pass 2 is opened only through:
+
+- `data/BALANCE_PLANT_U6_PASS2_SOURCE_PACKET_V1.csv`;
+- `data/BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv`.
+
+All architecture/predictor fields begin `UNRESOLVED`; two independent coder rows are
+required per dependency group. See `docs/BALANCE_PLANT_U6_PASS1_FREEZE_V1.md`.
