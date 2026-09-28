@@ -221,3 +221,69 @@ def build_confirmatory_gate_report(
             "predictor_independence_and_model_entry_only_not_causal_identification"
         ),
     }
+
+
+
+def build_receipt_screening_coverage(
+    receipts: Iterable[dict[str, str]],
+) -> dict:
+    """Summarize predictor-screening progress without promoting SCREENED values."""
+    rows = list(receipts)
+    by_predictor = {}
+    for predictor in PREDICTORS:
+        subset = [r for r in rows if r["predictor"] == predictor]
+        by_predictor[predictor] = {
+            "n_receipts": len(subset),
+            "n_resolved": sum(r["reported_value"] != "UNRESOLVED" for r in subset),
+            "n_outcome_independent_resolved": sum(
+                r["reported_value"] != "UNRESOLVED"
+                and r["outcome_independence"] == "TRUE"
+                for r in subset
+            ),
+            "n_adjudicated_independent_resolved": sum(
+                r["reported_value"] != "UNRESOLVED"
+                and r["outcome_independence"] == "TRUE"
+                and r["adjudication_status"] == "ADJUDICATED"
+                for r in subset
+            ),
+        }
+
+    grouped: dict[str, dict[str, dict[str, str]]] = defaultdict(dict)
+    for row in rows:
+        grouped[row["cluster_id"]][row["predictor"]] = row
+
+    def _complete(group: dict[str, dict[str, str]], *, adjudicated: bool) -> bool:
+        for predictor in PREDICTORS:
+            row = group.get(predictor)
+            if row is None:
+                return False
+            if row["reported_value"] == "UNRESOLVED":
+                return False
+            if row["outcome_independence"] != "TRUE":
+                return False
+            if adjudicated and row["adjudication_status"] != "ADJUDICATED":
+                return False
+        return True
+
+    complete_screened = sorted(
+        cluster_id
+        for cluster_id, group in grouped.items()
+        if _complete(group, adjudicated=False)
+    )
+    complete_adjudicated = sorted(
+        cluster_id
+        for cluster_id, group in grouped.items()
+        if _complete(group, adjudicated=True)
+    )
+
+    return {
+        "analysis": "balance_plant_predictor_receipt_screening_coverage",
+        "n_receipts": len(rows),
+        "n_clusters": len(grouped),
+        "by_predictor": by_predictor,
+        "complete_outcome_independent_clusters": complete_screened,
+        "complete_adjudicated_clusters": complete_adjudicated,
+        "n_complete_outcome_independent_clusters": len(complete_screened),
+        "n_complete_adjudicated_clusters": len(complete_adjudicated),
+        "promotion_rule": "SCREENED values do not license confirmatory model entry",
+    }
