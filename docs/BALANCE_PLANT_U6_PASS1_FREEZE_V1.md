@@ -37,7 +37,7 @@ Canonical freeze:
 ## Frozen included dependency groups
 
 ```text
-Actinidia deliciosа
+Actinidia deliciosa
 Amomum subulatum
 Aphelandra golfodulcensis
 Banksia menziesii
