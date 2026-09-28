@@ -171,3 +171,101 @@ def build_u6_multi_batch_readout(paths: list[Path]) -> dict:
         "pass2_open": False,
         "claim_ceiling": "pass1_reference_reconstruction_only",
     }
+
+
+
+CANDIDATE_FIELDS = (
+    "adjudication_id",
+    "reference_id",
+    "plant_taxon",
+    "dependency_group",
+    "primary_source_status",
+    "qualifying_receipt",
+    "decision",
+    "reason_code",
+    "source_basis",
+    "notes",
+)
+
+QUALIFYING_RECEIPTS = {
+    "DIRECT_REMOVAL_LOW_DEPOSITION",
+    "DIRECT_REMOVAL_FITNESS_COST",
+    "DIRECT_CONSUMPTION_AVAILABLE_POLLEN_LOSS",
+    "DIRECT_POLLEN_ROBBING_NO_POLLINATION",
+    "NONE",
+    "UNRESOLVED",
+}
+CANDIDATE_DECISIONS = {"INCLUDE", "EXCLUDE", "RETAIN_UNRESOLVED"}
+CANDIDATE_PRIMARY_STATUS = {"RESOLVED", "PARTIAL", "UNRESOLVED"}
+
+
+def load_u6_candidate_adjudication(path: Path) -> list[dict[str, str]]:
+    """Load taxon-level candidate decisions while keeping Pass-2 architecture closed."""
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = tuple(reader.fieldnames or ())
+        if fields != CANDIDATE_FIELDS:
+            extras = set(fields) & FORBIDDEN_PASS1_FIELDS
+            if extras:
+                raise ValueError(
+                    f"U6 candidate adjudication contains forbidden architecture fields: {sorted(extras)}"
+                )
+            raise ValueError("U6 candidate adjudication columns must match canonical order")
+        rows = list(reader)
+
+    if not rows:
+        raise ValueError("U6 candidate adjudication must contain at least one row")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside canonical schema")
+        clean = {key: (row.get(key) or "").strip() for key in CANDIDATE_FIELDS}
+        for key in CANDIDATE_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        if clean["adjudication_id"] in seen:
+            raise ValueError(f"duplicate adjudication_id {clean['adjudication_id']!r}")
+        seen.add(clean["adjudication_id"])
+        if not clean["reference_id"].startswith("U6_REF_"):
+            raise ValueError(f"row {row_number} invalid reference_id")
+        if clean["primary_source_status"] not in CANDIDATE_PRIMARY_STATUS:
+            raise ValueError(f"row {row_number} invalid primary_source_status")
+        if clean["qualifying_receipt"] not in QUALIFYING_RECEIPTS:
+            raise ValueError(f"row {row_number} invalid qualifying_receipt")
+        if clean["decision"] not in CANDIDATE_DECISIONS:
+            raise ValueError(f"row {row_number} invalid decision")
+
+        if clean["decision"] == "INCLUDE":
+            if clean["primary_source_status"] != "RESOLVED":
+                raise ValueError(f"row {row_number} INCLUDE requires RESOLVED primary source")
+            if clean["qualifying_receipt"] in {"NONE", "UNRESOLVED"}:
+                raise ValueError(f"row {row_number} INCLUDE requires a qualifying receipt")
+            if clean["plant_taxon"] == "UNRESOLVED" or clean["dependency_group"] == "UNRESOLVED":
+                raise ValueError(f"row {row_number} INCLUDE requires frozen taxon/dependency group")
+
+        if clean["decision"] == "EXCLUDE" and clean["reason_code"] == "UNRESOLVED":
+            raise ValueError(f"row {row_number} EXCLUDE requires a frozen reason")
+        out.append(clean)
+
+    return out
+
+
+def build_u6_candidate_adjudication_readout(path: Path) -> dict:
+    rows = load_u6_candidate_adjudication(path)
+    decision_counts = Counter(row["decision"] for row in rows)
+    included = [row for row in rows if row["decision"] == "INCLUDE"]
+    dependencies = sorted({row["dependency_group"] for row in included})
+    return {
+        "analysis": "balance_plant_u6_candidate_primary_source_adjudication",
+        "n_adjudication_rows": len(rows),
+        "decision_counts": dict(sorted(decision_counts.items())),
+        "n_included_rows": len(included),
+        "n_included_dependency_groups": len(dependencies),
+        "included_dependency_groups": dependencies,
+        "pass2_open": False,
+        "architecture_fields_open": False,
+        "claim_ceiling": "pass1_candidate_adjudication_only",
+    }
