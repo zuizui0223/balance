@@ -12,7 +12,7 @@ Echium_plantagineum,NONE,NONE,U6_DEP_ECHIUM_01,U6_ONLY,No species-level overlap 
 Grevillea_barklyana,NONE,NONE,U6_DEP_GREVILLEA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
 Hamelia_patens,NONE,NONE,U6_DEP_HAMELIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
 Impatiens_capensis,U1,U1_024,U6_DEP_IMPATIENS_01,SHARED_SPECIES_BLOCK,Same species appears in U1 florivory universe and U6 pollen-theft universe; distinct conflict contexts but not independent taxonomic replication.
-Melastoma_affine,NONE,NONE,U6_DEP_MELASTOMA_AFFINE_01,U6_ONLY,"U3 contains Melastoma malabathricum, not the same species; no species-level overlap."
+Melastoma_affine,U3,U3_PAIR_MELMA_001,U6_DEP_MELASTOMA_U3_01,SHARED_TAXON_CONCEPT_BLOCK,"Kew POWO treats Melastoma affine as a synonym of M. malabathricum subsp. malabathricum; some Australian authorities retain M. affine. Count conservatively as a shared taxon-concept block rather than independent replication."
 Nothofagus_pumilio,NONE,NONE,U6_DEP_NOTHOFAGUS_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
 Passiflora_foetida,NONE,NONE,U6_DEP_PASSIFLORA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
 Prockia_crucis,NONE,NONE,U6_DEP_PROCKIA_01,U6_ONLY,No species-level overlap recovered in frozen U1/U2/U3 surfaces.
