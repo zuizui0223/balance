@@ -354,7 +354,7 @@ def build_u6_pass1_freeze(
 
     return {
         "analysis": "balance_plant_u6_pass1_freeze",
-        "status": "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN",
+        "status": "PASS1_CLOSED",
         "n_references": len(references),
         "n_candidate_references": len(candidate_ids),
         "n_candidate_adjudication_rows": len(adjudications),
@@ -368,12 +368,9 @@ def build_u6_pass1_freeze(
         "included_dependency_groups": included_dependency_groups,
         "source_reference_ids_by_dependency_group": source_refs_by_dependency,
         "architecture_used_for_pass1_admission": False,
-        "pass2_source_recovery_open": True,
-        "pass2_coding_open": False,
         "primary_model_admission": False,
         "claim_ceiling": (
-            "pass1_conflict_first_universe_closed_pass2_source_recovery_open_"
-            "architecture_coding_locked_not_confirmatory_model_ready"
+            "pass1_conflict_first_universe_closed_architecture_not_used_for_admission"
         ),
     }
 
@@ -387,8 +384,12 @@ def load_u6_pass1_freeze_manifest(path: Path) -> dict:
     data = json.loads(path.read_text(encoding="utf-8"))
     if data.get("schema_version") != PASS1_FREEZE_SCHEMA:
         raise ValueError("U6 Pass-1 freeze manifest schema mismatch")
-    if data.get("status") != "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN":
-        raise ValueError("U6 Pass-1 freeze manifest must declare Pass 1 closed and source recovery open")
+    status = data.get("status")
+    if status not in {
+        "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN",
+        "PASS1_CLOSED_PASS2_CODING_OPEN",
+    }:
+        raise ValueError("U6 freeze manifest has an invalid Pass-2 stage")
     contract = data.get("pass1_contract", {})
     if contract.get("n_anchor_review_references") != 157:
         raise ValueError("U6 Pass-1 freeze must retain all 157 anchor references")
@@ -396,12 +397,26 @@ def load_u6_pass1_freeze_manifest(path: Path) -> dict:
         raise ValueError("U6 Pass-1 freeze cannot retain unresolved reference classifications")
     if contract.get("architecture_used_for_admission") is not False:
         raise ValueError("U6 Pass-1 admission must remain architecture-blind")
-    if data.get("pass2", {}).get("source_recovery_open") is not True:
-        raise ValueError("U6 Pass-1 freeze must explicitly open Pass-2 source recovery")
-    if data.get("pass2", {}).get("coding_open") is not False:
-        raise ValueError("U6 Pass-2 coding must remain closed until the source packet is frozen")
-    if data.get("pass2", {}).get("primary_model_admission") is not False:
+
+    pass2 = data.get("pass2", {})
+    if pass2.get("primary_model_admission") is not False:
         raise ValueError("U6 Pass-1 freeze cannot directly license the primary model")
+    if status == "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN":
+        if pass2.get("source_recovery_open") is not True:
+            raise ValueError("U6 source-recovery stage must be open")
+        if pass2.get("source_packet_frozen") is not False:
+            raise ValueError("U6 source packet cannot be frozen before source recovery closes")
+        if pass2.get("coding_open") is not False:
+            raise ValueError("U6 coding cannot open before source recovery freezes")
+    else:
+        if pass2.get("source_recovery_open") is not False:
+            raise ValueError("U6 source recovery must close before coding opens")
+        if pass2.get("source_packet_frozen") is not True:
+            raise ValueError("U6 coding requires a frozen source packet")
+        if pass2.get("coding_open") is not True:
+            raise ValueError("U6 coding-open stage must explicitly open coding")
+        if not pass2.get("frozen_source_packet"):
+            raise ValueError("U6 coding-open stage must name the frozen source packet")
 
     groups = data.get("included_dependency_groups")
     if not isinstance(groups, list) or not groups:
