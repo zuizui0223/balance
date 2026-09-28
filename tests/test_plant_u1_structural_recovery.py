@@ -5,12 +5,15 @@ import pytest
 from balance_domain.plant_u1_structural_recovery import (
     FIELDS,
     build_u1_structural_recovery_readout,
+    build_u1_structural_recovery_screen_readout,
     load_u1_structural_recovery_queue,
+    load_u1_structural_recovery_screen,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "data" / "BALANCE_PLANT_U1_STRUCTURAL_CLASS_RECOVERY_QUEUE_V1.csv"
+SCREEN = ROOT / "data" / "BALANCE_PLANT_U1_STRUCTURAL_CLASS_RECOVERY_SCREEN_V1.csv"
 
 
 def test_u1_structural_recovery_queue_is_discovery_only():
@@ -46,3 +49,22 @@ def test_validator_rejects_preadjudicated_state(tmp_path):
     path.write_text(source, encoding="utf-8")
     with pytest.raises(ValueError, match="cannot pre-adjudicate conflict"):
         load_u1_structural_recovery_queue(path)
+
+
+
+def test_u1_structural_recovery_source_screen_closes_zero_promotions():
+    out = build_u1_structural_recovery_screen_readout(SCREEN)
+    assert out["n_screened"] == 4
+    assert out["n_promoted"] == 0
+    assert out["all_source_screen_only"] is True
+    assert out["primary_model_promotion_allowed"] is False
+
+
+def test_source_screen_does_not_claim_independent_adjudication():
+    rows = load_u1_structural_recovery_screen(SCREEN)
+    assert all(row["conflict_receipt"] == "NOT_IDENTIFIED" for row in rows)
+    assert all(row["promotion_decision"] == "DO_NOT_PROMOTE_CURRENT_SOURCE" for row in rows)
+    assert all(
+        row["claim_ceiling"] == "SOURCE_SCREEN_ONLY_NOT_INDEPENDENT_ADJUDICATION"
+        for row in rows
+    )
