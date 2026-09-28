@@ -11,7 +11,9 @@ from balance_domain.plant_u6 import (
     load_u6_cross_universe_dependence,
     load_u6_pass1_freeze_manifest,
     load_u6_pass2_double_coding,
+    load_u6_pass2_source_recovery,
     load_u6_reference_classification,
+    u6_source_packet_ready,
     validate_u6_pass1_freeze_manifest,
 )
 
@@ -31,6 +33,7 @@ FREEZE = ROOT / "data" / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json"
 PASS2 = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
 DEPENDENCE = ROOT / "data" / "BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv"
 SOURCE_PACKET = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_PACKET_V1.csv"
+SOURCE_RECOVERY = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -125,13 +128,14 @@ def test_u6_pass1_manifest_matches_executable_reconstruction():
     assert outcome_ids == set(reference_readout["pollen_theft_candidate_reference_ids"])
     assert len(outcome_ids) == 33
 
-    assert live["status"] == "PASS1_CLOSED_PASS2_CODING_OPEN"
+    assert live["status"] == "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN"
     assert live["n_references"] == 157
     assert live["n_candidate_references"] == 33
     assert live["n_included_dependency_groups"] == 21
     assert live["n_retained_unresolved_reference_ids"] == 9
     assert live["architecture_used_for_pass1_admission"] is False
-    assert live["pass2_open"] is True
+    assert live["pass2_source_recovery_open"] is True
+    assert live["pass2_coding_open"] is False
     assert live["primary_model_admission"] is False
 
 
@@ -194,3 +198,22 @@ def test_u6_pass2_source_packet_covers_frozen_groups_without_architecture_column
     )
     assert fields.isdisjoint(FORBIDDEN_PASS1_FIELDS)
     assert all("DO_NOT_USE_U6_CANDIDATE_ADJUDICATION_NOTES" in row["coder_instruction"] for row in rows)
+
+
+
+def test_u6_pass2_source_recovery_queries_are_generic_and_coding_stays_locked():
+    rows = load_u6_pass2_source_recovery(SOURCE_RECOVERY, FREEZE)
+    assert len(rows) == 21
+    assert all(row["source_recovery_status"] == "PENDING" for row in rows)
+    assert all(row["supplemental_primary_source_ids"] == "UNRESOLVED" for row in rows)
+    assert all(row["packet_status"] == "OPEN" for row in rows)
+    assert u6_source_packet_ready(rows) is False
+
+
+def test_u6_source_recovery_rejects_architecture_targeted_query(tmp_path):
+    source = SOURCE_RECOVERY.read_text(encoding="utf-8")
+    source = source.replace("floral morphology pollination", "heteranthery pollination", 1)
+    path = tmp_path / "leaked_source_search.csv"
+    path.write_text(source, encoding="utf-8")
+    with pytest.raises(ValueError, match="leaks architecture categories"):
+        load_u6_pass2_source_recovery(path, FREEZE)
