@@ -265,6 +265,31 @@ remain secondary detail.
 There is no outcome-count-triggered fallback model. See
 `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md`.
 
+## U6 — pollen-theft conflict-first recovery universe
+
+A new architecture-blind recovery universe is registered from Hargreaves, Harder &
+Johnson (2009), *Consumptive emasculation: the ecological and evolutionary consequences of
+pollen theft*.
+
+U6 is admitted by empirical pollen-theft / inefficient-transfer evidence, not by
+heteranthery or any other architecture state. Reference classification is two-pass:
+
+```text
+Pass 1:
+  classify anchor-review references for empirical pollen-theft evidence
+  freeze included taxa/dependency groups
+  architecture fields physically absent
+
+Pass 2:
+  only after Pass-1 freeze, code architecture and the three confirmatory predictors
+```
+
+U6 is currently `REGISTERED_BEFORE_REFERENCE_CLASSIFICATION`. It is **not** part of the
+active confirmatory denominator and cannot repair the missing structural class until the
+blinded reconstruction is complete.
+
+See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
+
 ## What remains before a confirmatory model
 
 The programme is not yet model-ready because:
