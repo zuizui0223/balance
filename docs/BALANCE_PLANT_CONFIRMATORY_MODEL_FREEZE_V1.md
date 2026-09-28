@@ -107,6 +107,24 @@ MIXED
 
 `UNRESOLVED` is never promoted to the confirmatory model.
 
+### Exposure geometry rule
+
+For timing and spatial predictors, code the geometry in which the conflict is **expressed
+before the focal resolution is credited**. Admissible evidence comes from an integrated
+baseline or an experimental challenge that exposes the conflicting functions.
+
+Examples:
+
+- self pollen applied before or together with compatible pollen on the same stigma can
+  identify sequential/mixed timing and same-unit spatial exposure;
+- geitonogamy among simultaneously hermaphroditic flowers can identify between-flower
+  exposure in the integrated baseline;
+- observed protandry, herkogamy, flexistyly, or sexual segregation cannot by themselves
+  define the timing/spatial predictor because those traits may be the response.
+
+If no independent baseline/challenge geometry is available, the predictor stays
+`UNRESOLVED`.
+
 ## Predictor independence rule
 
 Predictor evidence can come from the same publication as the outcome, but it must be
