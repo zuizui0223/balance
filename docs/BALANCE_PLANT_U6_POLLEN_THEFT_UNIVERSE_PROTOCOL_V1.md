@@ -2,7 +2,7 @@
 
 ## Status
 
-Pass 1 is now closed under the prospectively registered architecture-blind contract. The frozen conflict-first universe contains 21 included dependency groups; nine candidate references remain explicit evidence-ceiling missingness. Pass 2 independent architecture/predictor coding is open, but no U6 row is primary-model eligible.
+Pass 1 is now closed under the prospectively registered architecture-blind contract. The frozen conflict-first universe contains 21 included dependency groups; nine candidate references remain explicit evidence-ceiling missingness. Pass 2A generic source recovery is open; independent coding remains locked, but no U6 row is primary-model eligible.
 
 ## Why U6 exists
 
