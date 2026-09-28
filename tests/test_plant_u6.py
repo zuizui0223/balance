@@ -162,14 +162,23 @@ def test_u6_pass2_rejects_nonfrozen_dependency_group(tmp_path):
 
 
 
-def test_u6_cross_universe_dependence_freezes_single_species_overlap():
+def test_u6_cross_universe_dependence_freezes_species_and_taxon_concept_overlap():
     rows = load_u6_cross_universe_dependence(DEPENDENCE, FREEZE)
-    shared = [row for row in rows if row["analysis_action"] == "SHARED_SPECIES_BLOCK"]
+    species_shared = [
+        row for row in rows if row["analysis_action"] == "SHARED_SPECIES_BLOCK"
+    ]
+    concept_shared = [
+        row for row in rows if row["analysis_action"] == "SHARED_TAXON_CONCEPT_BLOCK"
+    ]
     assert len(rows) == 21
-    assert len(shared) == 1
-    assert shared[0]["u6_dependency_group"] == "Impatiens_capensis"
-    assert shared[0]["overlap_universe"] == "U1"
-    assert shared[0]["overlap_record_id"] == "U1_024"
+    assert [(row["u6_dependency_group"], row["overlap_universe"], row["overlap_record_id"])
+            for row in species_shared] == [
+        ("Impatiens_capensis", "U1", "U1_024")
+    ]
+    assert [(row["u6_dependency_group"], row["overlap_universe"], row["overlap_record_id"])
+            for row in concept_shared] == [
+        ("Melastoma_affine", "U3", "U3_PAIR_MELMA_001")
+    ]
 
 
 def test_u6_pass2_source_packet_covers_frozen_groups_without_architecture_columns():
