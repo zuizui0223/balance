@@ -72,6 +72,36 @@ gate the nominal primary response.
 
 ## Primary predictors
 
+### Module-substrate decision rule
+
+`module_substrate` is coded at the **smallest pre-existing conflict-bearing unit that can
+be independently addressed in the integrated/challenge state**.
+
+Decision rules:
+
+```text
+same continuous stigma/pistil/resource interface
+-> SINGLE_OR_CONTINUOUS
+
+two or more homologous within-flower challenge units can be assigned independently
+-> SERIAL_WITHIN_FLOWER
+
+repeated flowers are the independently addressable conflict-bearing units
+-> REPEATED_FLOWERS
+
+the demonstrated conflict is directly between two distinct organs that can be
+independently manipulated before the focal resolution is credited
+-> PREEXISTING_SEPARATE_ORGANS
+
+two or more independently supported nested levels
+-> MULTILEVEL
+```
+
+Generic floral complexity does not count. Multiple stamens, petals, or flowers are ignored
+unless those units are actually part of the registered conflict/challenge surface. Likewise,
+a structure created or defined only by the focal resolution architecture cannot establish
+its own substrate predictor.
+
 Raw predictor categories are retained.
 
 ### Module substrate
