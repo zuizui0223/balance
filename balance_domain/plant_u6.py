@@ -596,3 +596,115 @@ def load_u6_cross_universe_dependence(path: Path, freeze_manifest_path: Path) ->
     if seen != expected_groups:
         raise ValueError("U6 dependence map does not cover the frozen dependency groups")
     return out
+
+
+
+U6_SOURCE_RECOVERY_FIELDS = (
+    "dependency_group",
+    "admission_reference_ids",
+    "query_pollination_biology",
+    "query_floral_morphology",
+    "query_pollen_transfer",
+    "source_recovery_status",
+    "supplemental_primary_source_ids",
+    "packet_status",
+    "notes",
+)
+
+U6_SOURCE_RECOVERY_STATUS = {"PENDING", "RESOLVED", "EVIDENCE_CEILING"}
+U6_SOURCE_PACKET_STATUS = {"OPEN", "FROZEN"}
+U6_FORBIDDEN_QUERY_TERMS = {
+    "heteranthery",
+    "dichogamy",
+    "herkogamy",
+    "division of labour",
+    "division of labor",
+    "structural module division",
+    "shared integrated",
+    "temporal separation",
+    "spatial separation",
+    "signal separation",
+    "polymorphic or mosaic",
+    "poricidal",
+}
+
+
+def load_u6_pass2_source_recovery(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
+    """Validate generic architecture-blind source recovery before Pass-2 coding."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+    source_map = manifest["source_reference_ids_by_dependency_group"]
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_SOURCE_RECOVERY_FIELDS:
+            raise ValueError("U6 Pass-2 source-recovery columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 source-recovery frame must contain one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 source-recovery schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_SOURCE_RECOVERY_FIELDS}
+        for key in U6_SOURCE_RECOVERY_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 source-recovery group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 source-recovery group {group!r}")
+        seen.add(group)
+
+        expected_refs = ";".join(source_map[group])
+        if clean["admission_reference_ids"] != expected_refs:
+            raise ValueError(f"row {row_number} admission references disagree with Pass-1 freeze")
+
+        query_text = " ".join(
+            clean[field].casefold()
+            for field in (
+                "query_pollination_biology",
+                "query_floral_morphology",
+                "query_pollen_transfer",
+            )
+        )
+        leaked = sorted(term for term in U6_FORBIDDEN_QUERY_TERMS if term in query_text)
+        if leaked:
+            raise ValueError(
+                f"row {row_number} source-recovery query leaks architecture categories: {leaked}"
+            )
+
+        if clean["source_recovery_status"] not in U6_SOURCE_RECOVERY_STATUS:
+            raise ValueError(f"row {row_number} invalid source_recovery_status")
+        if clean["packet_status"] not in U6_SOURCE_PACKET_STATUS:
+            raise ValueError(f"row {row_number} invalid packet_status")
+
+        if clean["source_recovery_status"] == "PENDING":
+            if clean["supplemental_primary_source_ids"] != "UNRESOLVED":
+                raise ValueError(
+                    f"row {row_number} pending source recovery must retain UNRESOLVED sources"
+                )
+            if clean["packet_status"] != "OPEN":
+                raise ValueError(f"row {row_number} pending source recovery cannot be frozen")
+
+        if clean["packet_status"] == "FROZEN" and clean["source_recovery_status"] == "PENDING":
+            raise ValueError(f"row {row_number} frozen packet cannot remain pending")
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 source-recovery frame does not cover frozen dependency groups")
+    return out
+
+
+def u6_source_packet_ready(rows: list[dict[str, str]]) -> bool:
+    """Return True only when every frozen group has a closed source-recovery decision."""
+    return bool(rows) and all(
+        row["source_recovery_status"] in {"RESOLVED", "EVIDENCE_CEILING"}
+        and row["packet_status"] == "FROZEN"
+        for row in rows
+    )
