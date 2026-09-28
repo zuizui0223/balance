@@ -284,7 +284,7 @@ Pass 2:
   only after Pass-1 freeze, code architecture and the three confirmatory predictors
 ```
 
-U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate references are adjudicated, and 21 conflict-first dependency groups are frozen. Pass 2 independent architecture/predictor coding is open. U6 remains outside the active confirmatory model until that coding, agreement, predictor-receipt, dependence and estimability gates close.
+U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate references are adjudicated, and 21 conflict-first dependency groups are frozen. Pass 2A generic source recovery is open; independent coding remains locked. U6 remains outside the active confirmatory model until that coding, agreement, predictor-receipt, dependence and estimability gates close.
 
 See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
 
