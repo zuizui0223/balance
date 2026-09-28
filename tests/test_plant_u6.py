@@ -18,6 +18,8 @@ ANCHOR = ROOT / "data" / "BALANCE_PLANT_U6_REVIEW_ANCHOR_V1.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_TEMPLATE_V1.csv"
 BATCH_A = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_A_V1.csv"
 BATCH_B = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_B_V1.csv"
+BATCH_C = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_C_V1.csv"
+BATCH_D = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_D_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -104,6 +106,56 @@ def test_u6_batches_a_b_form_one_consecutive_blinded_reconstruction():
         "U6_REF_058",
     ]
     assert out["n_candidates"] == 7
+    assert out["n_included"] == 0
+    assert out["architecture_fields_open"] is False
+    assert out["pass2_open"] is False
+
+
+
+def test_u6_batches_c_d_complete_reference_reconstruction_without_inclusion():
+    rows_c = load_u6_reference_classification(BATCH_C)
+    rows_d = load_u6_reference_classification(BATCH_D)
+    assert [row["reference_id"] for row in rows_c] == [
+        f"U6_REF_{i:03d}" for i in range(68, 101)
+    ]
+    assert [row["reference_id"] for row in rows_d] == [
+        f"U6_REF_{i:03d}" for i in range(101, 158)
+    ]
+    assert all(row["inclusion_status"] != "INCLUDE" for row in rows_c + rows_d)
+
+
+def test_u6_pass1_reference_identity_reconstruction_is_complete_and_blinded():
+    out = build_u6_multi_batch_readout([BATCH_A, BATCH_B, BATCH_C, BATCH_D])
+    assert out["n_references"] == 157
+    assert out["first_reference_id"] == "U6_REF_001"
+    assert out["last_reference_id"] == "U6_REF_157"
+    assert out["pollen_theft_candidate_reference_ids"] == [
+        "U6_REF_010",
+        "U6_REF_017",
+        "U6_REF_029",
+        "U6_REF_031",
+        "U6_REF_033",
+        "U6_REF_046",
+        "U6_REF_058",
+        "U6_REF_078",
+        "U6_REF_083",
+        "U6_REF_095",
+        "U6_REF_100",
+        "U6_REF_102",
+        "U6_REF_112",
+        "U6_REF_119",
+        "U6_REF_125",
+        "U6_REF_128",
+        "U6_REF_140",
+        "U6_REF_144",
+        "U6_REF_149",
+        "U6_REF_153",
+        "U6_REF_154",
+        "U6_REF_155",
+        "U6_REF_156",
+        "U6_REF_157",
+    ]
+    assert out["n_candidates"] == 24
     assert out["n_included"] == 0
     assert out["architecture_fields_open"] is False
     assert out["pass2_open"] is False
