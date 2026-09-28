@@ -121,3 +121,53 @@ def build_u6_reference_readout(path: Path) -> dict:
         "pass2_open": False,
         "claim_ceiling": "pass1_reference_reconstruction_only",
     }
+
+
+
+def build_u6_multi_batch_readout(paths: list[Path]) -> dict:
+    """Combine frozen Pass-1 batches while enforcing unique ordered reference IDs."""
+    if not paths:
+        raise ValueError("U6 multi-batch readout requires at least one batch")
+
+    rows: list[dict[str, str]] = []
+    for path in paths:
+        rows.extend(load_u6_reference_classification(path))
+
+    ids = [row["reference_id"] for row in rows]
+    if len(ids) != len(set(ids)):
+        raise ValueError("U6 Pass-1 batches contain duplicate reference IDs")
+
+    def _number(reference_id: str) -> int:
+        prefix = "U6_REF_"
+        if not reference_id.startswith(prefix):
+            raise ValueError(f"invalid U6 reference_id {reference_id!r}")
+        try:
+            return int(reference_id[len(prefix):])
+        except ValueError as exc:
+            raise ValueError(f"invalid U6 reference_id {reference_id!r}") from exc
+
+    numbers = [_number(reference_id) for reference_id in ids]
+    if numbers != list(range(numbers[0], numbers[0] + len(numbers))):
+        raise ValueError("U6 Pass-1 batch reference IDs must be consecutive in supplied order")
+
+    status_counts = Counter(row["reference_type_status"] for row in rows)
+    inclusion_counts = Counter(row["inclusion_status"] for row in rows)
+    candidates = [
+        row["reference_id"]
+        for row in rows
+        if row["reference_type_status"] == "EMPIRICAL_POLLEN_THEFT_CANDIDATE"
+    ]
+    return {
+        "analysis": "balance_plant_u6_pass1_multibatch_reconstruction",
+        "n_references": len(rows),
+        "first_reference_id": ids[0],
+        "last_reference_id": ids[-1],
+        "reference_status_counts": dict(sorted(status_counts.items())),
+        "inclusion_status_counts": dict(sorted(inclusion_counts.items())),
+        "pollen_theft_candidate_reference_ids": candidates,
+        "n_candidates": len(candidates),
+        "n_included": sum(row["inclusion_status"] == "INCLUDE" for row in rows),
+        "architecture_fields_open": False,
+        "pass2_open": False,
+        "claim_ceiling": "pass1_reference_reconstruction_only",
+    }
