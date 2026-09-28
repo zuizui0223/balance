@@ -89,6 +89,10 @@ The final analysis ledger uses adjudicated values but preserves the pre-adjudica
 
 For predictor fields, disagreement adjudication must not use architecture outcome as a shortcut.
 
+Exposure geometry is coded from the integrated/challenge state, not from the focal
+resolution architecture. Thus observed dichogamy/herkogamy cannot by itself establish
+`conflict_timing_geometry` or `conflict_spatial_geometry`.
+
 For example:
 
 ```text
