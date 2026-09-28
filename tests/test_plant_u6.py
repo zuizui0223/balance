@@ -4,25 +4,30 @@ from pathlib import Path
 import pytest
 
 from balance_domain.plant_u6 import (
-    FIELDS,
     FORBIDDEN_PASS1_FIELDS,
     build_u6_candidate_adjudication_readout,
     build_u6_multi_batch_readout,
-    build_u6_reference_readout,
     load_u6_anchor,
+    load_u6_pass1_freeze_manifest,
+    load_u6_pass2_double_coding,
     load_u6_reference_classification,
+    validate_u6_pass1_freeze_manifest,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
 ANCHOR = ROOT / "data" / "BALANCE_PLANT_U6_REVIEW_ANCHOR_V1.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_TEMPLATE_V1.csv"
-BATCH_A = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_A_V1.csv"
-BATCH_B = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_B_V1.csv"
-BATCH_C = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_C_V1.csv"
-BATCH_D = ROOT / "data" / "BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_D_V1.csv"
-CANDIDATE_A = ROOT / "data" / "BALANCE_PLANT_U6_CANDIDATE_ADJUDICATION_BATCH_A_V1.csv"
-CANDIDATE_B = ROOT / "data" / "BALANCE_PLANT_U6_CANDIDATE_ADJUDICATION_BATCH_B_V1.csv"
+REFERENCE_BATCHES = [
+    ROOT / "data" / f"BALANCE_PLANT_U6_REFERENCE_CLASSIFICATION_BATCH_{x}_V1.csv"
+    for x in "ABCD"
+]
+CANDIDATE_BATCHES = [
+    ROOT / "data" / f"BALANCE_PLANT_U6_CANDIDATE_ADJUDICATION_BATCH_{x}_V1.csv"
+    for x in "ABC"
+]
+FREEZE = ROOT / "data" / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json"
+PASS2 = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -51,139 +56,103 @@ def test_u6_pass1_rejects_architecture_leak(tmp_path):
         load_u6_reference_classification(path)
 
 
+def test_u6_reference_batches_cover_exactly_157_consecutive_references():
+    expected_ranges = [(1, 34), (35, 67), (68, 100), (101, 157)]
+    for path, (lo, hi) in zip(REFERENCE_BATCHES, expected_ranges):
+        rows = load_u6_reference_classification(path)
+        assert [row["reference_id"] for row in rows] == [
+            f"U6_REF_{i:03d}" for i in range(lo, hi + 1)
+        ]
+        with path.open(encoding="utf-8", newline="") as handle:
+            fields = set(csv.DictReader(handle).fieldnames or ())
+        assert fields.isdisjoint(FORBIDDEN_PASS1_FIELDS)
 
-def test_u6_batch_a_freezes_first_34_references_without_inclusion():
-    rows = load_u6_reference_classification(BATCH_A)
-    assert len(rows) == 34
-    assert [row["reference_id"] for row in rows] == [
-        f"U6_REF_{i:03d}" for i in range(1, 35)
-    ]
-    with BATCH_A.open(encoding="utf-8", newline="") as handle:
-        fields = set(csv.DictReader(handle).fieldnames or ())
-    assert fields.isdisjoint(FORBIDDEN_PASS1_FIELDS)
-
-    out = build_u6_reference_readout(BATCH_A)
-    assert out["pollen_theft_candidate_reference_ids"] == [
-        "U6_REF_010",
-        "U6_REF_017",
-        "U6_REF_029",
-        "U6_REF_031",
-        "U6_REF_033",
-    ]
-    assert out["n_included"] == 0
-    assert out["architecture_fields_open"] is False
-    assert out["pass2_open"] is False
-
-
-
-def test_u6_batch_b_continues_reference_order_without_architecture_fields():
-    rows = load_u6_reference_classification(BATCH_B)
-    assert len(rows) == 33
-    assert [row["reference_id"] for row in rows] == [
-        f"U6_REF_{i:03d}" for i in range(35, 68)
-    ]
-    with BATCH_B.open(encoding="utf-8", newline="") as handle:
-        fields = set(csv.DictReader(handle).fieldnames or ())
-    assert fields.isdisjoint(FORBIDDEN_PASS1_FIELDS)
-
-    out = build_u6_reference_readout(BATCH_B)
-    assert out["pollen_theft_candidate_reference_ids"] == [
-        "U6_REF_046",
-        "U6_REF_058",
-    ]
-    assert out["n_included"] == 0
-
-
-def test_u6_batches_a_b_form_one_consecutive_blinded_reconstruction():
-    out = build_u6_multi_batch_readout([BATCH_A, BATCH_B])
-    assert out["n_references"] == 67
-    assert out["first_reference_id"] == "U6_REF_001"
-    assert out["last_reference_id"] == "U6_REF_067"
-    assert out["pollen_theft_candidate_reference_ids"] == [
-        "U6_REF_010",
-        "U6_REF_017",
-        "U6_REF_029",
-        "U6_REF_031",
-        "U6_REF_033",
-        "U6_REF_046",
-        "U6_REF_058",
-    ]
-    assert out["n_candidates"] == 7
-    assert out["n_included"] == 0
-    assert out["architecture_fields_open"] is False
-    assert out["pass2_open"] is False
-
-
-
-def test_u6_batches_c_d_complete_reference_reconstruction_without_inclusion():
-    rows_c = load_u6_reference_classification(BATCH_C)
-    rows_d = load_u6_reference_classification(BATCH_D)
-    assert [row["reference_id"] for row in rows_c] == [
-        f"U6_REF_{i:03d}" for i in range(68, 101)
-    ]
-    assert [row["reference_id"] for row in rows_d] == [
-        f"U6_REF_{i:03d}" for i in range(101, 158)
-    ]
-    assert all(row["inclusion_status"] != "INCLUDE" for row in rows_c + rows_d)
-
-
-def test_u6_pass1_reference_identity_reconstruction_is_complete_and_blinded():
-    out = build_u6_multi_batch_readout([BATCH_A, BATCH_B, BATCH_C, BATCH_D])
+    out = build_u6_multi_batch_readout(REFERENCE_BATCHES)
     assert out["n_references"] == 157
     assert out["first_reference_id"] == "U6_REF_001"
     assert out["last_reference_id"] == "U6_REF_157"
-    assert out["pollen_theft_candidate_reference_ids"] == [
-        "U6_REF_010",
-        "U6_REF_017",
-        "U6_REF_029",
-        "U6_REF_031",
-        "U6_REF_033",
-        "U6_REF_046",
-        "U6_REF_058",
-        "U6_REF_078",
-        "U6_REF_083",
-        "U6_REF_095",
-        "U6_REF_100",
-        "U6_REF_102",
-        "U6_REF_112",
-        "U6_REF_119",
-        "U6_REF_125",
-        "U6_REF_128",
-        "U6_REF_140",
-        "U6_REF_144",
-        "U6_REF_149",
-        "U6_REF_153",
-        "U6_REF_154",
-        "U6_REF_155",
-        "U6_REF_156",
-        "U6_REF_157",
-    ]
-    assert out["n_candidates"] == 24
-    assert out["n_included"] == 0
+    assert out["reference_status_counts"].get("UNRESOLVED", 0) == 0
+    assert out["n_candidates"] == 33
     assert out["architecture_fields_open"] is False
     assert out["pass2_open"] is False
 
 
+def test_u6_candidate_batches_preserve_screened_decisions():
+    a = build_u6_candidate_adjudication_readout(CANDIDATE_BATCHES[0])
+    b = build_u6_candidate_adjudication_readout(CANDIDATE_BATCHES[1])
+    c = build_u6_candidate_adjudication_readout(CANDIDATE_BATCHES[2])
 
-def test_u6_candidate_adjudication_batch_a_has_included_dependencies_but_keeps_pass2_closed():
-    out = build_u6_candidate_adjudication_readout(CANDIDATE_A)
-    assert out["n_adjudication_rows"] == 22
-    assert out["decision_counts"] == {
+    assert a["n_adjudication_rows"] == 22
+    assert a["decision_counts"] == {
         "EXCLUDE": 4,
         "INCLUDE": 12,
         "RETAIN_UNRESOLVED": 6,
     }
-    assert out["n_included_dependency_groups"] == 11
-    assert out["architecture_fields_open"] is False
-    assert out["pass2_open"] is False
+    assert a["n_included_dependency_groups"] == 11
 
-
-def test_u6_remaining_candidate_batch_closes_one_more_include_and_three_evidence_ceilings():
-    out = build_u6_candidate_adjudication_readout(CANDIDATE_B)
-    assert out["n_adjudication_rows"] == 4
-    assert out["decision_counts"] == {
+    assert b["n_adjudication_rows"] == 4
+    assert b["decision_counts"] == {
         "INCLUDE": 1,
         "RETAIN_UNRESOLVED": 3,
     }
-    assert out["included_dependency_groups"] == ["Crescentia_alata"]
-    assert out["pass2_open"] is False
+    assert b["included_dependency_groups"] == ["Crescentia_alata"]
+
+    assert c["n_adjudication_rows"] == 9
+    assert c["decision_counts"] == {"INCLUDE": 9}
+    assert c["n_included_dependency_groups"] == 9
+
+    assert a["pass2_open"] is False
+    assert b["pass2_open"] is False
+    assert c["pass2_open"] is False
+
+
+def test_u6_pass1_manifest_matches_executable_reconstruction():
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    live = validate_u6_pass1_freeze_manifest(
+        FREEZE,
+        REFERENCE_BATCHES,
+        CANDIDATE_BATCHES,
+    )
+
+    outcome_ids = set()
+    for ids in manifest["candidate_reference_outcomes"].values():
+        outcome_ids.update(ids)
+
+    reference_readout = build_u6_multi_batch_readout(REFERENCE_BATCHES)
+    assert outcome_ids == set(reference_readout["pollen_theft_candidate_reference_ids"])
+    assert len(outcome_ids) == 33
+
+    assert live["status"] == "PASS1_CLOSED_PASS2_CODING_OPEN"
+    assert live["n_references"] == 157
+    assert live["n_candidate_references"] == 33
+    assert live["n_included_dependency_groups"] == 21
+    assert live["n_retained_unresolved_reference_ids"] == 9
+    assert live["architecture_used_for_pass1_admission"] is False
+    assert live["pass2_open"] is True
+    assert live["primary_model_admission"] is False
+
+
+def test_u6_pass2_worksheet_opens_only_for_frozen_dependency_groups():
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    rows = load_u6_pass2_double_coding(PASS2, FREEZE)
+
+    assert len(rows) == 42
+    assert {row["coder_id"] for row in rows} == {"CODER_A", "CODER_B"}
+    assert {row["dependency_group"] for row in rows} == set(
+        manifest["included_dependency_groups"]
+    )
+    assert all(row["coding_status"] == "UNSTARTED" for row in rows)
+    assert all(row["architecture_mode"] == "UNRESOLVED" for row in rows)
+    assert all(row["module_substrate"] == "UNRESOLVED" for row in rows)
+    assert all(row["conflict_timing_geometry"] == "UNRESOLVED" for row in rows)
+    assert all(row["conflict_spatial_geometry"] == "UNRESOLVED" for row in rows)
+
+
+def test_u6_pass2_rejects_nonfrozen_dependency_group(tmp_path):
+    source = PASS2.read_text(encoding="utf-8")
+    first_group = load_u6_pass1_freeze_manifest(FREEZE)["included_dependency_groups"][0]
+    source = source.replace(first_group, "OUTCOME_SELECTED_INTRUDER", 1)
+    path = tmp_path / "bad_pass2.csv"
+    path.write_text(source, encoding="utf-8")
+    with pytest.raises(ValueError, match="non-frozen U6 dependency group"):
+        load_u6_pass2_double_coding(path, FREEZE)
