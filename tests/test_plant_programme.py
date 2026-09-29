@@ -34,7 +34,7 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert out["pooled_prevalence_estimate"] is None
     assert out["primary_model_ready"] is False
     contract = out["primary_model_contract"]
-    assert contract["specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2"
+    assert contract["specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3"
     assert contract["response"] == "architecture_class4"
     assert contract["primary_universes"] == [
         "U1_HAAS_LORTIE_2020",
@@ -44,9 +44,11 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert contract["fit_predictor_contrasts"] == [
         "module_opportunity2",
         "temporal_exposure3",
+    ]
+    assert contract["secondary_predictor_contrasts"] == [
         "spatial_exposure2",
     ]
-    assert contract["maximum_main_fixed_coefficients"] == 15
+    assert contract["maximum_main_fixed_coefficients"] == 12
     assert contract["predictor_receipts_required"] is True
     assert contract["data_dependent_fallback_allowed"] is False
     assert contract["u3_u4_primary_denominator_allowed"] is False
