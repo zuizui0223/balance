@@ -200,48 +200,64 @@ When conflict is positive but module substrate is single/continuous and demands 
 
 ## Statistical plan
 
-### Primary model family
+The current primary parameterization is frozen in
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`.
 
-If category counts are adequate:
+Raw categories remain the coding surface, but the primary fit uses preregistered
+low-dimensional contrasts:
 
 ```text
-hierarchical multinomial architecture model
+module_opportunity2:
+  SINGLE / MODULAR
 
-architecture_mode
-~ module_substrate
-+ conflict_timing_geometry
-+ conflict_spatial_geometry
-+ conflict_family
-+ phylogenetic / taxonomic dependence
+temporal_exposure3:
+  SIMULTANEOUS / ORDERED_OR_ALTERNATING / VARIABLE_CONTEXT
+
+spatial_exposure2:
+  SAME_UNIT / DISTRIBUTED
 ```
 
-Reference-category choice is a parameterization detail, not a biological ranking.
+Primary model:
 
-### Sparse-cell fallback
+```text
+regularized Bayesian multinomial logit
 
-If the full nominal model is unstable, use the preregistered four-class coarsening:
+architecture_class4
+~ module_opportunity2
++ temporal_exposure3
++ spatial_exposure2
+```
+
+The four-class response is fixed:
 
 ```text
 SHARED
-TEMPORAL_OR_SPATIAL
+NONSTRUCTURAL_SEPARATION
 STRUCTURAL_MODULE_DIVISION
 MOSAIC
 ```
 
-If that remains too sparse, do not collapse post hoc until a coefficient becomes significant. Freeze a smaller estimand before fitting.
+There is no sparse-cell response rewrite or significance-triggered term deletion. The
+pre-fit parameter-budget audit reduced the raw joint model from 42 fixed coefficients
+(before conflict-family adjustment) to 15 fixed coefficients while preserving all raw
+coded predictor values for audit and secondary analysis.
 
-### Secondary binary model
+Conflict family is handled by mandatory stratified / leave-universe-out sensitivity rather
+than as an automatically added sparse fixed effect.
+
+Registered interaction extensions are fit separately:
 
 ```text
-structural_module_division
-~ module_substrate
-+ conflict_timing_geometry
-+ conflict_spatial_geometry
-+ conflict_family
-+ phylogenetic / taxonomic dependence
+module_opportunity2 x temporal_exposure3
+module_opportunity2 x spatial_exposure2
 ```
 
-This is secondary even if it is statistically easier.
+The primary fit is withheld if any response class has fewer than two independent dependence
+blocks, a primary predictor contrast has only one observed level, or the design matrix is
+rank-deficient. Unsupported probability contrasts are reported as non-estimable.
+
+The binary `structural_module_division` analysis and raw-category multinomial analyses
+remain secondary.
 
 ## Universe structure
 
