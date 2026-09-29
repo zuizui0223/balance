@@ -534,8 +534,28 @@ def load_u2_adjudication(
                 raise ValueError(
                     f"row {n} cannot adjudicate while coder fields are incomplete"
                 )
-            if clean["adjudication_basis"] == "AWAITING_INDEPENDENT_DOUBLE_CODING":
-                raise ValueError(f"row {n} adjudicated row requires a frozen basis")
+            pair_by_coder = {item["coder_id"]: item for item in pair}
+            disagreements = [
+                field for field in coded_fields
+                if pair_by_coder["CODER_A"][field]
+                != pair_by_coder["CODER_B"][field]
+            ]
+            expected_basis = (
+                "SOURCE_REVIEW_OF_DISAGREEMENTS"
+                if disagreements
+                else "CODER_CONSENSUS"
+            )
+            if clean["adjudication_basis"] != expected_basis:
+                raise ValueError(
+                    f"row {n} adjudication_basis must be {expected_basis!r}"
+                )
+            for field in coded_fields:
+                a_value = pair_by_coder["CODER_A"][field]
+                b_value = pair_by_coder["CODER_B"][field]
+                if a_value == b_value and clean[field] != a_value:
+                    raise ValueError(
+                        f"row {n} cannot override coder consensus for {field}"
+                    )
             if not clean["notes"]:
                 raise ValueError(f"row {n} adjudicated row requires notes")
 
