@@ -65,5 +65,6 @@
     "cross-universe generality is a stronger claim than a pooled positive Delta_T",
     "null or reversed contrasts remain reportable results under the frozen design"
   ],
-  "claim_ceiling": "prospective_directional_hypotheses_only_no_observed_effect"
+  "claim_ceiling": "prospective_directional_hypotheses_only_no_observed_effect",
+  "estimand_standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json"
 }
