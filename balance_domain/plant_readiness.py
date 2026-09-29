@@ -20,7 +20,7 @@ from .plant_u6 import (
 )
 
 
-def build_plant_v3_readiness(
+def build_plant_v4_readiness(
     *,
     u1_first20_conflict_path: Path,
     u1_production27_conflict_path: Path,
@@ -161,3 +161,9 @@ def build_plant_v3_readiness(
         },
         "claim_ceiling": "programme_readiness_only_not_biological_effect",
     }
+
+
+
+def build_plant_v3_readiness(**kwargs) -> dict:
+    """Backward-compatible alias for the superseded V3 readiness entrypoint."""
+    return build_plant_v4_readiness(**kwargs)
