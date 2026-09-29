@@ -91,6 +91,14 @@ def test_handoff_manifest_registers_post_handoff_v4_analysis_workflow():
     assert analysis["manual_workflow"] == ".github/workflows/build-plant-v4-analysis-inputs.yml"
     assert analysis["build_command"].endswith("--build")
     assert "forbidden while any U2/U6" in analysis["fail_closed_rule"]
+    assert (
+        "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json when the stricter "
+        "generality gate is ready"
+    ) in analysis["outputs"]
+    assert (
+        "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json "
+        "when the stricter generality gate is ready"
+    ) in analysis["outputs"]
     # The production analysis builder is a downstream integration surface.
     # This handoff unit freezes its path/contract without requiring that
     # downstream extraction to be present in the same PR.
