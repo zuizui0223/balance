@@ -29,207 +29,180 @@ def _receipts(group, module, timing, spatial):
     ]
 
 
-def test_u2_builder_keeps_only_adjudicated_conflict_positive_rows():
-    positive = {
-        "cluster_id": "Campsis_radicans",
-        "conflict_status": "POSITIVE",
-        "architecture_mode": "SHARED_INTEGRATED",
-        "module_substrate": "SINGLE_OR_CONTINUOUS",
-        "conflict_timing_geometry": "SIMULTANEOUS",
-        "conflict_spatial_geometry": "SAME_UNIT",
-        "adjudication_status": "ADJUDICATED",
-        "adjudication_basis": "SOURCE_REVIEW",
-        "notes": "resolved",
-    }
-    negative = {
-        **positive,
-        "cluster_id": "Narcissus_assoanus",
-        "conflict_status": "NO_DEMONSTRATED_CONFLICT",
-    }
-    sources = [
-        {
-            "dependency_group": "Campsis_radicans",
-            "taxon_raw": "Campsis radicans",
-            "primary_source_id": "Bertin & Sullivan 1988",
-            "primary_source_doi": "10.1002/example",
-        },
-        {
-            "dependency_group": "Narcissus_assoanus",
-            "taxon_raw": "Narcissus assoanus",
-            "primary_source_id": "Baker et al. 2000",
+def _u2_complete_fixture():
+    rows = []
+    sources = []
+    receipts = []
+    for i in range(20):
+        group = f"U2_test_{i:02d}"
+        positive = i == 0
+        rows.append({
+            "cluster_id": group,
+            "conflict_status": "POSITIVE" if positive else "NO_DEMONSTRATED_CONFLICT",
+            "architecture_mode": "SHARED_INTEGRATED" if positive else "UNRESOLVED",
+            "module_substrate": "SINGLE_OR_CONTINUOUS" if positive else "UNRESOLVED",
+            "conflict_timing_geometry": "SIMULTANEOUS" if positive else "UNRESOLVED",
+            "conflict_spatial_geometry": "SAME_UNIT" if positive else "UNRESOLVED",
+            "adjudication_status": "ADJUDICATED",
+            "adjudication_basis": "SOURCE_REVIEW",
+            "notes": "resolved",
+        })
+        sources.append({
+            "dependency_group": group,
+            "taxon_raw": group.replace("_", " "),
+            "primary_source_id": f"source-{i}",
             "primary_source_doi": "",
-        },
-    ]
-    rows = build_u2_licensed_rows(
-        adjudication_rows=[positive, negative],
-        predictor_receipts=_receipts(
-            "Campsis_radicans",
+        })
+        if positive:
+            receipts.extend(_receipts(
+                group,
+                "SINGLE_OR_CONTINUOUS",
+                "SIMULTANEOUS",
+                "SAME_UNIT",
+            ))
+    return rows, receipts, sources
+
+
+def _u6_complete_fixture():
+    adjudication = []
+    receipts = []
+    dependence = []
+    sources = []
+    for i in range(21):
+        group = f"U6_test_{i:02d}"
+        mode = "WITHIN_FLOWER_DIVISION_OF_LABOUR" if i == 0 else "SHARED_INTEGRATED"
+        adjudication.append({
+            "dependency_group": group,
+            "architecture_mode": mode,
+            "module_substrate": "SINGLE_OR_CONTINUOUS",
+            "conflict_timing_geometry": "SIMULTANEOUS",
+            "conflict_spatial_geometry": "SAME_UNIT",
+            "adjudication_status": "ADJUDICATED",
+            "adjudication_basis": "SOURCE_REVIEW",
+            "notes": "resolved",
+        })
+        receipts.extend(_receipts(
+            group,
             "SINGLE_OR_CONTINUOUS",
             "SIMULTANEOUS",
             "SAME_UNIT",
-        ),
+        ))
+        dependence.append({
+            "u6_dependency_group": group,
+            "overlap_universe": "NONE",
+            "overlap_record_id": "NONE",
+            "dependence_block": f"U6_DEP_{i:02d}",
+            "analysis_action": "U6_ONLY",
+            "notes": "none",
+        })
+        sources.append({
+            "dependency_group": group,
+            "plant_taxon": group,
+            "admission_reference_ids": f"U6_REF_TEST_{i:02d}",
+            "admission_primary_source_basis": f"source-{i}",
+            "supplemental_primary_source_ids": "NONE_AFTER_REGISTERED_GENERIC_SEARCH",
+            "source_recovery_status": "EVIDENCE_CEILING",
+            "coder_instruction": "blinded",
+        })
+    return adjudication, receipts, dependence, sources
+
+
+def test_u2_builder_keeps_only_adjudicated_conflict_positive_rows():
+    adjudication, receipts, sources = _u2_complete_fixture()
+    rows = build_u2_licensed_rows(
+        adjudication_rows=adjudication,
+        predictor_receipts=receipts,
         source_packet_rows=sources,
     )
     assert len(rows) == 1
     row = rows[0]
-    assert row["analysis_row_id"] == "U2::Campsis_radicans"
+    assert row["analysis_row_id"] == "U2::U2_test_00"
     assert row["universe_id"] == "U2_BARRETT_2002"
-    assert row["dependence_block"] == "U2::Campsis_radicans"
+    assert row["dependence_block"] == "U2::U2_test_00"
     assert row["conflict_receipt_status"] == "ADJUDICATED_POSITIVE"
     assert row["predictor_receipt_status"] == "THREE_ADJUDICATED_OUTCOME_INDEPENDENT"
 
 
 def test_u2_builder_rejects_predictor_receipt_mismatch():
-    row = {
-        "cluster_id": "Campsis_radicans",
-        "conflict_status": "POSITIVE",
-        "architecture_mode": "SHARED_INTEGRATED",
-        "module_substrate": "SINGLE_OR_CONTINUOUS",
-        "conflict_timing_geometry": "SIMULTANEOUS",
-        "conflict_spatial_geometry": "SAME_UNIT",
-        "adjudication_status": "ADJUDICATED",
-        "adjudication_basis": "SOURCE_REVIEW",
-        "notes": "resolved",
-    }
-    receipts = _receipts(
-        "Campsis_radicans",
-        "SERIAL_WITHIN_FLOWER",
-        "SIMULTANEOUS",
-        "SAME_UNIT",
+    adjudication, receipts, sources = _u2_complete_fixture()
+    module_receipt = next(
+        row for row in receipts
+        if row["cluster_id"] == "U2_test_00" and row["predictor"] == "module_substrate"
     )
+    module_receipt["reported_value"] = "SERIAL_WITHIN_FLOWER"
     with pytest.raises(ValueError, match="adjudication/receipt mismatch"):
         build_u2_licensed_rows(
-            adjudication_rows=[row],
+            adjudication_rows=adjudication,
             predictor_receipts=receipts,
-            source_packet_rows=[{
-                "dependency_group": "Campsis_radicans",
-                "taxon_raw": "Campsis radicans",
-                "primary_source_id": "source",
-                "primary_source_doi": "",
-            }],
+            source_packet_rows=sources,
+        )
+
+
+def test_u2_builder_refuses_partial_adjudication():
+    adjudication, receipts, sources = _u2_complete_fixture()
+    with pytest.raises(ValueError, match="all 20 frozen reliability adjudication rows"):
+        build_u2_licensed_rows(
+            adjudication_rows=adjudication[:-1],
+            predictor_receipts=receipts,
+            source_packet_rows=sources[:-1],
         )
 
 
 def test_u6_builder_preserves_frozen_dependence_block():
-    group = "Melastoma_affine"
-    adjudication = [{
-        "dependency_group": group,
-        "architecture_mode": "WITHIN_FLOWER_DIVISION_OF_LABOUR",
-        "module_substrate": "SINGLE_OR_CONTINUOUS",
-        "conflict_timing_geometry": "SIMULTANEOUS",
-        "conflict_spatial_geometry": "SAME_UNIT",
-        "adjudication_status": "ADJUDICATED",
-        "adjudication_basis": "SOURCE_REVIEW",
-        "notes": "resolved",
-    }]
-    dependence = [{
-        "u6_dependency_group": group,
+    adjudication, receipts, dependence, sources = _u6_complete_fixture()
+    dependence[0] = {
+        **dependence[0],
         "overlap_universe": "U3",
-        "overlap_record_id": "U3_PAIR_MELMA_001",
-        "dependence_block": "U6_DEP_MELASTOMA_U3_01",
+        "overlap_record_id": "U3_PAIR_TEST",
+        "dependence_block": "U6_DEP_SHARED_TAXON_TEST",
         "analysis_action": "SHARED_TAXON_CONCEPT_BLOCK",
-        "notes": "conservative",
-    }]
-    source = [{
-        "dependency_group": group,
-        "plant_taxon": "Melastoma_affine",
-        "admission_reference_ids": "U6_REF_046",
-        "admission_primary_source_basis": "Gross & Mackay 1998",
-        "supplemental_primary_source_ids": "DOI:10.17660/example",
-        "source_recovery_status": "RESOLVED",
-        "coder_instruction": "blinded",
-    }]
+    }
     rows = build_u6_licensed_rows(
         adjudication_rows=adjudication,
-        predictor_receipts=_receipts(
-            group,
-            "SINGLE_OR_CONTINUOUS",
-            "SIMULTANEOUS",
-            "SAME_UNIT",
-        ),
+        predictor_receipts=receipts,
         dependence_rows=dependence,
-        frozen_source_packet_rows=source,
+        frozen_source_packet_rows=sources,
     )
-    assert len(rows) == 1
-    row = rows[0]
+    assert len(rows) == 21
+    row = next(row for row in rows if row["dependency_group"] == "U6_test_00")
     assert row["universe_id"] == "U6_POLLEN_THEFT_HARGREAVES_2009"
-    assert row["dependence_block"] == "U6_DEP_MELASTOMA_U3_01"
+    assert row["dependence_block"] == "U6_DEP_SHARED_TAXON_TEST"
     assert row["conflict_family"] == "POLLEN_REWARD_GAMETE"
 
 
+def test_u6_builder_refuses_pending_adjudication():
+    adjudication, receipts, dependence, sources = _u6_complete_fixture()
+    adjudication[0]["adjudication_status"] = "PENDING"
+    with pytest.raises(ValueError, match="cannot omit pending adjudication rows"):
+        build_u6_licensed_rows(
+            adjudication_rows=adjudication,
+            predictor_receipts=receipts,
+            dependence_rows=dependence,
+            frozen_source_packet_rows=sources,
+        )
+
+
 def test_combined_builder_returns_only_current_primary_universes():
-    u2_adj = [{
-        "cluster_id": "Campsis_radicans",
-        "conflict_status": "POSITIVE",
-        "architecture_mode": "SHARED_INTEGRATED",
-        "module_substrate": "SINGLE_OR_CONTINUOUS",
-        "conflict_timing_geometry": "SIMULTANEOUS",
-        "conflict_spatial_geometry": "SAME_UNIT",
-        "adjudication_status": "ADJUDICATED",
-        "adjudication_basis": "SOURCE_REVIEW",
-        "notes": "resolved",
-    }]
-    u6_adj = [{
-        "dependency_group": "Hamelia_patens",
-        "architecture_mode": "TEMPORAL_SEPARATION",
-        "module_substrate": "SINGLE_OR_CONTINUOUS",
-        "conflict_timing_geometry": "SEQUENTIAL_WITHIN_UNIT",
-        "conflict_spatial_geometry": "SAME_UNIT",
-        "adjudication_status": "ADJUDICATED",
-        "adjudication_basis": "SOURCE_REVIEW",
-        "notes": "resolved",
-    }]
+    u2_adj, u2_receipts, u2_sources = _u2_complete_fixture()
+    u6_adj, u6_receipts, u6_dependence, u6_sources = _u6_complete_fixture()
     rows = build_v4_licensed_assembly(
         u2_adjudication_rows=u2_adj,
-        u2_predictor_receipts=_receipts(
-            "Campsis_radicans",
-            "SINGLE_OR_CONTINUOUS",
-            "SIMULTANEOUS",
-            "SAME_UNIT",
-        ),
-        u2_source_packet_rows=[{
-            "dependency_group": "Campsis_radicans",
-            "taxon_raw": "Campsis radicans",
-            "primary_source_id": "source-u2",
-            "primary_source_doi": "",
-        }],
+        u2_predictor_receipts=u2_receipts,
+        u2_source_packet_rows=u2_sources,
         u6_adjudication_rows=u6_adj,
-        u6_predictor_receipts=_receipts(
-            "Hamelia_patens",
-            "SINGLE_OR_CONTINUOUS",
-            "SEQUENTIAL_WITHIN_UNIT",
-            "SAME_UNIT",
-        ),
-        u6_dependence_rows=[{
-            "u6_dependency_group": "Hamelia_patens",
-            "overlap_universe": "NONE",
-            "overlap_record_id": "NONE",
-            "dependence_block": "U6_DEP_HAMELIA_01",
-            "analysis_action": "U6_ONLY",
-            "notes": "none",
-        }],
-        u6_frozen_source_packet_rows=[{
-            "dependency_group": "Hamelia_patens",
-            "plant_taxon": "Hamelia_patens",
-            "admission_reference_ids": "U6_REF_102",
-            "admission_primary_source_basis": "Paciorek et al. 1995",
-            "supplemental_primary_source_ids": "NONE_AFTER_REGISTERED_GENERIC_SEARCH",
-            "source_recovery_status": "EVIDENCE_CEILING",
-            "coder_instruction": "blinded",
-        }],
+        u6_predictor_receipts=u6_receipts,
+        u6_dependence_rows=u6_dependence,
+        u6_frozen_source_packet_rows=u6_sources,
     )
     assert {row["universe_id"] for row in rows} == {
         "U2_BARRETT_2002",
         "U6_POLLEN_THEFT_HARGREAVES_2009",
     }
-    assert {row["analysis_row_id"] for row in rows} == {
-        "U2::Campsis_radicans",
-        "U6::Hamelia_patens",
-    }
+    assert len(rows) == 22  # one U2 positive + all 21 U6 conflict-first groups
 
 
 def test_combined_builder_refuses_empty_pending_state():
-    with pytest.raises(ValueError, match="no licensed U2/U6 rows"):
+    with pytest.raises(ValueError, match="all 20 frozen reliability adjudication rows"):
         build_v4_licensed_assembly(
             u2_adjudication_rows=[],
             u2_predictor_receipts=[],
