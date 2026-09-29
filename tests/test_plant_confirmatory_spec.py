@@ -17,6 +17,7 @@ SPEC_V1 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
 SPEC_V2 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2.json"
 SPEC_V3 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3.json"
 SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4.json"
+HYPOTHESES = ROOT / "data" / "BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_PREDICTOR_RECEIPT_TEMPLATE_V1.csv"
 U1_FRAME = ROOT / "data" / "BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 U2_FRAME = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
@@ -265,3 +266,25 @@ def test_model_spec_supersession_chain_is_monotone_and_v4_current():
     assert v4["schema_version"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
     assert v4["status"] == "FROZEN_PRE_OUTCOME_BEFORE_U6_INDEPENDENT_ARCHITECTURE_CODING"
     assert "superseded_by" not in v4
+
+
+
+def test_v4_directional_hypotheses_are_frozen_preoutcome():
+    data = json.loads(HYPOTHESES.read_text(encoding="utf-8"))
+    assert data["status"] == "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING"
+    hypotheses = {item["id"]: item for item in data["hypotheses"]}
+    assert hypotheses["H_T_ORDERED_NONSTRUCTURAL"]["directional_prediction"] == ">0"
+    assert hypotheses["H_T_ORDERED_NONSTRUCTURAL"]["target_response"] == (
+        "NONSTRUCTURAL_SEPARATION"
+    )
+    assert hypotheses["H_M_MODULAR_STRUCTURAL"]["directional_prediction"] == ">0"
+    assert hypotheses["H_M_MODULAR_STRUCTURAL"]["target_response"] == (
+        "STRUCTURAL_MODULE_DIVISION"
+    )
+    assert hypotheses["H_M_MODULAR_STRUCTURAL"]["scope"] == (
+        "U2_ANCHORED_NOT_CROSS_UNIVERSE"
+    )
+    assert any(
+        "null or reversed contrasts remain reportable" in rule
+        for rule in data["reporting_rules"]
+    )
