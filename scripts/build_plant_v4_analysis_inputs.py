@@ -34,9 +34,17 @@ from balance_domain.plant_u6 import (  # noqa: E402
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 
 
-def _paths() -> dict[str, Path]:
+def _override(default: Path, input_dir: Path | None) -> Path:
+    """Use an explicit handoff-workspace file when present; never mutate repo inputs."""
+    if input_dir is None:
+        return default
+    candidate = input_dir / default.name
+    return candidate if candidate.exists() else default
+
+
+def _paths(input_dir: Path | None = None) -> dict[str, Path]:
     data = ROOT / "data"
-    return {
+    defaults = {
         "u1_first20_conflict": data / "BALANCE_PLANT_U1_BLIND_CONFLICT_SCREEN_V1.csv",
         "u1_production27_conflict": data / "BALANCE_PLANT_U1_PRODUCTION_BLIND_CONFLICT_SCREEN_V1.csv",
         "u1_sample": data / "BALANCE_PLANT_U1_DOUBLE_CODE_SAMPLE_V1.csv",
@@ -56,10 +64,24 @@ def _paths() -> dict[str, Path]:
         "u6_source_recovery": data / "BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv",
         "u6_sources": data / "BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv",
     }
+    mutable_keys = {
+        "u1_worksheet",
+        "u1_adjudication",
+        "u2_worksheet",
+        "u2_adjudication",
+        "u2_receipts",
+        "u6_worksheet",
+        "u6_adjudication",
+        "u6_receipts",
+    }
+    return {
+        key: _override(path, input_dir) if key in mutable_keys else path
+        for key, path in defaults.items()
+    }
 
 
-def current_readiness() -> dict:
-    p = _paths()
+def current_readiness(input_dir: Path | None = None) -> dict:
+    p = _paths(input_dir)
     return build_plant_v4_readiness(
         u1_first20_conflict_path=p["u1_first20_conflict"],
         u1_production27_conflict_path=p["u1_production27_conflict"],
@@ -86,15 +108,18 @@ def _write_csv(path: Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
-def build_outputs(out_dir: Path = DEFAULT_OUT) -> dict:
-    readiness = current_readiness()
+def build_outputs(
+    out_dir: Path = DEFAULT_OUT,
+    input_dir: Path | None = None,
+) -> dict:
+    readiness = current_readiness(input_dir)
     if not readiness["primary_model_assembly_ready"]:
         raise RuntimeError(
             "V4 primary assembly is not ready: "
             + ", ".join(readiness["open_gate_names"])
         )
 
-    p = _paths()
+    p = _paths(input_dir)
     u2_coding = load_double_coding(p["u2_worksheet"])
     u2_sample = load_u2_double_code_sample(p["u2_sample"])
     u2_adjudication = load_u2_adjudication(
@@ -199,12 +224,29 @@ def main() -> None:
         type=Path,
         default=DEFAULT_OUT,
     )
+    parser.add_argument(
+        "--input-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Optional external handoff workspace. Files with canonical mutable input "
+            "basenames override repo defaults; frozen source/manifest files remain in repo."
+        ),
+    )
     args = parser.parse_args()
 
     if args.build:
-        print(json.dumps(build_outputs(args.out_dir), indent=2, sort_keys=True))
+        print(json.dumps(
+            build_outputs(args.out_dir, input_dir=args.input_dir),
+            indent=2,
+            sort_keys=True,
+        ))
     else:
-        print(json.dumps(current_readiness(), indent=2, sort_keys=True))
+        print(json.dumps(
+            current_readiness(input_dir=args.input_dir),
+            indent=2,
+            sort_keys=True,
+        ))
 
 
 if __name__ == "__main__":
