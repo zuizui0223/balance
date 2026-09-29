@@ -1,0 +1,21 @@
+sample_order,universe_record_id,dependency_group,taxon_raw,primary_source_id,primary_source_doi,coder_instruction
+1,U2_001,Narcissus_assoanus,Narcissus assoanus,Baker et al. 2000 Heredity I/II,10.1046/j.1365-2540.2000.00651.x;10.1046/j.1365-2540.2000.00686.x,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+2,U2_002,Narcissus_dubius,Narcissus dubius,Baker et al. 2000 Heredity I/II,10.1046/j.1365-2540.2000.00651.x;10.1046/j.1365-2540.2000.00686.x,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+3,U2_003,Pontederia_cordata,Pontederia cordata,Barrett & Glover 1985 Evolution,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+4,U2_004,Campsis_radicans,Campsis radicans,Bertin & Sullivan 1988 American Journal of Botany,10.1002/j.1537-2197.1988.tb08827.x,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+5,U2_005,Asclepias_exaltata,Asclepias exaltata,Broyles & Wyatt 1993 American Journal of Botany,10.1002/j.1537-2197.1993.tb13765.x,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+6,U2_006,Mimulus_aurantiacus,Mimulus aurantiacus,Fetscher 2001 Proceedings B,10.1098/rspb.2000.1395,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+7,U2_007,Polemonium_viscosum,Polemonium viscosum,"Galen, Gregory & Galloway 1989 American Journal of Botany",10.2307/2444405,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+8,U2_008,Eichhornia_paniculata,Eichhornia paniculata,Kohn & Barrett 1992 Functional Ecology; Harder & Barrett 1995 Nature; Harder et al. 2000 Proceedings B,10.1038/373512a0;10.1098/rspb.2000.1002,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+9,U2_009,Wahlenbergia_albomarginata,Wahlenbergia albomarginata,Lloyd & Yates 1982 Evolution,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+10,U2_010,Pseudowintera_colorata,Pseudowintera colorata,Lloyd & Wells 1992 Plant Systematics and Evolution,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+11,U2_011,Narcissus_triandrus,Narcissus triandrus,Sage et al. 1999 American Journal of Botany,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+12,U2_012,Pontederia_sagittata,Pontederia sagittata,Scribailo & Barrett 1994 Sexual Plant Reproduction,10.1007/BF00227709,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+13,U2_013,Epilobium_obcordatum,Epilobium obcordatum,Seavey & Carter 1993 American Journal of Botany,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+14,U2_014,Turnera_ulmifolia,Turnera ulmifolia,Shore & Barrett 1984 Canadian Journal of Botany,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+15,U2_015,Ipomopsis_aggregata,Ipomopsis aggregata,Waser & Price 1991 American Journal of Botany,,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+16,U2_016,Alpinia_kwangsiensis,Alpinia kwangsiensis,Li et al. 2001 Nature; Li et al. 2001 Acta Botanica Sinica,10.1038/35068635,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+17,U2_017,Wachendorfia_paniculata,Wachendorfia paniculata,Jesson & Barrett 2002 American Journal of Botany,10.3732/ajb.89.2.253,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+18,U2_018,Wachendorfia_brachyandra,Wachendorfia brachyandra,Jesson & Barrett 2002 American Journal of Botany,10.3732/ajb.89.2.253,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+19,U2_019,Wachendorfia_parviflora,Wachendorfia parviflora,Jesson & Barrett 2002 American Journal of Botany,10.3732/ajb.89.2.253,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
+20,U2_020,Wachendorfia_thyrsiflora,Wachendorfia thyrsiflora,Jesson & Barrett 2002 American Journal of Botany,10.3732/ajb.89.2.253,CODE_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_USE_U2_EVIDENCE_FAMILY_OR_REVIEW_NOTES
