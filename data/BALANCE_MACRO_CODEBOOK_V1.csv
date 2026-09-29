@@ -1,0 +1,30 @@
+field,type,allowed_values,analysis_role,definition
+cluster_id,string,unique_nonempty,id,Independent biological cluster identifier
+sampling_frame_id,string,registered_nonempty,design,Search or discovery frame that admitted the cluster
+source_id,string,registered_nonempty,provenance,One or more source identifiers joined by semicolon
+publication_year,integer_or_unresolved,integer_1800_2100_or_UNRESOLVED,bias,Publication year of the primary evidence source
+system_taxon,string,nonempty,descriptor,Taxon lineage or experimental biological system
+domain,string,nonempty,stratification,Biological domain used for hierarchical analysis
+shared_structure,string,nonempty,descriptor,Shared structure coordinate or module that performs both functions
+function_a,string,nonempty,descriptor,First declared biological function
+function_b,string,nonempty,descriptor,Second declared biological function
+multifunctionality_status,categorical,YES|NO|UNRESOLVED,screen,Whether the same declared structure participates in both functions
+conflict_status,categorical,POSITIVE|ALIGNED_NO_CONFLICT|NO_DEMONSTRATED_CONFLICT|UNRESOLVED,screen,Adjudicated evidence for opposing functional demands on the shared structure
+conflict_strength_proxy,categorical,LOW|MEDIUM|HIGH|UNRESOLVED|NA,predictor,Ordinal proxy for strength of opposing demands; never relabel as L
+architecture_state,categorical,SHARED_INTEGRATED|REGULATORY_TEMPORAL_SEPARATION|SPATIAL_COMPARTMENTALIZATION|PARTIAL_STRUCTURAL_DIFFERENTIATION|SEPARATE_MODULES|POLYMORPHIC|UNRESOLVED|NA,outcome,Observed comparative resolution architecture
+structural_differentiation,categorical,true|false|unresolved|na,primary_outcome,Derived binary architecture response with strict consistency rules
+alternative_accessibility,categorical,LOW|MEDIUM|HIGH|UNRESOLVED|NA,predictor,Biological or developmental accessibility of a function-separating alternative independent of observed outcome where possible
+functional_coupling,categorical,LOW|MEDIUM|HIGH|UNRESOLVED|NA,predictor,Dependence or coordination requirement between the two functions
+temporal_heterogeneity,categorical,LOW|MEDIUM|HIGH|UNRESOLVED|NA,predictor,Within-lineage or within-individual temporal switching among functional regimes
+spatial_heterogeneity,categorical,LOW|MEDIUM|HIGH|UNRESOLVED|NA,predictor,Spatial variation among contexts or populations in functional regimes
+alternative_repertoire,categorical,NONE|ONE|MULTIPLE|UNRESOLVED|NA,predictor,Number class of biologically credible function-separating alternatives
+context_axis,string,nonempty,descriptor,Main ecological environmental developmental or evolutionary contrast
+study_design,string,nonempty,bias,Strongest design supporting the coded row
+evidence_quality,categorical,HIGH|MODERATE|LOW|UNREVIEWED,bias,Prospectively defined evidence-quality class
+source_count,integer_or_unresolved,nonnegative_integer_or_UNRESOLVED,bias,Number of independent evidence sources supporting the cluster
+adjudication_status,categorical,UNSCREENED|SCREENED|ADJUDICATED|EXCLUDED,design,Macro-codebook review status
+primary_model_eligible,boolean,true|false,gate,True only after adjudication positive conflict and resolved binary architecture outcome
+exclusion_reason,string,free_text,gate,Reason a screened candidate is excluded or not primary-model eligible
+source_basis,string,nonempty,provenance,Repository receipt audit or citation basis
+claim_ceiling,string,nonempty,guardrail,Strongest inference licensed by the row
+notes,string,free_text,notes,Additional adjudication notes
