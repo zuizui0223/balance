@@ -433,3 +433,47 @@ def test_u6_evidence_readiness_can_close_without_claiming_combined_estimability(
     assert out["predictor_receipts_complete"] is True
     assert out["ready_for_combined_model_assembly"] is True
     assert out["combined_model_estimability_checked"] is False
+
+
+
+def test_u6_low_agreement_blocks_adjudication(tmp_path):
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    coding = []
+    for i, group in enumerate(manifest["included_dependency_groups"]):
+        refs = ";".join(manifest["source_reference_ids_by_dependency_group"][group])
+        for coder in ("CODER_A", "CODER_B"):
+            coding.append({
+                "dependency_group": group,
+                "source_reference_ids": refs,
+                "coder_id": coder,
+                "architecture_mode": (
+                    "SHARED_INTEGRATED"
+                    if coder == "CODER_A" or i >= 6
+                    else "TEMPORAL_SEPARATION"
+                ),
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "coding_status": "CODED",
+                "notes": "synthetic agreement gate",
+            })
+
+    with ADJUDICATION.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    rows[0].update({
+        "architecture_mode": "SHARED_INTEGRATED",
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+        "adjudication_status": "ADJUDICATED",
+        "adjudication_basis": "SOURCE_REVIEW",
+        "notes": "synthetic adjudication",
+    })
+    path = tmp_path / "u6_low_agreement_adjudication.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+
+    with pytest.raises(ValueError, match="codebook repair/recode"):
+        load_u6_pass2_adjudication(path, FREEZE, coding)
