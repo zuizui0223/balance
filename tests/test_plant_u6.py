@@ -17,6 +17,7 @@ from balance_domain.plant_u6 import (
     load_u6_cross_universe_dependence,
     load_u6_frozen_source_packet,
     load_u6_pass1_freeze_manifest,
+    load_u6_pass2_adjudication,
     load_u6_pass2_double_coding,
     load_u6_pass2_source_recovery,
     load_u6_reference_classification,
@@ -43,6 +44,7 @@ SOURCE_PACKET = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_PACKET_V1.csv"
 SOURCE_RECOVERY = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv"
 FROZEN_SOURCE_PACKET = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv"
 PREDICTOR_RECEIPTS = ROOT / "data" / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+ADJUDICATION = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -305,3 +307,30 @@ def test_u6_predictor_receipt_frame_is_frozen_before_architecture_results():
     assert coverage["n_clusters"] == 21
     assert coverage["n_complete_outcome_independent_clusters"] == 0
     assert coverage["n_complete_adjudicated_clusters"] == 0
+
+
+
+def test_u6_adjudication_template_stays_pending_before_coder_completion():
+    coding_rows = load_u6_pass2_double_coding(PASS2, FREEZE)
+    rows = load_u6_pass2_adjudication(ADJUDICATION, FREEZE, coding_rows)
+    assert len(rows) == 21
+    assert all(row["adjudication_status"] == "PENDING" for row in rows)
+    assert all(row["adjudication_basis"] == "AWAITING_INDEPENDENT_DOUBLE_CODING" for row in rows)
+    assert all(row["architecture_mode"] == "UNRESOLVED" for row in rows)
+    assert all(row["module_substrate"] == "UNRESOLVED" for row in rows)
+    assert all(row["conflict_timing_geometry"] == "UNRESOLVED" for row in rows)
+    assert all(row["conflict_spatial_geometry"] == "UNRESOLVED" for row in rows)
+
+
+def test_u6_adjudication_cannot_preempt_independent_coding(tmp_path):
+    source = ADJUDICATION.read_text(encoding="utf-8")
+    source = source.replace(
+        ",UNRESOLVED,UNRESOLVED,UNRESOLVED,UNRESOLVED,PENDING,AWAITING_INDEPENDENT_DOUBLE_CODING,",
+        ",SHARED_INTEGRATED,SINGLE_OR_CONTINUOUS,SIMULTANEOUS,SAME_UNIT,ADJUDICATED,SOURCE_REVIEW,preemptive",
+        1,
+    )
+    path = tmp_path / "preemptive_adjudication.csv"
+    path.write_text(source, encoding="utf-8")
+    coding_rows = load_u6_pass2_double_coding(PASS2, FREEZE)
+    with pytest.raises(ValueError, match="before both independent coder rows are CODED"):
+        load_u6_pass2_adjudication(path, FREEZE, coding_rows)
