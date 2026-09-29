@@ -5,6 +5,8 @@ import csv
 from collections import Counter
 from pathlib import Path
 
+from .plant_macro_agreement import FIELDS as WORKSHEET_FIELDS
+
 
 FIELDS = (
     "universe_record_id",
@@ -299,10 +301,43 @@ def load_u2_source_packet(path: Path) -> list[dict[str, str]]:
     return rows
 
 
+
+def load_u2_blank_worksheet(path: Path) -> list[dict[str, str]]:
+    """Validate the frozen two-coder U2 worksheet before independent coding."""
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != WORKSHEET_FIELDS:
+            raise ValueError("U2 worksheet columns must match agreement schema")
+        rows = list(reader)
+
+    if len(rows) != EXPECTED_DOUBLE_CODE_SAMPLE * 2:
+        raise ValueError("U2 worksheet must contain exactly two coder rows per sampled group")
+
+    grouped: dict[str, set[str]] = {}
+    for n, row in enumerate(rows, start=2):
+        cluster = (row.get("cluster_id") or "").strip()
+        coder = (row.get("coder_id") or "").strip()
+        if not cluster or coder not in {"CODER_A", "CODER_B"}:
+            raise ValueError(f"U2 worksheet row {n} invalid cluster/coder identity")
+        grouped.setdefault(cluster, set()).add(coder)
+        for field in WORKSHEET_FIELDS[2:]:
+            if (row.get(field) or "").strip():
+                raise ValueError(
+                    f"U2 worksheet row {n} must be blank before independent coding"
+                )
+
+    if len(grouped) != EXPECTED_DOUBLE_CODE_SAMPLE:
+        raise ValueError("U2 worksheet must contain exactly 20 dependency groups")
+    if any(coders != {"CODER_A", "CODER_B"} for coders in grouped.values()):
+        raise ValueError("every U2 worksheet group requires CODER_A and CODER_B")
+    return rows
+
+
 def validate_u2_double_code_handoff(
     universe_rows: list[dict[str, str]],
     sample_rows: list[dict[str, str]],
     packet_rows: list[dict[str, str]],
+    worksheet_rows: list[dict[str, str]] | None = None,
 ) -> dict:
     by_id = {r["universe_record_id"]: r for r in universe_rows}
     expected = sorted(
@@ -332,14 +367,27 @@ def validate_u2_double_code_handoff(
         if packet["primary_source_id"] != universe["primary_source_id"]:
             raise ValueError(f"U2 blinded source packet source drift for {uid!r}")
 
+    worksheet_groups = None
+    if worksheet_rows is not None:
+        worksheet_groups = {row["cluster_id"] for row in worksheet_rows}
+        expected_groups = {row["dependency_group"] for row in sample_rows}
+        if worksheet_groups != expected_groups:
+            raise ValueError("U2 worksheet groups do not match frozen double-code sample")
+
     return {
         "analysis": "balance_plant_u2_double_code_handoff",
         "n_universe_groups": len(universe_rows),
         "n_sampled_groups": len(sample_rows),
         "n_source_packet_groups": len(packet_rows),
+        "n_blank_worksheet_rows": (
+            len(worksheet_rows) if worksheet_rows is not None else None
+        ),
         "all_sampled_sources_resolved": True,
         "selection_rule_closed": True,
         "source_packet_blinded_to_review_evidence_family": True,
+        "two_independent_coder_slots_per_group": (
+            worksheet_rows is not None and len(worksheet_rows) == EXPECTED_DOUBLE_CODE_SAMPLE * 2
+        ),
         "independent_double_coding_ready": True,
         "claim_ceiling": (
             "source_closed_blinded_coder_assignment_only_"
@@ -352,9 +400,15 @@ def build_u2_double_code_handoff(
     universe_path: Path,
     sample_path: Path,
     packet_path: Path,
+    worksheet_path: Path | None = None,
 ) -> dict:
     return validate_u2_double_code_handoff(
         load_u2_universe(universe_path),
         load_u2_double_code_sample(sample_path),
         load_u2_source_packet(packet_path),
+        (
+            load_u2_blank_worksheet(worksheet_path)
+            if worksheet_path is not None
+            else None
+        ),
     )
