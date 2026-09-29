@@ -14,25 +14,28 @@
     "u2_ordered_vs_simultaneous_direction_resolved": false,
     "u6_ordered_vs_simultaneous_direction_resolved": false,
     "directionally_concordant_across_u2_u6": null,
-    "contradictory_universe_interaction_exceeds_practical_margin": null
+    "contradictory_universe_interaction_exceeds_practical_margin": null,
+    "temporal_common_support_module_stratum_ready": false
   },
   "practical_interaction_margin_log_odds": 1,
   "sufficient_reactivation_rule": [
     "all coding/adjudication conditions true",
     "V4 primary estimability and fit complete",
     "temporal generality sensitivity complete",
+    "shared module-opportunity stratum passes the frozen >=2 SIMULTANEOUS and >=2 ORDERED blocks per U2/U6 universe common-support gate",
     "ordered-versus-simultaneous routing contrast direction resolved separately in U2 and U6",
     "directions concordant across U2 and U6",
     "no practically large contradictory universe-by-timing interaction under the frozen margin"
   ],
   "insufficient_for_reactivation": [
     "nonzero pooled timing coefficient alone",
+    "marginal timing replication without a shared module stratum that passes the frozen common-support gate",
     "U2-only module association",
     "U2-only VARIABLE_CONTEXT association",
     "support-limited spatial association",
     "architecture class difference without predictor-outcome independence"
   ],
   "standalone_reactivation_eligible": false,
-  "reason": "independent coding, adjudication, model estimability, fitted effects, and cross-universe replication are not yet available",
+  "reason": "independent coding, adjudication, common-support, model estimability, fitted effects, and cross-universe replication are not yet available",
   "claim_ceiling": "prospective_publication_gate_only_no_biological_result"
 }
