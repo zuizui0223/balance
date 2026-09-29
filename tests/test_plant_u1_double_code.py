@@ -161,3 +161,41 @@ def test_u1_completed_coding_groups_must_match_frozen_sample():
 
     with pytest.raises(ValueError, match="exactly match the frozen reliability sample"):
         load_u1_adjudication(ADJUDICATION, sample, coding)
+
+
+def test_u1_adjudication_cannot_override_coder_consensus(tmp_path):
+    sample = _rows(SAMPLE)
+    coding = []
+    for row in sample:
+        group = row["dependency_group"]
+        for coder in ("CODER_A", "CODER_B"):
+            coding.append({
+                "cluster_id": group,
+                "coder_id": coder,
+                "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+                "architecture_mode": "SHARED_INTEGRATED",
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "notes": "synthetic consensus",
+            })
+
+    rows = _rows(ADJUDICATION)
+    rows[0].update({
+        "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+        "architecture_mode": "TEMPORAL_SEPARATION",
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+        "adjudication_status": "ADJUDICATED",
+        "adjudication_basis": "CODER_CONSENSUS",
+        "notes": "illegal consensus override",
+    })
+    path = tmp_path / "u1_consensus_override.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys(), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+    with pytest.raises(ValueError, match="cannot override coder consensus for architecture_mode"):
+        load_u1_adjudication(path, sample, coding)
