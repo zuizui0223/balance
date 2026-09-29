@@ -1,0 +1,105 @@
+{
+  "analysis": "balance_plant_u3_targeted_measurement_spec_v1",
+  "freeze_reason": "Prospectively define what evidence closes the remaining U3 empirical ceilings before any new source or field result is seen.",
+  "targets": {
+    "U3MEAS_MONAUS_001": {
+      "taxon": "Monochoria australasica",
+      "gate": "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION",
+      "admissible_routes": [
+        {
+          "route": "SINGLE_VISIT_TRANSFER",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal flower visit to the focal species",
+            "contact with reproductive organs or pollen manipulation",
+            "conspecific pollen deposition on the stigma attributable to that visit"
+          ]
+        },
+        {
+          "route": "VISITOR_ACCESS_REPRODUCTIVE_EFFECT",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal access treatment versus exclusion or a single-visit treatment",
+            "fruit or seed outcome linked to animal access/visit"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "bee territorial behaviour near plants",
+        "general genus/family buzz-pollination statements",
+        "floral morphology without a visitor",
+        "visitor presence without pollen transfer or reproductive effect"
+      ],
+      "pass_rule": "At least one admissible route is source-secure for the exact species.",
+      "claim_ceiling": "animal_pollination_eligibility_only_not_pollinator_dependence_strength_not_mating_system_not_historical_causation"
+    },
+    "U3MEAS_MONCYA_001": {
+      "taxon": "Monochoria cyanea",
+      "gate": "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION",
+      "admissible_routes": [
+        {
+          "route": "SINGLE_VISIT_TRANSFER",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal flower visit to the focal species",
+            "contact with reproductive organs or pollen manipulation",
+            "conspecific pollen deposition on the stigma attributable to that visit"
+          ]
+        },
+        {
+          "route": "VISITOR_ACCESS_REPRODUCTIVE_EFFECT",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal access treatment versus exclusion or a single-visit treatment",
+            "fruit or seed outcome linked to animal access/visit"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "general genus/family buzz-pollination statements",
+        "floral morphology without a visitor",
+        "visitor presence without pollen transfer or reproductive effect"
+      ],
+      "pass_rule": "At least one admissible route is source-secure for the exact species.",
+      "claim_ceiling": "animal_pollination_eligibility_only_not_pollinator_dependence_strength_not_mating_system_not_historical_causation"
+    },
+    "U3MEAS_OSBCHI_001": {
+      "taxon": "Osbeckia chinensis",
+      "gate": "CONTROL_POLLEN_FATE_CONFLICT",
+      "admissible_routes": [
+        {
+          "route": "SAME_VISIT_POLLEN_FATE_PARTITION",
+          "required": [
+            "exact focal plant taxon identity",
+            "pollen removal from anthers by a visitor",
+            "reward collection or grooming fate documented",
+            "conspecific pollen export or stigma deposition measured for the same visitor class"
+          ]
+        },
+        {
+          "route": "POLLEN_REMOVAL_MANIPULATION",
+          "required": [
+            "exact focal plant taxon identity",
+            "experimental manipulation or quantified variation in pollen removal",
+            "pollen export, stigma deposition, fruit set, or seed set response"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "pollen extraction alone",
+        "stigma contact alone",
+        "poricidal-anther morphology alone",
+        "general buzz-pollination biology from another species"
+      ],
+      "pass_rule": "At least one admissible route directly resolves competing reward-removal and gamete-transfer fates for the exact species.",
+      "claim_ceiling": "binary_control_pollen_fate_conflict_only_not_conflict_strength_not_architecture_not_historical_causation"
+    }
+  },
+  "global_rules": [
+    "Exact-species evidence is required; genus-level analogy cannot close a gate.",
+    "A descriptive floral visit cannot be promoted to effective pollination without transfer or reproductive-effect evidence.",
+    "A source may close the binary gate without identifying conflict strength.",
+    "Architecture remains a separate extraction and is never inferred from gate closure."
+  ],
+  "status": "FROZEN_BEFORE_NEW_EVIDENCE"
+}
