@@ -223,12 +223,14 @@ def build_plant_programme_map(
         ],
         "pooled_prevalence_estimate": None,
         "primary_model_contract": {
-            "specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3",
+            "specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
             "response": "architecture_class4",
             "primary_universes": [
-                "U1_HAAS_LORTIE_2020",
                 "U2_BARRETT_2002",
                 "U6_POLLEN_THEFT_HARGREAVES_2009",
+            ],
+            "external_validation_universes": [
+                "U1_HAAS_LORTIE_2020",
             ],
             "raw_predictors": [
                 "module_substrate",
@@ -242,21 +244,22 @@ def build_plant_programme_map(
             "secondary_predictor_contrasts": [
                 "spatial_exposure2",
             ],
-            "maximum_main_fixed_coefficients": 12,
+            "maximum_main_fixed_coefficients": 15,
+            "universe_stratified_intercepts": True,
             "predictor_receipts_required": True,
             "outcome_dependent_fallback_allowed": False,
             "u3_u4_primary_denominator_allowed": False,
         },
         "primary_model_ready": False,
         "primary_model_blockers": [
-            "U1 independent double coding incomplete",
             "U2 independent double coding incomplete",
             "U6 independent double coding incomplete",
-            "three adjudicated outcome-independent predictor receipts per admitted cluster not yet closed",
-            "final U1/U2/U6 model assembly and cross-universe dependence ledger not yet closed",
-            "v3 estimability gate cannot be evaluated until final adjudicated architecture classes are assembled",
+            "three adjudicated outcome-independent predictor receipts per admitted U2/U6 cluster not yet closed",
+            "final U2/U6 model assembly and cross-universe dependence ledger not yet closed",
+            "v4 estimability gate cannot be evaluated until final adjudicated architecture classes are assembled",
         ],
         "parallel_nonblocking_work": [
+            "U1 independent coding as external specificity validation",
             "U3 matched/case-control measurements and controls",
             "U4 pollinator-prey mechanism stress test",
         ],
