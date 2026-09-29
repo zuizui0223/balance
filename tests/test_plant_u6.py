@@ -7,6 +7,7 @@ from balance_domain.plant_u6 import (
     FORBIDDEN_PASS1_FIELDS,
     build_u6_candidate_adjudication_readout,
     build_u6_multi_batch_readout,
+    build_u6_pass2_agreement_from_rows,
     load_u6_anchor,
     load_u6_cross_universe_dependence,
     load_u6_frozen_source_packet,
@@ -233,3 +234,43 @@ def test_u6_final_frozen_source_packet_matches_source_recovery_and_manifest():
     )
     assert sum(row["source_recovery_status"] == "RESOLVED" for row in rows) == 15
     assert sum(row["source_recovery_status"] == "EVIDENCE_CEILING" for row in rows) == 6
+
+
+
+def test_u6_agreement_waits_for_completed_independent_coding():
+    rows = load_u6_pass2_double_coding(PASS2, FREEZE)
+    with pytest.raises(ValueError, match="UNSTARTED"):
+        build_u6_pass2_agreement_from_rows(rows)
+
+
+def test_u6_agreement_report_is_frozen_to_four_pass2_fields():
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    rows = []
+    for group in manifest["included_dependency_groups"]:
+        source_refs = ";".join(manifest["source_reference_ids_by_dependency_group"][group])
+        for coder in ("CODER_A", "CODER_B"):
+            rows.append({
+                "dependency_group": group,
+                "source_reference_ids": source_refs,
+                "coder_id": coder,
+                "architecture_mode": "SHARED_INTEGRATED",
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "coding_status": "CODED",
+                "notes": "",
+            })
+    report = build_u6_pass2_agreement_from_rows(rows)
+    assert report["n_dependency_groups"] == 21
+    assert set(report["fields"]) == {
+        "architecture_mode",
+        "module_substrate",
+        "conflict_timing_geometry",
+        "conflict_spatial_geometry",
+    }
+    for stats in report["fields"].values():
+        assert stats["raw_agreement"] == 1.0
+        assert stats["cohen_kappa"] == 1.0
+        assert stats["gwet_ac1"] == 1.0
+        assert stats["codebook_repair_trigger"] is False
+    assert report["confirmatory_promotion_allowed"] is False
