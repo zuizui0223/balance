@@ -17,22 +17,45 @@ tests/test_plant_programme.py
 
 ## U1 — broad interaction specificity
 
-The full 47-taxon U1 review universe is source-closed by direct Figshare reconciliation. The three Figure-4-omitted taxa are `Eichhornia crassipes`, `Nemophila menziesii`, and `Ruellia nudiflora`. All three sort after the existing twentieth taxon, so the deterministic first-20 frame is unchanged and frozen.
+The full 47-taxon U1 review universe is source-closed by direct Figshare reconciliation.
+The three Figure-4-omitted taxa are `Eichhornia crassipes`, `Nemophila menziesii`, and
+`Ruellia nudiflora`; all sort after the frozen first-20 reliability frame.
 
-The existing pre-independent-coding first-20 specificity screen returns:
+The complete strict conflict source screen now returns:
 
 ```text
-20 records
-0 positive conflict
-1 aligned no-conflict
-5 no-demonstrated-conflict
-14 unresolved
-13 records excluded at the shared-coordinate gate
+47 records / 47 dependency groups
+
+POSITIVE                    0
+ALIGNED_NO_CONFLICT         1
+NO_DEMONSTRATED_CONFLICT   46
+UNRESOLVED_CANDIDATE        0
+
+PASS_CONFLICT_GATE          0
+FAIL_CONFLICT_GATE         47
+HOLD_FOR_FULL_TEXT          0
 ```
 
-U1's value is specificity plus a source-closed outcome-blind denominator.
+Architecture is not inferred in this screen.
 
-It shows that broad herbivory-pollination literature cannot simply be renamed a functional-conflict dataset. Denominator reconstruction is closed. The frozen first 20 are source-ready for the independent reliability exercise, and the remaining 27 taxa now have exact review-primary study identities mapped from Figshare. Those 27 still require primary full-text/evidence retrieval before production coding.
+Two earlier holds are now closed from primary-source results:
+
+- `Brassica nigra`: the source explicitly concludes that no herbivory-pollination
+  trade-off was evident;
+- `Myrmecophila tibicinis`: floral size/asymmetry manipulations did not significantly
+  alter male/female pollination success, and the paper concludes that florivory has little
+  reproductive effect beyond direct sexual-structure consumption.
+
+Thus U1's current empirical role is stronger and narrower: it is a complete,
+interaction-defined **specificity universe** showing that generic herbivory-pollination
+effects, damage-mediated pollination costs, and indirect floral changes cannot simply be
+relabeled as the registered shared-coordinate conflict.
+
+This is still a source-screen result. The frozen first 20 must complete the independent
+coder reliability/adjudication exercise before U1 is confirmatory. If independent coding
+changes any source-screen call, the adjudicated value supersedes this ledger.
+
+See `docs/BALANCE_PLANT_U1_FULL47_CONFLICT_SCREEN_V1.md`.
 
 ## U2 — mechanism-targeted sexual interference
 
@@ -296,8 +319,9 @@ model.
 
 Primary blockers:
 
-1. **U1 independent coding** remains incomplete; the 27 non-reliability-frame taxa also
-   retain mapped primary-study identities but need production full-text/evidence retrieval.
+1. **U1 independent reliability/adjudication** remains incomplete. The full 47-taxon
+   source screen itself is closed at 0 positive / 0 unresolved; the production 27 are no
+   longer an unsearched evidence block.
 2. **U2 independent double coding** remains incomplete.
 3. **U6 independent double coding** is open but still unstarted across the frozen
    21 dependency groups.
