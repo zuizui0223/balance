@@ -891,6 +891,14 @@ def load_u6_pass2_adjudication(
     for row in coding_rows:
         coding_by_group.setdefault(row["dependency_group"], []).append(row)
 
+    agreement_repair_required = False
+    if coding_rows and all(row["coding_status"] == "CODED" for row in coding_rows):
+        agreement = build_u6_pass2_agreement_from_rows(coding_rows)
+        agreement_repair_required = any(
+            stats["codebook_repair_trigger"]
+            for stats in agreement["fields"].values()
+        )
+
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         if tuple(reader.fieldnames or ()) != U6_ADJUDICATION_FIELDS:
@@ -939,6 +947,10 @@ def load_u6_pass2_adjudication(
                     f"row {row_number} pending adjudication must remain unresolved"
                 )
         else:
+            if agreement_repair_required:
+                raise ValueError(
+                    f"row {row_number} cannot adjudicate before codebook repair/recode closes"
+                )
             coding_group = coding_by_group.get(group, [])
             if len(coding_group) != 2 or any(
                 coder_row["coding_status"] != "CODED" for coder_row in coding_group
