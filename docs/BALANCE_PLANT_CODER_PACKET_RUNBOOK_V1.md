@@ -204,6 +204,18 @@ The disagreement CSV lists exact dependency groups and coder A/B values by field
 kappa and Gwet AC1 are reported as diagnostics, but the workflow gate is the preregistered
 raw-agreement threshold.
 
+### Adjudication basis after reliability pass
+
+Once all field-level raw agreements pass 0.80:
+
+- a row with no coder disagreements uses `CODER_CONSENSUS`;
+- a row with one or more disagreements uses `SOURCE_REVIEW_OF_DISAGREEMENTS`;
+- source review may resolve only the fields that actually disagreed;
+- coder-consensus fields cannot be changed during adjudication.
+
+If source review challenges a coder-consensus value, return to codebook repair/recode rather
+than overriding the independent result.
+
 ## External handoff workspace
 
 The V4 analysis builder accepts:
