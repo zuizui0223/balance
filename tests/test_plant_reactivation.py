@@ -19,6 +19,12 @@ def test_current_v4_reactivation_gate_stays_dormant():
     assert data["publication_status"] == "DORMANT_PAPER_BRANCH"
     assert data["active_publication_queue"] is False
     assert data["standalone_reactivation_eligible"] is False
+    assert data["posterior_decision_rules"] == (
+        "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json"
+    )
+    assert data["posterior_decision_evaluator"] == (
+        "balance_domain.plant_v4_decision.temporal_generality_decision"
+    )
     assert out["standalone_reactivation_eligible"] is False
     assert out["activation_action"] == "KEEP_DORMANT"
     assert "u2_independent_coding_and_adjudication_complete" in out["blockers"]
