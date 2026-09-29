@@ -5,7 +5,10 @@ import csv
 from collections import Counter
 from pathlib import Path
 
-from .plant_macro_agreement import FIELDS as WORKSHEET_FIELDS
+from .plant_macro_agreement import (
+    FIELDS as WORKSHEET_FIELDS,
+    build_agreement_report_from_rows,
+)
 from .plant_macro import CONFLICT, MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
 
 
@@ -450,6 +453,14 @@ def load_u2_adjudication(
         for row in coding_rows:
             coding_by_group.setdefault(row["cluster_id"], []).append(row)
 
+    agreement_repair_required = False
+    if coding_rows is not None:
+        agreement = build_agreement_report_from_rows(coding_rows)
+        agreement_repair_required = any(
+            stats["codebook_repair_trigger"]
+            for stats in agreement["fields"].values()
+        )
+
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         if tuple(reader.fieldnames or ()) != U2_ADJUDICATION_FIELDS:
@@ -502,6 +513,10 @@ def load_u2_adjudication(
             if any(clean[field] != "UNRESOLVED" for field in coded_fields):
                 raise ValueError(f"row {n} pending adjudication must remain unresolved")
         else:
+            if agreement_repair_required:
+                raise ValueError(
+                    f"row {n} cannot adjudicate before codebook repair/recode closes"
+                )
             pair = coding_by_group.get(group, [])
             if len(pair) != 2:
                 raise ValueError(
