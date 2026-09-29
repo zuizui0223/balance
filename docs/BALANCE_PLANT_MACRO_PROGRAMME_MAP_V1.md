@@ -317,6 +317,42 @@ U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate 
 
 See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
 
+## V4 pre-outcome design status
+
+The source-screen predictor surface already permits a prospective design audit without
+using architecture outcomes.
+
+```text
+V4 common-slope predictor matrix
+  rank 3 / 3
+
+V4 U2/U6-intercept + predictor matrix
+  rank 5 / 5
+
+V4 main predictor design
+  prospectively full-rank
+```
+
+The stronger cross-universe temporal generality sensitivity is not yet prospectively
+supported. Although SIMULTANEOUS and ORDERED_OR_ALTERNATING timing both occur in U2 and
+U6 marginally, the only shared module stratum is `SINGLE`, where U2 currently has:
+
+```text
+SINGLE + SIMULTANEOUS              1 block
+SINGLE + ORDERED_OR_ALTERNATING    2 blocks
+```
+
+The frozen strict generality threshold requires at least two of each timing state in the
+same shared module stratum within **each** universe. Thus:
+
+```text
+V4 primary design viable
+!=
+strict cross-universe generality ready
+```
+
+See `docs/BALANCE_PLANT_PREOUTCOME_GENERALITY_AUDIT_V1.md`.
+
 ## What remains before the v4 primary model
 
 The V4 routing denominator is explicitly restricted to the two conflict-focused, architecture-blind/source-first universes U2 + U6. U1 remains the broad external specificity-validation lane; U3 and U4 remain parallel evidence lanes.
