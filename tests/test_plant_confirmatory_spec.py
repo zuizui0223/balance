@@ -250,3 +250,18 @@ def test_v4_generality_requires_per_universe_target_outcome_support():
     assert ">=2 NONSTRUCTURAL_SEPARATION" in sensitivity["fit_gate"]
     assert ">=2 OTHER_ARCHITECTURE" in sensitivity["fit_gate"]
     assert "outcome_support_requirement" in spec["claim_hierarchy"]["cross_universe_replicated"]
+
+
+
+def test_model_spec_supersession_chain_is_monotone_and_v4_current():
+    v1 = json.loads(SPEC_V1.read_text(encoding="utf-8"))
+    v2 = json.loads(SPEC_V2.read_text(encoding="utf-8"))
+    v3 = json.loads(SPEC_V3.read_text(encoding="utf-8"))
+    v4 = json.loads(SPEC.read_text(encoding="utf-8"))
+
+    assert v1["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2"
+    assert v2["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3"
+    assert v3["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
+    assert v4["schema_version"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
+    assert v4["status"] == "FROZEN_PRE_OUTCOME_BEFORE_U6_INDEPENDENT_ARCHITECTURE_CODING"
+    assert "superseded_by" not in v4
