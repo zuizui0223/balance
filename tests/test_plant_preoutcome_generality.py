@@ -80,3 +80,20 @@ def test_cross_universe_timing_marginal_replication_lacks_common_module_support(
     assert out["shared_module_levels"] == ["SINGLE"]
     assert out["temporal_common_support_module_strata"] == []
     assert out["temporal_cross_universe_common_support_ready"] is False
+
+
+
+def test_v4_main_predictor_design_is_full_rank_even_though_generality_gate_is_not_ready():
+    out = build_preoutcome_generality_audit(
+        U2_CONFLICT,
+        U2_RECEIPTS,
+        U6_RECEIPTS,
+    )
+    assert out["v4_preoutcome_slope_design_rank"] == 3
+    assert out["v4_preoutcome_slope_design_column_count"] == 3
+    assert out["v4_preoutcome_slope_design_full_rank"] is True
+    assert out["v4_preoutcome_full_design_rank"] == 5
+    assert out["v4_preoutcome_full_design_column_count"] == 5
+    assert out["v4_preoutcome_full_design_full_rank"] is True
+    assert out["v4_main_predictor_design_viable"] is True
+    assert out["temporal_cross_universe_common_support_ready"] is False
