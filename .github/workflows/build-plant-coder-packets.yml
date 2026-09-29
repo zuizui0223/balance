@@ -1,0 +1,81 @@
+name: Build BALANCE plant coder packets
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation tooling
+        run: |
+          python -m pip install --upgrade pip pytest
+
+      - name: Validate coder-handoff contract
+        run: |
+          python -m pytest -q             tests/test_plant_coder_handoff_manifest.py             tests/test_plant_coder_packets.py             tests/test_plant_u1_double_code.py             tests/test_plant_u2.py             tests/test_plant_u6.py
+
+      - name: Build deterministic coder packets
+        run: |
+          python scripts/build_plant_coder_packets.py
+
+      - name: Verify coder packet outputs
+        run: |
+          test -s release/generated/plant_coder_packets/BALANCE_PLANT_CODER_A_PACKET_V1.zip
+          test -s release/generated/plant_coder_packets/BALANCE_PLANT_CODER_A_PACKET_V1.json
+          test -s release/generated/plant_coder_packets/BALANCE_PLANT_CODER_B_PACKET_V1.zip
+          test -s release/generated/plant_coder_packets/BALANCE_PLANT_CODER_B_PACKET_V1.json
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root = Path("release/generated/plant_coder_packets")
+          for coder in ("CODER_A", "CODER_B"):
+              zip_path = root / f"BALANCE_PLANT_{coder}_PACKET_V1.zip"
+              receipt_path = root / f"BALANCE_PLANT_{coder}_PACKET_V1.json"
+              receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+              assert receipt["coder_id"] == coder
+              assert receipt["claim_ceiling"] == (
+                  "independent_coder_handoff_only_no_biological_result"
+              )
+              with zipfile.ZipFile(zip_path) as archive:
+                  assert archive.testzip() is None
+                  embedded = json.loads(archive.read("PACKET_RECEIPT.json"))
+                  assert embedded == receipt
+                  worksheet_names = [
+                      name for name in archive.namelist()
+                      if "WORKSHEET_" in name
+                  ]
+                  assert len(worksheet_names) == 3
+                  assert all(coder in name for name in worksheet_names)
+              print(coder, hashlib.sha256(zip_path.read_bytes()).hexdigest())
+          PY
+
+      - name: Upload CODER_A packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-coder-a-packet-v1
+          path: |
+            release/generated/plant_coder_packets/BALANCE_PLANT_CODER_A_PACKET_V1.zip
+            release/generated/plant_coder_packets/BALANCE_PLANT_CODER_A_PACKET_V1.json
+          if-no-files-found: error
+
+      - name: Upload CODER_B packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-coder-b-packet-v1
+          path: |
+            release/generated/plant_coder_packets/BALANCE_PLANT_CODER_B_PACKET_V1.zip
+            release/generated/plant_coder_packets/BALANCE_PLANT_CODER_B_PACKET_V1.json
+          if-no-files-found: error
