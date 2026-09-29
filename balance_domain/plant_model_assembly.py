@@ -1,4 +1,4 @@
-"""Final model-assembly contract for BALANCE plant confirmatory analysis v3."""
+"""Final model-assembly contract for BALANCE plant confirmatory analysis v4."""
 from __future__ import annotations
 
 import csv
@@ -15,7 +15,7 @@ from .plant_macro import (
     TIMING,
     primary_architecture_class,
 )
-from .plant_model_v3 import build_v3_estimability_report
+from .plant_model_v4 import build_v4_estimability_report
 
 
 FIELDS = (
@@ -37,7 +37,6 @@ FIELDS = (
 )
 
 PRIMARY_UNIVERSES = {
-    "U1_HAAS_LORTIE_2020",
     "U2_BARRETT_2002",
     "U6_POLLEN_THEFT_HARGREAVES_2009",
 }
@@ -48,7 +47,7 @@ PREDICTOR_RECEIPT_STATUS = {"THREE_ADJUDICATED_OUTCOME_INDEPENDENT"}
 
 
 def validate_model_assembly_rows(rows: Iterable[dict[str, str]]) -> list[dict[str, str]]:
-    """Validate fully licensed rows before any v3 estimability/model fit."""
+    """Validate fully licensed rows before any v4 estimability/model fit."""
     rows = [dict(row) for row in rows]
     if not rows:
         raise ValueError("plant confirmatory assembly requires at least one row")
@@ -93,7 +92,7 @@ def validate_model_assembly_rows(rows: Iterable[dict[str, str]]) -> list[dict[st
                 f"row {row_number} lacks three adjudicated outcome-independent predictors"
             )
 
-        # Force every raw value through the frozen v3 mappings before admission.
+        # Force every raw value through the frozen v4 mappings before admission.
         primary_architecture_class(clean["architecture_mode"])
         primary_contrast_row(clean)
         out.append(clean)
@@ -110,7 +109,7 @@ def load_model_assembly(path: Path) -> list[dict[str, str]]:
 
 
 def build_model_assembly_readout(rows: Iterable[dict[str, str]]) -> dict:
-    """Summarize licensed rows and run the frozen v3 estimability gate."""
+    """Summarize licensed rows and run the frozen v4 estimability gate."""
     rows = validate_model_assembly_rows(rows)
     fit_rows = []
     for row in rows:
@@ -118,9 +117,9 @@ def build_model_assembly_readout(rows: Iterable[dict[str, str]]) -> dict:
         fit_row.update(primary_contrast_row(row))
         fit_rows.append(fit_row)
 
-    estimability = build_v3_estimability_report(fit_rows)
+    estimability = build_v4_estimability_report(fit_rows)
     return {
-        "analysis": "balance_plant_confirmatory_model_assembly_v3",
+        "analysis": "balance_plant_confirmatory_model_assembly_v4",
         "n_rows": len(rows),
         "n_dependency_groups": len({row["dependency_group"] for row in rows}),
         "n_dependence_blocks": len({row["dependence_block"] for row in rows}),
@@ -131,7 +130,7 @@ def build_model_assembly_readout(rows: Iterable[dict[str, str]]) -> dict:
         "architecture_class_counts": dict(
             sorted(Counter(primary_architecture_class(row["architecture_mode"]) for row in rows).items())
         ),
-        "v3_estimability": estimability,
+        "v4_estimability": estimability,
         "ready_for_primary_fit": estimability["ready_for_primary_fit"],
         "u3_u4_primary_denominator_allowed": False,
         "claim_ceiling": (
