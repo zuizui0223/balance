@@ -70,7 +70,7 @@ def test_primary_model_assembly_runs_v4_estimability_after_licensing():
     }
     assert out["v4_estimability"]["ready_for_primary_fit"] is True
     assert out["ready_for_primary_fit"] is True
-    assert out["u3_u4_primary_denominator_allowed"] is False
+    assert out["u1_u3_u4_primary_denominator_allowed"] is False
 
 
 def test_duplicate_dependence_block_can_reduce_class_support_without_row_deletion():
