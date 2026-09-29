@@ -189,7 +189,7 @@ The scientifically testable layer begins where additional empirical structure is
 
 See `theory/MIDDLE_WORLD_RESULTS_V1.md`,
 `docs/ALGEBRA_EMPIRICAL_CLAIM_BOUNDARY_V1.md`, `docs/BALANCE_MACRO_PROGRAMME_V1.md`, and
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
 
 ### Plant confirmatory contract
 
