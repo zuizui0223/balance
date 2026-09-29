@@ -1,0 +1,59 @@
+name: Build BALANCE predictor adjudication packet
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation tooling
+        run: |
+          python -m pip install --upgrade pip pytest
+
+      - name: Validate predictor-review contract
+        run: |
+          python -m pytest -q             tests/test_plant_predictor_adjudication_packet.py             tests/test_plant_confirmatory_spec.py             tests/test_plant_preoutcome_support.py             tests/test_plant_preoutcome_generality.py
+
+      - name: Build deterministic predictor adjudication packet
+        run: |
+          python scripts/build_plant_predictor_adjudication_packet.py
+
+      - name: Verify packet
+        run: |
+          test -s release/generated/plant_predictor_adjudication/BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_V1.zip
+          test -s release/generated/plant_predictor_adjudication/BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_V1.json
+          python - <<'PY'
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root = Path("release/generated/plant_predictor_adjudication")
+          zip_path = root / "BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_V1.zip"
+          receipt_path = root / "BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_V1.json"
+          receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+          assert receipt["role"] == "INDEPENDENT_PREDICTOR_RECEIPT_REVIEW"
+          assert receipt["architecture_outputs_included"] is False
+          with zipfile.ZipFile(zip_path) as archive:
+              assert archive.testzip() is None
+              embedded = json.loads(archive.read("PACKET_RECEIPT.json"))
+              assert embedded == receipt
+          PY
+
+      - name: Upload predictor adjudication packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-predictor-adjudication-packet-v1
+          path: |
+            release/generated/plant_predictor_adjudication/BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_V1.zip
+            release/generated/plant_predictor_adjudication/BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_V1.json
+          if-no-files-found: error
