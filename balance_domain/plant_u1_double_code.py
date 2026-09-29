@@ -182,6 +182,8 @@ def load_u1_adjudication(
     if coding_rows is not None:
         for row in coding_rows:
             coding_by_group.setdefault(row["cluster_id"], []).append(row)
+        if set(coding_by_group) != expected_groups:
+            raise ValueError("U1 completed coding groups must exactly match the frozen reliability sample")
 
     agreement_repair_required = False
     if coding_rows is not None:
