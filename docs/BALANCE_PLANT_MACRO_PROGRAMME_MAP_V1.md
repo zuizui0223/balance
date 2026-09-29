@@ -288,19 +288,37 @@ U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate 
 
 See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
 
-## What remains before a confirmatory model
+## What remains before the v2 primary model
 
-The programme is not yet model-ready because:
+The primary denominator is now explicitly restricted to outcome-blind/conflict-first
+U1 + U2 + U6. U3 and U4 continue as parallel evidence lanes but do not block the primary
+model.
 
-1. U1 independent double coding has not been completed; separately, the 27 non-reliability-frame taxa have mapped primary-study identities but still require primary full-text/evidence retrieval before production coding;
-2. U2 independent double coding has not been completed;
-3. the two Monochoria matched controls remain OPEN at the direct species-level effective-pollination eligibility gate; the conditional 68-CDS ranking is already frozen;
-4. the four-pair U3 matched conflict extraction is missing only the `Osbeckia chinensis` control-side pollen-fate measurement;
-5. the prospectively frozen four-family U3 expansion is exhausted at the matching-stage public evidence ceiling (0/4 controls closed, 4/4 blocks retained as missingness) and must not be rescued by convenience matching;
-6. U4 is a mechanism stress test, not an outcome-blind prevalence frame;
-7. each admitted cluster still needs three independently adjudicated outcome-independent predictor receipts (`module_substrate`, `conflict_timing_geometry`, `conflict_spatial_geometry`);
-8. the current outcome-blind U1/U2 surface still lacks `STRUCTURAL_MODULE_DIVISION`; recovery is bounded to the frozen U1 targeted queue (`U1_047 Ruellia nudiflora`, `U1_024 Impatiens capensis`, `U1_027 Isomeris arborea`, `U1_045 Eichhornia crassipes`) and none is pre-promoted;
-9. dependence for U3 is frozen, but dependence/covariance still must be frozen for whatever final confirmatory plant set survives U1/U2 coding.
+Primary blockers:
+
+1. **U1 independent coding** remains incomplete; the 27 non-reliability-frame taxa also
+   retain mapped primary-study identities but need production full-text/evidence retrieval.
+2. **U2 independent double coding** remains incomplete.
+3. **U6 independent double coding** is open but still unstarted across the frozen
+   21 dependency groups.
+4. Every admitted row still requires three **adjudicated, outcome-independent** predictor
+   receipts. U2 currently has source-screened coverage but not independent adjudication;
+   U6 has 63 frozen empty receipt slots.
+5. The final U1/U2/U6 assembly must close cross-universe dependence and pass the
+   allowlisted model-assembly contract. U3/U4 rows are rejected from this denominator.
+6. Only then can model-v2 estimability be evaluated: each of the four response classes
+   requires at least two independent dependence blocks, the three planned predictor
+   contrasts need empirical support, and the low-dimensional design matrix must be full
+   rank.
+
+Current source-screen diagnostics do **not** pre-decide the final class support. U1/U2
+currently lack a source-screened `STRUCTURAL_MODULE_DIVISION` row, while U6 architecture
+remains independently uncoded. No class is imported from U3 to repair that uncertainty.
+
+Parallel but nonblocking work:
+
+- U3 matched/case-control measurement completion, Monochoria controls, and Osbeckia;
+- U4 pollinator-prey mechanism stress tests.
 
 The repository therefore explicitly reports:
 
@@ -309,4 +327,5 @@ primary_model_ready = false
 pooled_prevalence_estimate = null
 ```
 
-until those gates close.
+The current primary statistical specification is
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`.
