@@ -263,7 +263,7 @@ binary structural field is unresolved. The raw nominal architecture categories
 remain secondary detail.
 
 There is no outcome-count-triggered fallback model. See
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`.
 
 ## U6 — pollen-theft conflict-first recovery universe
 
