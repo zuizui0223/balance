@@ -1,5 +1,7 @@
 # BALANCE plant confirmatory model freeze v3
 
+> **Superseded before architecture coding by v4.** The pre-outcome cross-universe audit showed that module MODULAR and temporal VARIABLE_CONTEXT support are U2-only, whereas SIMULTANEOUS-vs-ORDERED timing is replicated in U2 and U6. V4 fixes the primary routing fit to conflict-focused U2+U6 and adds sampling-universe-stratified multinomial intercepts. See `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V4.md`.
+
 ## Status
 
 Frozen before U6 independent architecture coding and before any confirmatory plant model fit.
