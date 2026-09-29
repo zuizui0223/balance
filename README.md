@@ -189,7 +189,7 @@ The scientifically testable layer begins where additional empirical structure is
 
 See `theory/MIDDLE_WORLD_RESULTS_V1.md`,
 `docs/ALGEBRA_EMPIRICAL_CLAIM_BOUNDARY_V1.md`, `docs/BALANCE_MACRO_PROGRAMME_V1.md`, and
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V4.md`.
 
 ### Plant confirmatory contract
 
@@ -204,10 +204,7 @@ MOSAIC
 
 Entry requires independently adjudicated, outcome-independent receipts for
 `module_substrate`, `conflict_timing_geometry`, and
-`conflict_spatial_geometry`. The raw three-axis coding is retained, but the current V3
-primary joint fit uses the preregistered `module_opportunity2` and
-`temporal_exposure3` contrasts. `spatial_exposure2` is secondary because the
-architecture-blind source-support audit found 28 SAME_UNIT versus 1 DISTRIBUTED block.
+`conflict_spatial_geometry`. The raw three-axis coding is retained, but the current V4 routing fit is restricted to the two conflict-focused universes U2 and U6, uses universe-specific multinomial intercepts, and estimates common preregistered `module_opportunity2` and `temporal_exposure3` slopes. `spatial_exposure2` is secondary because the architecture-blind source-support audit found 28 SAME_UNIT versus 1 DISTRIBUTED block. U1 remains the external broad-interaction specificity test rather than entering the V4 routing denominator.
 The binary structural outcome is secondary, and there is no significance- or
 outcome-sparsity-triggered switch of the primary estimand.
 
