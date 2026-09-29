@@ -1,0 +1,18 @@
+{
+  "analysis": "balance_u3_vallejo_marin_table_s1_recovery_v1",
+  "source_review_doi": "10.1111/j.1469-8137.2010.03430.x",
+  "supplement_filename": "NPH_3430_sm_TableS1.doc",
+  "workflow_run_id": 36077393929,
+  "artifact_id": 10840830354,
+  "recovered_document": false,
+  "attempted_urls": [
+    "https://nph.onlinelibrary.wiley.com/doi/10.1111/j.1469-8137.2010.03430.x",
+    "https://nph.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fj.1469-8137.2010.03430.x&file=NPH_3430_sm_TableS1.doc",
+    "https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fj.1469-8137.2010.03430.x&file=NPH_3430_sm_TableS1.doc",
+    "https://nph.onlinelibrary.wiley.com/doi/suppl/10.1111/j.1469-8137.2010.03430.x/supinfo/NPH_3430_sm_TableS1.doc",
+    "https://onlinelibrary.wiley.com/doi/suppl/10.1111/j.1469-8137.2010.03430.x/supinfo/NPH_3430_sm_TableS1.doc"
+  ],
+  "outcomes": "HTTP_403_ALL_REGISTERED_WILEY_ROUTES",
+  "consequence": "Do not infer exact Table S1 representative identities from inaccessible supplement; independent representative resolution must carry separate provenance.",
+  "claim_ceiling": "supporting_table_retrieval_failure_receipt_only_not_table_content_not_species_identity"
+}
