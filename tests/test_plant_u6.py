@@ -405,7 +405,7 @@ def test_u6_evidence_readiness_can_close_without_claiming_combined_estimability(
             "conflict_timing_geometry": "SIMULTANEOUS",
             "conflict_spatial_geometry": "SAME_UNIT",
             "adjudication_status": "ADJUDICATED",
-            "adjudication_basis": "SOURCE_REVIEW_AFTER_AGREEMENT",
+            "adjudication_basis": "CODER_CONSENSUS",
             "notes": "synthetic gate test",
         })
         for i, (predictor, value) in enumerate((
