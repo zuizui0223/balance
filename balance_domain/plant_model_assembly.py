@@ -132,7 +132,7 @@ def build_model_assembly_readout(rows: Iterable[dict[str, str]]) -> dict:
         ),
         "v4_estimability": estimability,
         "ready_for_primary_fit": estimability["ready_for_primary_fit"],
-        "u3_u4_primary_denominator_allowed": False,
+        "u1_u3_u4_primary_denominator_allowed": False,
         "claim_ceiling": (
             "licensed_model_assembly_and_estimability_only_not_fitted_effect_or_causality"
         ),
