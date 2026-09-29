@@ -31,6 +31,10 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/build-balance-doi-bundle.yml'
 
+concurrency:
+  group: balance-doi-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
