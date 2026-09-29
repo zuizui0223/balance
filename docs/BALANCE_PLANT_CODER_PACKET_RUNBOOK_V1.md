@@ -85,6 +85,20 @@ Clarification questions should be answered by a neutral coordinator using only t
 codebook/protocol. If a clarification changes the codebook materially, both coders must
 recode the same frozen reliability frame under the versioned repair protocol.
 
+### U6 completion flag
+
+U6 worksheets have an explicit completion field. Before return, every coder-specific U6 row
+must have:
+
+```text
+coding_status = CODED
+```
+
+A biological field may still be `UNRESOLVED`; that is a legitimate completed judgment.
+`UNSTARTED` is not.
+
+Do not alter `dependency_group`, `source_reference_ids`, or `coder_id`.
+
 ## Return rule
 
 The returned worksheet must preserve exactly:
