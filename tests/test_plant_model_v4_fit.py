@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from balance_domain.plant_model_v4_fit import (
@@ -5,6 +7,11 @@ from balance_domain.plant_model_v4_fit import (
     build_v4_stan_input,
     build_v4_temporal_generality_input,
 )
+
+
+ROOT = Path(__file__).resolve().parents[1]
+MAIN_STAN = ROOT / "comparative" / "models" / "BALANCE_PLANT_V4_MULTINOMIAL.stan"
+GENERALITY_STAN = ROOT / "comparative" / "models" / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY.stan"
 
 
 def _row(row_id, universe, group, block, mode, module, timing, spatial):
@@ -147,3 +154,18 @@ def test_v4_temporal_generality_input_adds_only_u6_ordered_interaction():
         if flag
     ]
     assert marked == ["r7", "r9"]
+
+
+
+def test_v4_stan_models_freeze_universe_intercepts_and_generality_interaction():
+    main = MAIN_STAN.read_text(encoding="utf-8")
+    generality = GENERALITY_STAN.read_text(encoding="utf-8")
+
+    assert "matrix[U, K - 1] alpha;" in main
+    assert "matrix[P, K - 1] beta;" in main
+    assert "alpha[universe[n], k - 1] + X[n] * beta[, k - 1]" in main
+    assert "eta[1] = 0;" in main
+
+    assert "vector[K - 1] gamma_u6_ordered;" in generality
+    assert "u6_ordered[n] * gamma_u6_ordered[k - 1]" in generality
+    assert "gamma_u6_ordered ~ normal(0, interaction_prior_sd);" in generality
