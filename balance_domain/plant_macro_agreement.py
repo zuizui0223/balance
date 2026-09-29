@@ -6,6 +6,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Iterable
 
+from .plant_macro import CONFLICT, MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
+
 
 FIELDS = (
     "cluster_id",
@@ -56,6 +58,17 @@ def load_double_coding(path: Path) -> list[dict[str, str]]:
         clean = dict(row)
         for field in FIELDS[:-1]:
             clean[field] = _text(row.get(field), field, row_number)
+        if clean["conflict_status"] not in CONFLICT:
+            raise ValueError(f"row {row_number} invalid conflict_status")
+        if clean["architecture_mode"] not in RESOLUTION:
+            raise ValueError(f"row {row_number} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {row_number} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {row_number} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
+
         key = (clean["cluster_id"], clean["coder_id"])
         if key in seen:
             raise ValueError(f"duplicate cluster/coder pair {key!r}")
