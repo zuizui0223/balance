@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .plant_macro import MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
 from .plant_macro_agreement import _cohen_kappa, _gwet_ac1
+from .plant_confirmatory import PREDICTORS, adjudicated_independent_plant_values
 
 
 FIELDS = (
@@ -958,3 +959,84 @@ def load_u6_pass2_adjudication(
     if seen != expected_groups:
         raise ValueError("U6 adjudication does not cover every frozen dependency group")
     return out
+
+
+
+def build_u6_evidence_readiness(
+    coding_rows: list[dict[str, str]],
+    adjudication_rows: list[dict[str, str]],
+    predictor_receipts: list[dict[str, str]],
+    dependence_rows: list[dict[str, str]],
+) -> dict:
+    """Report whether U6 can enter combined confirmatory model assembly.
+
+    This does not decide whether the combined plant model is estimable; class support and
+    design rank are evaluated after all licensed universes are assembled.
+    """
+    groups = sorted({row["dependency_group"] for row in coding_rows})
+    expected_groups = set(groups)
+    if len(groups) != 21:
+        raise ValueError("U6 readiness requires the frozen 21 dependency groups")
+
+    dependence_groups = {row["u6_dependency_group"] for row in dependence_rows}
+    if dependence_groups != expected_groups:
+        raise ValueError("U6 readiness dependence map does not match coding groups")
+
+    coding_complete = all(row["coding_status"] == "CODED" for row in coding_rows)
+    agreement_report = None
+    reliability_pass = False
+    if coding_complete:
+        agreement_report = build_u6_pass2_agreement_from_rows(coding_rows)
+        reliability_pass = all(
+            not stats["codebook_repair_trigger"]
+            for stats in agreement_report["fields"].values()
+        )
+
+    adjudication_by_group = {row["dependency_group"]: row for row in adjudication_rows}
+    if set(adjudication_by_group) != expected_groups:
+        raise ValueError("U6 readiness adjudication groups do not match coding groups")
+    adjudication_complete = all(
+        row["adjudication_status"] == "ADJUDICATED"
+        for row in adjudication_rows
+    )
+
+    licensed_values = adjudicated_independent_plant_values(predictor_receipts)
+    receipt_complete_groups = sorted(
+        group
+        for group in groups
+        if all((group, predictor) in licensed_values for predictor in PREDICTORS)
+    )
+    predictor_receipts_complete = len(receipt_complete_groups) == len(groups)
+
+    blockers: list[str] = []
+    if not coding_complete:
+        blockers.append("independent_double_coding_incomplete")
+    if coding_complete and not reliability_pass:
+        blockers.append("coder_reliability_gate_failed_or_requires_codebook_repair")
+    if not adjudication_complete:
+        blockers.append("post_coding_adjudication_incomplete")
+    if not predictor_receipts_complete:
+        blockers.append(
+            "outcome_independent_predictor_receipts_incomplete:"
+            f"{len(receipt_complete_groups)}/{len(groups)}"
+        )
+
+    return {
+        "analysis": "balance_u6_evidence_readiness",
+        "n_dependency_groups": len(groups),
+        "coding_complete": coding_complete,
+        "reliability_pass": reliability_pass,
+        "agreement_report": agreement_report,
+        "adjudication_complete": adjudication_complete,
+        "n_groups_with_three_adjudicated_independent_predictors": len(
+            receipt_complete_groups
+        ),
+        "predictor_receipts_complete": predictor_receipts_complete,
+        "dependence_map_complete": True,
+        "blockers": blockers,
+        "ready_for_combined_model_assembly": not blockers,
+        "combined_model_estimability_checked": False,
+        "claim_ceiling": (
+            "u6_evidence_assembly_readiness_only_combined_v2_estimability_is_separate"
+        ),
+    }
