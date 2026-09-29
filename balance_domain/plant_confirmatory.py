@@ -352,7 +352,7 @@ def primary_contrast_row(row: dict[str, str]) -> dict[str, str]:
 
 
 def confirmatory_parameter_budget() -> dict:
-    """Return outcome-blind fixed-effect coefficient counts for model specification v2."""
+    """Return outcome-blind coefficient budgets through current model specification V4."""
     nonreference_logits = 3  # four-class multinomial response
     raw_columns = 1 + (5 - 1) + (5 - 1) + (6 - 1)
     coarse_columns = 1 + (2 - 1) + (3 - 1) + (2 - 1)
@@ -360,6 +360,10 @@ def confirmatory_parameter_budget() -> dict:
     i2_columns = coarse_columns + (2 - 1) * (2 - 1)
     v3_columns = 1 + (2 - 1) + (3 - 1)
     v3_i1_columns = v3_columns + (2 - 1) * (3 - 1)
+    v4_universe_intercepts = 2 * nonreference_logits
+    v4_slope_columns = (2 - 1) + (3 - 1)
+    v4_slope_coefficients = v4_slope_columns * nonreference_logits
+    v4_interaction_additional = (2 - 1) * (3 - 1) * nonreference_logits
     return {
         "response_classes": 4,
         "nonreference_logits": nonreference_logits,
@@ -375,5 +379,13 @@ def confirmatory_parameter_budget() -> dict:
         "v3_main_coefficients": v3_columns * nonreference_logits,
         "v3_module_x_timing_columns_per_logit": v3_i1_columns,
         "v3_module_x_timing_coefficients": v3_i1_columns * nonreference_logits,
-        "conflict_family_role": "mandatory_stratified_sensitivity_not_primary_fixed_effect",
+        "v4_universe_intercepts": v4_universe_intercepts,
+        "v4_slope_columns_per_logit": v4_slope_columns,
+        "v4_slope_coefficients": v4_slope_coefficients,
+        "v4_total_primary_coefficients": v4_universe_intercepts + v4_slope_coefficients,
+        "v4_module_x_timing_additional_coefficients": v4_interaction_additional,
+        "v4_total_with_interaction": (
+            v4_universe_intercepts + v4_slope_coefficients + v4_interaction_additional
+        ),
+        "conflict_family_role": "universe_stratification_primary_family_interpretation_secondary",
     }
