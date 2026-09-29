@@ -8,9 +8,31 @@ from .plant_confirmatory import (
     load_plant_predictor_receipts,
 )
 from .plant_u1_full_screen import build_u1_full47_conflict_screen
-from .plant_u1_double_code import load_u1_blank_worksheet
-from .plant_u2 import load_u2_blank_worksheet
+from .plant_macro_agreement import load_double_coding
+from .plant_u1 import load_u1_sample
+from .plant_u1_double_code import load_u1_adjudication, load_u1_blank_worksheet
+from .plant_u2 import (
+    load_u2_adjudication,
+    load_u2_blank_worksheet,
+    load_u2_double_code_sample,
+)
 from .plant_u2_screen import build_u2_conflict_screen_readout
+def _load_two_coder_stage(path: Path, blank_loader) -> tuple[str, list[dict[str, str]]]:
+    """Return UNSTARTED or COMPLETE; partial worksheets fail closed."""
+    try:
+        rows = blank_loader(path)
+        return "UNSTARTED", rows
+    except ValueError as blank_error:
+        try:
+            rows = load_double_coding(path)
+        except ValueError as coded_error:
+            raise ValueError(
+                "double-coding worksheet is neither valid blank nor fully completed: "
+                f"blank={blank_error}; completed={coded_error}"
+            ) from coded_error
+        return "COMPLETE", rows
+
+
 from .plant_u6 import (
     build_u6_evidence_readiness,
     load_u6_cross_universe_dependence,
@@ -24,9 +46,13 @@ def build_plant_v4_readiness(
     *,
     u1_first20_conflict_path: Path,
     u1_production27_conflict_path: Path,
+    u1_sample_path: Path,
     u1_worksheet_path: Path,
+    u1_adjudication_path: Path,
     u2_conflict_path: Path,
+    u2_sample_path: Path,
     u2_worksheet_path: Path,
+    u2_adjudication_path: Path,
     u2_predictor_receipts_path: Path,
     u6_freeze_path: Path,
     u6_worksheet_path: Path,
@@ -39,10 +65,28 @@ def build_plant_v4_readiness(
         u1_first20_conflict_path,
         u1_production27_conflict_path,
     )
-    u1_worksheet = load_u1_blank_worksheet(u1_worksheet_path)
+    u1_sample = load_u1_sample(u1_sample_path)
+    u1_coding_stage, u1_worksheet = _load_two_coder_stage(
+        u1_worksheet_path,
+        load_u1_blank_worksheet,
+    )
+    u1_adjudication = load_u1_adjudication(
+        u1_adjudication_path,
+        u1_sample,
+        u1_worksheet if u1_coding_stage == "COMPLETE" else None,
+    )
 
     u2 = build_u2_conflict_screen_readout(u2_conflict_path)
-    u2_worksheet = load_u2_blank_worksheet(u2_worksheet_path)
+    u2_sample = load_u2_double_code_sample(u2_sample_path)
+    u2_coding_stage, u2_worksheet = _load_two_coder_stage(
+        u2_worksheet_path,
+        load_u2_blank_worksheet,
+    )
+    u2_adjudication = load_u2_adjudication(
+        u2_adjudication_path,
+        u2_sample,
+        u2_worksheet if u2_coding_stage == "COMPLETE" else None,
+    )
     u2_receipts = load_plant_predictor_receipts(u2_predictor_receipts_path)
     u2_receipt_coverage = build_receipt_screening_coverage(u2_receipts)
 
@@ -65,25 +109,15 @@ def build_plant_v4_readiness(
         u6_dependence,
     )
 
-    u1_coding_started = any(
-        any((row.get(field) or "").strip() for field in (
-            "conflict_status",
-            "architecture_mode",
-            "module_substrate",
-            "conflict_timing_geometry",
-            "conflict_spatial_geometry",
-        ))
-        for row in u1_worksheet
+    u1_coding_complete = u1_coding_stage == "COMPLETE"
+    u2_coding_complete = u2_coding_stage == "COMPLETE"
+    u1_adjudication_complete = all(
+        row["adjudication_status"] == "ADJUDICATED"
+        for row in u1_adjudication
     )
-    u2_coding_started = any(
-        any((row.get(field) or "").strip() for field in (
-            "conflict_status",
-            "architecture_mode",
-            "module_substrate",
-            "conflict_timing_geometry",
-            "conflict_spatial_geometry",
-        ))
-        for row in u2_worksheet
+    u2_adjudication_complete = all(
+        row["adjudication_status"] == "ADJUDICATED"
+        for row in u2_adjudication
     )
 
     machine_complete = {
@@ -111,7 +145,8 @@ def build_plant_v4_readiness(
     }
 
     primary_human_open = {
-        "u2_independent_double_coding": not u2_coding_started,
+        "u2_independent_double_coding": not u2_coding_complete,
+        "u2_post_coding_adjudication": not u2_adjudication_complete,
         "u6_independent_double_coding": not u6_readiness["coding_complete"],
         "u6_post_coding_adjudication": not u6_readiness["adjudication_complete"],
         "u2_predictor_independent_adjudication": (
@@ -124,7 +159,8 @@ def build_plant_v4_readiness(
         ),
     }
     external_validation_open = {
-        "u1_independent_double_coding": not u1_coding_started,
+        "u1_independent_double_coding": not u1_coding_complete,
+        "u1_post_coding_adjudication": not u1_adjudication_complete,
     }
 
     blockers = [name for name, is_open in primary_human_open.items() if is_open]
