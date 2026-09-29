@@ -170,6 +170,44 @@ cross-universe generality test.
 That remains a hypothesis until common-support, independent architecture coding, and
 universe-specific effect checks all pass.
 
+## V4 main-design rank versus generality support
+
+The common-support failure does **not** make the V4 primary predictor design singular.
+
+Using the frozen source-screen predictor values only:
+
+```text
+common-slope design columns
+  module_MODULAR
+  temporal_ORDERED_OR_ALTERNATING
+  temporal_VARIABLE_CONTEXT
+
+rank = 3 / 3
+
+full V4 design columns
+  intercept_U2
+  intercept_U6
+  module_MODULAR
+  temporal_ORDERED_OR_ALTERNATING
+  temporal_VARIABLE_CONTEXT
+
+rank = 5 / 5
+```
+
+Therefore the prospective design distinction is:
+
+```text
+V4 main predictor design
+  full-rank / viable
+
+strict cross-universe temporal generality sensitivity
+  not ready under frozen common-support rule
+```
+
+The first statement concerns identifiability of the registered U2/U6 model matrix. The
+second concerns the stronger claim that the timing association is independently replicated
+within a shared biological substrate across both universes.
+
 ## Claim ceiling
 
 This audit licenses only statements about predictor support and prospective generality. It
