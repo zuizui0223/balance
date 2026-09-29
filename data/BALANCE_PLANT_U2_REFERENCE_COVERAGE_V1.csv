@@ -1,0 +1,38 @@
+reference_id,citation_short,reference_class,dependency_groups,coverage_status,notes
+B2002_R01,Baker_Thompson_Barrett_2000a,TAXON_EMPIRICAL,Narcissus_assoanus;Narcissus_dubius,MAPPED,Floral variation and style-morph ratios in two Narcissus species.
+B2002_R02,Baker_Thompson_Barrett_2000b,TAXON_EMPIRICAL,Narcissus_assoanus;Narcissus_dubius,MAPPED,Fitness comparisons between style morphs in the same two species.
+B2002_R03,Barrett_Glover_1985,TAXON_EMPIRICAL,Pontederia_cordata,MAPPED,Experimental test of adaptive significance of tristyly.
+B2002_R04,Barrett_Lloyd_Arroyo_1996,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,Book chapter on Narcissus stylar polymorphisms; used as synthesis/background.
+B2002_R05,Barrett_Cole_Arroyo_Cruzan_Lloyd_1997,TAXON_EMPIRICAL,Narcissus_triandrus,MAPPED,Sexual polymorphism in Narcissus triandrus.
+B2002_R06,Barrett_Jesson_Baker_2000a,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,Review of stylar polymorphisms.
+B2002_R07,Barrett_Baker_Jesson_2000b,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,Mating-strategies book chapter.
+B2002_R08,Bertin_1993,BROAD_COMPARATIVE_DATASET,,NO_NEW_GROUP_REQUIRED,Broad incidence survey of monoecy and dichogamy; not a single taxon-specific experiment.
+B2002_R09,Bertin_Newman_1993,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,Review of dichogamy in angiosperms.
+B2002_R10,Bertin_Sullivan_1988,TAXON_EMPIRICAL,Campsis_radicans,MAPPED,Pollen interference and cryptic self-fertility.
+B2002_R11,Broyles_Wyatt_1993,TAXON_EMPIRICAL,Asclepias_exaltata,MAPPED,Consequences of self-pollination in a self-incompatible milkweed.
+B2002_R12,Charlesworth_Charlesworth_1987,THEORY_GENERAL,,NO_NEW_GROUP_REQUIRED,General review of inbreeding depression and evolutionary consequences.
+B2002_R13,Charnov_MaynardSmith_Bull_1976,THEORY_GENERAL,,NO_NEW_GROUP_REQUIRED,General theory of hermaphroditism.
+B2002_R14,Darwin_1876,HISTORICAL_SYNTHESIS,,NO_NEW_GROUP_REQUIRED,Historical book on cross and self fertilization.
+B2002_R15,Darwin_1877,HISTORICAL_SYNTHESIS,,NO_NEW_GROUP_REQUIRED,Historical book on flower forms.
+B2002_R16,Dulberger_1992,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,Review chapter on floral polymorphisms.
+B2002_R17,Fetscher_2001,TAXON_EMPIRICAL,Mimulus_aurantiacus,MAPPED,Experimental resolution of male-female conflict by stigma closure.
+B2002_R18,Galen_Gregory_Galloway_1989,TAXON_EMPIRICAL,Polemonium_viscosum,MAPPED,Costs of self-pollination in a self-incompatible plant.
+B2002_R19,Harder_Barrett_1995,TAXON_EMPIRICAL,Eichhornia_paniculata,MAPPED,Mating cost of large floral displays.
+B2002_R20,Harder_Barrett_1996,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,Review chapter on pollen dispersal and mating patterns.
+B2002_R21,Harder_Wilson_1998,THEORY_GENERAL,,NO_NEW_GROUP_REQUIRED,Theoretical clarification of pollen discounting.
+B2002_R22,Harder_Barrett_Cole_2000,TAXON_EMPIRICAL,Eichhornia_paniculata,MAPPED,Mating consequences of sexual segregation within inflorescences.
+B2002_R23,Jesson_Barrett_2002_in_press,TAXON_EMPIRICAL,Wachendorfia_paniculata;Wachendorfia_brachyandra;Wachendorfia_parviflora;Wachendorfia_thyrsiflora,MAPPED,Review listed study as in press; final AJB paper compares all four Wachendorfia species.
+B2002_R24,Kohn_Barrett_1992,TAXON_EMPIRICAL,Eichhornia_paniculata,MAPPED,Floral manipulations of male fitness variation.
+B2002_R25,Li_et_al_2001a,TAXON_EMPIRICAL,Alpinia_kwangsiensis,MAPPED,Nature report of flexistyly.
+B2002_R26,Li_et_al_2001b,TAXON_EMPIRICAL,Alpinia_kwangsiensis,MAPPED,Detailed flexistyly study.
+B2002_R27,Lloyd_Yates_1982,TAXON_EMPIRICAL,Wahlenbergia_albomarginata,MAPPED,Intrasexual selection and pollen/stigma segregation.
+B2002_R28,Lloyd_Webb_1986,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,General review of dichogamy and interference avoidance.
+B2002_R29,Lloyd_Wells_1992,TAXON_EMPIRICAL,Pseudowintera_colorata,MAPPED,Reproductive biology of a primitive angiosperm.
+B2002_R30,Sage_Strumas_Cole_Barrett_1999,TAXON_EMPIRICAL,Narcissus_triandrus,MAPPED,Self- and cross-pollination and self-sterility.
+B2002_R31,Scribailo_Barrett_1994,TAXON_EMPIRICAL,Pontederia_sagittata,MAPPED,Prior self-pollination effect on outcrossed seed set.
+B2002_R32,Seavey_Carter_1993,TAXON_EMPIRICAL,Epilobium_obcordatum,MAPPED,Self-sterility study.
+B2002_R33,Shore_Barrett_1984,TAXON_EMPIRICAL,Turnera_ulmifolia,MAPPED,Pollination intensity and incompatible pollen effect on seed set.
+B2002_R34,Todd_1882,TAXON_EMPIRICAL,Solanum_rostratum_historical;Chamaecrista_fasciculata_historical,MAPPED,"Historical observations on Solanum rostratum and Cassia chamaecrista, the latter treated as Chamaecrista fasciculata in the registry."
+B2002_R35,Waser_Price_1991,TAXON_EMPIRICAL,Ipomopsis_aggregata,MAPPED,Reproductive costs of self-pollination.
+B2002_R36,Webb_Lloyd_1986,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,General review of herkogamy and interference avoidance.
+B2002_R37,Yeo_1974,SYNTHESIS_REVIEW,,NO_NEW_GROUP_REQUIRED,General treatment of heterostyly.

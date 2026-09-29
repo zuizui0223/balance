@@ -1,0 +1,45 @@
+{
+  "analysis": "balance_plant_u2_sample_deviation_repair_v1",
+  "protocol_commit": "b14770c74bd3545047c8168637c103c16e7b011a",
+  "protocol_commit_date": "2026-09-18T18:53:54Z",
+  "preregistered_rule": "FIRST_20_DEPENDENCY_GROUPS_BY_FROZEN_U2_RECORD_ID",
+  "alignment_commit": "a75c25c02ea5c3c426fa84df37f7140bdee21688",
+  "alignment_commit_date": "2026-09-21T13:34:34Z",
+  "deviating_sample_commit": "5f6b1c256e1a81238c77f6da96fecdee8eb1dbe5",
+  "deviating_sample_commit_date": "2026-09-22T00:33:25Z",
+  "deviation": "Sample changed from frozen record-ID first20 to lexicographic taxon first20 after protocol registration.",
+  "independent_coding_started_before_repair": false,
+  "pre_repair_extra_groups": [
+    "U2_021",
+    "U2_022"
+  ],
+  "pre_repair_missing_groups": [
+    "U2_009",
+    "U2_020"
+  ],
+  "repair": "RESTORE_PREREGISTERED_RECORD_ID_FIRST20",
+  "sample_after_repair": [
+    "U2_001",
+    "U2_002",
+    "U2_003",
+    "U2_004",
+    "U2_005",
+    "U2_006",
+    "U2_007",
+    "U2_008",
+    "U2_009",
+    "U2_010",
+    "U2_011",
+    "U2_012",
+    "U2_013",
+    "U2_014",
+    "U2_015",
+    "U2_016",
+    "U2_017",
+    "U2_018",
+    "U2_019",
+    "U2_020"
+  ],
+  "outcome_information_used_for_repair": false,
+  "claim_ceiling": "sampling_protocol_compliance_repair_only_not_biological_adjudication"
+}
