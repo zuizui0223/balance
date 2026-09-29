@@ -5,6 +5,8 @@ from balance_domain.plant_programme import build_plant_programme_map
 
 ROOT = Path(__file__).resolve().parents[1]
 U1 = ROOT / "data" / "BALANCE_PLANT_U1_SCREENING_PROVISIONAL_V1.csv"
+U1_BLIND = ROOT / "data" / "BALANCE_PLANT_U1_BLIND_CONFLICT_SCREEN_V1.csv"
+U1_PRODUCTION = ROOT / "data" / "BALANCE_PLANT_U1_PRODUCTION_BLIND_CONFLICT_SCREEN_V1.csv"
 U2 = ROOT / "data" / "BALANCE_PLANT_U2_SCREENING_V1.csv"
 U3_CASES = ROOT / "data" / "BALANCE_PLANT_U3_CASE_CANDIDATES_V1.csv"
 U3_UNIVERSE = ROOT / "data" / "BALANCE_PLANT_U3_HETERANTHERY_REVIEW_UNIVERSE_V1.csv"
@@ -18,6 +20,8 @@ def _readout():
         u3_cases_path=U3_CASES,
         u3_universe_path=U3_UNIVERSE,
         u4_cases_path=U4,
+        u1_blind_screen_path=U1_BLIND,
+        u1_production_screen_path=U1_PRODUCTION,
     )
 
 
@@ -52,17 +56,22 @@ def test_programme_map_preserves_distinct_sampling_roles():
     ]
 
 
-def test_u1_is_specificity_heavy_and_has_no_positive_conflict_in_provisional20():
+def test_u1_full47_source_screen_is_specificity_heavy_and_conflict_negative():
     u1 = _readout()["lanes"]["U1"]
-    assert u1["n_records"] == 20
+    assert u1["n_records"] == 47
+    assert u1["n_dependency_groups"] == 47
     assert u1["conflict_status_counts"] == {
         "ALIGNED_NO_CONFLICT": 1,
-        "NO_DEMONSTRATED_CONFLICT": 5,
-        "UNRESOLVED": 14,
+        "NO_DEMONSTRATED_CONFLICT": 46,
     }
     assert u1["conflict_status_counts"].get("POSITIVE", 0) == 0
-    assert u1["n_excluded"] == 13
+    assert u1["strict_conflict_source_screen_complete"] is True
+    assert u1["strict_conflict_positive_ids"] == []
+    assert u1["strict_conflict_unresolved_ids"] == []
 
+    provisional = u1["provisional_first20_macro_readout"]
+    assert provisional["n_records"] == 20
+    assert provisional["n_excluded"] == 13
 
 def test_u2_retains_positive_negative_and_unresolved_mechanism_calls():
     u2 = _readout()["lanes"]["U2"]
