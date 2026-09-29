@@ -204,8 +204,12 @@ MOSAIC
 
 Entry requires independently adjudicated, outcome-independent receipts for
 `module_substrate`, `conflict_timing_geometry`, and
-`conflict_spatial_geometry`. The binary structural outcome is secondary, and
-there is no significance- or sparsity-triggered switch of the primary estimand.
+`conflict_spatial_geometry`. The raw three-axis coding is retained, but the current V3
+primary joint fit uses the preregistered `module_opportunity2` and
+`temporal_exposure3` contrasts. `spatial_exposure2` is secondary because the
+architecture-blind source-support audit found 28 SAME_UNIT versus 1 DISTRIBUTED block.
+The binary structural outcome is secondary, and there is no significance- or
+outcome-sparsity-triggered switch of the primary estimand.
 
 ## Empirical claim levels
 
