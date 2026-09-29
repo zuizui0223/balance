@@ -3,6 +3,7 @@ import pytest
 from balance_domain.plant_model_v4_fit import (
     build_v4_prior_sensitivity_input,
     build_v4_stan_input,
+    build_v4_temporal_generality_input,
 )
 
 
@@ -104,3 +105,45 @@ def test_v4_fit_rejects_repeated_dependence_block():
     rows[1]["dependence_block"] = rows[0]["dependence_block"]
     with pytest.raises(ValueError, match="one analysis row per dependence block"):
         build_v4_stan_input(rows)
+
+
+
+def _generality_rows():
+    rows = _ready_rows()
+    rows.append(
+        _row(
+            "r10",
+            "U2_BARRETT_2002",
+            "u2_n2",
+            "b10",
+            "TEMPORAL_SEPARATION",
+            "SINGLE_OR_CONTINUOUS",
+            "SEASONALLY_ALTERNATING",
+            "SAME_UNIT",
+        )
+    )
+    return rows
+
+
+def test_v4_temporal_generality_input_requires_replication_within_both_universes():
+    with pytest.raises(ValueError, match="lacks within-universe"):
+        build_v4_temporal_generality_input(_ready_rows())
+
+
+def test_v4_temporal_generality_input_adds_only_u6_ordered_interaction():
+    out = build_v4_temporal_generality_input(_generality_rows())
+    data = out["stan_data"]
+    meta = out["metadata"]
+
+    assert meta["estimability"]["temporal_cross_universe_generality_ready"] is True
+    assert data["interaction_prior_sd"] == 0.75
+    assert meta["generality_interaction"] == "U6_x_temporal_ORDERED_OR_ALTERNATING"
+    assert meta["practical_interaction_margin_log_odds"] == 1.0
+
+    # U6 rows are positions 6-9 in the original fixture. Ordered U6 rows are r7 and r9.
+    marked = [
+        row_id
+        for row_id, flag in zip(meta["analysis_row_ids"], data["u6_ordered"])
+        if flag
+    ]
+    assert marked == ["r7", "r9"]
