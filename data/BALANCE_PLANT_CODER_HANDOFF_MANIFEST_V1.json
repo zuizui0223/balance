@@ -94,5 +94,17 @@
     "workflow": ".github/workflows/build-plant-coder-packets.yml",
     "runbook": "docs/BALANCE_PLANT_CODER_PACKET_RUNBOOK_V1.md",
     "trigger": "workflow_dispatch_only"
+  },
+  "predictor_adjudication": {
+    "protocol": "docs/BALANCE_PLANT_PREDICTOR_RECEIPT_ADJUDICATION_PROTOCOL_V1.md",
+    "builder": "scripts/build_plant_predictor_adjudication_packet.py",
+    "workflow": ".github/workflows/build-plant-predictor-adjudication-packet.yml",
+    "output_artifact": "balance-plant-predictor-adjudication-packet-v1",
+    "architecture_outputs_included": false,
+    "applicable_primary_universes": [
+      "U2",
+      "U6"
+    ],
+    "sequence_rule": "separate from architecture coding; receipts must be adjudicated outcome-independent before V4 assembly"
   }
 }
