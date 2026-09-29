@@ -148,6 +148,16 @@ def _generality_rows():
             "SEASONALLY_ALTERNATING",
             "SAME_UNIT",
         ),
+        _row(
+            "r13",
+            "U6_POLLEN_THEFT_HARGREAVES_2009",
+            "u6_n2",
+            "b13",
+            "SPATIAL_SEPARATION",
+            "SINGLE_OR_CONTINUOUS",
+            "SIMULTANEOUS",
+            "SAME_UNIT",
+        ),
     ])
     return rows
 
@@ -165,6 +175,7 @@ def test_v4_temporal_generality_input_adds_only_u6_ordered_interaction():
     assert meta["estimability"]["temporal_cross_universe_marginal_replication_ready"] is True
     assert meta["estimability"]["temporal_cross_universe_common_support_ready"] is True
     assert meta["estimability"]["temporal_common_support_module_strata"] == ["SINGLE"]
+    assert meta["estimability"]["temporal_cross_universe_outcome_support_ready"] is True
     assert meta["estimability"]["temporal_cross_universe_generality_ready"] is True
     assert data["interaction_prior_sd"] == 0.75
     assert meta["generality_interaction"] == "U6_x_temporal_ORDERED_OR_ALTERNATING"
