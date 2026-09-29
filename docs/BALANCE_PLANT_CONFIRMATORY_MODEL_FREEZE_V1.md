@@ -1,5 +1,7 @@
 # BALANCE plant confirmatory model freeze v1
 
+> **Superseded before confirmatory fitting by v2.** The four-class response and raw coding scheme remain valid, but the raw-category joint multinomial below is not the primary fit because its fixed-effect parameter budget is too large for the anticipated conflict-positive dependency-group count. See `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md` and `data/BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2.json`.
+
 ## Status
 
 Frozen before any confirmatory plant model is fit.
