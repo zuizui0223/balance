@@ -213,5 +213,18 @@
     "full_universe_stratified_design_full_rank": true,
     "strict_temporal_generality_common_support_ready": false,
     "interpretation": "V4 main predictor design is prospectively identifiable, but the stronger cross-universe timing-generality sensitivity is not prospectively supported under the frozen shared-module >=2-per-level/per-universe rule."
+  },
+  "directional_hypotheses_registry": "data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json",
+  "primary_directional_contrasts": {
+    "temporal": {
+      "estimand": "Delta_T = P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)",
+      "prediction": ">0",
+      "scope": "primary; cross-universe claim requires stricter generality gates"
+    },
+    "module": {
+      "estimand": "Delta_M = P(STRUCTURAL_MODULE_DIVISION | MODULAR) - P(STRUCTURAL_MODULE_DIVISION | SINGLE)",
+      "prediction": ">0",
+      "scope": "U2-anchored; not cross-universe replicated"
+    }
   }
 }
