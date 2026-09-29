@@ -5,6 +5,7 @@ from collections import Counter
 from pathlib import Path
 
 from .plant_macro import load_plant_macro_ledger
+from .plant_u1_full_screen import build_u1_full47_conflict_screen
 from .plant_u3_cases import build_u3_case_readout
 from .plant_u4 import build_u4_readout
 
@@ -34,8 +35,22 @@ def build_plant_programme_map(
     u3_cases_path: Path,
     u3_universe_path: Path,
     u4_cases_path: Path,
+    u1_blind_screen_path: Path | None = None,
+    u1_production_screen_path: Path | None = None,
 ) -> dict:
-    u1 = _screen_readout(u1_screening_path, lane="U1")
+    u1_provisional = _screen_readout(u1_screening_path, lane="U1")
+    if (u1_blind_screen_path is None) != (u1_production_screen_path is None):
+        raise ValueError(
+            "U1 full conflict readout requires both first20 and production27 screen paths"
+        )
+    u1_full = (
+        build_u1_full47_conflict_screen(
+            u1_blind_screen_path,
+            u1_production_screen_path,
+        )
+        if u1_blind_screen_path is not None
+        else None
+    )
     u2 = _screen_readout(u2_screening_path, lane="U2")
     u3 = build_u3_case_readout(u3_cases_path, u3_universe_path)
     u4 = build_u4_readout(u4_cases_path)
@@ -46,13 +61,33 @@ def build_plant_programme_map(
         "analysis": "balance_plant_macro_programme_map",
         "lanes": {
             "U1": {
-                **u1,
+                "lane": "U1",
+                "n_records": (
+                    u1_full["n_records"] if u1_full is not None
+                    else u1_provisional["n_records"]
+                ),
+                "n_dependency_groups": (
+                    u1_full["n_dependency_groups"] if u1_full is not None
+                    else u1_provisional["n_dependency_groups"]
+                ),
+                "conflict_status_counts": (
+                    u1_full["conflict_status_counts"] if u1_full is not None
+                    else u1_provisional["conflict_status_counts"]
+                ),
+                "strict_conflict_source_screen_complete": u1_full is not None,
+                "strict_conflict_positive_ids": (
+                    u1_full["positive_conflict_ids"] if u1_full is not None else None
+                ),
+                "strict_conflict_unresolved_ids": (
+                    u1_full["unresolved_candidate_ids"] if u1_full is not None else None
+                ),
+                "provisional_first20_macro_readout": u1_provisional,
                 "sampling_role": "BROAD_INTERACTION_SPECIFICITY",
                 "licensed_use": (
                     "tests whether herbivory-pollination literature survives the "
                     "shared-reproductive-coordinate and conflict gates"
                 ),
-                "not_licensed": "prevalence comparison with U2-U4",
+                "not_licensed": "prevalence comparison with U2-U6",
             },
             "U2": {
                 **u2,
