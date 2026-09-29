@@ -1,0 +1,38 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_REACTIVATION_GATE_V1",
+  "status": "PROSPECTIVE_GATE_FROZEN_PRE_OUTCOME",
+  "publication_status": "DORMANT_PAPER_BRANCH",
+  "active_publication_queue": false,
+  "target_result": "cross_universe_temporal_architecture_routing",
+  "required_conditions": {
+    "u2_independent_coding_and_adjudication_complete": false,
+    "u6_independent_coding_and_adjudication_complete": false,
+    "u2_u6_predictor_independence_adjudication_complete": false,
+    "v4_primary_estimability_pass": false,
+    "v4_primary_fit_complete": false,
+    "temporal_generality_sensitivity_fit_complete": false,
+    "u2_ordered_vs_simultaneous_direction_resolved": false,
+    "u6_ordered_vs_simultaneous_direction_resolved": false,
+    "directionally_concordant_across_u2_u6": null,
+    "contradictory_universe_interaction_exceeds_practical_margin": null
+  },
+  "practical_interaction_margin_log_odds": 1,
+  "sufficient_reactivation_rule": [
+    "all coding/adjudication conditions true",
+    "V4 primary estimability and fit complete",
+    "temporal generality sensitivity complete",
+    "ordered-versus-simultaneous routing contrast direction resolved separately in U2 and U6",
+    "directions concordant across U2 and U6",
+    "no practically large contradictory universe-by-timing interaction under the frozen margin"
+  ],
+  "insufficient_for_reactivation": [
+    "nonzero pooled timing coefficient alone",
+    "U2-only module association",
+    "U2-only VARIABLE_CONTEXT association",
+    "support-limited spatial association",
+    "architecture class difference without predictor-outcome independence"
+  ],
+  "standalone_reactivation_eligible": false,
+  "reason": "independent coding, adjudication, model estimability, fitted effects, and cross-universe replication are not yet available",
+  "claim_ceiling": "prospective_publication_gate_only_no_biological_result"
+}
