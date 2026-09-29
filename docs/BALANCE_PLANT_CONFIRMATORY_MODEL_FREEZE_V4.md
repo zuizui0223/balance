@@ -220,9 +220,34 @@ vs
 ORDERED_OR_ALTERNATING
 ```
 
-A generality statement additionally requires reporting the contrast separately in U2 and
-U6 and checking that a pooled common-slope interpretation is not contradicted by the
-universe-specific evidence.
+Marginally, both timing levels occur in U2 and U6. That is not sufficient for a
+generality test because module opportunity is distributed differently across the two
+universes.
+
+The frozen stricter gate requires at least one **shared module-opportunity stratum** with:
+
+```text
+>= 2 SIMULTANEOUS blocks in U2
+>= 2 ORDERED_OR_ALTERNATING blocks in U2
+>= 2 SIMULTANEOUS blocks in U6
+>= 2 ORDERED_OR_ALTERNATING blocks in U6
+```
+
+At the current source-screen freeze the only shared module stratum is `SINGLE`:
+
+```text
+             U2   U6
+SIMULTANEOUS  1   18
+ORDERED       2    3
+```
+
+Therefore the strict cross-universe temporal generality sensitivity is **not yet
+estimable prospectively**, even though the marginal timing contrast is represented in both
+universes.
+
+A future generality statement requires the common-support gate to pass after independent
+adjudication, reporting the contrast separately in U2 and U6, and checking that a pooled
+interpretation is not contradicted by a practically large universe-by-timing interaction.
 
 ### U2-anchored candidate
 
