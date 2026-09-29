@@ -14,7 +14,8 @@ from balance_domain.plant_macro import PRIMARY_ARCHITECTURE_CLASSES, primary_arc
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_V1 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
-SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2.json"
+SPEC_V2 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2.json"
+SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_PREDICTOR_RECEIPT_TEMPLATE_V1.csv"
 U1_FRAME = ROOT / "data" / "BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 U2_FRAME = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
@@ -30,17 +31,23 @@ def test_frozen_model_spec_matches_executable_primary_mapping():
             assert primary_architecture_class(mode) == class_name
 
 
-def test_frozen_primary_model_v2_has_no_data_dependent_fallback():
+def test_frozen_primary_model_v3_has_no_outcome_dependent_fallback():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
-    assert spec["primary_model"]["no_data_dependent_fallback"] is True
+    assert spec["primary_model"]["no_outcome_dependent_fallback"] is True
     assert spec["primary_model"]["family"] == "regularized_bayesian_multinomial_logit"
-    assert len(spec["registered_interaction_extensions"]) == 2
+    assert spec["registered_interaction_extension"]["id"] == "I1_MODULE_X_TIMING"
 
 
 def test_v1_was_superseded_before_fit_by_parameter_budget():
     v1 = json.loads(SPEC_V1.read_text(encoding="utf-8"))
     assert v1["status"] == "SUPERSEDED_PRE_FIT_BY_V2_PARAMETER_BUDGET"
     assert v1["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2"
+
+
+def test_v2_was_superseded_before_outcome_coding_by_spatial_support_audit():
+    v2 = json.loads(SPEC_V2.read_text(encoding="utf-8"))
+    assert v2["status"] == "SUPERSEDED_PRE_OUTCOME_BY_V3_SPATIAL_SUPPORT"
+    assert v2["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3"
 
 
 def test_signal_separation_is_explicitly_retained():
@@ -118,7 +125,7 @@ def test_u2_predictor_screen_progress_is_outcome_independent_but_not_adjudicated
 
 
 
-def test_v2_primary_predictor_contrast_mappings_match_executable_code():
+def test_v3_primary_predictor_contrast_mappings_match_executable_code():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     mapping = spec["primary_predictor_contrasts"]
 
@@ -126,27 +133,36 @@ def test_v2_primary_predictor_contrast_mappings_match_executable_code():
         assert all(primary_module_opportunity(raw) == coarse for raw in raw_values)
     for coarse, raw_values in mapping["temporal_exposure3"].items():
         assert all(primary_temporal_exposure(raw) == coarse for raw in raw_values)
-    for coarse, raw_values in mapping["spatial_exposure2"].items():
-        assert all(primary_spatial_exposure(raw) == coarse for raw in raw_values)
+
+    spatial = spec["secondary_predictor_contrast"]["spatial_exposure2"]
+    for coarse in ("SAME_UNIT", "DISTRIBUTED"):
+        assert all(primary_spatial_exposure(raw) == coarse for raw in spatial[coarse])
 
 
-def test_v2_parameter_budget_is_frozen_before_outcome_coding():
+def test_v3_parameter_budget_is_frozen_before_outcome_coding():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     budget = confirmatory_parameter_budget()
     assert budget["raw_main_effect_coefficients"] == 42
     assert budget["coarse_main_effect_coefficients"] == 15
-    assert budget["module_x_timing_coefficients"] == 21
-    assert budget["module_x_spatial_coefficients"] == 18
+    assert budget["v3_main_coefficients"] == 12
+    assert budget["v3_module_x_timing_coefficients"] == 18
     assert spec["parameter_budget"]["raw_joint_model_fixed_coefficients"] == 42
     assert spec["parameter_budget"]["v2_main_fixed_coefficients"] == 15
-    assert spec["parameter_budget"]["module_x_timing_fixed_coefficients"] == 21
-    assert spec["parameter_budget"]["module_x_spatial_fixed_coefficients"] == 18
+    assert spec["parameter_budget"]["v3_main_fixed_coefficients"] == 12
+    assert spec["parameter_budget"]["module_x_timing_fixed_coefficients"] == 18
 
 
-def test_v2_estimability_gate_does_not_allow_posthoc_term_dropping():
+def test_v3_estimability_gate_does_not_allow_posthoc_term_dropping():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     gate = spec["estimability_gate"]
     assert gate["minimum_independent_dependence_blocks_per_response_class"] == 2
-    assert gate["all_primary_predictor_contrasts_must_have_at_least_two_observed_levels"] is True
+    assert gate["minimum_independent_dependence_blocks_per_primary_predictor_level"] == 2
     assert gate["primary_design_matrix_must_be_full_rank"] is True
     assert gate["failure_action"] == "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
+
+
+def test_v3_spatial_axis_is_secondary_due_preoutcome_support():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    spatial = spec["secondary_predictor_contrast"]["spatial_exposure2"]
+    assert spatial["preoutcome_support"] == {"SAME_UNIT": 28, "DISTRIBUTED": 1}
+    assert spatial["role"] == "secondary_descriptive_or_separate_sensitivity_only"
