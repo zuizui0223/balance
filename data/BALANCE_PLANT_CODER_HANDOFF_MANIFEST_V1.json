@@ -71,5 +71,25 @@
   ],
   "current_primary_model": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
   "current_publication_status": "DORMANT_PAPER_BRANCH",
-  "claim_ceiling": "human_coding_handoff_contract_only_no_biological_result"
+  "claim_ceiling": "human_coding_handoff_contract_only_no_biological_result",
+  "packet_builder": {
+    "script": "scripts/build_plant_coder_packets.py",
+    "output_root": "release/generated/plant_coder_packets",
+    "outputs": [
+      "BALANCE_PLANT_CODER_A_PACKET_V1.zip",
+      "BALANCE_PLANT_CODER_A_PACKET_V1.json",
+      "BALANCE_PLANT_CODER_B_PACKET_V1.zip",
+      "BALANCE_PLANT_CODER_B_PACKET_V1.json"
+    ],
+    "deterministic_zip": true,
+    "evidence_identity_rule": "coder A and coder B receive byte-identical codebook/protocol/source packets; only their filtered worksheet rows differ",
+    "forbidden_artifact_classes": [
+      "source-screen decisions",
+      "conflict-screen ledgers",
+      "adjudication templates",
+      "agreement outputs",
+      "predictor-receipt ledgers",
+      "reactivation-gate outputs"
+    ]
+  }
 }
