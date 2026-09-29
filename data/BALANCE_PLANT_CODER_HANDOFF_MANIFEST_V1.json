@@ -90,6 +90,9 @@
       "agreement outputs",
       "predictor-receipt ledgers",
       "reactivation-gate outputs"
-    ]
+    ],
+    "workflow": ".github/workflows/build-plant-coder-packets.yml",
+    "runbook": "docs/BALANCE_PLANT_CODER_PACKET_RUNBOOK_V1.md",
+    "trigger": "workflow_dispatch_only"
   }
 }
