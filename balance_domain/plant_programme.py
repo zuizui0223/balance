@@ -253,7 +253,9 @@ def build_plant_programme_map(
         "primary_model_ready": False,
         "primary_model_blockers": [
             "U2 independent double coding incomplete",
+            "U2 post-coding adjudication incomplete",
             "U6 independent double coding incomplete",
+            "U6 post-coding adjudication incomplete",
             "three adjudicated outcome-independent predictor receipts per admitted U2/U6 cluster not yet closed",
             "final U2/U6 model assembly and cross-universe dependence ledger not yet closed",
             "v4 estimability gate cannot be evaluated until final adjudicated architecture classes are assembled",
