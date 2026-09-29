@@ -1,0 +1,5 @@
+receipt_id,cluster_id,predictor,reported_value,source_id,evidence_type,outcome_independence,adjudication_status,notes
+EXAMPLE_MODULE,EXAMPLE_CLUSTER,module_substrate,SERIAL_WITHIN_FLOWER,EXAMPLE_SOURCE,INTEGRATED_STATE_DESCRIPTION,TRUE,SCREENED,Example only: substrate must be documented without inferring it from the focal architecture outcome.
+EXAMPLE_TIMING,EXAMPLE_CLUSTER,conflict_timing_geometry,SIMULTANEOUS,EXAMPLE_SOURCE,PRE_OUTCOME_MEASUREMENT,TRUE,SCREENED,Example only: timing describes competing demands rather than observed dichogamy or other outcome.
+EXAMPLE_SPATIAL,EXAMPLE_CLUSTER,conflict_spatial_geometry,SAME_UNIT,EXAMPLE_SOURCE,PRE_OUTCOME_MEASUREMENT,TRUE,SCREENED,Example only: spatial geometry describes where demands act rather than the observed separation architecture.
+EXAMPLE_REJECTED,EXAMPLE_CLUSTER,module_substrate,SERIAL_WITHIN_FLOWER,EXAMPLE_SOURCE_2,OUTCOME_DERIVED,FALSE,REJECTED,Observed division of labour cannot by itself establish pre-existing module substrate.
