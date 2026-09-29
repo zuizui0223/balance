@@ -92,3 +92,46 @@ def test_u1_adjudication_cannot_preempt_two_completed_coders(tmp_path):
     path.write_text(source, encoding="utf-8")
     with pytest.raises(ValueError, match="before two completed coder rows exist"):
         load_u1_adjudication(path, _rows(SAMPLE))
+
+
+
+def test_u1_low_agreement_blocks_adjudication(tmp_path):
+    sample = _rows(SAMPLE)
+    coding = []
+    for i, row in enumerate(sample):
+        group = row["dependency_group"]
+        for coder in ("CODER_A", "CODER_B"):
+            coding.append({
+                "cluster_id": group,
+                "coder_id": coder,
+                "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+                "architecture_mode": (
+                    "SHARED_INTEGRATED"
+                    if coder == "CODER_A" or i >= 5
+                    else "TEMPORAL_SEPARATION"
+                ),
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "notes": "synthetic agreement gate",
+            })
+
+    rows = _rows(ADJUDICATION)
+    rows[0].update({
+        "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+        "architecture_mode": "SHARED_INTEGRATED",
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+        "adjudication_status": "ADJUDICATED",
+        "adjudication_basis": "SOURCE_REVIEW",
+        "notes": "synthetic adjudication",
+    })
+    path = tmp_path / "u1_low_agreement_adjudication.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+
+    with pytest.raises(ValueError, match="codebook repair/recode"):
+        load_u1_adjudication(path, sample, coding)
