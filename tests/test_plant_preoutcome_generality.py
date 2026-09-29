@@ -52,3 +52,31 @@ def test_only_timing_simultaneous_vs_ordered_is_cross_universe_replicated_preout
     )
     assert out["sampling_universe_adjustment_recommended"] is True
     assert out["architecture_outcomes_used"] is False
+
+
+
+def test_cross_universe_timing_marginal_replication_lacks_common_module_support():
+    out = build_preoutcome_generality_audit(
+        U2_CONFLICT,
+        U2_RECEIPTS,
+        U6_RECEIPTS,
+    )
+    assert out["module_timing_joint_counts_by_universe"]["U2"] == {
+        "SINGLE__SIMULTANEOUS": 1,
+        "SINGLE__ORDERED_OR_ALTERNATING": 2,
+        "SINGLE__VARIABLE_CONTEXT": 2,
+        "MODULAR__SIMULTANEOUS": 2,
+        "MODULAR__ORDERED_OR_ALTERNATING": 0,
+        "MODULAR__VARIABLE_CONTEXT": 1,
+    }
+    assert out["module_timing_joint_counts_by_universe"]["U6"] == {
+        "SINGLE__SIMULTANEOUS": 18,
+        "SINGLE__ORDERED_OR_ALTERNATING": 3,
+        "SINGLE__VARIABLE_CONTEXT": 0,
+        "MODULAR__SIMULTANEOUS": 0,
+        "MODULAR__ORDERED_OR_ALTERNATING": 0,
+        "MODULAR__VARIABLE_CONTEXT": 0,
+    }
+    assert out["shared_module_levels"] == ["SINGLE"]
+    assert out["temporal_common_support_module_strata"] == []
+    assert out["temporal_cross_universe_common_support_ready"] is False
