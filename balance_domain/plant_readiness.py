@@ -17,6 +17,7 @@ from .plant_u2 import (
     load_u2_double_code_sample,
 )
 from .plant_u2_screen import build_u2_conflict_screen_readout
+from .plant_preoutcome_generality import build_preoutcome_generality_audit
 def _load_two_coder_stage(path: Path, blank_loader) -> tuple[str, list[dict[str, str]]]:
     """Return UNSTARTED or COMPLETE; partial or relabeled coder IDs fail closed."""
     try:
@@ -95,6 +96,12 @@ def build_plant_v4_readiness(
     u2_receipts = load_plant_predictor_receipts(u2_predictor_receipts_path)
     u2_receipt_coverage = build_receipt_screening_coverage(u2_receipts)
 
+    preoutcome_generality = build_preoutcome_generality_audit(
+        u2_conflict_path,
+        u2_predictor_receipts_path,
+        u6_predictor_receipts_path,
+    )
+
     u6_manifest = load_u6_pass1_freeze_manifest(u6_freeze_path)
     u6_coding = load_u6_pass2_double_coding(u6_worksheet_path, u6_freeze_path)
     u6_adjudication = load_u6_pass2_adjudication(
@@ -169,6 +176,11 @@ def build_plant_v4_readiness(
     }
 
     blockers = [name for name, is_open in primary_human_open.items() if is_open]
+    primary_preassembly_ready = (
+        all(machine_complete.values())
+        and not blockers
+        and preoutcome_generality["v4_main_predictor_design_viable"]
+    )
 
     return {
         "analysis": "balance_plant_v4_programme_readiness",
@@ -178,12 +190,39 @@ def build_plant_v4_readiness(
         "primary_human_open_gates": primary_human_open,
         "external_validation_open_gates": external_validation_open,
         "open_gate_names": blockers,
-        "primary_model_assembly_ready": False,
-        "v4_estimability_ready_to_evaluate": False,
+        "preoutcome_design_status": {
+            "v4_main_predictor_design_viable": preoutcome_generality[
+                "v4_main_predictor_design_viable"
+            ],
+            "v4_common_slope_design_full_rank": preoutcome_generality[
+                "v4_preoutcome_slope_design_full_rank"
+            ],
+            "v4_universe_stratified_design_full_rank": preoutcome_generality[
+                "v4_preoutcome_full_design_full_rank"
+            ],
+            "temporal_marginal_replication_ready": (
+                preoutcome_generality[
+                    "cross_universe_replicated_contrasts"
+                ]["timing_SIMULTANEOUS_vs_ORDERED"]
+            ),
+            "temporal_common_support_ready": preoutcome_generality[
+                "temporal_cross_universe_common_support_ready"
+            ],
+            "temporal_common_support_module_strata": preoutcome_generality[
+                "temporal_common_support_module_strata"
+            ],
+        },
+        "primary_model_assembly_ready": primary_preassembly_ready,
+        "v4_estimability_ready_to_evaluate": primary_preassembly_ready,
         "v3_estimability_ready_to_evaluate": False,
         "reason": (
-            "U2/U6 independent coding/adjudication gates remain open; V4 model assembly "
-            "and estimability must wait for adjudicated outcomes and predictor receipts"
+            "ready for frozen U2/U6 assembly and V4 estimability evaluation"
+            if primary_preassembly_ready
+            else (
+                "U2/U6 independent coding/adjudication gates remain open; V4 model "
+                "assembly and estimability must wait for adjudicated outcomes and "
+                "predictor receipts"
+            )
         ),
         "source_screen_summary": {
             "U1": {
