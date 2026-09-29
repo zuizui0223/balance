@@ -1,0 +1,31 @@
+{
+  "schema_version": "BALANCE_PLANT_U6_REVIEW_ANCHOR_V1",
+  "status": "REGISTERED_BEFORE_REFERENCE_CLASSIFICATION",
+  "universe_id": "U6_POLLEN_THEFT_HARGREAVES_2009",
+  "anchor_review": {
+    "citation": "Hargreaves AL, Harder LD, Johnson SD. 2009. Consumptive emasculation: the ecological and evolutionary consequences of pollen theft. Biological Reviews 84:259-276.",
+    "doi": "10.1111/j.1469-185X.2008.00074.x",
+    "selection_basis": "conflict_first_pollen_theft_not_architecture"
+  },
+  "pass1_blinded_fields": [
+    "reference_identity",
+    "empirical_pollen_theft_status",
+    "plant_taxon_identity",
+    "dependency_group",
+    "primary_source_status",
+    "inclusion_exclusion_reason"
+  ],
+  "forbidden_during_pass1": [
+    "architecture_mode",
+    "heteranthery_status",
+    "dichogamy_status",
+    "herkogamy_status",
+    "poricidal_anther_status",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry"
+  ],
+  "pass2_open_condition": "all_anchor_review_references_classified_and_included_dependency_groups_frozen",
+  "primary_model_admission": "FORBIDDEN_UNTIL_PASS2_INDEPENDENT_CODING_AND_DEPENDENCE_AUDIT",
+  "claim_ceiling": "registered_reconstruction_protocol_only"
+}

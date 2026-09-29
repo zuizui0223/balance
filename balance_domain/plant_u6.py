@@ -1,0 +1,1076 @@
+"""Blinded reconstruction contract for the BALANCE U6 pollen-theft universe."""
+from __future__ import annotations
+
+import csv
+import json
+from collections import Counter
+from pathlib import Path
+
+from .plant_macro import MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
+from .plant_macro_agreement import _cohen_kappa, _gwet_ac1
+from .plant_confirmatory import PREDICTORS, adjudicated_independent_plant_values
+
+
+FIELDS = (
+    "reference_id",
+    "reference_citation",
+    "reference_year",
+    "reference_type_status",
+    "plant_taxon_raw",
+    "dependency_group",
+    "primary_source_status",
+    "inclusion_status",
+    "exclusion_reason",
+    "classification_basis",
+    "notes",
+)
+
+FORBIDDEN_PASS1_FIELDS = {
+    "architecture_mode",
+    "heteranthery_status",
+    "dichogamy_status",
+    "herkogamy_status",
+    "poricidal_anther_status",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+}
+
+REFERENCE_STATUS = {
+    "EMPIRICAL_POLLEN_THEFT_CANDIDATE",
+    "EMPIRICAL_BUT_NOT_POLLEN_THEFT",
+    "REVIEW_OR_THEORY",
+    "NONPLANT_OR_METHODS",
+    "UNRESOLVED",
+}
+INCLUSION_STATUS = {"INCLUDE", "EXCLUDE", "UNRESOLVED"}
+PRIMARY_SOURCE_STATUS = {"RESOLVED", "UNRESOLVED", "NOT_REQUIRED"}
+
+
+def load_u6_anchor(path: Path) -> dict:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if data.get("schema_version") != "BALANCE_PLANT_U6_REVIEW_ANCHOR_V1":
+        raise ValueError("U6 anchor schema mismatch")
+    forbidden = set(data.get("forbidden_during_pass1", []))
+    if forbidden != FORBIDDEN_PASS1_FIELDS:
+        raise ValueError("U6 Pass-1 forbidden-field contract drifted")
+    if data.get("primary_model_admission") != (
+        "FORBIDDEN_UNTIL_PASS2_INDEPENDENT_CODING_AND_DEPENDENCE_AUDIT"
+    ):
+        raise ValueError("U6 primary-model admission must remain closed")
+    return data
+
+
+def load_u6_reference_classification(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = tuple(reader.fieldnames or ())
+        if fields != FIELDS:
+            extras = set(fields) & FORBIDDEN_PASS1_FIELDS
+            if extras:
+                raise ValueError(
+                    f"U6 Pass-1 classification contains forbidden architecture fields: {sorted(extras)}"
+                )
+            raise ValueError("U6 reference classification columns must match canonical order")
+        rows = list(reader)
+
+    if not rows:
+        raise ValueError("U6 reference classification must contain at least one row")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside canonical schema")
+        clean = {key: (row.get(key) or "").strip() for key in FIELDS}
+        if not clean["reference_id"] or not clean["reference_citation"]:
+            raise ValueError(f"row {row_number} reference identity must be non-empty")
+        if clean["reference_id"] in seen:
+            raise ValueError(f"duplicate U6 reference_id {clean['reference_id']!r}")
+        seen.add(clean["reference_id"])
+
+        if clean["reference_type_status"] not in REFERENCE_STATUS:
+            raise ValueError(f"row {row_number} invalid reference_type_status")
+        if clean["primary_source_status"] not in PRIMARY_SOURCE_STATUS:
+            raise ValueError(f"row {row_number} invalid primary_source_status")
+        if clean["inclusion_status"] not in INCLUSION_STATUS:
+            raise ValueError(f"row {row_number} invalid inclusion_status")
+        if clean["classification_basis"] != "ANCHOR_REVIEW_REFERENCE_CLASSIFICATION":
+            raise ValueError(f"row {row_number} invalid classification_basis")
+        out.append(clean)
+    return out
+
+
+
+def build_u6_reference_readout(path: Path) -> dict:
+    """Summarize Pass-1 reconstruction progress without opening architecture fields."""
+    rows = load_u6_reference_classification(path)
+    status_counts = Counter(r["reference_type_status"] for r in rows)
+    inclusion_counts = Counter(r["inclusion_status"] for r in rows)
+    candidate_ids = [
+        r["reference_id"]
+        for r in rows
+        if r["reference_type_status"] == "EMPIRICAL_POLLEN_THEFT_CANDIDATE"
+    ]
+    included = [r["reference_id"] for r in rows if r["inclusion_status"] == "INCLUDE"]
+    return {
+        "analysis": "balance_plant_u6_pass1_reference_reconstruction",
+        "n_references": len(rows),
+        "reference_status_counts": dict(sorted(status_counts.items())),
+        "inclusion_status_counts": dict(sorted(inclusion_counts.items())),
+        "pollen_theft_candidate_reference_ids": candidate_ids,
+        "included_reference_ids": included,
+        "n_included": len(included),
+        "architecture_fields_open": False,
+        "pass2_open": False,
+        "claim_ceiling": "pass1_reference_reconstruction_only",
+    }
+
+
+
+def build_u6_multi_batch_readout(paths: list[Path]) -> dict:
+    """Combine frozen Pass-1 batches while enforcing unique ordered reference IDs."""
+    if not paths:
+        raise ValueError("U6 multi-batch readout requires at least one batch")
+
+    rows: list[dict[str, str]] = []
+    for path in paths:
+        rows.extend(load_u6_reference_classification(path))
+
+    ids = [row["reference_id"] for row in rows]
+    if len(ids) != len(set(ids)):
+        raise ValueError("U6 Pass-1 batches contain duplicate reference IDs")
+
+    def _number(reference_id: str) -> int:
+        prefix = "U6_REF_"
+        if not reference_id.startswith(prefix):
+            raise ValueError(f"invalid U6 reference_id {reference_id!r}")
+        try:
+            return int(reference_id[len(prefix):])
+        except ValueError as exc:
+            raise ValueError(f"invalid U6 reference_id {reference_id!r}") from exc
+
+    numbers = [_number(reference_id) for reference_id in ids]
+    if numbers != list(range(numbers[0], numbers[0] + len(numbers))):
+        raise ValueError("U6 Pass-1 batch reference IDs must be consecutive in supplied order")
+
+    status_counts = Counter(row["reference_type_status"] for row in rows)
+    inclusion_counts = Counter(row["inclusion_status"] for row in rows)
+    candidates = [
+        row["reference_id"]
+        for row in rows
+        if row["reference_type_status"] == "EMPIRICAL_POLLEN_THEFT_CANDIDATE"
+    ]
+    return {
+        "analysis": "balance_plant_u6_pass1_multibatch_reconstruction",
+        "n_references": len(rows),
+        "first_reference_id": ids[0],
+        "last_reference_id": ids[-1],
+        "reference_status_counts": dict(sorted(status_counts.items())),
+        "inclusion_status_counts": dict(sorted(inclusion_counts.items())),
+        "pollen_theft_candidate_reference_ids": candidates,
+        "n_candidates": len(candidates),
+        "n_included": sum(row["inclusion_status"] == "INCLUDE" for row in rows),
+        "architecture_fields_open": False,
+        "pass2_open": False,
+        "claim_ceiling": "pass1_reference_reconstruction_only",
+    }
+
+
+
+CANDIDATE_FIELDS = (
+    "adjudication_id",
+    "reference_id",
+    "plant_taxon",
+    "dependency_group",
+    "primary_source_status",
+    "qualifying_receipt",
+    "decision",
+    "reason_code",
+    "source_basis",
+    "notes",
+)
+
+QUALIFYING_RECEIPTS = {
+    "DIRECT_REMOVAL_LOW_DEPOSITION",
+    "DIRECT_REMOVAL_FITNESS_COST",
+    "DIRECT_CONSUMPTION_AVAILABLE_POLLEN_LOSS",
+    "DIRECT_POLLEN_ROBBING_NO_POLLINATION",
+    "NONE",
+    "UNRESOLVED",
+}
+CANDIDATE_DECISIONS = {"INCLUDE", "EXCLUDE", "RETAIN_UNRESOLVED"}
+CANDIDATE_PRIMARY_STATUS = {"RESOLVED", "PARTIAL", "UNRESOLVED"}
+
+
+def load_u6_candidate_adjudication(path: Path) -> list[dict[str, str]]:
+    """Load taxon-level candidate decisions while keeping Pass-2 architecture closed."""
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fields = tuple(reader.fieldnames or ())
+        if fields != CANDIDATE_FIELDS:
+            extras = set(fields) & FORBIDDEN_PASS1_FIELDS
+            if extras:
+                raise ValueError(
+                    f"U6 candidate adjudication contains forbidden architecture fields: {sorted(extras)}"
+                )
+            raise ValueError("U6 candidate adjudication columns must match canonical order")
+        rows = list(reader)
+
+    if not rows:
+        raise ValueError("U6 candidate adjudication must contain at least one row")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside canonical schema")
+        clean = {key: (row.get(key) or "").strip() for key in CANDIDATE_FIELDS}
+        for key in CANDIDATE_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        if clean["adjudication_id"] in seen:
+            raise ValueError(f"duplicate adjudication_id {clean['adjudication_id']!r}")
+        seen.add(clean["adjudication_id"])
+        if not clean["reference_id"].startswith("U6_REF_"):
+            raise ValueError(f"row {row_number} invalid reference_id")
+        if clean["primary_source_status"] not in CANDIDATE_PRIMARY_STATUS:
+            raise ValueError(f"row {row_number} invalid primary_source_status")
+        if clean["qualifying_receipt"] not in QUALIFYING_RECEIPTS:
+            raise ValueError(f"row {row_number} invalid qualifying_receipt")
+        if clean["decision"] not in CANDIDATE_DECISIONS:
+            raise ValueError(f"row {row_number} invalid decision")
+
+        if clean["decision"] == "INCLUDE":
+            if clean["primary_source_status"] != "RESOLVED":
+                raise ValueError(f"row {row_number} INCLUDE requires RESOLVED primary source")
+            if clean["qualifying_receipt"] in {"NONE", "UNRESOLVED"}:
+                raise ValueError(f"row {row_number} INCLUDE requires a qualifying receipt")
+            if clean["plant_taxon"] == "UNRESOLVED" or clean["dependency_group"] == "UNRESOLVED":
+                raise ValueError(f"row {row_number} INCLUDE requires frozen taxon/dependency group")
+
+        if clean["decision"] == "EXCLUDE" and clean["reason_code"] == "UNRESOLVED":
+            raise ValueError(f"row {row_number} EXCLUDE requires a frozen reason")
+        out.append(clean)
+
+    return out
+
+
+def build_u6_candidate_adjudication_readout(path: Path) -> dict:
+    rows = load_u6_candidate_adjudication(path)
+    decision_counts = Counter(row["decision"] for row in rows)
+    included = [row for row in rows if row["decision"] == "INCLUDE"]
+    dependencies = sorted({row["dependency_group"] for row in included})
+    return {
+        "analysis": "balance_plant_u6_candidate_primary_source_adjudication",
+        "n_adjudication_rows": len(rows),
+        "decision_counts": dict(sorted(decision_counts.items())),
+        "n_included_rows": len(included),
+        "n_included_dependency_groups": len(dependencies),
+        "included_dependency_groups": dependencies,
+        "pass2_open": False,
+        "architecture_fields_open": False,
+        "claim_ceiling": "pass1_candidate_adjudication_only",
+    }
+
+
+
+def build_u6_pass1_freeze(
+    reference_paths: list[Path],
+    adjudication_paths: list[Path],
+) -> dict:
+    """Close U6 Pass 1 only after the conflict-first universe is fully reconstructed.
+
+    RETAIN_UNRESOLVED is explicit evidence-ceiling missingness and is not silently
+    promoted or replaced. Pass 2 opens only for dependency groups supported by at
+    least one INCLUDE adjudication.
+    """
+    if not reference_paths or not adjudication_paths:
+        raise ValueError("U6 Pass-1 freeze requires reference and adjudication paths")
+
+    references: list[dict[str, str]] = []
+    for path in reference_paths:
+        references.extend(load_u6_reference_classification(path))
+
+    reference_ids = [row["reference_id"] for row in references]
+    expected_ids = [f"U6_REF_{i:03d}" for i in range(1, 158)]
+    if reference_ids != expected_ids:
+        raise ValueError("U6 Pass-1 freeze requires the complete ordered 157-reference universe")
+    if any(row["reference_type_status"] == "UNRESOLVED" for row in references):
+        raise ValueError("U6 Pass-1 freeze cannot retain unresolved reference classifications")
+
+    candidate_ids = {
+        row["reference_id"]
+        for row in references
+        if row["reference_type_status"] == "EMPIRICAL_POLLEN_THEFT_CANDIDATE"
+    }
+
+    adjudications: list[dict[str, str]] = []
+    for path in adjudication_paths:
+        adjudications.extend(load_u6_candidate_adjudication(path))
+
+    adjudicated_ids = {row["reference_id"] for row in adjudications}
+    missing = sorted(candidate_ids - adjudicated_ids)
+    extra = sorted(adjudicated_ids - candidate_ids)
+    if missing:
+        raise ValueError(f"U6 candidate references lack adjudication: {missing}")
+    if extra:
+        raise ValueError(f"U6 adjudication exists for non-candidate references: {extra}")
+
+    by_reference: dict[str, list[dict[str, str]]] = {}
+    for row in adjudications:
+        by_reference.setdefault(row["reference_id"], []).append(row)
+
+    included_reference_ids: list[str] = []
+    excluded_reference_ids: list[str] = []
+    retained_unresolved_reference_ids: list[str] = []
+    for reference_id in sorted(candidate_ids):
+        decisions = {row["decision"] for row in by_reference[reference_id]}
+        if "INCLUDE" in decisions:
+            included_reference_ids.append(reference_id)
+        elif "RETAIN_UNRESOLVED" in decisions:
+            retained_unresolved_reference_ids.append(reference_id)
+        elif decisions == {"EXCLUDE"}:
+            excluded_reference_ids.append(reference_id)
+        else:
+            raise ValueError(
+                f"U6 candidate {reference_id!r} has an unsupported decision mixture: "
+                f"{sorted(decisions)}"
+            )
+
+    included_rows = [row for row in adjudications if row["decision"] == "INCLUDE"]
+    included_dependency_groups = sorted({row["dependency_group"] for row in included_rows})
+    if not included_dependency_groups:
+        raise ValueError("U6 Pass-1 freeze produced no included dependency groups")
+
+    source_refs_by_dependency: dict[str, list[str]] = {}
+    for row in included_rows:
+        source_refs_by_dependency.setdefault(row["dependency_group"], []).append(
+            row["reference_id"]
+        )
+    source_refs_by_dependency = {
+        group: sorted(set(reference_ids))
+        for group, reference_ids in sorted(source_refs_by_dependency.items())
+    }
+
+    return {
+        "analysis": "balance_plant_u6_pass1_freeze",
+        "status": "PASS1_CLOSED",
+        "n_references": len(references),
+        "n_candidate_references": len(candidate_ids),
+        "n_candidate_adjudication_rows": len(adjudications),
+        "n_included_reference_ids": len(included_reference_ids),
+        "n_excluded_reference_ids": len(excluded_reference_ids),
+        "n_retained_unresolved_reference_ids": len(retained_unresolved_reference_ids),
+        "included_reference_ids": included_reference_ids,
+        "excluded_reference_ids": excluded_reference_ids,
+        "retained_unresolved_reference_ids": retained_unresolved_reference_ids,
+        "n_included_dependency_groups": len(included_dependency_groups),
+        "included_dependency_groups": included_dependency_groups,
+        "source_reference_ids_by_dependency_group": source_refs_by_dependency,
+        "architecture_used_for_pass1_admission": False,
+        "primary_model_admission": False,
+        "claim_ceiling": (
+            "pass1_conflict_first_universe_closed_architecture_not_used_for_admission"
+        ),
+    }
+
+
+
+PASS1_FREEZE_SCHEMA = "BALANCE_PLANT_U6_PASS1_FREEZE_V1"
+
+
+def load_u6_pass1_freeze_manifest(path: Path) -> dict:
+    """Load the frozen U6 Pass-1 manifest and keep confirmatory admission closed."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if data.get("schema_version") != PASS1_FREEZE_SCHEMA:
+        raise ValueError("U6 Pass-1 freeze manifest schema mismatch")
+    status = data.get("status")
+    if status not in {
+        "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN",
+        "PASS1_CLOSED_PASS2_CODING_OPEN",
+    }:
+        raise ValueError("U6 freeze manifest has an invalid Pass-2 stage")
+    contract = data.get("pass1_contract", {})
+    if contract.get("n_anchor_review_references") != 157:
+        raise ValueError("U6 Pass-1 freeze must retain all 157 anchor references")
+    if contract.get("n_unresolved_reference_classifications") != 0:
+        raise ValueError("U6 Pass-1 freeze cannot retain unresolved reference classifications")
+    if contract.get("architecture_used_for_admission") is not False:
+        raise ValueError("U6 Pass-1 admission must remain architecture-blind")
+
+    pass2 = data.get("pass2", {})
+    if pass2.get("primary_model_admission") is not False:
+        raise ValueError("U6 Pass-1 freeze cannot directly license the primary model")
+    if status == "PASS1_CLOSED_PASS2_SOURCE_RECOVERY_OPEN":
+        if pass2.get("source_recovery_open") is not True:
+            raise ValueError("U6 source-recovery stage must be open")
+        if pass2.get("source_packet_frozen") is not False:
+            raise ValueError("U6 source packet cannot be frozen before source recovery closes")
+        if pass2.get("coding_open") is not False:
+            raise ValueError("U6 coding cannot open before source recovery freezes")
+    else:
+        if pass2.get("source_recovery_open") is not False:
+            raise ValueError("U6 source recovery must close before coding opens")
+        if pass2.get("source_packet_frozen") is not True:
+            raise ValueError("U6 coding requires a frozen source packet")
+        if pass2.get("coding_open") is not True:
+            raise ValueError("U6 coding-open stage must explicitly open coding")
+        if not pass2.get("frozen_source_packet"):
+            raise ValueError("U6 coding-open stage must name the frozen source packet")
+
+    groups = data.get("included_dependency_groups")
+    if not isinstance(groups, list) or not groups:
+        raise ValueError("U6 Pass-1 freeze requires included dependency groups")
+    if groups != sorted(set(groups)):
+        raise ValueError("U6 included dependency groups must be unique and sorted")
+
+    source_map = data.get("source_reference_ids_by_dependency_group")
+    if not isinstance(source_map, dict) or set(source_map) != set(groups):
+        raise ValueError("U6 source-reference map must cover every included dependency group")
+    return data
+
+
+def validate_u6_pass1_freeze_manifest(
+    manifest_path: Path,
+    reference_paths: list[Path],
+    adjudication_paths: list[Path],
+) -> dict:
+    """Require the frozen manifest to equal the executable Pass-1 reconstruction."""
+    manifest = load_u6_pass1_freeze_manifest(manifest_path)
+    live = build_u6_pass1_freeze(reference_paths, adjudication_paths)
+
+    for key in (
+        "included_reference_ids",
+        "excluded_reference_ids",
+        "retained_unresolved_reference_ids",
+    ):
+        expected = manifest["candidate_reference_outcomes"][key]
+        if expected != live[key]:
+            raise ValueError(f"U6 Pass-1 freeze manifest drift for {key}")
+
+    if manifest["included_dependency_groups"] != live["included_dependency_groups"]:
+        raise ValueError("U6 Pass-1 freeze manifest dependency groups drifted")
+    if (
+        manifest["source_reference_ids_by_dependency_group"]
+        != live["source_reference_ids_by_dependency_group"]
+    ):
+        raise ValueError("U6 Pass-1 freeze source-reference mapping drifted")
+    return live
+
+
+PASS2_FIELDS = (
+    "dependency_group",
+    "source_reference_ids",
+    "coder_id",
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+    "coding_status",
+    "notes",
+)
+
+PASS2_CODING_STATUS = {"UNSTARTED", "CODED"}
+
+
+def load_u6_pass2_double_coding(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
+    """Load U6 Pass-2 architecture/predictor coding only for frozen Pass-1 groups."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+    source_map = manifest["source_reference_ids_by_dependency_group"]
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != PASS2_FIELDS:
+            raise ValueError("U6 Pass-2 coding columns must match canonical order")
+        rows = list(reader)
+
+    if not rows:
+        raise ValueError("U6 Pass-2 coding worksheet must contain rows")
+
+    grouped: dict[str, list[dict[str, str]]] = {}
+    coder_ids: set[str] = set()
+    seen: set[tuple[str, str]] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 Pass-2 schema")
+        clean = {key: (row.get(key) or "").strip() for key in PASS2_FIELDS}
+        for key in PASS2_FIELDS[:-1]:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 dependency group {group!r}")
+        expected_sources = ";".join(source_map[group])
+        if clean["source_reference_ids"] != expected_sources:
+            raise ValueError(f"row {row_number} source references disagree with Pass-1 freeze")
+
+        key = (group, clean["coder_id"])
+        if key in seen:
+            raise ValueError(f"duplicate U6 Pass-2 group/coder pair {key!r}")
+        seen.add(key)
+        coder_ids.add(clean["coder_id"])
+        grouped.setdefault(group, []).append(clean)
+
+        if clean["architecture_mode"] not in RESOLUTION - {"NA"}:
+            raise ValueError(f"row {row_number} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {row_number} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {row_number} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
+        if clean["coding_status"] not in PASS2_CODING_STATUS:
+            raise ValueError(f"row {row_number} invalid coding_status")
+
+        if manifest["pass2"].get("coding_open") is not True:
+            if clean["coding_status"] != "UNSTARTED":
+                raise ValueError(
+                    f"row {row_number} U6 Pass-2 coding is locked until source recovery freezes"
+                )
+
+        if clean["coding_status"] == "UNSTARTED":
+            if any(
+                clean[field] != "UNRESOLVED"
+                for field in (
+                    "architecture_mode",
+                    "module_substrate",
+                    "conflict_timing_geometry",
+                    "conflict_spatial_geometry",
+                )
+            ):
+                raise ValueError(
+                    f"row {row_number} UNSTARTED coding must remain entirely UNRESOLVED"
+                )
+        clean["notes"] = (row.get("notes") or "").strip()
+        out.append(clean)
+
+    if coder_ids != {"CODER_A", "CODER_B"}:
+        raise ValueError(
+            "U6 Pass-2 worksheet requires frozen CODER_A and CODER_B IDs"
+        )
+    if set(grouped) != expected_groups:
+        raise ValueError("U6 Pass-2 worksheet must cover every frozen dependency group")
+    if any(len(rows) != 2 for rows in grouped.values()):
+        raise ValueError("each U6 Pass-2 dependency group requires exactly two coder rows")
+    return out
+
+
+
+U6_DEPENDENCE_FIELDS = (
+    "u6_dependency_group",
+    "overlap_universe",
+    "overlap_record_id",
+    "dependence_block",
+    "analysis_action",
+    "notes",
+)
+
+U6_ANALYSIS_ACTIONS = {"U6_ONLY", "SHARED_SPECIES_BLOCK", "SHARED_TAXON_CONCEPT_BLOCK"}
+
+
+def load_u6_cross_universe_dependence(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
+    """Validate one dependence row for every frozen U6 dependency group."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_DEPENDENCE_FIELDS:
+            raise ValueError("U6 dependence columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 dependence map must contain exactly one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 dependence schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_DEPENDENCE_FIELDS}
+        for key in U6_DEPENDENCE_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+        group = clean["u6_dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 dependency group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 dependence group {group!r}")
+        seen.add(group)
+        if clean["analysis_action"] not in U6_ANALYSIS_ACTIONS:
+            raise ValueError(f"row {row_number} invalid analysis_action")
+        if clean["analysis_action"] in {"SHARED_SPECIES_BLOCK", "SHARED_TAXON_CONCEPT_BLOCK"}:
+            if clean["overlap_universe"] == "NONE" or clean["overlap_record_id"] == "NONE":
+                raise ValueError(f"row {row_number} shared species block requires overlap identity")
+        if clean["analysis_action"] == "U6_ONLY":
+            if clean["overlap_universe"] != "NONE" or clean["overlap_record_id"] != "NONE":
+                raise ValueError(f"row {row_number} U6_ONLY cannot declare external overlap")
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 dependence map does not cover the frozen dependency groups")
+    return out
+
+
+
+U6_SOURCE_RECOVERY_FIELDS = (
+    "dependency_group",
+    "admission_reference_ids",
+    "query_pollination_biology",
+    "query_floral_morphology",
+    "query_pollen_transfer",
+    "source_recovery_status",
+    "supplemental_primary_source_ids",
+    "packet_status",
+    "notes",
+)
+
+U6_SOURCE_RECOVERY_STATUS = {"PENDING", "RESOLVED", "EVIDENCE_CEILING"}
+U6_SOURCE_PACKET_STATUS = {"OPEN", "FROZEN"}
+U6_FORBIDDEN_QUERY_TERMS = {
+    "heteranthery",
+    "dichogamy",
+    "herkogamy",
+    "division of labour",
+    "division of labor",
+    "structural module division",
+    "shared integrated",
+    "temporal separation",
+    "spatial separation",
+    "signal separation",
+    "polymorphic or mosaic",
+    "poricidal",
+}
+
+
+def load_u6_pass2_source_recovery(path: Path, freeze_manifest_path: Path) -> list[dict[str, str]]:
+    """Validate generic architecture-blind source recovery before Pass-2 coding."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+    source_map = manifest["source_reference_ids_by_dependency_group"]
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_SOURCE_RECOVERY_FIELDS:
+            raise ValueError("U6 Pass-2 source-recovery columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 source-recovery frame must contain one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 source-recovery schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_SOURCE_RECOVERY_FIELDS}
+        for key in U6_SOURCE_RECOVERY_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 source-recovery group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 source-recovery group {group!r}")
+        seen.add(group)
+
+        expected_refs = ";".join(source_map[group])
+        if clean["admission_reference_ids"] != expected_refs:
+            raise ValueError(f"row {row_number} admission references disagree with Pass-1 freeze")
+
+        query_text = " ".join(
+            clean[field].casefold()
+            for field in (
+                "query_pollination_biology",
+                "query_floral_morphology",
+                "query_pollen_transfer",
+            )
+        )
+        leaked = sorted(term for term in U6_FORBIDDEN_QUERY_TERMS if term in query_text)
+        if leaked:
+            raise ValueError(
+                f"row {row_number} source-recovery query leaks architecture categories: {leaked}"
+            )
+
+        if clean["source_recovery_status"] not in U6_SOURCE_RECOVERY_STATUS:
+            raise ValueError(f"row {row_number} invalid source_recovery_status")
+        if clean["packet_status"] not in U6_SOURCE_PACKET_STATUS:
+            raise ValueError(f"row {row_number} invalid packet_status")
+
+        if clean["source_recovery_status"] == "PENDING":
+            if clean["supplemental_primary_source_ids"] != "UNRESOLVED":
+                raise ValueError(
+                    f"row {row_number} pending source recovery must retain UNRESOLVED sources"
+                )
+            if clean["packet_status"] != "OPEN":
+                raise ValueError(f"row {row_number} pending source recovery cannot be frozen")
+
+        if clean["packet_status"] == "FROZEN" and clean["source_recovery_status"] == "PENDING":
+            raise ValueError(f"row {row_number} frozen packet cannot remain pending")
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 source-recovery frame does not cover frozen dependency groups")
+    return out
+
+
+def u6_source_packet_ready(rows: list[dict[str, str]]) -> bool:
+    """Return True only when every frozen group has a closed source-recovery decision."""
+    return bool(rows) and all(
+        row["source_recovery_status"] in {"RESOLVED", "EVIDENCE_CEILING"}
+        and row["packet_status"] == "FROZEN"
+        for row in rows
+    )
+
+
+
+U6_FROZEN_SOURCE_PACKET_FIELDS = (
+    "dependency_group",
+    "plant_taxon",
+    "admission_reference_ids",
+    "admission_primary_source_basis",
+    "supplemental_primary_source_ids",
+    "source_recovery_status",
+    "coder_instruction",
+)
+
+
+def load_u6_frozen_source_packet(
+    path: Path,
+    freeze_manifest_path: Path,
+    source_recovery_path: Path,
+) -> list[dict[str, str]]:
+    """Validate the final coder packet against Pass-1 and source-recovery freezes."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    recovery = load_u6_pass2_source_recovery(source_recovery_path, freeze_manifest_path)
+    if not u6_source_packet_ready(recovery):
+        raise ValueError("U6 frozen source packet cannot open before source recovery closes")
+    recovery_by_group = {row["dependency_group"]: row for row in recovery}
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_FROZEN_SOURCE_PACKET_FIELDS:
+            raise ValueError("U6 frozen source-packet columns must match canonical order")
+        rows = list(reader)
+
+    expected_groups = set(manifest["included_dependency_groups"])
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 frozen source packet must contain one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 source-packet schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_FROZEN_SOURCE_PACKET_FIELDS}
+        for key in U6_FROZEN_SOURCE_PACKET_FIELDS:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 source-packet group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 frozen source-packet group {group!r}")
+        seen.add(group)
+
+        expected_refs = ";".join(manifest["source_reference_ids_by_dependency_group"][group])
+        if clean["admission_reference_ids"] != expected_refs:
+            raise ValueError(f"row {row_number} admission references drifted")
+
+        recovery_row = recovery_by_group[group]
+        if clean["supplemental_primary_source_ids"] != recovery_row["supplemental_primary_source_ids"]:
+            raise ValueError(f"row {row_number} supplemental sources drifted")
+        if clean["source_recovery_status"] != recovery_row["source_recovery_status"]:
+            raise ValueError(f"row {row_number} source-recovery status drifted")
+        if "DO_NOT_USE_U6_ADMISSION_DECISION_NOTES" not in clean["coder_instruction"]:
+            raise ValueError(f"row {row_number} coder instruction must preserve admission blinding")
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 frozen source packet does not cover every dependency group")
+    return out
+
+
+
+U6_AGREEMENT_FIELDS = (
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+)
+
+
+def build_u6_pass2_agreement_from_rows(rows: list[dict[str, str]]) -> dict:
+    """Compute U6 coder agreement only after both coders have completed every row."""
+    if not rows:
+        raise ValueError("U6 agreement requires coded rows")
+    if any(row["coding_status"] != "CODED" for row in rows):
+        raise ValueError("U6 agreement cannot run while any coding row is UNSTARTED")
+
+    grouped: dict[str, list[dict[str, str]]] = {}
+    coder_ids: set[str] = set()
+    for row in rows:
+        grouped.setdefault(row["dependency_group"], []).append(row)
+        coder_ids.add(row["coder_id"])
+    if coder_ids != {"CODER_A", "CODER_B"}:
+        raise ValueError("U6 agreement requires frozen CODER_A and CODER_B IDs")
+    if any(len(group) != 2 for group in grouped.values()):
+        raise ValueError("U6 agreement requires exactly two rows per dependency group")
+
+    fields: dict[str, dict] = {}
+    for field in U6_AGREEMENT_FIELDS:
+        group_ids = sorted(grouped)
+        a = [grouped[g][0][field] for g in group_ids]
+        b = [grouped[g][1][field] for g in group_ids]
+        disagreements = [
+            g for g in group_ids if grouped[g][0][field] != grouped[g][1][field]
+        ]
+        n = len(group_ids)
+        raw = (n - len(disagreements)) / n
+        fields[field] = {
+            "n_pairs": n,
+            "raw_agreement": raw,
+            "cohen_kappa": _cohen_kappa(a, b),
+            "gwet_ac1": _gwet_ac1(a, b),
+            "coder_a_marginals": dict(sorted(Counter(a).items())),
+            "coder_b_marginals": dict(sorted(Counter(b).items())),
+            "disagreement_dependency_groups": disagreements,
+            "codebook_repair_trigger": raw < 0.80,
+        }
+
+    return {
+        "analysis": "balance_u6_pass2_independent_coder_agreement",
+        "n_dependency_groups": len(grouped),
+        "fields": fields,
+        "workflow_threshold_raw_agreement": 0.80,
+        "confirmatory_promotion_allowed": False,
+        "promotion_note": (
+            "agreement closes reproducibility only; predictor outcome-independence, "
+            "adjudication, dependence, and estimability remain separate gates"
+        ),
+    }
+
+
+def build_u6_pass2_agreement(path: Path, freeze_manifest_path: Path) -> dict:
+    rows = load_u6_pass2_double_coding(path, freeze_manifest_path)
+    return build_u6_pass2_agreement_from_rows(rows)
+
+
+
+U6_ADJUDICATION_FIELDS = (
+    "dependency_group",
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+    "adjudication_status",
+    "adjudication_basis",
+    "notes",
+)
+
+U6_ADJUDICATION_STATUS = {"PENDING", "ADJUDICATED"}
+
+
+def load_u6_pass2_adjudication(
+    path: Path,
+    freeze_manifest_path: Path,
+    coding_rows: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """Validate one post-coding adjudication row per frozen U6 dependency group."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+
+    coding_by_group: dict[str, list[dict[str, str]]] = {}
+    for row in coding_rows:
+        coding_by_group.setdefault(row["dependency_group"], []).append(row)
+
+    agreement_repair_required = False
+    if coding_rows and all(row["coding_status"] == "CODED" for row in coding_rows):
+        agreement = build_u6_pass2_agreement_from_rows(coding_rows)
+        agreement_repair_required = any(
+            stats["codebook_repair_trigger"]
+            for stats in agreement["fields"].values()
+        )
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_ADJUDICATION_FIELDS:
+            raise ValueError("U6 adjudication columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 adjudication must contain exactly one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 adjudication schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_ADJUDICATION_FIELDS}
+        for key in U6_ADJUDICATION_FIELDS[:-1]:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 adjudication group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 adjudication group {group!r}")
+        seen.add(group)
+
+        if clean["adjudication_status"] not in U6_ADJUDICATION_STATUS:
+            raise ValueError(f"row {row_number} invalid adjudication_status")
+        if clean["architecture_mode"] not in RESOLUTION - {"NA"}:
+            raise ValueError(f"row {row_number} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {row_number} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {row_number} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
+
+        if clean["adjudication_status"] == "PENDING":
+            if clean["adjudication_basis"] != "AWAITING_INDEPENDENT_DOUBLE_CODING":
+                raise ValueError(f"row {row_number} pending adjudication basis drifted")
+            if any(
+                clean[field] != "UNRESOLVED"
+                for field in U6_AGREEMENT_FIELDS
+            ):
+                raise ValueError(
+                    f"row {row_number} pending adjudication must remain unresolved"
+                )
+        else:
+            if agreement_repair_required:
+                raise ValueError(
+                    f"row {row_number} cannot adjudicate before codebook repair/recode closes"
+                )
+            coding_group = coding_by_group.get(group, [])
+            if len(coding_group) != 2 or any(
+                coder_row["coding_status"] != "CODED" for coder_row in coding_group
+            ):
+                raise ValueError(
+                    f"row {row_number} cannot adjudicate before both independent coder rows are CODED"
+                )
+            if any(clean[field] == "UNRESOLVED" for field in U6_AGREEMENT_FIELDS):
+                raise ValueError(
+                    f"row {row_number} ADJUDICATED requires resolved architecture and predictors"
+                )
+            pair_by_coder = {item["coder_id"]: item for item in coding_group}
+            disagreements = [
+                field for field in U6_AGREEMENT_FIELDS
+                if pair_by_coder["CODER_A"][field]
+                != pair_by_coder["CODER_B"][field]
+            ]
+            expected_basis = (
+                "SOURCE_REVIEW_OF_DISAGREEMENTS"
+                if disagreements
+                else "CODER_CONSENSUS"
+            )
+            if clean["adjudication_basis"] != expected_basis:
+                raise ValueError(
+                    f"row {row_number} adjudication_basis must be {expected_basis!r}"
+                )
+            for field in U6_AGREEMENT_FIELDS:
+                a_value = pair_by_coder["CODER_A"][field]
+                b_value = pair_by_coder["CODER_B"][field]
+                if a_value == b_value and clean[field] != a_value:
+                    raise ValueError(
+                        f"row {row_number} cannot override coder consensus for {field}"
+                    )
+            if not clean["notes"]:
+                raise ValueError(f"row {row_number} adjudicated row requires notes")
+
+        clean["notes"] = (row.get("notes") or "").strip()
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 adjudication does not cover every frozen dependency group")
+    return out
+
+
+
+def build_u6_evidence_readiness(
+    coding_rows: list[dict[str, str]],
+    adjudication_rows: list[dict[str, str]],
+    predictor_receipts: list[dict[str, str]],
+    dependence_rows: list[dict[str, str]],
+) -> dict:
+    """Report whether U6 can enter combined confirmatory model assembly.
+
+    This does not decide whether the combined plant model is estimable; class support and
+    design rank are evaluated after all licensed universes are assembled.
+    """
+    groups = sorted({row["dependency_group"] for row in coding_rows})
+    expected_groups = set(groups)
+    if len(groups) != 21:
+        raise ValueError("U6 readiness requires the frozen 21 dependency groups")
+
+    dependence_groups = {row["u6_dependency_group"] for row in dependence_rows}
+    if dependence_groups != expected_groups:
+        raise ValueError("U6 readiness dependence map does not match coding groups")
+
+    coding_complete = all(row["coding_status"] == "CODED" for row in coding_rows)
+    agreement_report = None
+    reliability_pass = False
+    if coding_complete:
+        agreement_report = build_u6_pass2_agreement_from_rows(coding_rows)
+        reliability_pass = all(
+            not stats["codebook_repair_trigger"]
+            for stats in agreement_report["fields"].values()
+        )
+
+    adjudication_by_group = {row["dependency_group"]: row for row in adjudication_rows}
+    if set(adjudication_by_group) != expected_groups:
+        raise ValueError("U6 readiness adjudication groups do not match coding groups")
+    adjudication_complete = all(
+        row["adjudication_status"] == "ADJUDICATED"
+        for row in adjudication_rows
+    )
+
+    licensed_values = adjudicated_independent_plant_values(predictor_receipts)
+    receipt_complete_groups = sorted(
+        group
+        for group in groups
+        if all((group, predictor) in licensed_values for predictor in PREDICTORS)
+    )
+    predictor_receipts_complete = len(receipt_complete_groups) == len(groups)
+
+    blockers: list[str] = []
+    if not coding_complete:
+        blockers.append("independent_double_coding_incomplete")
+    if coding_complete and not reliability_pass:
+        blockers.append("coder_reliability_gate_failed_or_requires_codebook_repair")
+    if not adjudication_complete:
+        blockers.append("post_coding_adjudication_incomplete")
+    if not predictor_receipts_complete:
+        blockers.append(
+            "outcome_independent_predictor_receipts_incomplete:"
+            f"{len(receipt_complete_groups)}/{len(groups)}"
+        )
+
+    return {
+        "analysis": "balance_u6_evidence_readiness",
+        "n_dependency_groups": len(groups),
+        "coding_complete": coding_complete,
+        "reliability_pass": reliability_pass,
+        "agreement_report": agreement_report,
+        "adjudication_complete": adjudication_complete,
+        "n_groups_with_three_adjudicated_independent_predictors": len(
+            receipt_complete_groups
+        ),
+        "predictor_receipts_complete": predictor_receipts_complete,
+        "dependence_map_complete": True,
+        "blockers": blockers,
+        "ready_for_combined_model_assembly": not blockers,
+        "combined_model_estimability_checked": False,
+        "claim_ceiling": (
+            "u6_evidence_assembly_readiness_only_combined_v2_estimability_is_separate"
+        ),
+    }

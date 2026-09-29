@@ -1,0 +1,2 @@
+reference_id,reference_citation,reference_year,reference_type_status,plant_taxon_raw,dependency_group,primary_source_status,inclusion_status,exclusion_reason,classification_basis,notes
+U6_REF_EXAMPLE,"EXAMPLE ONLY",2000,UNRESOLVED,UNRESOLVED,UNRESOLVED,UNRESOLVED,UNRESOLVED,UNRESOLVED,ANCHOR_REVIEW_REFERENCE_CLASSIFICATION,"Template row only; architecture fields are intentionally absent from Pass 1."
