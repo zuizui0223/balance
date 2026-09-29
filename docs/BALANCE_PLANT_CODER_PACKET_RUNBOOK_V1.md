@@ -122,3 +122,64 @@ Two builds from the same repository state therefore produce byte-identical coder
 
 Packet construction demonstrates blinding and handoff reproducibility only. It does not
 adjudicate any biological field and does not create a model-ready dataset.
+
+
+## Validated return ingestion
+
+Returned coder worksheets are not copied directly over tracked repository files.
+
+For each lane, validate and merge the two returned files:
+
+```bash
+python scripts/merge_plant_coder_returns.py \
+  --lane U2 \
+  --coder-a /path/to/CODER_A_return.csv \
+  --coder-b /path/to/CODER_B_return.csv \
+  --out-dir /path/to/handoff_workspace
+```
+
+The merger requires:
+
+- the exact frozen dependency-group set for the lane;
+- exactly one row per frozen group from each coder;
+- preserved `CODER_A` / `CODER_B` identifiers;
+- the canonical coding schema;
+- complete categorical fields.
+
+Missing groups, extra groups, wrong coder identity, partial schemas, or duplicate rows fail
+closed.
+
+The merged ledger is written in canonical alternating coder order. It is then used as an
+external handoff-workspace override; tracked repository data do not need to be overwritten.
+
+## External handoff workspace
+
+The V4 analysis builder accepts:
+
+```bash
+python scripts/build_plant_v4_analysis_inputs.py \
+  --input-dir /path/to/handoff_workspace
+```
+
+Only human-mutable basenames may override repository defaults:
+
+- U1/U2/U6 completed coding worksheets;
+- U1/U2/U6 adjudication files;
+- U2/U6 predictor-receipt ledgers.
+
+Frozen source packets, samples, Pass-1 manifests, dependence maps, and model specifications
+always remain repository-controlled.
+
+If an override file exists but is malformed, the builder fails closed. It does not silently
+fall back to the blank tracked version.
+
+Once all primary human gates close:
+
+```bash
+python scripts/build_plant_v4_analysis_inputs.py \
+  --input-dir /path/to/handoff_workspace \
+  --build
+```
+
+This emits the licensed U2/U6 assembly and registered V4 Stan inputs without mutating the
+frozen repository inputs.
