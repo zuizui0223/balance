@@ -1,0 +1,48 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING",
+  "principle": "posterior labels are reporting conventions, not data-dependent model-selection triggers",
+  "priors_required": [
+    "primary slope Normal(0,0.75)",
+    "sensitivity slope Normal(0,1.5)"
+  ],
+  "directional_label_rule": {
+    "supported": "P(Delta > 0 | data) >= 0.95 under BOTH registered priors",
+    "contradicted": "P(Delta < 0 | data) >= 0.95 under BOTH registered priors",
+    "inconclusive": "otherwise"
+  },
+  "H_T_ORDERED_NONSTRUCTURAL": {
+    "estimand": "Delta_T = P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)",
+    "expected_direction": ">0",
+    "pooled_label_uses_directional_rule": true,
+    "cross_universe_generality_requires": [
+      "frozen pre-outcome marginal timing support gate passes",
+      "frozen shared-module common-support gate passes",
+      "frozen per-universe target-outcome support gate passes",
+      "U2 Delta_T directional label = supported under both priors",
+      "U6 Delta_T directional label = supported under both priors",
+      "no practically large contradictory U6 x ORDERED interaction"
+    ]
+  },
+  "H_M_MODULAR_STRUCTURAL": {
+    "estimand": "Delta_M = P(STRUCTURAL_MODULE_DIVISION | MODULAR) - P(STRUCTURAL_MODULE_DIVISION | SINGLE)",
+    "expected_direction": ">0",
+    "directional_label_uses_rule": true,
+    "scope": "U2_anchored_not_cross_universe"
+  },
+  "interaction_rule": {
+    "target_logit": "NONSTRUCTURAL_SEPARATION versus SHARED",
+    "parameter": "gamma_u6_ordered[NONSTRUCTURAL_SEPARATION]",
+    "practical_negative_margin_log_odds": -1,
+    "contradictory_if": "P(gamma_u6_ordered_nonstructural < -1.0 | data) >= 0.95 under EITHER registered prior",
+    "acceptable_for_generality_if": "contradictory criterion is false under BOTH registered priors"
+  },
+  "prohibitions": [
+    "do not call a hypothesis supported from posterior mean sign alone",
+    "do not change the 0.95 probability threshold after seeing results",
+    "do not reactivate BALANCE from a pooled Delta_T label alone",
+    "do not use a supported H_M as cross-universe replication",
+    "do not drop a contradicted or inconclusive result from reporting"
+  ],
+  "claim_ceiling": "posterior_reporting_and_reactivation_gate_only_no_observed_result"
+}
