@@ -1,0 +1,165 @@
+{
+  "analysis": "balance_plant_u3_targeted_measurement_spec_v2",
+  "supersedes": "data/BALANCE_PLANT_U3_TARGETED_MEASUREMENT_SPEC_V1.json",
+  "freeze_reason": "Prospectively define what evidence closes all current U3 empirical ceilings, including Senna covesii routing, before any new qualifying source or field result is seen.",
+  "targets": {
+    "U3MEAS_MONAUS_001": {
+      "taxon": "Monochoria australasica",
+      "gate": "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION",
+      "admissible_routes": [
+        {
+          "route": "SINGLE_VISIT_TRANSFER",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal flower visit to the focal species",
+            "contact with reproductive organs or pollen manipulation",
+            "conspecific pollen deposition on the stigma attributable to that visit"
+          ]
+        },
+        {
+          "route": "VISITOR_ACCESS_REPRODUCTIVE_EFFECT",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal access treatment versus exclusion or a single-visit treatment",
+            "fruit or seed outcome linked to animal access/visit"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "bee territorial behaviour near plants",
+        "general genus/family buzz-pollination statements",
+        "floral morphology without a visitor",
+        "visitor presence without pollen transfer or reproductive effect"
+      ],
+      "pass_rule": "At least one admissible route is source-secure for the exact species.",
+      "claim_ceiling": "animal_pollination_eligibility_only_not_pollinator_dependence_strength_not_mating_system_not_historical_causation"
+    },
+    "U3MEAS_MONCYA_001": {
+      "taxon": "Monochoria cyanea",
+      "gate": "DIRECT_SPECIES_LEVEL_EFFECTIVE_ANIMAL_POLLINATION",
+      "admissible_routes": [
+        {
+          "route": "SINGLE_VISIT_TRANSFER",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal flower visit to the focal species",
+            "contact with reproductive organs or pollen manipulation",
+            "conspecific pollen deposition on the stigma attributable to that visit"
+          ]
+        },
+        {
+          "route": "VISITOR_ACCESS_REPRODUCTIVE_EFFECT",
+          "required": [
+            "exact focal plant taxon identity",
+            "animal access treatment versus exclusion or a single-visit treatment",
+            "fruit or seed outcome linked to animal access/visit"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "general genus/family buzz-pollination statements",
+        "floral morphology without a visitor",
+        "visitor presence without pollen transfer or reproductive effect"
+      ],
+      "pass_rule": "At least one admissible route is source-secure for the exact species.",
+      "claim_ceiling": "animal_pollination_eligibility_only_not_pollinator_dependence_strength_not_mating_system_not_historical_causation"
+    },
+    "U3MEAS_OSBCHI_001": {
+      "taxon": "Osbeckia chinensis",
+      "gate": "CONTROL_POLLEN_FATE_CONFLICT",
+      "admissible_routes": [
+        {
+          "route": "SAME_VISIT_POLLEN_FATE_PARTITION",
+          "required": [
+            "exact focal plant taxon identity",
+            "pollen removal from anthers by a visitor",
+            "reward collection or grooming fate documented",
+            "conspecific pollen export or stigma deposition measured for the same visitor class"
+          ]
+        },
+        {
+          "route": "POLLEN_REMOVAL_MANIPULATION",
+          "required": [
+            "exact focal plant taxon identity",
+            "experimental manipulation or quantified variation in pollen removal",
+            "pollen export, stigma deposition, fruit set, or seed set response"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "pollen extraction alone",
+        "stigma contact alone",
+        "poricidal-anther morphology alone",
+        "general buzz-pollination biology from another species"
+      ],
+      "pass_rule": "At least one admissible route directly resolves competing reward-removal and gamete-transfer fates for the exact species.",
+      "claim_ceiling": "binary_control_pollen_fate_conflict_only_not_conflict_strength_not_architecture_not_historical_causation"
+    },
+    "U3MEAS_SENCOV_001": {
+      "taxon": "Senna covesii",
+      "gate": "CONFLICT_CONDITIONED_ROUTING_ARCHITECTURE",
+      "position_groups": {
+        "median": "four median fertile stamen positions",
+        "abaxial": "three abaxial fertile stamen positions"
+      },
+      "position_group_basis": "Frozen positional homology from pre-outcome Senna morphology; groups are defined before any pollen-fate or bee-body outcome is inspected and do not require the stamens to be morphologically heterantherous.",
+      "admissible_routes": [
+        {
+          "route": "POSITION_RESOLVED_SOURCE_TRACKING",
+          "required": [
+            "exact focal plant taxon identity",
+            "pre-outcome registered median versus abaxial fertile-stamen positions",
+            "source-resolved pollen marking or assignment for each positional group",
+            "standardized sonication or controlled single bee visit",
+            "source-specific pollen deposition mapped across predefined bee body sectors",
+            "source-specific grooming or collection fate and stigma-transfer fate measured"
+          ]
+        },
+        {
+          "route": "POSITION_SELECTIVE_MANIPULATION",
+          "required": [
+            "exact focal plant taxon identity",
+            "randomized flower-level shielding, occlusion, or removal of predefined median versus abaxial fertile-stamen positions",
+            "a design that controls total available pollen or explicitly models the induced pollen-quantity difference",
+            "standardized sonication or controlled single bee visit",
+            "pollen placement on the visitor and conspecific stigma deposition or export measured"
+          ]
+        },
+        {
+          "route": "SHARED_ROUTING_EQUIVALENCE",
+          "required": [
+            "exact focal plant taxon identity",
+            "pre-outcome registered median versus abaxial fertile-stamen positions",
+            "source-resolved pollen fate for both positional groups",
+            "an equivalence margin frozen before positional outcome contrasts are inspected and justified from assay repeatability or an external biological threshold",
+            "confidence intervals contained within the frozen equivalence margin for the registered routing contrasts",
+            "no independent positional, petal-mediated, or among-flower routing evidence on the same registered surface"
+          ]
+        }
+      ],
+      "explicitly_insufficient": [
+        "seven fertile stamens plus monosymmetry alone",
+        "genus-level feeding-versus-pollinating stamen homology alone",
+        "Irwin-Barneby remnant two-set morphology alone",
+        "buzz visitation or pollen reward alone",
+        "non-significant positional difference without an equivalence test",
+        "pooled pollen deposition without source resolution by stamen position",
+        "Senna spectabilis ricochet routing used as an analogy for Senna covesii"
+      ],
+      "within_flower_division_rule": "Assign WITHIN_FLOWER_DIVISION_OF_LABOUR only if position-resolved tracking or randomized positional manipulation demonstrates non-exchangeable reward, grooming, body-placement, export, or stigma-transfer fates between the frozen positional groups.",
+      "shared_integrated_rule": "Assign SHARED_INTEGRATED only through the SHARED_ROUTING_EQUIVALENCE route: failure to reject a positional difference is insufficient, and the registered routing contrasts must satisfy the prospectively frozen equivalence and precision criteria.",
+      "pass_rule": "The routing gate closes only if one admissible route identifies a registered architecture state under its prospective classification rule; otherwise Senna covesii remains UNRESOLVED.",
+      "claim_ceiling": "control_routing_architecture_only_not_conflict_strength_not_population_frequency_not_historical_causation"
+    }
+  },
+  "global_rules": [
+    "Exact-species evidence is required; genus-level analogy cannot close a gate.",
+    "A descriptive floral visit cannot be promoted to effective pollination without transfer or reproductive-effect evidence.",
+    "A source may close the binary conflict gate without identifying conflict strength.",
+    "Architecture remains a separate extraction and is never inferred from binary conflict closure.",
+    "For Senna covesii, positional groups are frozen before outcome inspection and may not be redefined from the observed pollen-deposition pattern.",
+    "SHARED_INTEGRATED cannot be assigned from a non-significant difference; it requires prospective equivalence evidence with sufficient precision.",
+    "A manipulation that changes total pollen availability must control or model that quantity rather than attributing the quantity effect to routing."
+  ],
+  "status": "FROZEN_BEFORE_NEW_EVIDENCE"
+}
