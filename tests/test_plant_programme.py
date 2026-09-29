@@ -8,6 +8,7 @@ U1 = ROOT / "data" / "BALANCE_PLANT_U1_SCREENING_PROVISIONAL_V1.csv"
 U1_BLIND = ROOT / "data" / "BALANCE_PLANT_U1_BLIND_CONFLICT_SCREEN_V1.csv"
 U1_PRODUCTION = ROOT / "data" / "BALANCE_PLANT_U1_PRODUCTION_BLIND_CONFLICT_SCREEN_V1.csv"
 U2 = ROOT / "data" / "BALANCE_PLANT_U2_SCREENING_V1.csv"
+U2_CONFLICT = ROOT / "data" / "BALANCE_PLANT_U2_CONFLICT_SCREEN_V1.csv"
 U3_CASES = ROOT / "data" / "BALANCE_PLANT_U3_CASE_CANDIDATES_V1.csv"
 U3_UNIVERSE = ROOT / "data" / "BALANCE_PLANT_U3_HETERANTHERY_REVIEW_UNIVERSE_V1.csv"
 U4 = ROOT / "data" / "BALANCE_PLANT_U4_CARNIVOROUS_CASES_V1.csv"
@@ -22,6 +23,7 @@ def _readout():
         u4_cases_path=U4,
         u1_blind_screen_path=U1_BLIND,
         u1_production_screen_path=U1_PRODUCTION,
+        u2_conflict_screen_path=U2_CONFLICT,
     )
 
 
@@ -73,15 +75,17 @@ def test_u1_full47_source_screen_is_specificity_heavy_and_conflict_negative():
     assert provisional["n_records"] == 20
     assert provisional["n_excluded"] == 13
 
-def test_u2_retains_positive_negative_and_unresolved_mechanism_calls():
+def test_u2_uses_strict_conflict_ledger_not_stale_macro_status():
     u2 = _readout()["lanes"]["U2"]
     assert u2["n_records"] == 22
     assert u2["conflict_status_counts"] == {
-        "NO_DEMONSTRATED_CONFLICT": 2,
+        "NO_DEMONSTRATED_CONFLICT": 3,
         "POSITIVE": 8,
-        "UNRESOLVED": 12,
+        "UNRESOLVED_CANDIDATE": 11,
     }
-
+    assert u2["strict_conflict_source_screen_complete"] is True
+    provisional = u2["provisional_macro_readout"]
+    assert provisional["n_records"] == 22
 
 def test_u3_is_structural_positive_case_lane_not_prevalence_lane():
     u3 = _readout()["lanes"]["U3"]
