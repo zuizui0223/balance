@@ -68,11 +68,17 @@ Current source-closed review universe:
 0 unresolved candidates
 ```
 
-U2 has a formal, outcome-blind, source-closed first-20 double-coding packet.
+U2 has a formal, outcome-blind, source-closed first-20 double-coding packet. The
+frozen worksheet now validates 20 dependency groups × 2 blank coder rows, and all eight
+current source-screen positive groups are inside that reliability frame.
 
-Its next gate is genuinely independent coder B, not further assistant-generated recoding.
+Its next gate is genuinely independent coding/adjudication, not further assistant-generated
+recoding.
 
-The contrast with U1 is a measurement/specificity result, not a prevalence comparison, because the review universes use different inclusion criteria.
+The contrast with U1 is a measurement/specificity result, not a prevalence comparison,
+because the review universes use different inclusion criteria.
+
+See `docs/BALANCE_PLANT_U2_FULL22_CONFLICT_SCREEN_V1.md`.
 
 ## U3 — structural-positive case-control development
 
