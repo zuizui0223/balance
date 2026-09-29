@@ -1,0 +1,69 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING",
+  "response": "architecture_class4",
+  "hypotheses": [
+    {
+      "id": "H_T_ORDERED_NONSTRUCTURAL",
+      "scope": "PRIMARY_AND_CROSS_UNIVERSE_CANDIDATE",
+      "predictor": "temporal_exposure3",
+      "contrast": "ORDERED_OR_ALTERNATING - SIMULTANEOUS",
+      "target_response": "NONSTRUCTURAL_SEPARATION",
+      "directional_prediction": ">0",
+      "estimand": "Delta_T = P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS), standardized over the frozen supported module/universe surface",
+      "mechanism": "When competing demands are consistently separated in time, temporal partition is an available low-dimensional routing solution; simultaneous exposure removes that temporal escape route.",
+      "support_requirements": [
+        "V4 primary estimability passes",
+        "both timing levels have >=2 dependence blocks overall",
+        "cross-universe language additionally requires the frozen common-module and per-universe outcome-support gates"
+      ],
+      "falsification_or_downgrade": [
+        "posterior probability mass does not support Delta_T > 0 under both registered priors",
+        "U2 and U6 universe-specific timing contrasts have opposite signs",
+        "practically large contradictory U6-by-ORDERED interaction",
+        "common-support or outcome-support gate fails: pooled association may be reported but not cross-universe generality"
+      ]
+    },
+    {
+      "id": "H_M_MODULAR_STRUCTURAL",
+      "scope": "U2_ANCHORED_NOT_CROSS_UNIVERSE",
+      "predictor": "module_opportunity2",
+      "contrast": "MODULAR - SINGLE",
+      "target_response": "STRUCTURAL_MODULE_DIVISION",
+      "directional_prediction": ">0",
+      "estimand": "Delta_M = P(STRUCTURAL_MODULE_DIVISION | MODULAR) - P(STRUCTURAL_MODULE_DIVISION | SINGLE), standardized over the supported U2 timing surface",
+      "mechanism": "Pre-existing independently addressable conflict-bearing units lower the architectural reorganization needed to route competing functions into structural division of labour.",
+      "support_requirements": [
+        "U2 retains >=2 independent blocks in SINGLE and MODULAR after adjudication",
+        "target response has adequate U2 support",
+        "module effect is not described as cross-universe replicated because U6 is pre-outcome SINGLE-only"
+      ],
+      "falsification_or_downgrade": [
+        "Delta_M is not positive under the registered priors",
+        "structural response lacks sufficient U2 support",
+        "module is confounded with timing within the final U2 design"
+      ]
+    }
+  ],
+  "secondary_non_directional_axes": [
+    {
+      "id": "S_VARIABLE_CONTEXT",
+      "predictor": "temporal_exposure3",
+      "level": "VARIABLE_CONTEXT",
+      "rule": "report descriptively/U2-specific; no directional primary hypothesis frozen"
+    },
+    {
+      "id": "S_SPATIAL",
+      "predictor": "spatial_exposure2",
+      "rule": "secondary support/sensitivity only because DISTRIBUTED has one pre-outcome block"
+    }
+  ],
+  "reporting_rules": [
+    "report both registered directional contrasts regardless of sign when estimable",
+    "do not select only the hypothesis with the stronger posterior result",
+    "do not change response grouping after seeing results",
+    "cross-universe generality is a stronger claim than a pooled positive Delta_T",
+    "null or reversed contrasts remain reportable results under the frozen design"
+  ],
+  "claim_ceiling": "prospective_directional_hypotheses_only_no_observed_effect"
+}

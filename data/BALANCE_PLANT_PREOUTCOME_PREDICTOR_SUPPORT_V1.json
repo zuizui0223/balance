@@ -1,0 +1,35 @@
+{
+  "schema_version": "BALANCE_PLANT_PREOUTCOME_PREDICTOR_SUPPORT_V1",
+  "status": "FROZEN_BEFORE_U6_INDEPENDENT_ARCHITECTURE_CODING",
+  "source_surfaces": [
+    "U2 strict conflict-positive groups with SCREENED outcome-independent predictor receipts",
+    "U6 frozen 21-group conflict-first universe with SCREENED outcome-independent predictor receipts"
+  ],
+  "n_source_screened_conflict_positive_groups": 29,
+  "universe_counts": {
+    "U2": 8,
+    "U6": 21
+  },
+  "primary_contrast_support": {
+    "module_opportunity2": {
+      "SINGLE": 26,
+      "MODULAR": 3
+    },
+    "temporal_exposure3": {
+      "SIMULTANEOUS": 21,
+      "ORDERED_OR_ALTERNATING": 5,
+      "VARIABLE_CONTEXT": 3
+    },
+    "spatial_exposure2": {
+      "SAME_UNIT": 28,
+      "DISTRIBUTED": 1
+    }
+  },
+  "interpretation": {
+    "module_opportunity2": "both levels have at least two source-screened dependence groups",
+    "temporal_exposure3": "all three levels have at least three source-screened dependence groups",
+    "spatial_exposure2": "DISTRIBUTED has one source-screened dependence group only and is not suitable as a primary fixed effect under the registered minimum-support principle"
+  },
+  "decision": "DEMOTE_SPATIAL_FROM_PRIMARY_FIXED_EFFECT_BEFORE_OUTCOME_CODING",
+  "claim_ceiling": "predictor_support_design_audit_only_not_architecture_result"
+}
