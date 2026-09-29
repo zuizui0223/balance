@@ -1,0 +1,56 @@
+{
+  "analysis": "balance_plant_u3_representative_resolution_v3",
+  "review_doi": "10.1111/j.1469-8137.2010.03430.x",
+  "resolution_semantics": {
+    "canonical_representative": "A source-secure heterantherous taxon that can represent the Figure-2 family at an explicitly recorded provenance level.",
+    "exact_table_s1_identity": "The exact species name printed in the inaccessible 2010 Supporting Table S1; this is an archival provenance question and is not required for current U3 matched-case identification."
+  },
+  "resolutions": {
+    "Bixaceae": {
+      "representative": "Amoreuxia wrightii",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+      "evidence": [
+        "Flora of North America / Hodgson Bixaceae treatment: Amoreuxia has two dimorphic fertile stamen sets",
+        "A. wrightii species description: distal filaments 5-10 mm with yellow anthers; proximal filaments 11-17 mm with usually dark-red anthers",
+        "2010 review explicitly treats former Cochlospermaceae within Bixaceae under APG III"
+      ],
+      "table_s1_identity_claim": false
+    },
+    "Scrophulariaceae": {
+      "representative": "Diascia anastrepta",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+      "evidence": [
+        "Manning & Brothers 1986 directly describe marked heteranthery in Diascia anastrepta: the anticous anther pair is strongly reduced and produces little or no yellow pollen, while the posticous pair associated with the stigma produces copious grey-green pollen",
+        "Hilliard & Burtt 1983 provide the species-level taxonomic diagnosis before the 2010 review",
+        "Current Kew taxonomy retains Diascia anastrepta in Scrophulariaceae"
+      ],
+      "table_s1_identity_claim": false,
+      "selection_basis": "Chosen as an independent pre-2010 family representative from direct species-level heteranthery evidence; this does not identify the inaccessible 2010 Table S1 row."
+    },
+    "Malvaceae": {
+      "representative": "Mollia lepidota",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+      "evidence": [
+        "Darwin herbarium manuscript CUL-DAR110.B12: M. lepidota certainly has two stamen lengths within the same flower",
+        "Richard Spruce 1876-77 correspondence: M. lepidota is among Mollia species with five longer outer cohorts bearing green pollen and five shorter inner cohorts bearing yellow pollen",
+        "Maguire 1978 species treatment: five outer stamen phalanges about 2 cm long and five inner phalanges about 1.5 cm long",
+        "Current Kew taxonomy places Mollia lepidota in Malvaceae"
+      ],
+      "table_s1_identity_claim": false,
+      "selection_basis": "Chosen as an independent family representative because it has multiple species-specific pre-2010 morphology receipts; this does not identify the inaccessible 2010 Table S1 row."
+    }
+  },
+  "resolved_family_representatives": 16,
+  "pending_independent_representative_families": [],
+  "canonical_representative_coverage_closed": true,
+  "exact_table_s1_identity_unrecovered_families": [
+    "Malvaceae",
+    "Bixaceae",
+    "Scrophulariaceae"
+  ],
+  "exact_table_s1_identity_closed": false,
+  "exact_table_s1_identity_blocks_current_u3_analysis": false,
+  "legacy_pending_exact_representative_families": [],
+  "legacy_field_note": "The former pending_exact_representative_families field referred to missing independent family representatives, not exact Table-S1 archival identity.",
+  "claim_ceiling": "all_16_family_representatives_resolved_from_review_body_or_independent_pre2010_species_evidence_exact_TableS1_identity_still_archivally_open_for_three_families_not_prevalence_not_historical_causation"
+}
