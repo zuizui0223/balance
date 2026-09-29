@@ -1,5 +1,7 @@
 # BALANCE plant confirmatory model freeze v2
 
+> **Superseded before architecture coding by v3.** V2 solved the raw-category parameter-budget problem, but the pre-outcome U2+U6 predictor-support audit found only one `DISTRIBUTED` spatial-exposure dependence group. V3 retains spatial coding as a secondary axis and removes it from the primary joint fixed-effect model. See `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
+
 ## Status
 
 Frozen before U6 independent architecture coding and before any confirmatory plant model fit.
