@@ -182,6 +182,9 @@ def build_outputs(
     main_path = out_dir / "BALANCE_PLANT_V4_STAN_INPUT.json"
     prior_path = out_dir / "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
     generality_path = out_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"
+    generality_prior_path = (
+        out_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
+    )
 
     _write_csv(assembly_path, assembly)
     readout_path.write_text(
@@ -209,8 +212,18 @@ def build_outputs(
             ) + "\n",
             encoding="utf-8",
         )
-    elif generality_path.exists():
-        generality_path.unlink()
+        generality_prior_path.write_text(
+            json.dumps(
+                pipeline["temporal_generality_prior_sensitivity_stan_input"],
+                indent=2,
+                sort_keys=True,
+            ) + "\n",
+            encoding="utf-8",
+        )
+    else:
+        for path in (generality_path, generality_prior_path):
+            if path.exists():
+                path.unlink()
 
     return {
         "assembly": str(assembly_path),
@@ -222,6 +235,12 @@ def build_outputs(
         "temporal_generality_input": (
             str(generality_path)
             if pipeline["temporal_generality_stan_input"] is not None
+            else None
+        ),
+        "temporal_generality_prior_sensitivity_input": (
+            str(generality_prior_path)
+            if pipeline["temporal_generality_prior_sensitivity_stan_input"]
+            is not None
             else None
         ),
     }
