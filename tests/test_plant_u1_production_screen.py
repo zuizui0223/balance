@@ -22,17 +22,15 @@ def test_u1_production_screen_covers_exactly_u1_021_to_u1_047():
 def test_u1_production_screen_has_no_positive_conflict_promotions():
     out = build_u1_production_blind_screen_readout(SCREEN)
     assert out["conflict_status_counts"] == {
-        "NO_DEMONSTRATED_CONFLICT": 26,
-        "UNRESOLVED_CANDIDATE": 1,
+        "NO_DEMONSTRATED_CONFLICT": 27,
     }
     assert out["screen_decision_counts"] == {
-        "FAIL_CONFLICT_GATE": 26,
-        "HOLD_FOR_FULL_TEXT": 1,
+        "FAIL_CONFLICT_GATE": 27,
     }
     assert out["n_positive_conflict"] == 0
-    assert out["n_no_demonstrated_conflict"] == 26
-    assert out["n_unresolved_candidate"] == 1
-    assert out["held_for_full_text_ids"] == ["U1_032"]
+    assert out["n_no_demonstrated_conflict"] == 27
+    assert out["n_unresolved_candidate"] == 0
+    assert out["held_for_full_text_ids"] == []
     assert out["architecture_inferred"] is False
 
 
@@ -41,14 +39,15 @@ def test_u1_production_conflict_screen_never_infers_architecture():
     assert all(row["architecture_status"] == "NOT_IDENTIFIED" for row in rows)
 
 
-def test_myrmecophila_is_the_only_full_text_hold():
+def test_myrmecophila_primary_result_closes_no_conflict():
     rows = load_u1_production_blind_screen(SCREEN)
     row = next(row for row in rows if row["universe_record_id"] == "U1_032")
     assert row["taxon_raw"] == "Myrmecophila tibicinis"
-    assert row["conflict_status"] == "UNRESOLVED_CANDIDATE"
+    assert row["conflict_status"] == "NO_DEMONSTRATED_CONFLICT"
     assert row["same_coordinate_evidence"] == "PARTIAL"
-    assert row["opposing_demand_evidence"] == "INDIRECT_OR_AMBIGUOUS"
-    assert row["screen_decision"] == "HOLD_FOR_FULL_TEXT"
+    assert row["opposing_demand_evidence"] == "NO"
+    assert row["screen_decision"] == "FAIL_CONFLICT_GATE"
+    assert row["reason_code"] == "FLORAL_MORPHOLOGY_MANIPULATION_NULL_FOR_POLLINATION_SUCCESS"
 
 
 def test_pastinaca_is_damage_mediated_pollination_cost_not_opposing_optimum():
