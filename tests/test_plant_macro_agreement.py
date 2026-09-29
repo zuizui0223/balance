@@ -91,3 +91,17 @@ def test_duplicate_cluster_coder_pair_is_rejected(tmp_path):
     _write(path, [_row("a", "A"), _row("a", "A")])
     with pytest.raises(ValueError, match="duplicate cluster/coder pair"):
         load_double_coding(path)
+
+
+
+def test_invalid_codebook_value_is_rejected_before_agreement(tmp_path):
+    path = tmp_path / "double.csv"
+    _write(
+        path,
+        [
+            _row("a", "A", module_substrate="SERIAL_WITHIN_FLOWER"),
+            _row("a", "B", module_substrate="SERIAL_WITHIN_FLOWERS"),
+        ],
+    )
+    with pytest.raises(ValueError, match="invalid module_substrate"):
+        load_double_coding(path)
