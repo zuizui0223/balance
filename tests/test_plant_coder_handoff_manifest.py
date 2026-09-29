@@ -81,3 +81,15 @@ def test_handoff_manifest_separates_predictor_adjudication_from_architecture_cod
     assert (ROOT / predictor["protocol"]).exists()
     assert (ROOT / predictor["builder"]).exists()
     assert (ROOT / predictor["workflow"]).exists()
+
+
+
+def test_handoff_manifest_registers_post_handoff_v4_analysis_workflow():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    analysis = data["post_handoff_analysis"]
+    assert analysis["readiness_cli"] == "scripts/build_plant_v4_analysis_inputs.py"
+    assert analysis["manual_workflow"] == ".github/workflows/build-plant-v4-analysis-inputs.yml"
+    assert analysis["build_command"].endswith("--build")
+    assert "forbidden while any U2/U6" in analysis["fail_closed_rule"]
+    assert (ROOT / analysis["readiness_cli"]).exists()
+    assert (ROOT / analysis["manual_workflow"]).exists()
