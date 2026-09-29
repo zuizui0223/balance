@@ -174,5 +174,20 @@
     "report U1 independent reliability outcome separately as specificity validation",
     "spatial exposure remains secondary unless prospectively supported by >=2 DISTRIBUTED dependence blocks"
   ],
-  "claim_ceiling": "U2_U6_conflict_focused_routing_association_with_cross_universe_generality_reserved_for_replicated_temporal_contrast_not_causal_transition_probability"
+  "claim_ceiling": "U2_U6_conflict_focused_routing_association_with_cross_universe_generality_reserved_for_replicated_temporal_contrast_not_causal_transition_probability",
+  "temporal_generality_sensitivity": {
+    "id": "G1_UNIVERSE_X_ORDERED",
+    "model": "universe-specific intercepts + module_opportunity2 + temporal_exposure3 + U6_x_ORDERED_OR_ALTERNATING",
+    "rationale": "SIMULTANEOUS and ORDERED_OR_ALTERNATING are the only two predictor levels represented independently in both U2 and U6 at the pre-outcome freeze.",
+    "additional_coefficients": 3,
+    "total_coefficients": 18,
+    "fit_gate": "both SIMULTANEOUS and ORDERED_OR_ALTERNATING require >=2 independent dependence blocks within each U2 and U6",
+    "interpretation": [
+      "report universe-specific predicted-probability contrast ORDERED minus SIMULTANEOUS",
+      "report U6-vs-U2 interaction posterior for each non-reference architecture logit",
+      "cross-universe generality language requires compatible direction and no practically large contradictory interaction"
+    ],
+    "practical_interaction_margin_log_odds": 1,
+    "claim_rule": "do not call timing universal solely because the common-slope V4 main model is nonzero"
+  }
 }
