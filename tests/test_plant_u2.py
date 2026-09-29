@@ -1,3 +1,4 @@
+import csv
 import pytest
 from pathlib import Path
 
@@ -140,3 +141,47 @@ def test_u2_adjudication_cannot_preempt_two_completed_coders(tmp_path):
     sample = load_u2_double_code_sample(SAMPLE)
     with pytest.raises(ValueError, match="before two completed coder rows exist"):
         load_u2_adjudication(path, sample)
+
+
+
+def test_u2_low_agreement_blocks_adjudication(tmp_path):
+    sample = load_u2_double_code_sample(SAMPLE)
+    coding = []
+    for i, row in enumerate(sample):
+        group = row["dependency_group"]
+        for coder in ("CODER_A", "CODER_B"):
+            coding.append({
+                "cluster_id": group,
+                "coder_id": coder,
+                "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+                "architecture_mode": (
+                    "SHARED_INTEGRATED"
+                    if coder == "CODER_A" or i >= 5
+                    else "TEMPORAL_SEPARATION"
+                ),
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "notes": "synthetic agreement gate",
+            })
+
+    with ADJUDICATION.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    rows[0].update({
+        "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+        "architecture_mode": "SHARED_INTEGRATED",
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+        "adjudication_status": "ADJUDICATED",
+        "adjudication_basis": "SOURCE_REVIEW",
+        "notes": "synthetic adjudication",
+    })
+    path = tmp_path / "u2_low_agreement_adjudication.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+
+    with pytest.raises(ValueError, match="codebook repair/recode"):
+        load_u2_adjudication(path, sample, coding)
