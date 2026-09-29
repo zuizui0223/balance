@@ -1,0 +1,75 @@
+{
+  "schema_version": "BALANCE_PLANT_CODER_HANDOFF_MANIFEST_V1",
+  "status": "READY_FOR_HUMAN_INDEPENDENT_CODING",
+  "shared": {
+    "codebook": "data/BALANCE_PLANT_MACRO_CODEBOOK_V1.csv",
+    "protocol": "docs/BALANCE_PLANT_DOUBLE_CODING_PROTOCOL_V1.md",
+    "frozen_coder_ids": [
+      "CODER_A",
+      "CODER_B"
+    ],
+    "reliability_trigger_raw_agreement": 0.8,
+    "unresolved_is_valid": true,
+    "no_consensus_during_independent_coding": true,
+    "no_source_adjudication_before_reliability_pass": true,
+    "codebook_repair_action": "version codebook and independently recode the SAME frozen reliability groups before adjudication",
+    "forbidden_inputs": [
+      "other coder output",
+      "source-screen conflict decisions",
+      "candidate-adjudication rationale",
+      "focal architecture outcome as a shortcut for predictor coding"
+    ]
+  },
+  "lanes": {
+    "U1": {
+      "role": "EXTERNAL_SPECIFICITY_VALIDATION",
+      "primary_model_denominator": false,
+      "n_dependency_groups_in_reliability_frame": 20,
+      "sample": "data/BALANCE_PLANT_U1_DOUBLE_CODE_SAMPLE_V1.csv",
+      "source_packet": "data/BALANCE_PLANT_U1_DOUBLE_CODE_SOURCE_PACKET_V1.csv",
+      "worksheet": "data/BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "post_coding_adjudication": "data/BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+      "predictor_receipts": "data/BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "current_source_screen": "47 groups; 0 POSITIVE; 46 NO_DEMONSTRATED_CONFLICT; 1 ALIGNED_NO_CONFLICT",
+      "predictor_receipt_use": "conditional only if independent adjudication recovers conflict-positive U1 groups"
+    },
+    "U2": {
+      "role": "PRIMARY_ROUTING_UNIVERSE_SEXUAL_INTERFERENCE",
+      "primary_model_denominator": true,
+      "n_dependency_groups_in_reliability_frame": 20,
+      "n_source_screen_conflict_positive": 8,
+      "sample": "data/BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv",
+      "source_packet": "data/BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv",
+      "worksheet": "data/BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "post_coding_adjudication": "data/BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+      "predictor_receipts": "data/BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "current_predictor_screen": "8/8 source-screen positive groups have all three outcome-independent SCREENED predictors; 0/8 independently adjudicated"
+    },
+    "U6": {
+      "role": "PRIMARY_ROUTING_UNIVERSE_POLLEN_THEFT",
+      "primary_model_denominator": true,
+      "n_dependency_groups_in_reliability_frame": 21,
+      "pass1_freeze": "data/BALANCE_PLANT_U6_PASS1_FREEZE_V1.json",
+      "source_packet": "data/BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv",
+      "worksheet": "data/BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "post_coding_adjudication": "data/BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
+      "predictor_receipts": "data/BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "current_predictor_screen": "21/21 groups have all three outcome-independent SCREENED predictors; 0/21 independently adjudicated",
+      "source_recovery": "15 RESOLVED; 6 EVIDENCE_CEILING; 0 pending"
+    }
+  },
+  "return_sequence": [
+    "independent worksheets completed without coder communication",
+    "category/schema validation",
+    "agreement report: raw agreement + Cohen kappa + Gwet AC1 + exact disagreements",
+    "if any raw agreement <0.80: codebook repair and independent recoding of same frozen groups",
+    "only after reliability pass: source adjudication",
+    "separately adjudicate predictor outcome-independence receipts",
+    "assemble licensed U2/U6 rows",
+    "run V4 estimability gate",
+    "fit V4 only if estimable"
+  ],
+  "current_primary_model": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
+  "current_publication_status": "DORMANT_PAPER_BRANCH",
+  "claim_ceiling": "human_coding_handoff_contract_only_no_biological_result"
+}
