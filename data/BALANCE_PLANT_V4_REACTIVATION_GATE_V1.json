@@ -40,5 +40,8 @@
   ],
   "standalone_reactivation_eligible": false,
   "reason": "independent coding, adjudication, common-support, model estimability, fitted effects, and cross-universe replication are not yet available",
-  "claim_ceiling": "prospective_publication_gate_only_no_biological_result"
+  "claim_ceiling": "prospective_publication_gate_only_no_biological_result",
+  "posterior_decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
+  "posterior_decision_evaluator": "balance_domain.plant_v4_decision.temporal_generality_decision",
+  "reactivation_interpretation": "standalone evidence eligibility requires the frozen support gates plus a SUPPORTED timing direction in both U2 and U6 under both priors and no PRACTICALLY_CONTRADICTORY interaction label; evidence eligibility still requires human review before publication status changes"
 }
