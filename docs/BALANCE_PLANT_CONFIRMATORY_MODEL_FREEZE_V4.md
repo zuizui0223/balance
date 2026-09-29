@@ -208,6 +208,58 @@ Failure action:
 DO_NOT_FIT_OR_DROP_TERMS_POST_HOC
 ```
 
+## Frozen directional hypotheses
+
+The model is not merely an omnibus association test. Two directions are frozen before
+independent architecture coding.
+
+### H_T — ordered timing favors nonstructural separation
+
+```text
+Delta_T =
+P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING)
+-
+P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)
+
+prediction: Delta_T > 0
+```
+
+Mechanistic rationale: when competing demands are consistently separated in time, temporal
+partition provides a low-dimensional routing solution that is unavailable under
+simultaneous exposure.
+
+A positive pooled contrast is not enough for a generality claim. Cross-universe language
+still requires the frozen common-module support gate, per-universe outcome support,
+directional concordance, and no practically large contradictory universe-by-timing
+interaction.
+
+### H_M — module opportunity favors structural division
+
+```text
+Delta_M =
+P(STRUCTURAL_MODULE_DIVISION | MODULAR)
+-
+P(STRUCTURAL_MODULE_DIVISION | SINGLE)
+
+prediction: Delta_M > 0
+```
+
+Mechanistic rationale: independently addressable conflict-bearing units lower the
+architectural reorganization required to route competing functions into division of
+labour.
+
+This is explicitly **U2-anchored**, not a cross-universe generality hypothesis, because U6
+has no pre-outcome `MODULAR` support.
+
+`VARIABLE_CONTEXT` timing and spatial exposure have no frozen primary directional
+hypothesis.
+
+Both registered contrasts are reported when estimable regardless of sign. Null or reversed
+results remain results; they do not trigger response recoding or hypothesis replacement.
+
+Machine-readable registry:
+`data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json`.
+
 ## Generality hierarchy
 
 ### Cross-universe replicated candidate
