@@ -286,7 +286,7 @@ binary structural field is unresolved. The raw nominal architecture categories
 remain secondary detail.
 
 There is no outcome-count-triggered fallback model. See
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
 
 ## U6 — pollen-theft conflict-first recovery universe
 
@@ -311,7 +311,7 @@ U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate 
 
 See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
 
-## What remains before the v2 primary model
+## What remains before the v3 primary model
 
 The primary denominator is now explicitly restricted to outcome-blind/conflict-first
 U1 + U2 + U6. U3 and U4 continue as parallel evidence lanes but do not block the primary
@@ -330,7 +330,7 @@ Primary blockers:
    U6 has 63 frozen empty receipt slots.
 5. The final U1/U2/U6 assembly must close cross-universe dependence and pass the
    allowlisted model-assembly contract. U3/U4 rows are rejected from this denominator.
-6. Only then can model-v2 estimability be evaluated: each of the four response classes
+6. Only then can model-v3 estimability be evaluated: each of the four response classes
    requires at least two independent dependence blocks, the three planned predictor
    contrasts need empirical support, and the low-dimensional design matrix must be full
    rank.
@@ -352,4 +352,4 @@ pooled_prevalence_estimate = null
 ```
 
 The current primary statistical specification is
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
