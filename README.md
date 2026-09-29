@@ -193,6 +193,16 @@ See `theory/MIDDLE_WORLD_RESULTS_V1.md`,
 
 ### Plant confirmatory contract
 
+Current programme state can be reproduced with:
+
+```bash
+python scripts/report_plant_v4_readiness.py
+```
+
+This reports the machine-complete preparation, remaining U2/U6 human coding/adjudication
+gates, pre-outcome V4 design status, and the fail-closed standalone-paper reactivation gate.
+
+
 The flowering-plant confirmatory lane has a frozen four-class primary response:
 
 ```text
