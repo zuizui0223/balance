@@ -89,7 +89,7 @@ The direct fitness depth becomes
 d_F(e)=\min\{L(e),\rho_1(e),\ldots,\rho_m(e)\}.}
 \]
 
-So Chapter 2 has one SCH-facing boundary and potentially several BITA-facing architecture boundaries. The nearest boundary can switch identity as environment changes.
+So Chapter 2 has one SCH-facing boundary and potentially several SLK-facing architecture-value architecture boundaries. The nearest boundary can switch identity as environment changes.
 
 ## Corollary — architecture-envelope kinks are not re-entry by themselves
 

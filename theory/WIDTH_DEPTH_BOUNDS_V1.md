@@ -1,5 +1,9 @@
 # BALANCE width-depth bounds v1
 
+## Status
+
+These inequalities are elementary consequences of registered slope bounds. Their role is experimental design and falsifiable calibration, not standalone mathematical novelty.
+
 ## Purpose
 
 Relate the **environmental width** of a finite BALANCE domain to its **maximum two-sided fitness depth**.
@@ -32,7 +36,7 @@ on the SCH-facing side and
 \rho'(e)<0
 \]
 
-on the BITA-facing side.
+on the SLK-facing architecture-value side.
 
 The total environmental width is
 

@@ -78,3 +78,21 @@ def test_doi_bundle_is_self_verifying(tmp_path: Path) -> None:
             data = archive.read(item["path"])
             assert len(data) == item["bytes"]
             assert hashlib.sha256(data).hexdigest() == item["sha256"]
+
+
+
+def test_doi_manifest_can_register_v4_reactivation_without_reactivating_now() -> None:
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    assert manifest["publication_status"] == "DOI_TECHNICAL_MODULE_SUPPORTING_SLK"
+    assert manifest["active_publication_queue"] is False
+    assert any(
+        "cross-universe architecture-routing result" in rule
+        and "common-support timing gate" in rule
+        and "U2/U6" in rule
+        for rule in manifest["reactivation_policy"]
+    )
+
+    status = bundle.STATUS_PATH.read_text(encoding="utf-8")
+    assert "STATUS = DOI_MODULE / DORMANT_PAPER_BRANCH" in status
+    assert "ACTIVE_PUBLICATION_QUEUE = false" in status
+    assert "prospectively frozen plant comparative programme" in status

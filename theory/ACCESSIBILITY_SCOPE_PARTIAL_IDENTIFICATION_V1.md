@@ -116,7 +116,7 @@ Then
 }
 \]
 
-So accessibility uncertainty propagates directly into an interval for the BITA-facing BALANCE reserve.
+So accessibility uncertainty propagates directly into an interval for the SLK-facing architecture-value BALANCE reserve.
 
 The corresponding fitness-depth interval satisfies
 

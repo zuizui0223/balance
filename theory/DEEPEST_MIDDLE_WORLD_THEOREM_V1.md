@@ -1,5 +1,9 @@
 # BALANCE deepest-middle-world theorem v1
 
+## Status
+
+The argument below is an elementary coordinate result under registered monotonicity assumptions. BALANCE uses it for sampling and model auditing; mathematical novelty is not claimed.
+
 ## Purpose
 
 Characterize the most interior point of a finite BALANCE domain without assuming the quadratic `sL-K` decomposition.
@@ -16,7 +20,7 @@ for distance from the SCH conflict-onset boundary, and
 \rho(e)=W_S^*(e)-W_D^*(e)>0
 \]
 
-for distance from the architecture crossing on the BITA-facing side.
+for distance from the architecture crossing on the SLK-facing architecture-value side.
 
 Inside BALANCE,
 
@@ -108,7 +112,7 @@ Therefore
 
 and the maximizer is unique.
 
-This gives a general definition of the **deepest BALANCE state**: the point equally far, on the common fitness-margin scale, from the SCH-facing and BITA-facing boundaries.
+This gives a general definition of the **deepest BALANCE state**: the point equally far, on the common fitness-margin scale, from the SCH-facing and SLK-facing architecture-value boundaries.
 
 ## Corollary 2a — the deepest point has xi = 1/2
 
@@ -148,7 +152,7 @@ and at least one strict inequality, the numerator is positive. Hence
 \boxed{\xi'(e)>0}.
 \]
 
-So the normalized coordinate moves monotonically from the SCH-facing side toward the BITA-facing side along such an environmental path.
+So the normalized coordinate moves monotonically from the SCH-facing side toward the SLK-facing architecture-value side along such an environmental path.
 
 ## Corollary 3a — positive fitness-scale invariance
 
