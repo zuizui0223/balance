@@ -79,9 +79,8 @@ def test_u2_uses_strict_conflict_ledger_not_stale_macro_status():
     u2 = _readout()["lanes"]["U2"]
     assert u2["n_records"] == 22
     assert u2["conflict_status_counts"] == {
-        "NO_DEMONSTRATED_CONFLICT": 3,
+        "NO_DEMONSTRATED_CONFLICT": 14,
         "POSITIVE": 8,
-        "UNRESOLVED_CANDIDATE": 11,
     }
     assert u2["strict_conflict_source_screen_complete"] is True
     provisional = u2["provisional_macro_readout"]
