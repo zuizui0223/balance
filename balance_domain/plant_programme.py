@@ -248,7 +248,7 @@ def build_plant_programme_map(
             "universe_stratified_intercepts": True,
             "predictor_receipts_required": True,
             "outcome_dependent_fallback_allowed": False,
-            "u3_u4_primary_denominator_allowed": False,
+            "u1_u3_u4_primary_denominator_allowed": False,
         },
         "primary_model_ready": False,
         "primary_model_blockers": [
