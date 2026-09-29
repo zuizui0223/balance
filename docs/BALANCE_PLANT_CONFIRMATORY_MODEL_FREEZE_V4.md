@@ -267,6 +267,38 @@ spatial SAME_UNIT vs DISTRIBUTED
 
 This remains secondary.
 
+### Post-outcome support gate for temporal generality
+
+Predictor support alone is not sufficient for a replicated routing claim.
+
+After independent architecture adjudication, each primary universe must also contain:
+
+```text
+>= 2 NONSTRUCTURAL_SEPARATION dependence blocks
+>= 2 OTHER_ARCHITECTURE dependence blocks
+```
+
+where `OTHER_ARCHITECTURE` pools the remaining three frozen response classes only for this
+support diagnostic.
+
+This does not alter the four-class model. It prevents a universe-specific
+`P(NONSTRUCTURAL_SEPARATION)` timing contrast from being interpreted as replicated when
+one universe has essentially no observed target routing outcome.
+
+Thus the strict V4 timing-generality sequence is:
+
+```text
+marginal timing support in U2 and U6
+-> shared-module common predictor support
+-> per-universe target-outcome support
+-> temporal-generality sensitivity fit
+-> universe-specific direction check
+-> practical interaction check
+```
+
+Failure at this gate does not block the V4 main fit; it blocks only the stronger
+cross-universe generality claim.
+
 ## Registered interaction extension
 
 ```text
