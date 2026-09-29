@@ -12,8 +12,21 @@ from pathlib import Path
 from .plant_confirmatory import (
     PREDICTORS,
     adjudicated_independent_plant_values,
+    load_plant_predictor_receipts,
 )
 from .plant_macro import primary_architecture_class
+from .plant_macro_agreement import load_double_coding
+from .plant_u2 import (
+    load_u2_adjudication,
+    load_u2_double_code_sample,
+    load_u2_source_packet,
+)
+from .plant_u6 import (
+    load_u6_cross_universe_dependence,
+    load_u6_frozen_source_packet,
+    load_u6_pass2_adjudication,
+    load_u6_pass2_double_coding,
+)
 from .plant_model_assembly import validate_model_assembly_rows
 
 
@@ -225,3 +238,67 @@ def build_v4_licensed_assembly(
     if not rows:
         raise ValueError("no licensed U2/U6 rows are available for V4 assembly")
     return validate_model_assembly_rows(rows)
+
+
+
+def build_v4_licensed_assembly_from_files(
+    *,
+    u2_sample_path: Path,
+    u2_coding_path: Path,
+    u2_adjudication_path: Path,
+    u2_predictor_receipts_path: Path,
+    u2_source_packet_path: Path,
+    u6_freeze_path: Path,
+    u6_coding_path: Path,
+    u6_adjudication_path: Path,
+    u6_predictor_receipts_path: Path,
+    u6_dependence_path: Path,
+    u6_source_recovery_path: Path,
+    u6_frozen_source_packet_path: Path,
+) -> list[dict[str, str]]:
+    """Load canonical frozen surfaces and assemble V4 rows only after all gates close."""
+    u2_sample = load_u2_double_code_sample(u2_sample_path)
+    u2_coding = load_double_coding(u2_coding_path)
+    if {row["coder_id"] for row in u2_coding} != {"CODER_A", "CODER_B"}:
+        raise ValueError("U2 completed coding must preserve frozen CODER_A/CODER_B IDs")
+    if {row["cluster_id"] for row in u2_coding} != {
+        row["dependency_group"] for row in u2_sample
+    }:
+        raise ValueError("U2 completed coding groups disagree with frozen sample")
+
+    u2_adjudication = load_u2_adjudication(
+        u2_adjudication_path,
+        u2_sample,
+        u2_coding,
+    )
+    u2_receipts = load_plant_predictor_receipts(u2_predictor_receipts_path)
+    u2_sources = load_u2_source_packet(u2_source_packet_path)
+
+    u6_coding = load_u6_pass2_double_coding(u6_coding_path, u6_freeze_path)
+    if any(row["coding_status"] != "CODED" for row in u6_coding):
+        raise ValueError("U6 completed coding worksheet still contains UNSTARTED rows")
+    u6_adjudication = load_u6_pass2_adjudication(
+        u6_adjudication_path,
+        u6_freeze_path,
+        u6_coding,
+    )
+    u6_receipts = load_plant_predictor_receipts(u6_predictor_receipts_path)
+    u6_dependence = load_u6_cross_universe_dependence(
+        u6_dependence_path,
+        u6_freeze_path,
+    )
+    u6_sources = load_u6_frozen_source_packet(
+        u6_frozen_source_packet_path,
+        u6_freeze_path,
+        u6_source_recovery_path,
+    )
+
+    return build_v4_licensed_assembly(
+        u2_adjudication_rows=u2_adjudication,
+        u2_predictor_receipts=u2_receipts,
+        u2_source_packet_rows=u2_sources,
+        u6_adjudication_rows=u6_adjudication,
+        u6_predictor_receipts=u6_receipts,
+        u6_dependence_rows=u6_dependence,
+        u6_frozen_source_packet_rows=u6_sources,
+    )
