@@ -64,8 +64,8 @@ Current source-closed review universe:
 ```text
 22 dependency groups
 8 strict conflict-gate positives
-2 no-demonstrated-conflict
-12 unresolved candidates
+14 no-demonstrated-conflict
+0 unresolved candidates
 ```
 
 U2 has a formal, outcome-blind, source-closed first-20 double-coding packet.
