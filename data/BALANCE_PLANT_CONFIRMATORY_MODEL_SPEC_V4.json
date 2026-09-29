@@ -1,0 +1,177 @@
+{
+  "schema_version": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_U6_INDEPENDENT_ARCHITECTURE_CODING",
+  "supersedes": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3",
+  "revision_reason": "Pre-outcome cross-universe support audit showed that module MODULAR and temporal VARIABLE_CONTEXT occur only in U2, while SIMULTANEOUS versus ORDERED timing is replicated in both U2 and U6. U1 is a broad specificity universe with 0/47 source-screen conflict positives. V4 therefore fixes the primary routing model to conflict-focused U2+U6 and uses sampling-universe-specific multinomial intercepts.",
+  "primary_fitting_universes": [
+    "U2_BARRETT_2002",
+    "U6_POLLEN_THEFT_HARGREAVES_2009"
+  ],
+  "external_specificity_and_validation_universes": {
+    "U1_HAAS_LORTIE_2020": "broad interaction specificity / external conflict validation; never injected post hoc into V4 fit",
+    "U3": "architecture-positive matched/case-control; separate estimand",
+    "U4": "mechanism stress test; separate estimand",
+    "U5": "aligned/abiotic specificity controls"
+  },
+  "primary_response": {
+    "name": "architecture_class4",
+    "mapping": {
+      "SHARED": [
+        "SHARED_INTEGRATED"
+      ],
+      "NONSTRUCTURAL_SEPARATION": [
+        "TEMPORAL_SEPARATION",
+        "SPATIAL_SEPARATION",
+        "SIGNAL_SEPARATION",
+        "TEMPORAL_AND_SPATIAL_SEPARATION"
+      ],
+      "STRUCTURAL_MODULE_DIVISION": [
+        "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+        "AMONG_FLOWER_MODULE_DIVISION"
+      ],
+      "MOSAIC": [
+        "POLYMORPHIC_OR_MOSAIC"
+      ]
+    },
+    "reference_class": "SHARED"
+  },
+  "raw_predictors_retained": [
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry"
+  ],
+  "primary_predictor_contrasts": {
+    "module_opportunity2": {
+      "SINGLE": [
+        "SINGLE_OR_CONTINUOUS"
+      ],
+      "MODULAR": [
+        "SERIAL_WITHIN_FLOWER",
+        "REPEATED_FLOWERS",
+        "PREEXISTING_SEPARATE_ORGANS",
+        "MULTILEVEL"
+      ]
+    },
+    "temporal_exposure3": {
+      "SIMULTANEOUS": [
+        "SIMULTANEOUS"
+      ],
+      "ORDERED_OR_ALTERNATING": [
+        "SEQUENTIAL_WITHIN_UNIT",
+        "SEASONALLY_ALTERNATING"
+      ],
+      "VARIABLE_CONTEXT": [
+        "CONTEXT_DEPENDENT",
+        "MIXED"
+      ]
+    }
+  },
+  "secondary_predictor_contrast": {
+    "spatial_exposure2": {
+      "SAME_UNIT": [
+        "SAME_UNIT"
+      ],
+      "DISTRIBUTED": [
+        "BETWEEN_MODULES",
+        "AMONG_INDIVIDUALS",
+        "AMONG_POPULATIONS",
+        "ENVIRONMENTAL_MOSAIC",
+        "MIXED"
+      ],
+      "preoutcome_support": {
+        "SAME_UNIT": 28,
+        "DISTRIBUTED": 1
+      },
+      "role": "secondary_descriptive_or_separate_sensitivity_only"
+    }
+  },
+  "preoutcome_universe_overlap": {
+    "U2": {
+      "n_groups": 8,
+      "module_opportunity2": {
+        "SINGLE": 5,
+        "MODULAR": 3
+      },
+      "temporal_exposure3": {
+        "SIMULTANEOUS": 3,
+        "ORDERED_OR_ALTERNATING": 2,
+        "VARIABLE_CONTEXT": 3
+      },
+      "spatial_exposure2": {
+        "SAME_UNIT": 7,
+        "DISTRIBUTED": 1
+      }
+    },
+    "U6": {
+      "n_groups": 21,
+      "module_opportunity2": {
+        "SINGLE": 21
+      },
+      "temporal_exposure3": {
+        "SIMULTANEOUS": 18,
+        "ORDERED_OR_ALTERNATING": 3
+      },
+      "spatial_exposure2": {
+        "SAME_UNIT": 21
+      }
+    }
+  },
+  "primary_model": {
+    "family": "regularized_bayesian_multinomial_logit_with_universe_stratified_intercepts",
+    "linear_predictor": "alpha[sampling_universe, architecture_logit] + module_opportunity2 + temporal_exposure3",
+    "reference_class": "SHARED",
+    "universe_intercept_prior": "Normal(0,1.5)",
+    "slope_prior": "Normal(0,0.75)",
+    "slope_prior_sensitivity": "Normal(0,1.5)",
+    "common_slopes_across_U2_U6": true,
+    "no_outcome_dependent_fallback": true
+  },
+  "parameter_budget_at_frozen_two_universes": {
+    "nonreference_logits": 3,
+    "universe_intercepts": 6,
+    "predictor_slope_columns_per_logit": 3,
+    "predictor_slope_coefficients": 9,
+    "total_primary_coefficients": 15,
+    "module_x_timing_additional_coefficients": 6,
+    "total_with_registered_interaction": 21
+  },
+  "estimability_gate": {
+    "minimum_independent_dependence_blocks_per_response_class": 2,
+    "minimum_independent_dependence_blocks_per_primary_predictor_level": 2,
+    "minimum_rows_per_primary_sampling_universe": 2,
+    "primary_slope_design_matrix_must_be_full_rank": true,
+    "both_primary_sampling_universes_must_be_present": true,
+    "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
+  },
+  "claim_hierarchy": {
+    "cross_universe_replicated": {
+      "contrast": "temporal SIMULTANEOUS vs ORDERED_OR_ALTERNATING",
+      "requirement": "both contrast levels represented in both U2 and U6 and direction/effect reported separately by universe"
+    },
+    "U2_anchored": {
+      "contrasts": [
+        "module SINGLE vs MODULAR",
+        "temporal VARIABLE_CONTEXT contrasts"
+      ],
+      "ceiling": "within-sexual-interference-universe association unless future independent universe support is added prospectively"
+    },
+    "support_limited": {
+      "contrast": "spatial SAME_UNIT vs DISTRIBUTED",
+      "ceiling": "secondary only under current one-block distributed support"
+    }
+  },
+  "registered_interaction_extension": {
+    "id": "I1_MODULE_X_TIMING",
+    "linear_predictor": "universe-stratified intercept + module_opportunity2 * temporal_exposure3",
+    "total_coefficients_at_two_universes": 21,
+    "fit_rule": "fit only after V4 main model and only when required interaction cells have support; otherwise report non-estimable"
+  },
+  "reporting_rules": [
+    "report U2 and U6 architecture-class support separately before pooled V4 results",
+    "report temporal SIMULTANEOUS-vs-ORDERED contrast within each universe as well as common-slope model",
+    "do not describe module slope as cross-universe generality because MODULAR is U2-only at pre-outcome freeze",
+    "report U1 independent reliability outcome separately as specificity validation",
+    "spatial exposure remains secondary unless prospectively supported by >=2 DISTRIBUTED dependence blocks"
+  ],
+  "claim_ceiling": "U2_U6_conflict_focused_routing_association_with_cross_universe_generality_reserved_for_replicated_temporal_contrast_not_causal_transition_probability"
+}
