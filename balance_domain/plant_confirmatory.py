@@ -287,3 +287,87 @@ def build_receipt_screening_coverage(
         "n_complete_adjudicated_clusters": len(complete_adjudicated),
         "promotion_rule": "SCREENED values do not license confirmatory model entry",
     }
+
+
+
+PRIMARY_MODULE_OPPORTUNITY = {
+    "SINGLE_OR_CONTINUOUS": "SINGLE",
+    "SERIAL_WITHIN_FLOWER": "MODULAR",
+    "REPEATED_FLOWERS": "MODULAR",
+    "PREEXISTING_SEPARATE_ORGANS": "MODULAR",
+    "MULTILEVEL": "MODULAR",
+}
+
+PRIMARY_TEMPORAL_EXPOSURE = {
+    "SIMULTANEOUS": "SIMULTANEOUS",
+    "SEQUENTIAL_WITHIN_UNIT": "ORDERED_OR_ALTERNATING",
+    "SEASONALLY_ALTERNATING": "ORDERED_OR_ALTERNATING",
+    "CONTEXT_DEPENDENT": "VARIABLE_CONTEXT",
+    "MIXED": "VARIABLE_CONTEXT",
+}
+
+PRIMARY_SPATIAL_EXPOSURE = {
+    "SAME_UNIT": "SAME_UNIT",
+    "BETWEEN_MODULES": "DISTRIBUTED",
+    "AMONG_INDIVIDUALS": "DISTRIBUTED",
+    "AMONG_POPULATIONS": "DISTRIBUTED",
+    "ENVIRONMENTAL_MOSAIC": "DISTRIBUTED",
+    "MIXED": "DISTRIBUTED",
+}
+
+
+def primary_module_opportunity(value: str) -> str:
+    try:
+        return PRIMARY_MODULE_OPPORTUNITY[value]
+    except KeyError as exc:
+        raise ValueError(f"module_substrate {value!r} is unresolved for primary contrast") from exc
+
+
+def primary_temporal_exposure(value: str) -> str:
+    try:
+        return PRIMARY_TEMPORAL_EXPOSURE[value]
+    except KeyError as exc:
+        raise ValueError(
+            f"conflict_timing_geometry {value!r} is unresolved for primary contrast"
+        ) from exc
+
+
+def primary_spatial_exposure(value: str) -> str:
+    try:
+        return PRIMARY_SPATIAL_EXPOSURE[value]
+    except KeyError as exc:
+        raise ValueError(
+            f"conflict_spatial_geometry {value!r} is unresolved for primary contrast"
+        ) from exc
+
+
+def primary_contrast_row(row: dict[str, str]) -> dict[str, str]:
+    """Project raw independently coded predictors onto the frozen low-dimensional fit."""
+    return {
+        "architecture_class4": primary_architecture_class(row["architecture_mode"]),
+        "module_opportunity2": primary_module_opportunity(row["module_substrate"]),
+        "temporal_exposure3": primary_temporal_exposure(row["conflict_timing_geometry"]),
+        "spatial_exposure2": primary_spatial_exposure(row["conflict_spatial_geometry"]),
+    }
+
+
+def confirmatory_parameter_budget() -> dict:
+    """Return outcome-blind fixed-effect coefficient counts for model specification v2."""
+    nonreference_logits = 3  # four-class multinomial response
+    raw_columns = 1 + (5 - 1) + (5 - 1) + (6 - 1)
+    coarse_columns = 1 + (2 - 1) + (3 - 1) + (2 - 1)
+    i1_columns = coarse_columns + (2 - 1) * (3 - 1)
+    i2_columns = coarse_columns + (2 - 1) * (2 - 1)
+    return {
+        "response_classes": 4,
+        "nonreference_logits": nonreference_logits,
+        "raw_main_effect_columns_per_logit": raw_columns,
+        "raw_main_effect_coefficients": raw_columns * nonreference_logits,
+        "coarse_main_effect_columns_per_logit": coarse_columns,
+        "coarse_main_effect_coefficients": coarse_columns * nonreference_logits,
+        "module_x_timing_columns_per_logit": i1_columns,
+        "module_x_timing_coefficients": i1_columns * nonreference_logits,
+        "module_x_spatial_columns_per_logit": i2_columns,
+        "module_x_spatial_coefficients": i2_columns * nonreference_logits,
+        "conflict_family_role": "mandatory_stratified_sensitivity_not_primary_fixed_effect",
+    }
