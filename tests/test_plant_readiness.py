@@ -47,4 +47,4 @@ def test_current_plant_v4_readiness_separates_primary_and_external_human_gates()
         "U6": {"n_groups": 21, "architecture_coding_complete": False},
     }
     assert out["primary_model_assembly_ready"] is False
-    assert out["v3_estimability_ready_to_evaluate"] is False
+    assert out["v4_estimability_ready_to_evaluate"] is False
