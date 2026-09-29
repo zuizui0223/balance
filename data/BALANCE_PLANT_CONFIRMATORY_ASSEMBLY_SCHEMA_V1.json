@@ -1,0 +1,39 @@
+{
+  "schema_version": "BALANCE_PLANT_CONFIRMATORY_ASSEMBLY_SCHEMA_V1",
+  "status": "FROZEN_BEFORE_MODEL_ASSEMBLY_V4",
+  "primary_universes": [
+    "U2_BARRETT_2002",
+    "U6_POLLEN_THEFT_HARGREAVES_2009"
+  ],
+  "excluded_from_primary_denominator": {
+    "U1": "broad interaction specificity / external validation under V4",
+    "U3": "architecture-positive matched/case-control design; separate estimand",
+    "U4": "mechanism stress test; not an outcome-blind routing denominator",
+    "U5": "aligned/abiotic controls; specificity role"
+  },
+  "required_fields": [
+    "analysis_row_id",
+    "universe_id",
+    "dependency_group",
+    "dependence_block",
+    "system_taxon",
+    "conflict_family",
+    "conflict_receipt_status",
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+    "architecture_adjudication_status",
+    "predictor_receipt_status",
+    "source_basis",
+    "claim_ceiling"
+  ],
+  "required_states": {
+    "conflict_receipt_status": "ADJUDICATED_POSITIVE",
+    "architecture_adjudication_status": "ADJUDICATED",
+    "predictor_receipt_status": "THREE_ADJUDICATED_OUTCOME_INDEPENDENT"
+  },
+  "downstream_spec": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
+  "downstream_gate": "balance_domain.plant_model_v4.build_v4_estimability_report",
+  "claim_ceiling": "U2_U6_assembly_and_estimability_only_no_effect_until_registered_v4_fit"
+}
