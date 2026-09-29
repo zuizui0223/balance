@@ -40,3 +40,21 @@ def test_coder_handoff_sequence_keeps_reliability_before_adjudication():
     assert reliability_index < repair_index < adjudication_index < predictor_index < fit_index
     assert data["current_primary_model"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
     assert data["current_publication_status"] == "DORMANT_PAPER_BRANCH"
+
+
+
+def test_coder_handoff_manifest_registers_deterministic_packet_builder():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    packet = data["packet_builder"]
+    assert packet["script"] == "scripts/build_plant_coder_packets.py"
+    assert packet["deterministic_zip"] is True
+    assert packet["evidence_identity_rule"].startswith(
+        "coder A and coder B receive byte-identical"
+    )
+    assert set(packet["outputs"]) == {
+        "BALANCE_PLANT_CODER_A_PACKET_V1.zip",
+        "BALANCE_PLANT_CODER_A_PACKET_V1.json",
+        "BALANCE_PLANT_CODER_B_PACKET_V1.zip",
+        "BALANCE_PLANT_CODER_B_PACKET_V1.json",
+    }
+    assert (ROOT / packet["script"]).exists()
