@@ -63,3 +63,21 @@ def test_coder_handoff_manifest_registers_deterministic_packet_builder():
     assert (ROOT / packet["script"]).exists()
     assert (ROOT / packet["workflow"]).exists()
     assert (ROOT / packet["runbook"]).exists()
+
+
+
+def test_handoff_manifest_separates_predictor_adjudication_from_architecture_coding():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    predictor = data["predictor_adjudication"]
+    assert predictor["protocol"] == (
+        "docs/BALANCE_PLANT_PREDICTOR_RECEIPT_ADJUDICATION_PROTOCOL_V1.md"
+    )
+    assert predictor["builder"] == "scripts/build_plant_predictor_adjudication_packet.py"
+    assert predictor["workflow"] == (
+        ".github/workflows/build-plant-predictor-adjudication-packet.yml"
+    )
+    assert predictor["architecture_outputs_included"] is False
+    assert predictor["applicable_primary_universes"] == ["U2", "U6"]
+    assert (ROOT / predictor["protocol"]).exists()
+    assert (ROOT / predictor["builder"]).exists()
+    assert (ROOT / predictor["workflow"]).exists()
