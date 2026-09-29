@@ -216,3 +216,16 @@ def test_v4_cross_universe_generality_is_reserved_for_replicated_timing_contrast
     assert sensitivity["additional_coefficients"] == 3
     assert sensitivity["total_coefficients"] == 18
     assert sensitivity["practical_interaction_margin_log_odds"] == 1
+
+
+
+def test_v4_preoutcome_design_is_full_rank_but_strict_generality_not_ready():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    audit = spec["preoutcome_design_audit"]
+    assert audit["common_slope_design_rank"] == 3
+    assert audit["common_slope_design_columns"] == 3
+    assert audit["common_slope_design_full_rank"] is True
+    assert audit["full_universe_stratified_design_rank"] == 5
+    assert audit["full_universe_stratified_design_columns"] == 5
+    assert audit["full_universe_stratified_design_full_rank"] is True
+    assert audit["strict_temporal_generality_common_support_ready"] is False
