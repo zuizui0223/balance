@@ -4,13 +4,12 @@ import json
 import sys
 from pathlib import Path
 
-from balance_domain.plant_macro_agreement import FIELDS
+from balance_domain.plant_macro_agreement import FIELDS, load_double_coding
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 merge_cli = importlib.import_module("merge_plant_coder_returns")
-analysis_cli = importlib.import_module("build_plant_v4_analysis_inputs")
 
 U2_SAMPLE = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv"
 
@@ -41,7 +40,7 @@ def _write_return(path, coder_id):
             })
 
 
-def test_u2_return_merge_is_immediately_usable_as_analysis_workspace_override(tmp_path):
+def test_u2_return_merge_is_canonical_double_coding_ledger(tmp_path):
     a = tmp_path / "coder_a.csv"
     b = tmp_path / "coder_b.csv"
     workspace = tmp_path / "workspace"
@@ -62,10 +61,7 @@ def test_u2_return_merge_is_immediately_usable_as_analysis_workspace_override(tm
     assert receipt["n_rows"] == 40
     assert receipt["n_dependency_groups"] == 20
 
-    resolved_paths = analysis_cli._paths(workspace)
-    assert resolved_paths["u2_worksheet"] == merged
-
-    readiness = analysis_cli.current_readiness(input_dir=workspace)
-    assert readiness["primary_human_open_gates"]["u2_independent_double_coding"] is False
-    assert readiness["primary_human_open_gates"]["u2_post_coding_adjudication"] is True
-    assert readiness["primary_model_assembly_ready"] is False
+    loaded = load_double_coding(merged)
+    assert len(loaded) == 40
+    assert {row["coder_id"] for row in loaded} == {"CODER_A", "CODER_B"}
+    assert len({row["cluster_id"] for row in loaded}) == 20
