@@ -1,9 +1,13 @@
+from pathlib import Path
 import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
 
 from balance_domain.plant_assembly_builder import (
     build_u2_licensed_rows,
     build_u6_licensed_rows,
     build_v4_licensed_assembly,
+    build_v4_licensed_assembly_from_files,
 )
 
 
@@ -211,4 +215,23 @@ def test_combined_builder_refuses_empty_pending_state():
             u6_predictor_receipts=[],
             u6_dependence_rows=[],
             u6_frozen_source_packet_rows=[],
+        )
+
+
+
+def test_canonical_file_assembly_is_blocked_while_independent_coding_is_blank():
+    with pytest.raises(ValueError, match="must be frozen"):
+        build_v4_licensed_assembly_from_files(
+            u2_sample_path=ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv",
+            u2_coding_path=ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+            u2_adjudication_path=ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+            u2_predictor_receipts_path=ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+            u2_source_packet_path=ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv",
+            u6_freeze_path=ROOT / "data" / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json",
+            u6_coding_path=ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+            u6_adjudication_path=ROOT / "data" / "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
+            u6_predictor_receipts_path=ROOT / "data" / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+            u6_dependence_path=ROOT / "data" / "BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv",
+            u6_source_recovery_path=ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv",
+            u6_frozen_source_packet_path=ROOT / "data" / "BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv",
         )
