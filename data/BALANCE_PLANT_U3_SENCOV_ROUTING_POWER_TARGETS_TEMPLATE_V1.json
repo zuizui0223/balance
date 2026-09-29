@@ -1,0 +1,54 @@
+{
+  "analysis": "balance_u3_sencov_routing_power_targets_v1",
+  "status": "DO_NOT_RUN_POWER_UNTIL_ALL_REQUIRED_TARGETS_ARE_FROZEN",
+  "target_power": 0.8,
+  "alpha_two_sided": 0.05,
+  "target_source_rule": "The equivalence margin and any minimum meaningful routing contrast must be prospectively justified by biological relevance, assay calibration, theory, or independent prior information. Stage-0 positional effect estimates must not be used to choose a convenient margin; Stage-0 supplies nuisance parameters only and target justification must be independent of the focal positional contrast.",
+  "nuisance_parameter_source": "BALANCE_PLANT_U3_SENCOV_STAGE0_NUISANCE_TEMPLATE_V1.json",
+  "primary_estimand": {
+    "name": "delta_route_log_odds",
+    "comparison": "abaxial_minus_median",
+    "definition": "logit(P(transfer_fate | abaxial source)) - logit(P(transfer_fate | median source))",
+    "transfer_fate": "source-resolved pollen assigned to a preregistered transfer-associated visitor-body sector or deposited on a conspecific stigma",
+    "reward_fate": "source-resolved pollen assigned to preregistered groomable/collected sectors",
+    "unresolved_or_lost_fate": "tracked separately; never silently recoded as transfer or reward"
+  },
+  "equivalence_margin_abs_log_odds": "REQUIRED_BEFORE_USE",
+  "margin_justification": "REQUIRED_BEFORE_USE",
+  "design": {
+    "cluster_unit": "plant_id",
+    "flower_unit": "individual_flower",
+    "visit_unit": "single_controlled_visit_or_standardized_sonication",
+    "source_assignment_unit": "pollen_grain_or_validated_source_proxy",
+    "position_groups_frozen_before_outcomes": true,
+    "shared_integration_requires_equivalence": true,
+    "candidate_plants": "REQUIRED_BEFORE_USE",
+    "flowers_per_plant": "REQUIRED_BEFORE_USE",
+    "visits_or_sonications_per_position_group": "REQUIRED_BEFORE_USE",
+    "allocation_rule": "REQUIRED_BEFORE_USE",
+    "attrition_inflation_rule": "REQUIRED_BEFORE_USE"
+  },
+  "nuisance_sensitivity": {
+    "plant_level_icc_range": "REQUIRED_BEFORE_USE",
+    "flower_or_visit_overdispersion_range": "REQUIRED_BEFORE_USE",
+    "source_label_recovery_rate_range": "REQUIRED_BEFORE_USE",
+    "unresolved_fate_fraction_range": "REQUIRED_BEFORE_USE",
+    "baseline_transfer_probability_range": "REQUIRED_BEFORE_USE",
+    "manipulation_induced_pollen_quantity_imbalance_range": "REQUIRED_BEFORE_USE"
+  },
+  "precision_stopping_rule": {
+    "outcome_blinded_for_margin_selection": true,
+    "margin_frozen_before_focal_position_contrast": true,
+    "classification": "CI_outside_equivalence_band=>WITHIN_FLOWER_DIVISION_OF_LABOUR;CI_inside_equivalence_band=>SHARED_INTEGRATED;otherwise=>UNRESOLVED",
+    "final_scale_rule": "Choose a design that reaches the registered target power for the minimum meaningful outside-band contrast and adequate precision to place a truly equivalent contrast inside the same band across the frozen nuisance sensitivity range."
+  },
+  "fail_closed_rules": [
+    "Do not run final power while any REQUIRED_BEFORE_USE field remains.",
+    "Do not use the Stage-0 median-versus-abaxial effect estimate to set the equivalence margin.",
+    "Do not set plant-level ICC to zero merely because the Stage-0 estimate is unstable; use a frozen sensitivity range.",
+    "Do not call SHARED_INTEGRATED from P > 0.05; the full confidence interval must lie inside the frozen equivalence band.",
+    "Do not call WITHIN_FLOWER_DIVISION_OF_LABOUR if a positional effect can be explained solely by unequal available pollen without controlling or modelling that quantity.",
+    "Do not treat pollen grains from the same flower, visit, bee or plant as independent biological replicates."
+  ],
+  "claim_ceiling": "prospective_power_targets_only_not_power_result_not_sample_size_not_architecture_assignment"
+}

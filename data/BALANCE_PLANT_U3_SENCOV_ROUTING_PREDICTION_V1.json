@@ -1,0 +1,41 @@
+{
+  "analysis": "balance_u3_sencov_routing_prediction_v1",
+  "status": "FROZEN_BEFORE_TARGET_ROUTING_OUTCOME",
+  "freeze_basis": "Current positive-control discovery surface before any qualifying Senna covesii routing outcome is available.",
+  "discovery_rule": {
+    "conditioning": "nonheterantherous controls with POSITIVE pollen-fate conflict and source-resolved routing",
+    "observations": [
+      {
+        "taxon": "Solanum lycocarpum",
+        "dependence_block_id": "U3_DEP_SOLANUM_01",
+        "module_substrate": "REPEATED_FLOWERS",
+        "routing_state": "AMONG_FLOWER_MODULE_DIVISION"
+      },
+      {
+        "taxon": "Senna spectabilis",
+        "dependence_block_id": "U3_DEP_SENNA_01",
+        "module_substrate": "SERIAL_WITHIN_FLOWER",
+        "routing_state": "WITHIN_FLOWER_DIVISION_OF_LABOUR"
+      }
+    ],
+    "candidate_directional_rule": "On the current discovery surface, positive conflict routes at the organizational level supplied by the registered pre-outcome module substrate."
+  },
+  "target": {
+    "taxon": "Senna covesii",
+    "pair_id": "U3_PAIR_SENBI_001",
+    "dependence_block_id": "U3_DEP_SENNA_01",
+    "pollen_fate_conflict_status": "POSITIVE",
+    "module_substrate": "SERIAL_WITHIN_FLOWER",
+    "routing_outcome_at_freeze": "UNRESOLVED",
+    "predicted_routing_state": "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+    "measurement_contract": "U3MEAS_SENCOV_001"
+  },
+  "independent_block_replication": false,
+  "independence_note": "The target shares U3_DEP_SENNA_01 with Senna spectabilis; this is a prospective species-level prediction, not an independent evolutionary replication.",
+  "adjudication": {
+    "support": "Source-resolved WITHIN_FLOWER_DIVISION_OF_LABOUR under the frozen targeted-measurement/equivalence contract.",
+    "falsify": "Any other source-resolved routing state under the frozen contract.",
+    "inconclusive": "UNRESOLVED because the assay is insufficiently precise or fails a measurement guard."
+  },
+  "claim_ceiling": "single_target_prospective_prediction_only_not_general_module_rule_not_causal_effect_not_historical_transition"
+}
