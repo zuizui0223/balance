@@ -20,6 +20,12 @@ from balance_domain.plant_coder_return import (  # noqa: E402
 
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_coder_returns"
 
+CANONICAL_WORKSHEET_BASENAME = {
+    "U1": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "U2": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "U6": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+}
+
 
 def _lane_paths(lane: str) -> dict[str, Path]:
     data = ROOT / "data"
@@ -53,7 +59,7 @@ def merge_lane(
         **kwargs,
     )
     out_dir.mkdir(parents=True, exist_ok=True)
-    merged_path = out_dir / f"BALANCE_PLANT_{lane}_DOUBLE_CODE_RETURN_MERGED_V1.csv"
+    merged_path = out_dir / CANONICAL_WORKSHEET_BASENAME[lane]
     receipt_path = out_dir / f"BALANCE_PLANT_{lane}_DOUBLE_CODE_RETURN_RECEIPT_V1.json"
     write_merged_coder_returns(merged_path, rows, lane=lane)
     group_field = "dependency_group" if lane == "U6" else "cluster_id"
@@ -65,6 +71,7 @@ def merge_lane(
         "n_dependency_groups": len({row[group_field] for row in rows}),
         "coder_ids": sorted({row["coder_id"] for row in rows}),
         "merged_ledger": str(merged_path),
+        "workspace_override_basename": merged_path.name,
         "next_step": "agreement diagnostics before any source adjudication",
         "claim_ceiling": "validated_coder_return_merge_only_no_biological_result",
     }
