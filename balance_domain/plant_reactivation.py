@@ -13,6 +13,7 @@ BOOLEAN_REQUIREMENTS = (
     "v4_primary_estimability_pass",
     "v4_primary_fit_complete",
     "temporal_generality_sensitivity_fit_complete",
+    "temporal_common_support_module_stratum_ready",
     "u2_ordered_vs_simultaneous_direction_resolved",
     "u6_ordered_vs_simultaneous_direction_resolved",
 )
