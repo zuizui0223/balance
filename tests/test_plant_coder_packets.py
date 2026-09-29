@@ -53,8 +53,10 @@ def test_coder_packets_have_identical_evidence_and_coder_specific_worksheets(tmp
         assert a_rows and b_rows
         assert {row["coder_id"] for row in a_rows} == {"CODER_A"}
         assert {row["coder_id"] for row in b_rows} == {"CODER_B"}
-        assert [row["cluster_id"] for row in a_rows] == [
-            row["cluster_id"] for row in b_rows
+        key = "cluster_id" if "cluster_id" in a_rows[0] else "dependency_group"
+        assert key in b_rows[0]
+        assert [row[key] for row in a_rows] == [
+            row[key] for row in b_rows
         ]
 
 
