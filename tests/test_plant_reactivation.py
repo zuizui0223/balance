@@ -24,6 +24,7 @@ def test_current_v4_reactivation_gate_stays_dormant():
     assert "u2_independent_coding_and_adjudication_complete" in out["blockers"]
     assert "u6_independent_coding_and_adjudication_complete" in out["blockers"]
     assert "v4_primary_fit_complete" in out["blockers"]
+    assert "temporal_common_support_module_stratum_ready" in out["blockers"]
     assert "directionally_concordant_across_u2_u6" in out["blockers"]
 
 
@@ -37,6 +38,7 @@ def test_v4_reactivation_requires_more_than_nonzero_pooled_effect():
         "v4_primary_estimability_pass": True,
         "v4_primary_fit_complete": True,
         "temporal_generality_sensitivity_fit_complete": True,
+        "temporal_common_support_module_stratum_ready": True,
         "u2_ordered_vs_simultaneous_direction_resolved": True,
         "u6_ordered_vs_simultaneous_direction_resolved": True,
         "directionally_concordant_across_u2_u6": False,
@@ -58,6 +60,7 @@ def test_v4_reactivation_gate_can_become_evidence_eligible_without_auto_activati
             "v4_primary_estimability_pass",
             "v4_primary_fit_complete",
             "temporal_generality_sensitivity_fit_complete",
+            "temporal_common_support_module_stratum_ready",
             "u2_ordered_vs_simultaneous_direction_resolved",
             "u6_ordered_vs_simultaneous_direction_resolved",
         )
