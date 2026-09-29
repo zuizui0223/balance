@@ -1,6 +1,9 @@
+import csv
+import pytest
 from pathlib import Path
 
-from balance_domain.plant_readiness import build_plant_v4_readiness
+from balance_domain.plant_readiness import _load_two_coder_stage, build_plant_v4_readiness
+from balance_domain.plant_u1_double_code import load_u1_blank_worksheet
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,3 +57,36 @@ def test_current_plant_v4_readiness_separates_primary_and_external_human_gates()
     }
     assert out["primary_model_assembly_ready"] is False
     assert out["v4_estimability_ready_to_evaluate"] is False
+
+
+
+def test_completed_double_coding_cannot_relabel_frozen_coder_ids(tmp_path):
+    source = ROOT / "data" / "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv"
+    rows = []
+    with source.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = reader.fieldnames
+        for row in reader:
+            row = dict(row)
+            row["coder_id"] = "A" if row["coder_id"] == "CODER_A" else "B"
+            row["conflict_status"] = "NO_DEMONSTRATED_CONFLICT"
+            row["architecture_mode"] = "UNRESOLVED"
+            row["module_substrate"] = "UNRESOLVED"
+            row["conflict_timing_geometry"] = "UNRESOLVED"
+            row["conflict_spatial_geometry"] = "UNRESOLVED"
+            row["self_compatibility"] = "UNRESOLVED"
+            row["autonomous_selfing"] = "UNRESOLVED"
+            row["pollinator_dependence"] = "UNRESOLVED"
+            row["life_history"] = "UNRESOLVED"
+            row["coding_confidence"] = "LOW"
+            row["notes"] = "synthetic complete coding"
+            rows.append(row)
+
+    path = tmp_path / "relabeled.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    with pytest.raises(ValueError, match="preserve CODER_A/CODER_B"):
+        _load_two_coder_stage(path, load_u1_blank_worksheet)
