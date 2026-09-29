@@ -165,6 +165,50 @@ These receipt frames contain no focal architecture outcome as a licensing shortc
 
 A predictor enters the model only after **both Gate A and Gate B** are closed.
 
+## Worksheet completion semantics
+
+For every frozen row, coders must enter an explicit value for each coding field.
+
+For U1/U2:
+
+```text
+conflict_status
+architecture_mode
+module_substrate
+conflict_timing_geometry
+conflict_spatial_geometry
+```
+
+For U6, the same four architecture/predictor fields are coded and the returned row must also
+set:
+
+```text
+coding_status = CODED
+```
+
+The identifiers are immutable:
+
+```text
+cluster_id / dependency_group
+coder_id
+U6 source_reference_ids
+```
+
+Do not edit those fields.
+
+`UNRESOLVED` is an allowed **completed biological code** when the evidence does not support
+a more specific category. A blank cell or U6 `coding_status=UNSTARTED` means the coding task
+is not complete.
+
+Therefore:
+
+```text
+UNRESOLVED != UNSTARTED
+```
+
+A returned U6 worksheet with any `UNSTARTED` row fails the return-ingestion contract even
+if the category columns contain text.
+
 ## Architecture-versus-resolution language
 
 Coders always score `architecture_mode`.
