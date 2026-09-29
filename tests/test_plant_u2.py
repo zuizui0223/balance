@@ -4,6 +4,7 @@ from balance_domain.plant_u2 import (
     build_u2_readout,
     build_u2_double_code_handoff,
     build_u2_reference_handoff,
+    load_u2_blank_worksheet,
     load_u2_double_code_sample,
     load_u2_universe,
 )
@@ -14,6 +15,7 @@ U2 = ROOT / "data" / "BALANCE_PLANT_U2_BARRETT_REVIEW_UNIVERSE_V1.csv"
 COVERAGE = ROOT / "data" / "BALANCE_PLANT_U2_REFERENCE_COVERAGE_V1.csv"
 SAMPLE = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv"
 PACKET = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv"
+WORKSHEET = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv"
 
 
 def test_u2_review_universe_validates():
@@ -67,13 +69,15 @@ def test_alpinia_flexistyly_program_is_resolved_to_species():
 
 
 def test_u2_source_closed_first20_is_ready_for_independent_double_coding():
-    handoff = build_u2_double_code_handoff(U2, SAMPLE, PACKET)
+    handoff = build_u2_double_code_handoff(U2, SAMPLE, PACKET, WORKSHEET)
     assert handoff["n_universe_groups"] == 22
     assert handoff["n_sampled_groups"] == 20
     assert handoff["n_source_packet_groups"] == 20
+    assert handoff["n_blank_worksheet_rows"] == 40
     assert handoff["all_sampled_sources_resolved"] is True
     assert handoff["selection_rule_closed"] is True
     assert handoff["source_packet_blinded_to_review_evidence_family"] is True
+    assert handoff["two_independent_coder_slots_per_group"] is True
     assert handoff["independent_double_coding_ready"] is True
 
 
@@ -88,3 +92,20 @@ def test_u2_double_code_sample_retains_preregistered_record_id_first20():
         r["selection_rule"] == "FIRST_20_DEPENDENCY_GROUPS_BY_FROZEN_U2_RECORD_ID"
         for r in rows
     )
+
+
+
+def test_u2_blank_worksheet_has_two_empty_coder_rows_per_sample_group():
+    sample_groups = {row["dependency_group"] for row in load_u2_double_code_sample(SAMPLE)}
+    rows = load_u2_blank_worksheet(WORKSHEET)
+    assert len(rows) == 40
+    assert {row["cluster_id"] for row in rows} == sample_groups
+    for group in sample_groups:
+        pair = [row for row in rows if row["cluster_id"] == group]
+        assert {row["coder_id"] for row in pair} == {"CODER_A", "CODER_B"}
+        for row in pair:
+            assert not row["conflict_status"]
+            assert not row["architecture_mode"]
+            assert not row["module_substrate"]
+            assert not row["conflict_timing_geometry"]
+            assert not row["conflict_spatial_geometry"]
