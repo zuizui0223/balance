@@ -32,6 +32,13 @@ class PedicularisXYBalanceReceipt:
     bita_surface_status: str | None
     claim_level: str
 
+    @property
+    def legacy_state(self) -> str:
+        """Return the deprecated BITA-side state label for old consumers."""
+        if self.state == "FUNCTIONAL_STATE_ARCHITECTURE_FAVOURED_IDENTIFIED":
+            return "FUNCTIONAL_STATE_BITA_SIDE_IDENTIFIED"
+        return self.state
+
 
 def _required_text(value: object, name: str) -> str:
     if not isinstance(value, str):
@@ -121,7 +128,7 @@ def consume_pedicularis_xy_surface(conflict: dict, xy: dict) -> PedicularisXYBal
     elif ghi < 0:
         state = "FUNCTIONAL_STATE_BALANCE_IDENTIFIED"
     elif glo > 0:
-        state = "FUNCTIONAL_STATE_BITA_SIDE_IDENTIFIED"
+        state = "FUNCTIONAL_STATE_ARCHITECTURE_FAVOURED_IDENTIFIED"
     else:
         state = "FUNCTIONAL_STATE_ORDER_UNRESOLVED"
 
