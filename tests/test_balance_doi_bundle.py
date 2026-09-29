@@ -87,7 +87,8 @@ def test_doi_manifest_can_register_v4_reactivation_without_reactivating_now() ->
     assert manifest["active_publication_queue"] is False
     assert any(
         "cross-universe architecture-routing result" in rule
-        and "U2 and U6" in rule
+        and "common-support timing gate" in rule
+        and "U2/U6" in rule
         for rule in manifest["reactivation_policy"]
     )
 
