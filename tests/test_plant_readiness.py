@@ -2,7 +2,13 @@ import csv
 import pytest
 from pathlib import Path
 
-from balance_domain.plant_readiness import _load_two_coder_stage, build_plant_v4_readiness
+from balance_domain.plant_readiness import (
+    EXTERNAL_VALIDATION_MACHINE_GATES,
+    PRIMARY_MACHINE_GATES,
+    _load_two_coder_stage,
+    _machine_gate_complete,
+    build_plant_v4_readiness,
+)
 from balance_domain.plant_u1_double_code import load_u1_blank_worksheet
 
 
@@ -30,6 +36,12 @@ def test_current_plant_v4_readiness_separates_primary_and_external_human_gates()
 
     assert out["model_specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
     assert out["all_machine_preparation_complete"] is True
+    assert out["all_primary_machine_preparation_complete"] is True
+    assert out["all_external_validation_machine_preparation_complete"] is True
+    assert out["primary_machine_gates"] == list(PRIMARY_MACHINE_GATES)
+    assert out["external_validation_machine_gates"] == list(
+        EXTERNAL_VALIDATION_MACHINE_GATES
+    )
     assert out["machine_complete"] == {
         "u1_full47_source_screen": True,
         "u2_full22_source_screen": True,
@@ -93,3 +105,34 @@ def test_completed_double_coding_cannot_relabel_frozen_coder_ids(tmp_path):
 
     with pytest.raises(ValueError, match="preserve CODER_A/CODER_B"):
         _load_two_coder_stage(path, load_u1_blank_worksheet)
+
+
+
+def test_u1_machine_gap_does_not_block_v4_primary_machine_readiness():
+    machine_complete = {
+        "u1_full47_source_screen": False,
+        "u2_full22_source_screen": True,
+        "u2_positive_predictor_source_screen": True,
+        "u6_pass1_conflict_first_freeze": True,
+        "u6_predictor_source_screen": True,
+        "u6_cross_universe_dependence": True,
+    }
+
+    assert _machine_gate_complete(machine_complete, PRIMARY_MACHINE_GATES) is True
+    assert (
+        _machine_gate_complete(
+            machine_complete,
+            EXTERNAL_VALIDATION_MACHINE_GATES,
+        )
+        is False
+    )
+
+
+def test_primary_machine_readiness_fails_closed_on_missing_required_gate():
+    machine_complete = {
+        "u1_full47_source_screen": True,
+        "u2_full22_source_screen": True,
+    }
+
+    with pytest.raises(ValueError, match="missing required gates"):
+        _machine_gate_complete(machine_complete, PRIMARY_MACHINE_GATES)
