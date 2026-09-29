@@ -3,13 +3,18 @@ from pathlib import Path
 
 from balance_domain.plant_confirmatory import (
     build_receipt_screening_coverage,
+    confirmatory_parameter_budget,
     load_plant_predictor_receipts,
+    primary_module_opportunity,
+    primary_spatial_exposure,
+    primary_temporal_exposure,
 )
 from balance_domain.plant_macro import PRIMARY_ARCHITECTURE_CLASSES, primary_architecture_class
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
+SPEC_V1 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
+SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_PREDICTOR_RECEIPT_TEMPLATE_V1.csv"
 U1_FRAME = ROOT / "data" / "BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 U2_FRAME = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
@@ -25,11 +30,17 @@ def test_frozen_model_spec_matches_executable_primary_mapping():
             assert primary_architecture_class(mode) == class_name
 
 
-def test_frozen_primary_model_has_no_data_dependent_fallback():
+def test_frozen_primary_model_v2_has_no_data_dependent_fallback():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     assert spec["primary_model"]["no_data_dependent_fallback"] is True
-    assert spec["primary_model"]["family"] == "hierarchical_multinomial"
+    assert spec["primary_model"]["family"] == "regularized_bayesian_multinomial_logit"
     assert len(spec["registered_interaction_extensions"]) == 2
+
+
+def test_v1_was_superseded_before_fit_by_parameter_budget():
+    v1 = json.loads(SPEC_V1.read_text(encoding="utf-8"))
+    assert v1["status"] == "SUPERSEDED_PRE_FIT_BY_V2_PARAMETER_BUDGET"
+    assert v1["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2"
 
 
 def test_signal_separation_is_explicitly_retained():
@@ -104,3 +115,38 @@ def test_u2_predictor_screen_progress_is_outcome_independent_but_not_adjudicated
     ]
     assert coverage["n_complete_adjudicated_clusters"] == 0
     assert coverage["promotion_rule"].startswith("SCREENED")
+
+
+
+def test_v2_primary_predictor_contrast_mappings_match_executable_code():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    mapping = spec["primary_predictor_contrasts"]
+
+    for coarse, raw_values in mapping["module_opportunity2"].items():
+        assert all(primary_module_opportunity(raw) == coarse for raw in raw_values)
+    for coarse, raw_values in mapping["temporal_exposure3"].items():
+        assert all(primary_temporal_exposure(raw) == coarse for raw in raw_values)
+    for coarse, raw_values in mapping["spatial_exposure2"].items():
+        assert all(primary_spatial_exposure(raw) == coarse for raw in raw_values)
+
+
+def test_v2_parameter_budget_is_frozen_before_outcome_coding():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    budget = confirmatory_parameter_budget()
+    assert budget["raw_main_effect_coefficients"] == 42
+    assert budget["coarse_main_effect_coefficients"] == 15
+    assert budget["module_x_timing_coefficients"] == 21
+    assert budget["module_x_spatial_coefficients"] == 18
+    assert spec["parameter_budget"]["raw_joint_model_fixed_coefficients"] == 42
+    assert spec["parameter_budget"]["v2_main_fixed_coefficients"] == 15
+    assert spec["parameter_budget"]["module_x_timing_fixed_coefficients"] == 21
+    assert spec["parameter_budget"]["module_x_spatial_fixed_coefficients"] == 18
+
+
+def test_v2_estimability_gate_does_not_allow_posthoc_term_dropping():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    gate = spec["estimability_gate"]
+    assert gate["minimum_independent_dependence_blocks_per_response_class"] == 2
+    assert gate["all_primary_predictor_contrasts_must_have_at_least_two_observed_levels"] is True
+    assert gate["primary_design_matrix_must_be_full_rank"] is True
+    assert gate["failure_action"] == "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
