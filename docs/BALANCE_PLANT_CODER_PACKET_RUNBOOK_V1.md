@@ -166,6 +166,44 @@ closed.
 The merged ledger is written in canonical alternating coder order. It is then used as an
 external handoff-workspace override; tracked repository data do not need to be overwritten.
 
+## Agreement report
+
+After merging both coder returns, build the canonical agreement report before any source
+adjudication:
+
+```bash
+python scripts/report_plant_coder_agreement.py \
+  --lane U2 \
+  --coding /path/to/handoff_workspace/BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv \
+  --out-dir /path/to/handoff_workspace/agreement
+```
+
+The command writes:
+
+```text
+BALANCE_PLANT_U2_AGREEMENT_REPORT_V1.json
+BALANCE_PLANT_U2_DISAGREEMENTS_V1.csv
+```
+
+The same interface applies to U1 and U6.
+
+The frozen rule is:
+
+```text
+all coded fields raw agreement >= 0.80
+  -> adjudication allowed
+
+any coded field raw agreement < 0.80
+  -> codebook repair
+  -> independent recoding of the SAME frozen groups
+  -> new agreement report
+  -> no adjudication yet
+```
+
+The disagreement CSV lists exact dependency groups and coder A/B values by field. Cohen
+kappa and Gwet AC1 are reported as diagnostics, but the workflow gate is the preregistered
+raw-agreement threshold.
+
 ## External handoff workspace
 
 The V4 analysis builder accepts:
