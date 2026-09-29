@@ -3,6 +3,11 @@ from pathlib import Path
 
 import pytest
 
+from balance_domain.plant_confirmatory import (
+    build_receipt_screening_coverage,
+    load_plant_predictor_receipts,
+)
+
 from balance_domain.plant_u6 import (
     FORBIDDEN_PASS1_FIELDS,
     build_u6_candidate_adjudication_readout,
@@ -37,6 +42,7 @@ DEPENDENCE = ROOT / "data" / "BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv"
 SOURCE_PACKET = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_PACKET_V1.csv"
 SOURCE_RECOVERY = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv"
 FROZEN_SOURCE_PACKET = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv"
+PREDICTOR_RECEIPTS = ROOT / "data" / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 
 
 def test_u6_anchor_keeps_architecture_blinded_in_pass1():
@@ -274,3 +280,28 @@ def test_u6_agreement_report_is_frozen_to_four_pass2_fields():
         assert stats["gwet_ac1"] == 1.0
         assert stats["codebook_repair_trigger"] is False
     assert report["confirmatory_promotion_allowed"] is False
+
+
+
+def test_u6_predictor_receipt_frame_is_frozen_before_architecture_results():
+    rows = load_plant_predictor_receipts(PREDICTOR_RECEIPTS)
+    assert len(rows) == 63
+    assert len({row["cluster_id"] for row in rows}) == 21
+    by_cluster = {}
+    for row in rows:
+        by_cluster.setdefault(row["cluster_id"], set()).add(row["predictor"])
+        assert row["reported_value"] == "UNRESOLVED"
+        assert row["evidence_type"] == "UNCLEAR"
+        assert row["outcome_independence"] == "UNCERTAIN"
+        assert row["adjudication_status"] == "SCREENED"
+    assert all(predictors == {
+        "module_substrate",
+        "conflict_timing_geometry",
+        "conflict_spatial_geometry",
+    } for predictors in by_cluster.values())
+
+    coverage = build_receipt_screening_coverage(rows)
+    assert coverage["n_receipts"] == 63
+    assert coverage["n_clusters"] == 21
+    assert coverage["n_complete_outcome_independent_clusters"] == 0
+    assert coverage["n_complete_adjudicated_clusters"] == 0
