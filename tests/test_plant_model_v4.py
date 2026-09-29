@@ -70,6 +70,7 @@ def test_v4_primary_and_cross_universe_timing_generality_can_both_pass():
     }
     assert out["spatial_secondary_estimable"] is False
     assert out["slope_design_full_rank"] is True
+    assert out["full_design_full_rank"] is True
     assert out["blockers"] == []
     assert out["ready_for_primary_fit"] is True
 
@@ -118,4 +119,21 @@ def test_v4_detects_common_slope_rank_deficiency():
     out = build_v4_estimability_report(rows)
     assert out["slope_design_full_rank"] is False
     assert "primary_common_slope_design_matrix_rank_deficient" in out["blockers"]
+    assert out["ready_for_primary_fit"] is False
+
+
+
+def test_v4_detects_predictor_universe_confounding_even_when_slope_rank_is_full():
+    rows = _ready_rows()
+    for row in rows:
+        row["module_substrate"] = (
+            "SERIAL_WITHIN_FLOWER"
+            if row["universe_id"] == "U2_BARRETT_2002"
+            else "SINGLE_OR_CONTINUOUS"
+        )
+
+    out = build_v4_estimability_report(rows)
+    assert out["slope_design_full_rank"] is True
+    assert out["full_design_full_rank"] is False
+    assert "primary_universe_stratified_design_matrix_rank_deficient" in out["blockers"]
     assert out["ready_for_primary_fit"] is False
