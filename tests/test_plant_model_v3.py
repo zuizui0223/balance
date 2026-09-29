@@ -86,16 +86,25 @@ def test_v3_fails_when_variable_context_temporal_level_is_missing():
 def test_v3_detects_primary_rank_deficiency_without_using_spatial_to_rescue_fit():
     rows = [
         _row("s1", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS", "SAME_UNIT"),
-        _row("s2", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS", "BETWEEN_MODULES"),
-        _row("n1", "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT", "SAME_UNIT"),
+        _row("s2", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT", "BETWEEN_MODULES"),
+        _row("n1", "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS", "SAME_UNIT"),
         _row("n2", "SPATIAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEASONALLY_ALTERNATING", "SAME_UNIT"),
-        _row("d1", "WITHIN_FLOWER_DIVISION_OF_LABOUR", "SERIAL_WITHIN_FLOWER", "SIMULTANEOUS", "SAME_UNIT"),
-        _row("d2", "AMONG_FLOWER_MODULE_DIVISION", "REPEATED_FLOWERS", "SIMULTANEOUS", "SAME_UNIT"),
-        _row("m1", "POLYMORPHIC_OR_MOSAIC", "SERIAL_WITHIN_FLOWER", "CONTEXT_DEPENDENT", "SAME_UNIT"),
-        _row("m2", "POLYMORPHIC_OR_MOSAIC", "REPEATED_FLOWERS", "MIXED", "SAME_UNIT"),
+        _row("d1", "WITHIN_FLOWER_DIVISION_OF_LABOUR", "SERIAL_WITHIN_FLOWER", "CONTEXT_DEPENDENT", "SAME_UNIT"),
+        _row("d2", "AMONG_FLOWER_MODULE_DIVISION", "REPEATED_FLOWERS", "MIXED", "SAME_UNIT"),
+        _row("m1", "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS", "SAME_UNIT"),
+        _row("m2", "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT", "SAME_UNIT"),
     ]
     out = build_v3_estimability_report(rows)
-    # module status is perfectly determined by the temporal contrast in this construction.
+    # Here module_MODULAR and temporal_VARIABLE_CONTEXT are exactly the same column.
+    assert out["module_level_dependence_block_counts"] == {
+        "SINGLE": 6,
+        "MODULAR": 2,
+    }
+    assert out["temporal_level_dependence_block_counts"] == {
+        "SIMULTANEOUS": 3,
+        "ORDERED_OR_ALTERNATING": 3,
+        "VARIABLE_CONTEXT": 2,
+    }
     assert out["design_full_rank"] is False
     assert "primary_design_matrix_rank_deficient" in out["blockers"]
     assert out["failure_action"] == "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
