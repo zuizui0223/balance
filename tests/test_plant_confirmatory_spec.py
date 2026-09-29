@@ -15,7 +15,8 @@ from balance_domain.plant_macro import PRIMARY_ARCHITECTURE_CLASSES, primary_arc
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_V1 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1.json"
 SPEC_V2 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2.json"
-SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3.json"
+SPEC_V3 = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3.json"
+SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4.json"
 TEMPLATE = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_PREDICTOR_RECEIPT_TEMPLATE_V1.csv"
 U1_FRAME = ROOT / "data" / "BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 U2_FRAME = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
@@ -31,10 +32,17 @@ def test_frozen_model_spec_matches_executable_primary_mapping():
             assert primary_architecture_class(mode) == class_name
 
 
-def test_frozen_primary_model_v3_has_no_outcome_dependent_fallback():
+def test_frozen_primary_model_v4_has_universe_stratified_intercepts_and_no_fallback():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     assert spec["primary_model"]["no_outcome_dependent_fallback"] is True
-    assert spec["primary_model"]["family"] == "regularized_bayesian_multinomial_logit"
+    assert spec["primary_model"]["family"] == (
+        "regularized_bayesian_multinomial_logit_with_universe_stratified_intercepts"
+    )
+    assert spec["primary_model"]["common_slopes_across_U2_U6"] is True
+    assert spec["primary_fitting_universes"] == [
+        "U2_BARRETT_2002",
+        "U6_POLLEN_THEFT_HARGREAVES_2009",
+    ]
     assert spec["registered_interaction_extension"]["id"] == "I1_MODULE_X_TIMING"
 
 
@@ -48,6 +56,12 @@ def test_v2_was_superseded_before_outcome_coding_by_spatial_support_audit():
     v2 = json.loads(SPEC_V2.read_text(encoding="utf-8"))
     assert v2["status"] == "SUPERSEDED_PRE_OUTCOME_BY_V3_SPATIAL_SUPPORT"
     assert v2["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3"
+
+
+def test_v3_was_superseded_before_outcome_coding_by_universe_stratification():
+    v3 = json.loads(SPEC_V3.read_text(encoding="utf-8"))
+    assert v3["status"] == "SUPERSEDED_PRE_OUTCOME_BY_V4_UNIVERSE_STRATIFICATION"
+    assert v3["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
 
 
 def test_signal_separation_is_explicitly_retained():
@@ -125,7 +139,7 @@ def test_u2_predictor_screen_progress_is_outcome_independent_but_not_adjudicated
 
 
 
-def test_v3_primary_predictor_contrast_mappings_match_executable_code():
+def test_v4_primary_predictor_contrast_mappings_match_executable_code():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     mapping = spec["primary_predictor_contrasts"]
 
@@ -139,30 +153,39 @@ def test_v3_primary_predictor_contrast_mappings_match_executable_code():
         assert all(primary_spatial_exposure(raw) == coarse for raw in spatial[coarse])
 
 
-def test_v3_parameter_budget_is_frozen_before_outcome_coding():
+def test_v4_parameter_budget_is_frozen_before_outcome_coding():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
-    budget = confirmatory_parameter_budget()
-    assert budget["raw_main_effect_coefficients"] == 42
-    assert budget["coarse_main_effect_coefficients"] == 15
-    assert budget["v3_main_coefficients"] == 12
-    assert budget["v3_module_x_timing_coefficients"] == 18
-    assert spec["parameter_budget"]["raw_joint_model_fixed_coefficients"] == 42
-    assert spec["parameter_budget"]["v2_main_fixed_coefficients"] == 15
-    assert spec["parameter_budget"]["v3_main_fixed_coefficients"] == 12
-    assert spec["parameter_budget"]["module_x_timing_fixed_coefficients"] == 18
+    budget = spec["parameter_budget_at_frozen_two_universes"]
+    assert budget["universe_intercepts"] == 6
+    assert budget["predictor_slope_coefficients"] == 9
+    assert budget["total_primary_coefficients"] == 15
+    assert budget["total_with_registered_interaction"] == 21
 
 
-def test_v3_estimability_gate_does_not_allow_posthoc_term_dropping():
+def test_v4_estimability_gate_guards_universe_and_predictor_confounding():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     gate = spec["estimability_gate"]
     assert gate["minimum_independent_dependence_blocks_per_response_class"] == 2
     assert gate["minimum_independent_dependence_blocks_per_primary_predictor_level"] == 2
-    assert gate["primary_design_matrix_must_be_full_rank"] is True
+    assert gate["minimum_rows_per_primary_sampling_universe"] == 2
+    assert gate["both_primary_sampling_universes_must_be_present"] is True
+    assert gate["primary_common_slope_design_matrix_must_be_full_rank"] is True
+    assert gate["primary_universe_stratified_design_matrix_must_be_full_rank"] is True
     assert gate["failure_action"] == "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
 
 
-def test_v3_spatial_axis_is_secondary_due_preoutcome_support():
+def test_v4_generality_hierarchy_is_preoutcome_and_timing_only_cross_universe():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    hierarchy = spec["claim_hierarchy"]
+    assert hierarchy["cross_universe_replicated"]["contrast"] == (
+        "temporal SIMULTANEOUS vs ORDERED_OR_ALTERNATING"
+    )
+    assert hierarchy["U2_anchored"]["contrasts"] == [
+        "module SINGLE vs MODULAR",
+        "temporal VARIABLE_CONTEXT contrasts",
+    ]
+    assert hierarchy["support_limited"]["contrast"] == "spatial SAME_UNIT vs DISTRIBUTED"
+
     spatial = spec["secondary_predictor_contrast"]["spatial_exposure2"]
     assert spatial["preoutcome_support"] == {"SAME_UNIT": 28, "DISTRIBUTED": 1}
     assert spatial["role"] == "secondary_descriptive_or_separate_sensitivity_only"
