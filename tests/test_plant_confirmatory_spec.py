@@ -155,11 +155,16 @@ def test_v4_primary_predictor_contrast_mappings_match_executable_code():
 
 def test_v4_parameter_budget_is_frozen_before_outcome_coding():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
-    budget = spec["parameter_budget_at_frozen_two_universes"]
-    assert budget["universe_intercepts"] == 6
-    assert budget["predictor_slope_coefficients"] == 9
-    assert budget["total_primary_coefficients"] == 15
-    assert budget["total_with_registered_interaction"] == 21
+    frozen = spec["parameter_budget_at_frozen_two_universes"]
+    budget = confirmatory_parameter_budget()
+    assert frozen["universe_intercepts"] == 6
+    assert frozen["predictor_slope_coefficients"] == 9
+    assert frozen["total_primary_coefficients"] == 15
+    assert frozen["total_with_registered_interaction"] == 21
+    assert budget["v4_universe_intercepts"] == 6
+    assert budget["v4_slope_coefficients"] == 9
+    assert budget["v4_total_primary_coefficients"] == 15
+    assert budget["v4_total_with_interaction"] == 21
 
 
 def test_v4_estimability_gate_guards_universe_and_predictor_confounding():
