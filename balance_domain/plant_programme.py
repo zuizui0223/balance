@@ -166,7 +166,7 @@ def build_plant_programme_map(
             ],
             "maximum_main_fixed_coefficients": 12,
             "predictor_receipts_required": True,
-            "data_dependent_fallback_allowed": False,
+            "outcome_dependent_fallback_allowed": False,
             "u3_u4_primary_denominator_allowed": False,
         },
         "primary_model_ready": False,
