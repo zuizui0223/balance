@@ -549,8 +549,10 @@ def load_u6_pass2_double_coding(path: Path, freeze_manifest_path: Path) -> list[
         clean["notes"] = (row.get("notes") or "").strip()
         out.append(clean)
 
-    if len(coder_ids) != 2:
-        raise ValueError("U6 Pass-2 worksheet requires exactly two independent coder IDs")
+    if coder_ids != {"CODER_A", "CODER_B"}:
+        raise ValueError(
+            "U6 Pass-2 worksheet requires frozen CODER_A and CODER_B IDs"
+        )
     if set(grouped) != expected_groups:
         raise ValueError("U6 Pass-2 worksheet must cover every frozen dependency group")
     if any(len(rows) != 2 for rows in grouped.values()):
@@ -817,8 +819,8 @@ def build_u6_pass2_agreement_from_rows(rows: list[dict[str, str]]) -> dict:
     for row in rows:
         grouped.setdefault(row["dependency_group"], []).append(row)
         coder_ids.add(row["coder_id"])
-    if len(coder_ids) != 2:
-        raise ValueError("U6 agreement requires exactly two coder IDs")
+    if coder_ids != {"CODER_A", "CODER_B"}:
+        raise ValueError("U6 agreement requires frozen CODER_A and CODER_B IDs")
     if any(len(group) != 2 for group in grouped.values()):
         raise ValueError("U6 agreement requires exactly two rows per dependency group")
 
