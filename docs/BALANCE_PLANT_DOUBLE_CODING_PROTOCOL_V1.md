@@ -209,6 +209,47 @@ UNRESOLVED != UNSTARTED
 A returned U6 worksheet with any `UNSTARTED` row fails the return-ingestion contract even
 if the category columns contain text.
 
+## Post-reliability adjudication provenance
+
+Source adjudication begins only after every coded field passes the frozen raw-agreement
+threshold.
+
+The adjudication basis is structured:
+
+```text
+CODER_CONSENSUS
+SOURCE_REVIEW_OF_DISAGREEMENTS
+```
+
+### CODER_CONSENSUS
+
+Use when coder A and coder B agree on every coded field for that dependency group.
+
+The final adjudicated values must exactly equal the shared coder values.
+
+### SOURCE_REVIEW_OF_DISAGREEMENTS
+
+Use when at least one coded field differs between coder A and coder B, while the lane-level
+reliability gate still passes.
+
+Source review may resolve the **disagreed fields**. Fields on which the coders agreed remain
+locked to the consensus value.
+
+If later source review shows that an agreed coder value is wrong, do not silently override
+it during adjudication. That indicates a coding/codebook problem:
+
+```text
+consensus appears wrong
+-> repair/clarify coding rule
+-> independent recode of the same frozen frame
+-> recompute agreement
+-> only then adjudicate
+```
+
+This preserves the distinction between independent coding and post-hoc source arbitration.
+
+Every adjudicated row requires notes documenting the resolution basis.
+
 ## Architecture-versus-resolution language
 
 Coders always score `architecture_mode`.
