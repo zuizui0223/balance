@@ -120,6 +120,23 @@ def test_v4_generality_can_fail_without_blocking_primary_fit():
     assert out["ready_for_primary_fit"] is True
 
 
+def test_v4_generality_outcome_support_can_fail_without_blocking_main_fit():
+    rows = _ready_rows()
+    row = next(row for row in rows if row["dependency_group"] == "u6_n2")
+    row["architecture_mode"] = "SHARED_INTEGRATED"
+
+    out = build_v4_estimability_report(rows)
+    assert out["temporal_cross_universe_marginal_replication_ready"] is True
+    assert out["temporal_cross_universe_common_support_ready"] is True
+    assert out["temporal_cross_universe_outcome_support"]["U6_POLLEN_THEFT_HARGREAVES_2009"] == {
+        "NONSTRUCTURAL_SEPARATION": 1,
+        "OTHER_ARCHITECTURE": 4,
+    }
+    assert out["temporal_cross_universe_outcome_support_ready"] is False
+    assert out["temporal_cross_universe_generality_ready"] is False
+    assert out["ready_for_primary_fit"] is True
+
+
 def test_v4_rejects_nonprimary_universe():
     rows = _ready_rows()
     rows[0]["universe_id"] = "U1_HAAS_LORTIE_2020"
