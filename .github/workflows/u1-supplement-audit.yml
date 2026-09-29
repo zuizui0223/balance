@@ -1,0 +1,40 @@
+name: U1 supplement audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/macro-persistent-compromise
+    paths:
+      - "balance_domain/plant_u1_supplement_audit.py"
+      - "tests/test_plant_u1_supplement_audit.py"
+      - ".github/workflows/u1-supplement-audit.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  supplement-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run Haas-Lortie supplement discovery
+        run: |
+          mkdir -p /tmp/u1-supplement/files
+          python -m balance_domain.plant_u1_supplement_audit \
+            --output /tmp/u1-supplement/audit.json \
+            --workdir /tmp/u1-supplement/files
+          cat /tmp/u1-supplement/audit.json
+
+      - name: Upload supplement audit receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: u1-haas-lortie-supplement-audit
+          path: /tmp/u1-supplement
+          if-no-files-found: error
