@@ -962,8 +962,28 @@ def load_u6_pass2_adjudication(
                 raise ValueError(
                     f"row {row_number} ADJUDICATED requires resolved architecture and predictors"
                 )
-            if clean["adjudication_basis"] == "AWAITING_INDEPENDENT_DOUBLE_CODING":
-                raise ValueError(f"row {row_number} adjudicated row requires a frozen basis")
+            pair_by_coder = {item["coder_id"]: item for item in coding_group}
+            disagreements = [
+                field for field in U6_AGREEMENT_FIELDS
+                if pair_by_coder["CODER_A"][field]
+                != pair_by_coder["CODER_B"][field]
+            ]
+            expected_basis = (
+                "SOURCE_REVIEW_OF_DISAGREEMENTS"
+                if disagreements
+                else "CODER_CONSENSUS"
+            )
+            if clean["adjudication_basis"] != expected_basis:
+                raise ValueError(
+                    f"row {row_number} adjudication_basis must be {expected_basis!r}"
+                )
+            for field in U6_AGREEMENT_FIELDS:
+                a_value = pair_by_coder["CODER_A"][field]
+                b_value = pair_by_coder["CODER_B"][field]
+                if a_value == b_value and clean[field] != a_value:
+                    raise ValueError(
+                        f"row {row_number} cannot override coder consensus for {field}"
+                    )
             if not clean["notes"]:
                 raise ValueError(f"row {row_number} adjudicated row requires notes")
 
