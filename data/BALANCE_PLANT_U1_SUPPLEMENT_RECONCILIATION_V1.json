@@ -1,0 +1,57 @@
+{
+  "analysis": "balance_plant_u1_supplement_reconciliation_v1",
+  "source_dataset_doi": "10.6084/m9.figshare.12397772.v1",
+  "source_workflow_run_id": 36072131257,
+  "source_artifact_id": 10838463002,
+  "analysis_list": {
+    "figshare_file_id": 22837367,
+    "filename": "Analysis List.csv",
+    "sha256": "d00ac0af1d3acb6ce8e7c6937b67a616f27b9e8ae817b2a6231a38faa618cfca",
+    "data_rows": 344,
+    "unique_raw_plant_genus_species_pairs": 47
+  },
+  "study_list": {
+    "figshare_file_id": 22837373,
+    "filename": "Study List.csv",
+    "sha256": "36bf4a383b602b866d31622f8f015b34436e2150abaa233df73829deeb3e5b29",
+    "study_rows": 59
+  },
+  "normalization_aliases": [
+    {
+      "canonical": "Alstroemeria ligtu var. Simsii",
+      "figshare_raw": "Alstroemeria ligtu va. Simsii"
+    },
+    {
+      "canonical": "Clarkia xantiana ssp. xantiana",
+      "figshare_raw": "Clarkia xantiana ssp. Xantiana"
+    },
+    {
+      "canonical": "Ipomopsis aggregata subsp. candida",
+      "figshare_raw": "Ipomopsis aggregata subssp. Candida"
+    }
+  ],
+  "network_visible_count": 44,
+  "full_review_direct_count": 47,
+  "normalized_network_overlap": 44,
+  "canonical_network_taxa_missing_from_figshare": [],
+  "supplement_only_taxa": [
+    {
+      "taxon": "Eichhornia crassipes",
+      "article_id": 294,
+      "analysis_rows": 3
+    },
+    {
+      "taxon": "Nemophila menziesii",
+      "article_id": 1079,
+      "analysis_rows": 3
+    },
+    {
+      "taxon": "Ruellia nudiflora",
+      "article_id": 1143,
+      "analysis_rows": 6
+    }
+  ],
+  "reconciliation_status": "EXACT_44_PLUS_3_EQUALS_REPORTED_47",
+  "first20_impact": "NONE_THE_THREE_RECOVERED_TAXA_SORT_AFTER_CYNANCHUM_DIEMII",
+  "claim_ceiling": "direct_full_review_taxon_reconciliation_only_not_conflict_status_not_architecture_not_prevalence"
+}
