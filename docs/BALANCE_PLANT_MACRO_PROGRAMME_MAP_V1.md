@@ -2,7 +2,7 @@
 
 ## Why a programme map is needed
 
-The plant macro programme contains four evidence lanes with intentionally different sampling logic.
+The plant macro programme contains five evidence lanes with intentionally different sampling logic: U1, U2, U3, U4, and the conflict-first U6 reconstruction.
 
 Their raw counts must not be combined into one prevalence estimate.
 
@@ -313,7 +313,7 @@ Pass 2:
   only after Pass-1 freeze, code architecture and the three confirmatory predictors
 ```
 
-U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate references are adjudicated, and 21 conflict-first dependency groups are frozen. Pass 2A generic source recovery is complete; the final source packet is frozen and independent coding is open. U6 remains outside the active confirmatory model until that coding, agreement, predictor-receipt, dependence and estimability gates close.
+U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate references are adjudicated, and 21 conflict-first dependency groups are frozen. Pass 2A generic source recovery is complete; the final source packet is frozen and independent coding is open. All 63 raw predictor receipt slots are also source-screened outcome-independently, but 0/21 groups are independently adjudicated. U6 remains outside the active confirmatory model until coding, agreement, adjudication and the final V3 estimability gates close.
 
 See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
 
