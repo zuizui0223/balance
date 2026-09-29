@@ -41,6 +41,13 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _zip_write_bytes(archive: zipfile.ZipFile, arcname: str, data: bytes) -> None:
+    info = zipfile.ZipInfo(arcname, date_time=(1980, 1, 1, 0, 0, 0))
+    info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = 0o644 << 16
+    archive.writestr(info, data)
+
+
 def _read_handoff() -> dict:
     data = json.loads(HANDOFF.read_text(encoding="utf-8"))
     if data.get("status") != "READY_FOR_HUMAN_INDEPENDENT_CODING":
@@ -128,10 +135,10 @@ def build_coder_packet(coder_id: str, out_dir: Path = DEFAULT_OUT) -> tuple[Path
     out_dir.mkdir(parents=True, exist_ok=True)
     zip_path = out_dir / f"BALANCE_PLANT_{coder_id}_PACKET_V1.zip"
     receipt_path = out_dir / f"BALANCE_PLANT_{coder_id}_PACKET_V1.json"
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(zip_path, "w") as archive:
         for arcname, data in payloads:
-            archive.writestr(arcname, data)
-        archive.writestr("PACKET_RECEIPT.json", receipt_bytes)
+            _zip_write_bytes(archive, arcname, data)
+        _zip_write_bytes(archive, "PACKET_RECEIPT.json", receipt_bytes)
     receipt_path.write_bytes(receipt_bytes)
     return zip_path, receipt_path
 
