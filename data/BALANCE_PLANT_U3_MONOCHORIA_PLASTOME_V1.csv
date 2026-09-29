@@ -1,0 +1,5 @@
+taxon,role,accession,selection_basis,notes
+Pontederia australasica,CANDIDATE,NC_063307.1,REFSEQ_COMPLETE_PLASTOME,"RefSeq form of AU44 complete plastome; exact-taxon NCBI inventory also recovered source accession MN750350.1."
+Pontederia cyanea,CANDIDATE,PQ010091.1,ONLY_COMPLETE_PLASTOME_IN_EXACT_TAXON_INVENTORY,"Complete chloroplast genome recovered by exact-taxid inventory of 47 nucleotide records."
+Pontederia korsakowii,CASE,PQ010093.1,RECENT_VOUCHER_COMPLETE_PLASTOME,"Voucher Barrett 1415; selected over duplicate/other complete plastomes to match the PQ01009x record series used by P. cyanea and P. vaginalis."
+Pontederia vaginalis,CASE,PQ010094.1,RECENT_VOUCHER_COMPLETE_PLASTOME,"Voucher Barrett 1111; selected from multiple complete plastomes to match the PQ01009x record series."

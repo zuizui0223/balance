@@ -1,0 +1,11 @@
+taxon,role,accession,source_basis,notes
+Pontederia cordata,OUTGROUP,NC_044968.1,Li_et_al_2021_JSE,"Published Pontederiaceae outgroup/reference plastome used to root the Monochoria topology audit."
+Pontederia australasica,CANDIDATE,NC_063307.1,Li_et_al_2021_JSE,"AU44 complete plastome; published first-diverging Monochoria lineage in the 2021 phylogenomic analysis."
+Pontederia cyanea,CANDIDATE,PQ010091.1,NCBI_exact_taxon_inventory_2026,"Complete plastome unavailable to the 2021 sampling; newly added candidate taxon whose placement is the target of this audit."
+Pontederia korsakowii,CASE,PQ010093.1,NCBI_exact_taxon_inventory_2026,"Voucher Barrett 1415 complete plastome; focal U3 case."
+Pontederia vaginalis,CASE,PQ010094.1,NCBI_exact_taxon_inventory_2026,"Voucher Barrett 1111 complete plastome; focal U3 case."
+Pontederia plantaginea,REFERENCE,MN750358.1,Li_et_al_2021_JSE,"Published Monochoria reference plastome from the 2021 phylogenomic backbone."
+Pontederia africana,REFERENCE,NC_063314.1,Li_et_al_2021_JSE,"Published Monochoria reference lineage represented in the 2021 phylogenomic backbone."
+Pontederia hastata,REFERENCE,NC_063309.1,Li_et_al_2021_JSE,"Published Monochoria reference lineage represented in the 2021 phylogenomic backbone."
+Pontederia elata,REFERENCE,MN750352.1,Li_et_al_2021_JSE,"Published Monochoria reference plastome from the 2021 phylogenomic backbone."
+Pontederia valida,REFERENCE,NC_063313.1,Li_et_al_2021_JSE,"Published Monochoria reference lineage represented in the 2021 phylogenomic backbone."
