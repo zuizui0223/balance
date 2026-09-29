@@ -12,6 +12,11 @@ U2_CONFLICT = ROOT / "data" / "BALANCE_PLANT_U2_CONFLICT_SCREEN_V1.csv"
 U3_CASES = ROOT / "data" / "BALANCE_PLANT_U3_CASE_CANDIDATES_V1.csv"
 U3_UNIVERSE = ROOT / "data" / "BALANCE_PLANT_U3_HETERANTHERY_REVIEW_UNIVERSE_V1.csv"
 U4 = ROOT / "data" / "BALANCE_PLANT_U4_CARNIVOROUS_CASES_V1.csv"
+U6_FREEZE = ROOT / "data" / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json"
+U6_CODING = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
+U6_ADJUDICATION = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv"
+U6_RECEIPTS = ROOT / "data" / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+U6_DEPENDENCE = ROOT / "data" / "BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv"
 
 
 def _readout():
@@ -24,13 +29,18 @@ def _readout():
         u1_blind_screen_path=U1_BLIND,
         u1_production_screen_path=U1_PRODUCTION,
         u2_conflict_screen_path=U2_CONFLICT,
+        u6_freeze_path=U6_FREEZE,
+        u6_coding_path=U6_CODING,
+        u6_adjudication_path=U6_ADJUDICATION,
+        u6_predictor_receipts_path=U6_RECEIPTS,
+        u6_dependence_path=U6_DEPENDENCE,
     )
 
 
 def test_programme_map_preserves_distinct_sampling_roles():
     out = _readout()
     roles = {x["sampling_role"] for x in out["lanes"].values()}
-    assert len(roles) == 4
+    assert len(roles) == 5
     assert out["pooled_prevalence_estimate"] is None
     assert out["primary_model_ready"] is False
     contract = out["primary_model_contract"]
@@ -101,3 +111,20 @@ def test_u4_stress_test_contains_two_direct_positive_conflicts():
     assert u4["n_species_cases"] == 10
     assert u4["n_positive_conflict"] == 2
     assert "SIGNAL_SEPARATION" in u4["architecture_modes_present"]
+
+
+
+def test_u6_is_formal_conflict_first_lane_with_source_screened_predictors_only():
+    u6 = _readout()["lanes"]["U6"]
+    assert u6["n_records"] == 157
+    assert u6["n_dependency_groups"] == 21
+    assert u6["n_included_dependency_groups"] == 21
+    assert u6["pass1_status"] == "PASS1_CLOSED_PASS2_CODING_OPEN"
+    assert u6["pass2_coding_open"] is True
+    assert u6["predictor_source_screen_complete_groups"] == 21
+    assert u6["predictor_adjudicated_complete_groups"] == 0
+    readiness = u6["evidence_readiness"]
+    assert readiness["coding_complete"] is False
+    assert readiness["adjudication_complete"] is False
+    assert readiness["n_groups_with_three_adjudicated_independent_predictors"] == 0
+    assert readiness["ready_for_combined_model_assembly"] is False
