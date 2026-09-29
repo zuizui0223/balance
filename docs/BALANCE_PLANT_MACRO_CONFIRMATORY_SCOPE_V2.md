@@ -1,6 +1,6 @@
 # BALANCE plant macro confirmatory scope v2
 
-> **Superseded for model specification.** Biological scope remains current, but the model/fallback section is replaced by `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V1.md`. The frozen primary response is now the four-class architecture-routing estimand; there is no outcome-count-triggered model switch.
+> **Superseded for model specification.** Biological scope remains current, but the model/fallback section is replaced by `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V2.md`. The frozen primary response remains the four-class architecture-routing estimand; v2 additionally replaces the overparameterized raw-category joint fit with preregistered low-dimensional predictor contrasts before any U6 independent coding.
 
 ## Decision update
 
