@@ -64,6 +64,12 @@ def test_v3_was_superseded_before_outcome_coding_by_universe_stratification():
     assert v3["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
 
 
+def test_v3_was_superseded_preoutcome_by_v4_universe_stratification():
+    v3 = json.loads(SPEC_V3.read_text(encoding="utf-8"))
+    assert v3["status"] == "SUPERSEDED_PRE_OUTCOME_BY_V4_UNIVERSE_STRATIFICATION"
+    assert v3["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
+
+
 def test_signal_separation_is_explicitly_retained():
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     assert "SIGNAL_SEPARATION" in spec["primary_response"]["mapping"]["NONSTRUCTURAL_SEPARATION"]
@@ -194,3 +200,19 @@ def test_v4_generality_hierarchy_is_preoutcome_and_timing_only_cross_universe():
     spatial = spec["secondary_predictor_contrast"]["spatial_exposure2"]
     assert spatial["preoutcome_support"] == {"SAME_UNIT": 28, "DISTRIBUTED": 1}
     assert spatial["role"] == "secondary_descriptive_or_separate_sensitivity_only"
+
+
+
+def test_v4_cross_universe_generality_is_reserved_for_replicated_timing_contrast():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    claim = spec["claim_hierarchy"]["cross_universe_replicated"]
+    assert claim["contrast"] == "temporal SIMULTANEOUS vs ORDERED_OR_ALTERNATING"
+    assert spec["claim_hierarchy"]["U2_anchored"]["contrasts"] == [
+        "module SINGLE vs MODULAR",
+        "temporal VARIABLE_CONTEXT contrasts",
+    ]
+    sensitivity = spec["temporal_generality_sensitivity"]
+    assert sensitivity["id"] == "G1_UNIVERSE_X_ORDERED"
+    assert sensitivity["additional_coefficients"] == 3
+    assert sensitivity["total_coefficients"] == 18
+    assert sensitivity["practical_interaction_margin_log_odds"] == 1
