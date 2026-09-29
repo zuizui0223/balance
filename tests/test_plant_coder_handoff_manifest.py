@@ -57,4 +57,9 @@ def test_coder_handoff_manifest_registers_deterministic_packet_builder():
         "BALANCE_PLANT_CODER_B_PACKET_V1.zip",
         "BALANCE_PLANT_CODER_B_PACKET_V1.json",
     }
+    assert packet["workflow"] == ".github/workflows/build-plant-coder-packets.yml"
+    assert packet["runbook"] == "docs/BALANCE_PLANT_CODER_PACKET_RUNBOOK_V1.md"
+    assert packet["trigger"] == "workflow_dispatch_only"
     assert (ROOT / packet["script"]).exists()
+    assert (ROOT / packet["workflow"]).exists()
+    assert (ROOT / packet["runbook"]).exists()
