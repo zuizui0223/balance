@@ -1,9 +1,11 @@
+import pytest
 from pathlib import Path
 
 from balance_domain.plant_u2 import (
     build_u2_readout,
     build_u2_double_code_handoff,
     build_u2_reference_handoff,
+    load_u2_adjudication,
     load_u2_blank_worksheet,
     load_u2_double_code_sample,
     load_u2_universe,
@@ -16,6 +18,7 @@ COVERAGE = ROOT / "data" / "BALANCE_PLANT_U2_REFERENCE_COVERAGE_V1.csv"
 SAMPLE = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv"
 PACKET = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv"
 WORKSHEET = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv"
+ADJUDICATION = ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv"
 
 
 def test_u2_review_universe_validates():
@@ -109,3 +112,31 @@ def test_u2_blank_worksheet_has_two_empty_coder_rows_per_sample_group():
             assert not row["module_substrate"]
             assert not row["conflict_timing_geometry"]
             assert not row["conflict_spatial_geometry"]
+
+
+
+def test_u2_adjudication_template_remains_pending_before_double_coding():
+    sample = load_u2_double_code_sample(SAMPLE)
+    rows = load_u2_adjudication(ADJUDICATION, sample)
+    assert len(rows) == 20
+    assert all(row["adjudication_status"] == "PENDING" for row in rows)
+    assert all(row["adjudication_basis"] == "AWAITING_INDEPENDENT_DOUBLE_CODING" for row in rows)
+    assert all(row["conflict_status"] == "UNRESOLVED" for row in rows)
+    assert all(row["architecture_mode"] == "UNRESOLVED" for row in rows)
+    assert all(row["module_substrate"] == "UNRESOLVED" for row in rows)
+    assert all(row["conflict_timing_geometry"] == "UNRESOLVED" for row in rows)
+    assert all(row["conflict_spatial_geometry"] == "UNRESOLVED" for row in rows)
+
+
+def test_u2_adjudication_cannot_preempt_two_completed_coders(tmp_path):
+    source = ADJUDICATION.read_text(encoding="utf-8")
+    source = source.replace(
+        ",UNRESOLVED,UNRESOLVED,UNRESOLVED,UNRESOLVED,UNRESOLVED,PENDING,AWAITING_INDEPENDENT_DOUBLE_CODING,",
+        ",POSITIVE,SHARED_INTEGRATED,SINGLE_OR_CONTINUOUS,SIMULTANEOUS,SAME_UNIT,ADJUDICATED,SOURCE_REVIEW,preemptive",
+        1,
+    )
+    path = tmp_path / "bad_u2_adjudication.csv"
+    path.write_text(source, encoding="utf-8")
+    sample = load_u2_double_code_sample(SAMPLE)
+    with pytest.raises(ValueError, match="before two completed coder rows exist"):
+        load_u2_adjudication(path, sample)
