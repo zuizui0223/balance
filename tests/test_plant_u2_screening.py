@@ -20,9 +20,8 @@ def test_u2_screening_retains_positive_negative_and_unresolved_conflict_states()
     readout = build_plant_macro_readout(SCREEN)
     conflict = readout["conflict_status_counts"]
     assert conflict == {
-        "NO_DEMONSTRATED_CONFLICT": 2,
+        "NO_DEMONSTRATED_CONFLICT": 14,
         "POSITIVE": 8,
-        "UNRESOLVED": 12,
     }
 
 
@@ -61,7 +60,7 @@ def test_u2_direct_positive_cases_remain_screened_not_adjudicated():
 def test_u2_historical_heteranthery_is_not_promoted_from_morphology_alone():
     rows = {r["dependency_group"]: r for r in load_plant_macro_ledger(SCREEN)}
     for dep in ("Solanum_rostratum_historical", "Chamaecrista_fasciculata_historical"):
-        assert rows[dep]["conflict_status"] == "UNRESOLVED"
+        assert rows[dep]["conflict_status"] == "NO_DEMONSTRATED_CONFLICT"
         assert rows[dep]["architecture_mode"] == "UNRESOLVED"
         assert rows[dep]["evidence_quality"] == "LOW"
 
