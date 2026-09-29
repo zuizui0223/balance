@@ -150,7 +150,8 @@
       "status": "MARGINALLY_REPLICATED_BUT_COMMON_MODULE_SUPPORT_NOT_READY",
       "marginal_support": "both timing levels occur in both U2 and U6",
       "common_support_requirement": "at least one module_opportunity2 stratum shared by U2 and U6 must contain >=2 SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING independent dependence blocks in each universe",
-      "current_common_support": "shared module stratum is SINGLE; U2 has SINGLE SIMULTANEOUS=1 and SINGLE ORDERED_OR_ALTERNATING=2, so the strict generality gate is not yet met"
+      "current_common_support": "shared module stratum is SINGLE; U2 has SINGLE SIMULTANEOUS=1 and SINGLE ORDERED_OR_ALTERNATING=2, so the strict generality gate is not yet met",
+      "outcome_support_requirement": "after independent architecture adjudication, each U2 and U6 requires >=2 NONSTRUCTURAL_SEPARATION and >=2 other-architecture dependence blocks before any cross-universe timing generality claim"
     },
     "U2_anchored": {
       "contrasts": [
@@ -174,6 +175,7 @@
     "report U2 and U6 architecture-class support separately before pooled V4 results",
     "report temporal SIMULTANEOUS-vs-ORDERED support within each universe and within shared module strata before any generality fit",
     "do not run or interpret the temporal generality sensitivity unless a shared module stratum passes the frozen >=2/level/universe support gate",
+    "report per-universe NONSTRUCTURAL versus other-architecture outcome support and do not run/interpret the generality sensitivity unless the frozen >=2/side/universe outcome-support gate passes",
     "do not describe module slope as cross-universe generality because MODULAR is U2-only at pre-outcome freeze",
     "report U1 independent reliability outcome separately as specificity validation",
     "spatial exposure remains secondary unless prospectively supported by >=2 DISTRIBUTED dependence blocks"
@@ -185,7 +187,7 @@
     "rationale": "SIMULTANEOUS and ORDERED_OR_ALTERNATING are the only two predictor levels represented independently in both U2 and U6 at the pre-outcome freeze.",
     "additional_coefficients": 3,
     "total_coefficients": 18,
-    "fit_gate": "requires marginal timing replication AND at least one shared module-opportunity stratum with >=2 independent SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING blocks in each U2 and U6",
+    "fit_gate": "requires marginal timing replication; at least one shared module-opportunity stratum with >=2 independent SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING blocks in each U2 and U6; and after architecture adjudication, >=2 NONSTRUCTURAL_SEPARATION and >=2 OTHER_ARCHITECTURE dependence blocks within each universe",
     "interpretation": [
       "report universe-specific predicted-probability contrast ORDERED minus SIMULTANEOUS",
       "report U6-vs-U2 interaction posterior for each non-reference architecture logit",
@@ -193,7 +195,14 @@
     ],
     "practical_interaction_margin_log_odds": 1,
     "claim_rule": "do not call timing universal solely because the common-slope V4 main model is nonzero",
-    "current_preoutcome_status": "NOT_READY_COMMON_MODULE_SUPPORT"
+    "current_preoutcome_status": "NOT_READY_COMMON_MODULE_SUPPORT",
+    "postoutcome_support_requirement": {
+      "per_universe": {
+        "NONSTRUCTURAL_SEPARATION_min_blocks": 2,
+        "OTHER_ARCHITECTURE_min_blocks": 2
+      },
+      "rationale": "prevents a universe-specific generality contrast from being effectively prior-driven when the target routing outcome is absent or nearly absent"
+    }
   },
   "preoutcome_design_audit": {
     "common_slope_design_rank": 3,
