@@ -4,10 +4,11 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
+from .plant_macro import MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
 from .plant_macro_agreement import FIELDS, load_double_coding
 from .plant_u1 import load_u1_sample
 from .plant_u2 import load_u2_double_code_sample
-from .plant_u6 import load_u6_pass1_freeze_manifest
+from .plant_u6 import PASS2_FIELDS, load_u6_pass1_freeze_manifest
 
 
 LANES = {"U1", "U2", "U6"}
@@ -43,6 +44,80 @@ def _expected_groups(
     raise ValueError(f"unknown plant coding lane {lane!r}")
 
 
+def _load_u6_single_coder_return(
+    path: Path,
+    *,
+    coder_id: str,
+    freeze_manifest_path: Path,
+) -> list[dict[str, str]]:
+    """Validate one completed U6 coder return against Pass-1 frozen sources."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = list(manifest["included_dependency_groups"])
+    expected_sources = manifest["source_reference_ids_by_dependency_group"]
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != PASS2_FIELDS:
+            raise ValueError("U6 coder-return columns must match U6 Pass-2 schema")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError(
+            f"U6 {coder_id} return must contain exactly one row per frozen group"
+        )
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 return schema")
+        clean = {key: (row.get(key) or "").strip() for key in PASS2_FIELDS}
+        for key in PASS2_FIELDS[:-1]:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_sources:
+            raise ValueError(f"row {row_number} non-frozen U6 group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 group in single-coder return: {group!r}")
+        seen.add(group)
+
+        if clean["coder_id"] != coder_id:
+            raise ValueError(
+                f"U6 return must contain only {coder_id}, found {clean['coder_id']!r}"
+            )
+        expected_ref_text = ";".join(expected_sources[group])
+        if clean["source_reference_ids"] != expected_ref_text:
+            raise ValueError(
+                f"row {row_number} source references disagree with U6 Pass-1 freeze"
+            )
+        if clean["architecture_mode"] not in RESOLUTION - {"NA"}:
+            raise ValueError(f"row {row_number} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {row_number} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {row_number} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
+        if clean["coding_status"] != "CODED":
+            raise ValueError(
+                f"row {row_number} returned U6 worksheet must have coding_status=CODED"
+            )
+
+        clean["notes"] = (row.get("notes") or "").strip()
+        out.append(clean)
+
+    if seen != set(expected_groups):
+        missing = sorted(set(expected_groups) - seen)
+        extra = sorted(seen - set(expected_groups))
+        raise ValueError(
+            f"U6 {coder_id} return groups disagree with frozen frame; "
+            f"missing={missing}, extra={extra}"
+        )
+    return out
+
+
 def load_single_coder_return(
     path: Path,
     *,
@@ -57,6 +132,15 @@ def load_single_coder_return(
         raise ValueError(f"unknown plant coding lane {lane!r}")
     if coder_id not in CODERS:
         raise ValueError(f"unknown coder_id {coder_id!r}")
+
+    if lane == "U6":
+        if u6_freeze_path is None:
+            raise ValueError("U6 coder return requires u6_freeze_path")
+        return _load_u6_single_coder_return(
+            path,
+            coder_id=coder_id,
+            freeze_manifest_path=u6_freeze_path,
+        )
 
     rows = load_double_coding(path)
     if {row["coder_id"] for row in rows} != {coder_id}:
@@ -86,6 +170,10 @@ def load_single_coder_return(
     return rows
 
 
+def _row_group(row: dict[str, str], lane: str) -> str:
+    return row["dependency_group"] if lane == "U6" else row["cluster_id"]
+
+
 def merge_coder_returns(
     *,
     lane: str,
@@ -113,7 +201,7 @@ def merge_coder_returns(
         u6_freeze_path=u6_freeze_path,
     )
     by_key = {
-        (row["cluster_id"], row["coder_id"]): row
+        (_row_group(row, lane), row["coder_id"]): row
         for row in a + b
     }
     expected = _expected_groups(
@@ -132,12 +220,26 @@ def merge_coder_returns(
     return out
 
 
-def write_merged_coder_returns(path: Path, rows: list[dict[str, str]]) -> None:
-    """Write canonical merged ledger after validating exact schema."""
+def write_merged_coder_returns(
+    path: Path,
+    rows: list[dict[str, str]],
+    *,
+    lane: str | None = None,
+) -> None:
+    """Write canonical merged ledger using the lane's native worksheet schema."""
     if not rows:
         raise ValueError("cannot write empty merged coder ledger")
+    if lane is None:
+        lane = "U6" if "dependency_group" in rows[0] else "U2"
+    if lane not in LANES:
+        raise ValueError(f"unknown plant coding lane {lane!r}")
+    fields = PASS2_FIELDS if lane == "U6" else FIELDS
+
+    if any(set(row) - set(fields) for row in rows):
+        raise ValueError(f"{lane} merged rows contain fields outside canonical schema")
+
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELDS, lineterminator="\n")
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
