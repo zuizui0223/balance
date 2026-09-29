@@ -5,6 +5,7 @@ import csv
 from pathlib import Path
 
 from .plant_macro_agreement import FIELDS as WORKSHEET_FIELDS
+from .plant_macro import CONFLICT, MODULE_SUBSTRATE, RESOLUTION, SPATIAL, TIMING
 from .plant_u1 import (
     load_u1_sample,
     load_u1_source_resolution,
@@ -146,3 +147,114 @@ def build_u1_double_code_handoff(
         load_u1_source_packet(packet_path),
         load_u1_blank_worksheet(worksheet_path),
     )
+
+
+
+U1_ADJUDICATION_FIELDS = (
+    "cluster_id",
+    "conflict_status",
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+    "adjudication_status",
+    "adjudication_basis",
+    "notes",
+)
+
+U1_ADJUDICATION_STATUS = {"PENDING", "ADJUDICATED"}
+
+
+def load_u1_adjudication(
+    path: Path,
+    sample_rows: list[dict[str, str]],
+    coding_rows: list[dict[str, str]] | None = None,
+) -> list[dict[str, str]]:
+    """Validate one post-coding adjudication row per frozen U1 reliability group."""
+    expected_groups = {row["dependency_group"] for row in sample_rows}
+    if len(expected_groups) != EXPECTED_SAMPLE:
+        raise ValueError("U1 adjudication requires the frozen 20-group sample")
+
+    coding_by_group: dict[str, list[dict[str, str]]] = {}
+    if coding_rows is not None:
+        for row in coding_rows:
+            coding_by_group.setdefault(row["cluster_id"], []).append(row)
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U1_ADJUDICATION_FIELDS:
+            raise ValueError("U1 adjudication columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != EXPECTED_SAMPLE:
+        raise ValueError("U1 adjudication requires exactly 20 rows")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for n, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {n} has fields outside U1 adjudication schema")
+        clean = {key: (row.get(key) or "").strip() for key in U1_ADJUDICATION_FIELDS}
+        for key in U1_ADJUDICATION_FIELDS[:-1]:
+            if not clean[key]:
+                raise ValueError(f"row {n} {key} must be non-empty")
+
+        group = clean["cluster_id"]
+        if group not in expected_groups:
+            raise ValueError(f"row {n} non-frozen U1 adjudication group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U1 adjudication group {group!r}")
+        seen.add(group)
+
+        if clean["conflict_status"] not in CONFLICT:
+            raise ValueError(f"row {n} invalid conflict_status")
+        if clean["architecture_mode"] not in RESOLUTION:
+            raise ValueError(f"row {n} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {n} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {n} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {n} invalid conflict_spatial_geometry")
+        if clean["adjudication_status"] not in U1_ADJUDICATION_STATUS:
+            raise ValueError(f"row {n} invalid adjudication_status")
+
+        coded_fields = (
+            "conflict_status",
+            "architecture_mode",
+            "module_substrate",
+            "conflict_timing_geometry",
+            "conflict_spatial_geometry",
+        )
+        if clean["adjudication_status"] == "PENDING":
+            if clean["adjudication_basis"] != "AWAITING_INDEPENDENT_DOUBLE_CODING":
+                raise ValueError(f"row {n} pending adjudication basis drifted")
+            if any(clean[field] != "UNRESOLVED" for field in coded_fields):
+                raise ValueError(f"row {n} pending adjudication must remain unresolved")
+        else:
+            pair = coding_by_group.get(group, [])
+            if len(pair) != 2:
+                raise ValueError(
+                    f"row {n} cannot adjudicate before two completed coder rows exist"
+                )
+            if {item["coder_id"] for item in pair} != {"CODER_A", "CODER_B"}:
+                raise ValueError(f"row {n} adjudication requires CODER_A and CODER_B")
+            if any(
+                not (item.get(field) or "").strip()
+                for item in pair
+                for field in WORKSHEET_FIELDS[2:-1]
+            ):
+                raise ValueError(
+                    f"row {n} cannot adjudicate while coder fields are incomplete"
+                )
+            if clean["adjudication_basis"] == "AWAITING_INDEPENDENT_DOUBLE_CODING":
+                raise ValueError(f"row {n} adjudicated row requires a frozen basis")
+            if not clean["notes"]:
+                raise ValueError(f"row {n} adjudicated row requires notes")
+
+        clean["notes"] = (row.get("notes") or "").strip()
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U1 adjudication does not cover the frozen sample groups")
+    return out
