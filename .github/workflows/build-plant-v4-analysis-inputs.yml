@@ -1,0 +1,47 @@
+name: Build BALANCE plant V4 analysis inputs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation tooling
+        run: |
+          python -m pip install --upgrade pip pytest
+
+      - name: Validate V4 contracts
+        run: |
+          python -m pytest -q             tests/test_plant_readiness.py             tests/test_plant_assembly_builder.py             tests/test_plant_model_assembly.py             tests/test_plant_model_v4.py             tests/test_plant_model_v4_fit.py             tests/test_plant_analysis_pipeline.py             tests/test_build_plant_v4_analysis_inputs.py
+
+      - name: Print current readiness
+        run: |
+          python scripts/build_plant_v4_analysis_inputs.py
+
+      - name: Build licensed V4 analysis inputs
+        run: |
+          python scripts/build_plant_v4_analysis_inputs.py --build
+
+      - name: Validate required outputs
+        run: |
+          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv
+          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_ASSEMBLY_READOUT.json
+          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_STAN_INPUT.json
+          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json
+
+      - name: Upload V4 pre-fit inputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-v4-analysis-inputs
+          path: release/generated/plant_v4_analysis_inputs/
+          if-no-files-found: error
