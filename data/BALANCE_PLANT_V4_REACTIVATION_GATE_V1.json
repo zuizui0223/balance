@@ -1,0 +1,47 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_REACTIVATION_GATE_V1",
+  "status": "PROSPECTIVE_GATE_FROZEN_PRE_OUTCOME",
+  "publication_status": "DORMANT_PAPER_BRANCH",
+  "active_publication_queue": false,
+  "target_result": "cross_universe_temporal_architecture_routing",
+  "required_conditions": {
+    "u2_independent_coding_and_adjudication_complete": false,
+    "u6_independent_coding_and_adjudication_complete": false,
+    "u2_u6_predictor_independence_adjudication_complete": false,
+    "v4_primary_estimability_pass": false,
+    "v4_primary_fit_complete": false,
+    "temporal_generality_sensitivity_fit_complete": false,
+    "u2_ordered_vs_simultaneous_direction_resolved": false,
+    "u6_ordered_vs_simultaneous_direction_resolved": false,
+    "directionally_concordant_across_u2_u6": null,
+    "contradictory_universe_interaction_exceeds_practical_margin": null,
+    "temporal_common_support_module_stratum_ready": false,
+    "temporal_generality_outcome_support_ready": false
+  },
+  "practical_interaction_margin_log_odds": 1,
+  "sufficient_reactivation_rule": [
+    "all coding/adjudication conditions true",
+    "V4 primary estimability and fit complete",
+    "temporal generality sensitivity complete",
+    "shared module-opportunity stratum passes the frozen >=2 SIMULTANEOUS and >=2 ORDERED blocks per U2/U6 universe common-support gate",
+    "each U2/U6 universe has >=2 NONSTRUCTURAL_SEPARATION and >=2 other-architecture dependence blocks under the frozen outcome-support gate",
+    "ordered-versus-simultaneous routing contrast direction resolved separately in U2 and U6",
+    "directions concordant across U2 and U6",
+    "no practically large contradictory universe-by-timing interaction under the frozen margin"
+  ],
+  "insufficient_for_reactivation": [
+    "nonzero pooled timing coefficient alone",
+    "marginal timing replication without a shared module stratum that passes the frozen common-support gate",
+    "marginal or common-support timing replication without the frozen per-universe target-outcome support gate",
+    "U2-only module association",
+    "U2-only VARIABLE_CONTEXT association",
+    "support-limited spatial association",
+    "architecture class difference without predictor-outcome independence"
+  ],
+  "standalone_reactivation_eligible": false,
+  "reason": "independent coding, adjudication, common-support, model estimability, fitted effects, and cross-universe replication are not yet available",
+  "claim_ceiling": "prospective_publication_gate_only_no_biological_result",
+  "posterior_decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
+  "posterior_decision_evaluator": "balance_domain.plant_v4_decision.temporal_generality_decision",
+  "reactivation_interpretation": "standalone evidence eligibility requires the frozen support gates plus a SUPPORTED timing direction in both U2 and U6 under both priors and no PRACTICALLY_CONTRADICTORY interaction label; evidence eligibility still requires human review before publication status changes"
+}
