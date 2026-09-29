@@ -28,6 +28,7 @@ def _ready_rows():
         _row(u2, "u2_m1", "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "MIXED", "BETWEEN_MODULES"),
         _row(u6, "u6_s1", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
         _row(u6, "u6_n1", "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _row(u6, "u6_n2", "SPATIAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
         _row(u6, "u6_d1", "AMONG_FLOWER_MODULE_DIVISION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
         _row(u6, "u6_m1", "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SEASONALLY_ALTERNATING"),
     ]
@@ -37,20 +38,20 @@ def test_v4_primary_and_cross_universe_timing_generality_can_both_pass():
     out = build_v4_estimability_report(_ready_rows())
     assert out["primary_universe_dependence_block_counts"] == {
         "U2_BARRETT_2002": 7,
-        "U6_POLLEN_THEFT_HARGREAVES_2009": 4,
+        "U6_POLLEN_THEFT_HARGREAVES_2009": 5,
     }
     assert out["response_class_dependence_block_counts"] == {
         "SHARED": 3,
-        "NONSTRUCTURAL_SEPARATION": 4,
+        "NONSTRUCTURAL_SEPARATION": 5,
         "STRUCTURAL_MODULE_DIVISION": 2,
         "MOSAIC": 2,
     }
     assert out["module_level_dependence_block_counts"] == {
-        "SINGLE": 9,
+        "SINGLE": 10,
         "MODULAR": 2,
     }
     assert out["temporal_level_dependence_block_counts"] == {
-        "SIMULTANEOUS": 4,
+        "SIMULTANEOUS": 5,
         "ORDERED_OR_ALTERNATING": 5,
         "VARIABLE_CONTEXT": 2,
     }
@@ -60,7 +61,7 @@ def test_v4_primary_and_cross_universe_timing_generality_can_both_pass():
             "ORDERED_OR_ALTERNATING": 3,
         },
         "U6_POLLEN_THEFT_HARGREAVES_2009": {
-            "SIMULTANEOUS": 2,
+            "SIMULTANEOUS": 3,
             "ORDERED_OR_ALTERNATING": 2,
         },
     }
@@ -68,6 +69,17 @@ def test_v4_primary_and_cross_universe_timing_generality_can_both_pass():
     assert out["shared_module_levels_across_universes"] == ["SINGLE"]
     assert out["temporal_common_support_module_strata"] == ["SINGLE"]
     assert out["temporal_cross_universe_common_support_ready"] is True
+    assert out["temporal_cross_universe_outcome_support"] == {
+        "U2_BARRETT_2002": {
+            "NONSTRUCTURAL_SEPARATION": 3,
+            "OTHER_ARCHITECTURE": 4,
+        },
+        "U6_POLLEN_THEFT_HARGREAVES_2009": {
+            "NONSTRUCTURAL_SEPARATION": 2,
+            "OTHER_ARCHITECTURE": 3,
+        },
+    }
+    assert out["temporal_cross_universe_outcome_support_ready"] is True
     assert out["temporal_cross_universe_generality_ready"] is True
     assert out["module_timing_joint_support_by_universe"]["U2_BARRETT_2002"] == {
         "SINGLE__SIMULTANEOUS": 2,
@@ -76,13 +88,13 @@ def test_v4_primary_and_cross_universe_timing_generality_can_both_pass():
         "MODULAR__ORDERED_OR_ALTERNATING": 1,
     }
     assert out["module_timing_joint_support_by_universe"]["U6_POLLEN_THEFT_HARGREAVES_2009"] == {
-        "SINGLE__SIMULTANEOUS": 2,
+        "SINGLE__SIMULTANEOUS": 3,
         "SINGLE__ORDERED_OR_ALTERNATING": 2,
         "MODULAR__SIMULTANEOUS": 0,
         "MODULAR__ORDERED_OR_ALTERNATING": 0,
     }
     assert out["spatial_secondary_dependence_block_counts"] == {
-        "SAME_UNIT": 10,
+        "SAME_UNIT": 11,
         "DISTRIBUTED": 1,
     }
     assert out["spatial_secondary_estimable"] is False
