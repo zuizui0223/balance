@@ -358,6 +358,8 @@ def confirmatory_parameter_budget() -> dict:
     coarse_columns = 1 + (2 - 1) + (3 - 1) + (2 - 1)
     i1_columns = coarse_columns + (2 - 1) * (3 - 1)
     i2_columns = coarse_columns + (2 - 1) * (2 - 1)
+    v3_columns = 1 + (2 - 1) + (3 - 1)
+    v3_i1_columns = v3_columns + (2 - 1) * (3 - 1)
     return {
         "response_classes": 4,
         "nonreference_logits": nonreference_logits,
@@ -369,5 +371,9 @@ def confirmatory_parameter_budget() -> dict:
         "module_x_timing_coefficients": i1_columns * nonreference_logits,
         "module_x_spatial_columns_per_logit": i2_columns,
         "module_x_spatial_coefficients": i2_columns * nonreference_logits,
+        "v3_main_columns_per_logit": v3_columns,
+        "v3_main_coefficients": v3_columns * nonreference_logits,
+        "v3_module_x_timing_columns_per_logit": v3_i1_columns,
+        "v3_module_x_timing_coefficients": v3_i1_columns * nonreference_logits,
         "conflict_family_role": "mandatory_stratified_sensitivity_not_primary_fixed_effect",
     }
