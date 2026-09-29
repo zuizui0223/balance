@@ -194,5 +194,15 @@
     "practical_interaction_margin_log_odds": 1,
     "claim_rule": "do not call timing universal solely because the common-slope V4 main model is nonzero",
     "current_preoutcome_status": "NOT_READY_COMMON_MODULE_SUPPORT"
+  },
+  "preoutcome_design_audit": {
+    "common_slope_design_rank": 3,
+    "common_slope_design_columns": 3,
+    "common_slope_design_full_rank": true,
+    "full_universe_stratified_design_rank": 5,
+    "full_universe_stratified_design_columns": 5,
+    "full_universe_stratified_design_full_rank": true,
+    "strict_temporal_generality_common_support_ready": false,
+    "interpretation": "V4 main predictor design is prospectively identifiable, but the stronger cross-universe timing-generality sensitivity is not prospectively supported under the frozen shared-module >=2-per-level/per-universe rule."
   }
 }
