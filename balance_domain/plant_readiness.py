@@ -18,6 +18,30 @@ from .plant_u2 import (
 )
 from .plant_u2_screen import build_u2_conflict_screen_readout
 from .plant_preoutcome_generality import build_preoutcome_generality_audit
+
+
+PRIMARY_MACHINE_GATES = (
+    "u2_full22_source_screen",
+    "u2_positive_predictor_source_screen",
+    "u6_pass1_conflict_first_freeze",
+    "u6_predictor_source_screen",
+    "u6_cross_universe_dependence",
+)
+EXTERNAL_VALIDATION_MACHINE_GATES = ("u1_full47_source_screen",)
+
+
+def _machine_gate_complete(
+    machine_complete: dict[str, bool],
+    required_gates: tuple[str, ...],
+) -> bool:
+    missing = [gate for gate in required_gates if gate not in machine_complete]
+    if missing:
+        raise ValueError(
+            "machine readiness is missing required gates: " + ", ".join(missing)
+        )
+    return all(machine_complete[gate] for gate in required_gates)
+
+
 def _load_two_coder_stage(path: Path, blank_loader) -> tuple[str, list[dict[str, str]]]:
     """Return UNSTARTED or COMPLETE; partial or relabeled coder IDs fail closed."""
     try:
@@ -176,8 +200,16 @@ def build_plant_v4_readiness(
     }
 
     blockers = [name for name, is_open in primary_human_open.items() if is_open]
+    primary_machine_ready = _machine_gate_complete(
+        machine_complete,
+        PRIMARY_MACHINE_GATES,
+    )
+    external_validation_machine_ready = _machine_gate_complete(
+        machine_complete,
+        EXTERNAL_VALIDATION_MACHINE_GATES,
+    )
     primary_preassembly_ready = (
-        all(machine_complete.values())
+        primary_machine_ready
         and not blockers
         and preoutcome_generality["v4_main_predictor_design_viable"]
     )
@@ -186,6 +218,14 @@ def build_plant_v4_readiness(
         "analysis": "balance_plant_v4_programme_readiness",
         "model_specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
         "machine_complete": machine_complete,
+        "primary_machine_gates": list(PRIMARY_MACHINE_GATES),
+        "external_validation_machine_gates": list(
+            EXTERNAL_VALIDATION_MACHINE_GATES
+        ),
+        "all_primary_machine_preparation_complete": primary_machine_ready,
+        "all_external_validation_machine_preparation_complete": (
+            external_validation_machine_ready
+        ),
         "all_machine_preparation_complete": all(machine_complete.values()),
         "primary_human_open_gates": primary_human_open,
         "external_validation_open_gates": external_validation_open,
