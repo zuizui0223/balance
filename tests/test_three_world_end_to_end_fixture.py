@@ -9,10 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "empirical" / "interface" / "THREE_WORLD_SYNTHETIC_FIXTURE_V1.json"
 
 
-def test_one_context_survives_sch_balance_bita_compatible_projection():
+def test_one_context_survives_sch_balance_architecture_projection():
     data = json.loads(FIXTURE.read_text(encoding="utf-8"))
     handoff = data["handoff"]
-    decomp = data["bita_decomposition"]
+    decomp = data["architecture_decomposition"]
     world = data["balance_worldlines"]
 
     conflict = consume_conflict_handoff(
@@ -44,13 +44,13 @@ def test_one_context_survives_sch_balance_bita_compatible_projection():
     assert math.isclose(point_phi, data["expected"]["direct_gap"])
 
 
-def test_fixture_rejects_a_different_bita_context():
+def test_fixture_rejects_a_different_architecture_context():
     data = json.loads(FIXTURE.read_text(encoding="utf-8"))
     try:
         consume_conflict_handoff(
             data["handoff"],
             expected_context_id="PEDICULARIS_OTHER_POP_2027",
-            expected_fitness_scale_id=data["bita_decomposition"]["fitness_scale_id"],
+            expected_fitness_scale_id=data["architecture_decomposition"]["fitness_scale_id"],
         )
     except ValueError as exc:
         assert "context_id" in str(exc)

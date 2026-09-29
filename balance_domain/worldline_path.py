@@ -22,6 +22,16 @@ class WorldlinePathResult:
     balance_intervals: tuple[tuple[float, float], ...]
     balance_width: float
 
+    @property
+    def legacy_states(self) -> tuple[str, ...]:
+        """Return deprecated BITA-labelled state strings for old consumers."""
+        return tuple(
+            "BITA_DIFFERENTIATION_WORLD"
+            if state == "ARCHITECTURE_FAVOURED_WORLD"
+            else state
+            for state in self.states
+        )
+
 
 def _fraction_to_float(value: F, name: str) -> float:
     try:
@@ -61,7 +71,7 @@ def analyze_worldline_path(
 ) -> WorldlinePathResult:
     """Identify BALANCE directly from two matched optimized worldlines.
 
-    This is the Chapter-2 empirical route that does not require a full BITA
+    This is the Chapter-2 empirical route that does not require a prior SLK architecture-value
     decomposition into ``s`` and ``K``. It requires only a common fitness
     scale, an SCH-positive conflict receipt ``L>0``, and the matched optimized
     architecture fitnesses ``W_S*`` and ``W_D*``.
@@ -111,7 +121,7 @@ def analyze_worldline_path(
         elif point.reserve_position == "INTERFACE":
             states.append("ARCHITECTURE_CRITICAL_INTERFACE")
         else:
-            states.append("BITA_DIFFERENTIATION_WORLD")
+            states.append("ARCHITECTURE_FAVOURED_WORLD")
 
     crossings = []
     for i in range(n - 1):

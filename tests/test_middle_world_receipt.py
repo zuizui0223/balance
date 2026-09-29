@@ -30,7 +30,7 @@ def test_architecture_order_crossing_zero_stays_unresolved():
     assert result.direct_gap.contains(0.0)
 
 
-def test_bita_side_requires_positive_conflict_and_positive_direct_gap():
+def test_architecture_favoured_side_requires_positive_conflict_and_positive_direct_gap():
     result = classify_bounded_receipt(
         context_id="ctx-3",
         fitness_scale_id="seed_set",
@@ -38,7 +38,8 @@ def test_bita_side_requires_positive_conflict_and_positive_direct_gap():
         shared_optimum_fitness=Interval(9.0, 9.1),
         differentiated_optimum_fitness=Interval(9.5, 9.6),
     )
-    assert result.direct_state == "BITA_SIDE_IDENTIFIED"
+    assert result.direct_state == "ARCHITECTURE_FAVOURED_IDENTIFIED"
+    assert result.legacy_direct_state == "BITA_SIDE_IDENTIFIED"
     assert result.direct_gap.lower > 0
 
 

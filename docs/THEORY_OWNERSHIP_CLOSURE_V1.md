@@ -53,22 +53,27 @@ SLK-facing boundary = Phi=0
 
 Legacy occurrences of `BITA-facing boundary` refer historically to the same architecture-value surface but are deprecated terminology after the SLK split.
 
-## Legacy API compatibility
+## API terminology migration
 
-Existing public code may still contain identifiers such as
+Canonical public terminology now follows the ownership contract:
 
 ```text
-bita_differentiation_favoured
-bita_boundary_distance
-finite_bita_boundary
-bita_limited_width
-BITA_DIFFERENTIATION_WORLD
-BALANCE_BITA_INTERFACE
+architecture_favoured
+architecture_boundary_distance
+finite_architecture_boundary
+architecture_limited_width
+architecture_to_sch_width_ratio
+ARCHITECTURE_FAVOURED_WORLD
+BALANCE_ARCHITECTURE_INTERFACE
+ARCHITECTURE_BOUNDARY_LIMITED_BALANCE
 ```
 
-These names are retained temporarily as **backward-compatible API aliases only**. They do not assign scientific ownership of the `Phi=0` boundary to BITA. New prose, new theory objects, and new public APIs should use `slk_*` or neutral `architecture_*` terminology.
+Deprecated `bita_*` properties and explicit legacy-state accessors remain available only
+for backward compatibility with older serialized outputs and downstream code. Regression
+tests require each alias to equal its canonical architecture-named value.
 
-Do not bulk-rename legacy fields unless compatibility tests and downstream users are migrated together. Semantic closure takes precedence over cosmetic renaming.
+New code, prose, fixtures, and state assertions must use the canonical terminology. BITA
+does not own the `Phi=0` surface.
 
 ## General versus model-specific statements
 
