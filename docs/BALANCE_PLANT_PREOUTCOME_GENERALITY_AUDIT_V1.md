@@ -208,6 +208,42 @@ The first statement concerns identifiability of the registered U2/U6 model matri
 second concerns the stronger claim that the timing association is independently replicated
 within a shared biological substrate across both universes.
 
+## Prospective post-outcome support gate
+
+Even if the shared-module predictor support later reaches the frozen threshold, the
+cross-universe timing claim has one additional gate after independent architecture coding.
+
+Within **each** U2 and U6 universe:
+
+```text
+NONSTRUCTURAL_SEPARATION
+  >= 2 independent dependence blocks
+
+OTHER_ARCHITECTURE
+  >= 2 independent dependence blocks
+```
+
+This is a support diagnostic for the target probability contrast, not a collapse of the
+four-class response.
+
+The purpose is to prevent a universe-specific
+`P(NONSTRUCTURAL_SEPARATION | ORDERED) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)`
+contrast from being called a replication when one universe contains essentially no observed
+target routing outcome.
+
+Thus the current generality ladder is:
+
+```text
+marginal timing representation
+-> common module-stratum predictor support
+-> per-universe target-outcome support
+-> fitted universe-specific contrasts
+-> directional concordance
+-> practical interaction check
+```
+
+Only the first step is currently satisfied prospectively.
+
 ## Claim ceiling
 
 This audit licenses only statements about predictor support and prospective generality. It
