@@ -4,11 +4,22 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 
+from .plant_confirmatory import (
+    build_receipt_screening_coverage,
+    load_plant_predictor_receipts,
+)
 from .plant_macro import load_plant_macro_ledger
 from .plant_u1_full_screen import build_u1_full47_conflict_screen
 from .plant_u2_screen import build_u2_conflict_screen_readout
 from .plant_u3_cases import build_u3_case_readout
 from .plant_u4 import build_u4_readout
+from .plant_u6 import (
+    build_u6_evidence_readiness,
+    load_u6_cross_universe_dependence,
+    load_u6_pass1_freeze_manifest,
+    load_u6_pass2_adjudication,
+    load_u6_pass2_double_coding,
+)
 
 
 def _screen_readout(path: Path, *, lane: str) -> dict:
@@ -39,6 +50,11 @@ def build_plant_programme_map(
     u1_blind_screen_path: Path | None = None,
     u1_production_screen_path: Path | None = None,
     u2_conflict_screen_path: Path | None = None,
+    u6_freeze_path: Path | None = None,
+    u6_coding_path: Path | None = None,
+    u6_adjudication_path: Path | None = None,
+    u6_predictor_receipts_path: Path | None = None,
+    u6_dependence_path: Path | None = None,
 ) -> dict:
     u1_provisional = _screen_readout(u1_screening_path, lane="U1")
     if (u1_blind_screen_path is None) != (u1_production_screen_path is None):
@@ -61,6 +77,67 @@ def build_plant_programme_map(
     )
     u3 = build_u3_case_readout(u3_cases_path, u3_universe_path)
     u4 = build_u4_readout(u4_cases_path)
+
+    u6_paths = (
+        u6_freeze_path,
+        u6_coding_path,
+        u6_adjudication_path,
+        u6_predictor_receipts_path,
+        u6_dependence_path,
+    )
+    if any(path is not None for path in u6_paths) and not all(
+        path is not None for path in u6_paths
+    ):
+        raise ValueError(
+            "U6 programme readout requires freeze, coding, adjudication, predictor "
+            "receipts, and dependence paths together"
+        )
+
+    u6 = None
+    if u6_freeze_path is not None:
+        freeze = load_u6_pass1_freeze_manifest(u6_freeze_path)
+        coding = load_u6_pass2_double_coding(u6_coding_path, u6_freeze_path)
+        adjudication = load_u6_pass2_adjudication(
+            u6_adjudication_path,
+            u6_freeze_path,
+            coding,
+        )
+        receipts = load_plant_predictor_receipts(u6_predictor_receipts_path)
+        dependence = load_u6_cross_universe_dependence(
+            u6_dependence_path,
+            u6_freeze_path,
+        )
+        readiness = build_u6_evidence_readiness(
+            coding,
+            adjudication,
+            receipts,
+            dependence,
+        )
+        receipt_coverage = build_receipt_screening_coverage(receipts)
+        u6 = {
+            "lane": "U6",
+            "n_records": freeze["pass1_contract"]["n_anchor_review_references"],
+            "n_dependency_groups": len(freeze["included_dependency_groups"]),
+            "n_included_dependency_groups": len(freeze["included_dependency_groups"]),
+            "pass1_status": freeze["status"],
+            "pass2_coding_open": freeze["pass2"]["coding_open"],
+            "predictor_source_screen_complete_groups": (
+                receipt_coverage["n_complete_outcome_independent_clusters"]
+            ),
+            "predictor_adjudicated_complete_groups": (
+                receipt_coverage["n_complete_adjudicated_clusters"]
+            ),
+            "evidence_readiness": readiness,
+            "sampling_role": "CONFLICT_FIRST_POLLEN_THEFT_ARCHITECTURE_BLIND",
+            "licensed_use": (
+                "architecture-blind conflict-first replication plus independent "
+                "routing/predictor coding"
+            ),
+            "not_licensed": (
+                "primary model entry until coding, reliability, adjudication, and "
+                "predictor-receipt gates close"
+            ),
+        }
 
     # Never compute a pooled positive fraction: the universes are intentionally
     # sampled for different purposes (broad specificity, mechanism, cases, stress test).
@@ -135,6 +212,7 @@ def build_plant_programme_map(
                 ),
                 "not_licensed": "prevalence of pollinator-prey conflict",
             },
+            **({"U6": u6} if u6 is not None else {}),
         },
         "cross_lane_invariants": [
             "review_or_case_membership_does_not_imply_positive_conflict",
