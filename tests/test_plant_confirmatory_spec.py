@@ -236,3 +236,17 @@ def test_v4_preoutcome_design_is_full_rank_but_strict_generality_not_ready():
     assert audit["full_universe_stratified_design_columns"] == 5
     assert audit["full_universe_stratified_design_full_rank"] is True
     assert audit["strict_temporal_generality_common_support_ready"] is False
+
+
+
+def test_v4_generality_requires_per_universe_target_outcome_support():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    sensitivity = spec["temporal_generality_sensitivity"]
+    requirement = sensitivity["postoutcome_support_requirement"]["per_universe"]
+    assert requirement == {
+        "NONSTRUCTURAL_SEPARATION_min_blocks": 2,
+        "OTHER_ARCHITECTURE_min_blocks": 2,
+    }
+    assert ">=2 NONSTRUCTURAL_SEPARATION" in sensitivity["fit_gate"]
+    assert ">=2 OTHER_ARCHITECTURE" in sensitivity["fit_gate"]
+    assert "outcome_support_requirement" in spec["claim_hierarchy"]["cross_universe_replicated"]
