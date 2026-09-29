@@ -16,6 +16,7 @@ from .plant_confirmatory import (
 from .plant_macro import primary_architecture_class
 from .plant_model_assembly import validate_model_assembly_rows
 from .plant_model_v4 import PRIMARY_UNIVERSES, build_v4_estimability_report
+from .plant_v4_decision import directional_label, temporal_generality_decision
 
 
 RESPONSE_ORDER = (
@@ -147,6 +148,15 @@ def build_v4_estimand_standardization(rows: Iterable[dict[str, str]]) -> dict:
     }
 
 
+def _finite_number(value: object, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} must be a finite number")
+    numeric = float(value)
+    if not math.isfinite(numeric):
+        raise ValueError(f"{label} must be a finite number")
+    return numeric
+
+
 def _validate_draw(draw: dict, *, require_gamma: bool) -> None:
     alpha = draw.get("alpha")
     beta = draw.get("beta")
@@ -158,10 +168,20 @@ def _validate_draw(draw: dict, *, require_gamma: bool) -> None:
         raise ValueError("draw beta must have three predictor rows")
     if any(not isinstance(row, list) or len(row) != 3 for row in beta):
         raise ValueError("draw beta must be 3 x 3")
+
+    for i, row in enumerate(alpha):
+        for j, value in enumerate(row):
+            _finite_number(value, f"alpha[{i}][{j}]")
+    for i, row in enumerate(beta):
+        for j, value in enumerate(row):
+            _finite_number(value, f"beta[{i}][{j}]")
+
     if require_gamma:
         gamma = draw.get("gamma_u6_ordered")
         if not isinstance(gamma, list) or len(gamma) != 3:
             raise ValueError("generality draw gamma_u6_ordered must have length 3")
+        for j, value in enumerate(gamma):
+            _finite_number(value, f"gamma_u6_ordered[{j}]")
 
 
 def _softmax(logits: list[float]) -> list[float]:
@@ -300,3 +320,163 @@ def gamma_negative_margin_probability(
     if not values:
         raise ValueError("interaction tail probability requires at least one draw")
     return sum(value < margin for value in values) / len(values)
+
+
+
+def summarize_v4_primary_postfit(
+    rows: Iterable[dict[str, str]],
+    *,
+    primary_draws: Iterable[dict],
+    sensitivity_draws: Iterable[dict],
+) -> dict:
+    """Summarize the two frozen primary directional contrasts under both priors."""
+    grid = build_v4_estimand_standardization(rows)
+    primary_draws = list(primary_draws)
+    sensitivity_draws = list(sensitivity_draws)
+
+    h_t_primary = posterior_contrast_summary(
+        contrast_draws(
+            primary_draws,
+            grid["H_T_primary"],
+            target_response="NONSTRUCTURAL_SEPARATION",
+            arm_field="temporal_exposure3",
+            positive_arm="ORDERED_OR_ALTERNATING",
+            negative_arm="SIMULTANEOUS",
+        )
+    )
+    h_t_sensitivity = posterior_contrast_summary(
+        contrast_draws(
+            sensitivity_draws,
+            grid["H_T_primary"],
+            target_response="NONSTRUCTURAL_SEPARATION",
+            arm_field="temporal_exposure3",
+            positive_arm="ORDERED_OR_ALTERNATING",
+            negative_arm="SIMULTANEOUS",
+        )
+    )
+    h_m_primary = posterior_contrast_summary(
+        contrast_draws(
+            primary_draws,
+            grid["H_M_U2"],
+            target_response="STRUCTURAL_MODULE_DIVISION",
+            arm_field="module_opportunity2",
+            positive_arm="MODULAR",
+            negative_arm="SINGLE",
+            universe_id="U2_BARRETT_2002",
+        )
+    )
+    h_m_sensitivity = posterior_contrast_summary(
+        contrast_draws(
+            sensitivity_draws,
+            grid["H_M_U2"],
+            target_response="STRUCTURAL_MODULE_DIVISION",
+            arm_field="module_opportunity2",
+            positive_arm="MODULAR",
+            negative_arm="SINGLE",
+            universe_id="U2_BARRETT_2002",
+        )
+    )
+
+    return {
+        "analysis": "balance_plant_v4_primary_postfit_summary",
+        "H_T_ORDERED_NONSTRUCTURAL": {
+            "primary_prior": h_t_primary,
+            "sensitivity_prior": h_t_sensitivity,
+            "directional_label": directional_label(
+                p_positive_primary=h_t_primary["p_positive"],
+                p_positive_sensitivity=h_t_sensitivity["p_positive"],
+            ),
+        },
+        "H_M_MODULAR_STRUCTURAL": {
+            "primary_prior": h_m_primary,
+            "sensitivity_prior": h_m_sensitivity,
+            "directional_label": directional_label(
+                p_positive_primary=h_m_primary["p_positive"],
+                p_positive_sensitivity=h_m_sensitivity["p_positive"],
+            ),
+        },
+        "claim_ceiling": "postfit_primary_reporting_not_causal_or_publication_decision",
+    }
+
+
+def summarize_v4_temporal_generality_postfit(
+    rows: Iterable[dict[str, str]],
+    *,
+    primary_draws: Iterable[dict],
+    sensitivity_draws: Iterable[dict],
+) -> dict:
+    """Apply the frozen U2/U6 timing-generality decision to posterior draws."""
+    grid = build_v4_estimand_standardization(rows)
+    if not grid["temporal_generality_ready"]:
+        raise ValueError(
+            "temporal generality postfit summary is forbidden until the frozen "
+            "common-support and per-universe outcome-support gates pass"
+        )
+
+    primary_draws = list(primary_draws)
+    sensitivity_draws = list(sensitivity_draws)
+    surface = grid["H_T_cross_universe"]
+
+    summaries: dict[str, dict[str, dict]] = {}
+    p_positive: dict[str, tuple[float, float]] = {}
+    for universe in PRIMARY_UNIVERSES:
+        primary = posterior_contrast_summary(
+            contrast_draws(
+                primary_draws,
+                surface,
+                target_response="NONSTRUCTURAL_SEPARATION",
+                arm_field="temporal_exposure3",
+                positive_arm="ORDERED_OR_ALTERNATING",
+                negative_arm="SIMULTANEOUS",
+                universe_id=universe,
+                generality=True,
+            )
+        )
+        sensitivity = posterior_contrast_summary(
+            contrast_draws(
+                sensitivity_draws,
+                surface,
+                target_response="NONSTRUCTURAL_SEPARATION",
+                arm_field="temporal_exposure3",
+                positive_arm="ORDERED_OR_ALTERNATING",
+                negative_arm="SIMULTANEOUS",
+                universe_id=universe,
+                generality=True,
+            )
+        )
+        summaries[universe] = {
+            "primary_prior": primary,
+            "sensitivity_prior": sensitivity,
+        }
+        p_positive[universe] = (
+            primary["p_positive"],
+            sensitivity["p_positive"],
+        )
+
+    gamma_primary = gamma_negative_margin_probability(primary_draws)
+    gamma_sensitivity = gamma_negative_margin_probability(sensitivity_draws)
+    decision = temporal_generality_decision(
+        preoutcome_common_support_ready=True,
+        per_universe_outcome_support_ready=True,
+        u2_p_positive_primary=p_positive["U2_BARRETT_2002"][0],
+        u2_p_positive_sensitivity=p_positive["U2_BARRETT_2002"][1],
+        u6_p_positive_primary=p_positive["U6_POLLEN_THEFT_HARGREAVES_2009"][0],
+        u6_p_positive_sensitivity=p_positive["U6_POLLEN_THEFT_HARGREAVES_2009"][1],
+        p_gamma_below_negative_margin_primary=gamma_primary,
+        p_gamma_below_negative_margin_sensitivity=gamma_sensitivity,
+    )
+
+    return {
+        "analysis": "balance_plant_v4_temporal_generality_postfit_summary",
+        "standardization_module_strata": grid[
+            "temporal_common_support_module_strata"
+        ],
+        "universe_contrasts": summaries,
+        "interaction_negative_margin_probability": {
+            "primary_prior": gamma_primary,
+            "sensitivity_prior": gamma_sensitivity,
+            "margin_log_odds": NEGATIVE_INTERACTION_MARGIN,
+        },
+        "decision": decision,
+        "claim_ceiling": "postfit_generality_reporting_not_publication_decision",
+    }
