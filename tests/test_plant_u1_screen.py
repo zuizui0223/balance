@@ -20,11 +20,10 @@ def test_u1_blind_screen_does_not_promote_interaction_to_conflict():
     readout = build_u1_blind_screen_readout(SCREEN)
     assert readout["n_positive_conflict"] == 0
     assert readout["n_aligned_no_conflict"] == 1
-    assert readout["n_no_demonstrated_conflict"] == 18
-    assert readout["n_unresolved_candidate"] == 1
+    assert readout["n_no_demonstrated_conflict"] == 19
+    assert readout["n_unresolved_candidate"] == 0
     assert readout["screen_decision_counts"] == {
-        "FAIL_CONFLICT_GATE": 19,
-        "HOLD_FOR_FULL_TEXT": 1,
+        "FAIL_CONFLICT_GATE": 20,
     }
 
 
@@ -36,12 +35,13 @@ def test_castilleja_is_retained_as_aligned_specificity_control():
     assert row["screen_decision"] == "FAIL_CONFLICT_GATE"
 
 
-def test_brassica_nigra_is_held_not_promoted():
+def test_brassica_nigra_primary_result_closes_no_tradeoff():
     rows = load_u1_blind_screen(SCREEN)
     row = next(r for r in rows if r["taxon_raw"] == "Brassica nigra")
-    assert row["conflict_status"] == "UNRESOLVED_CANDIDATE"
-    assert row["opposing_demand_evidence"] == "INDIRECT_OR_AMBIGUOUS"
-    assert row["screen_decision"] == "HOLD_FOR_FULL_TEXT"
+    assert row["conflict_status"] == "NO_DEMONSTRATED_CONFLICT"
+    assert row["opposing_demand_evidence"] == "NO"
+    assert row["screen_decision"] == "FAIL_CONFLICT_GATE"
+    assert row["reason_code"] == "PRIMARY_STUDY_REPORTS_NO_HERBIVORY_POLLINATION_TRADEOFF"
 
 
 def test_architecture_is_not_inferred_from_conflict_screen():
