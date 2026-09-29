@@ -44,12 +44,14 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert out["pooled_prevalence_estimate"] is None
     assert out["primary_model_ready"] is False
     contract = out["primary_model_contract"]
-    assert contract["specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3"
+    assert contract["specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
     assert contract["response"] == "architecture_class4"
     assert contract["primary_universes"] == [
-        "U1_HAAS_LORTIE_2020",
         "U2_BARRETT_2002",
         "U6_POLLEN_THEFT_HARGREAVES_2009",
+    ]
+    assert contract["external_validation_universes"] == [
+        "U1_HAAS_LORTIE_2020",
     ]
     assert contract["fit_predictor_contrasts"] == [
         "module_opportunity2",
@@ -58,13 +60,15 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert contract["secondary_predictor_contrasts"] == [
         "spatial_exposure2",
     ]
-    assert contract["maximum_main_fixed_coefficients"] == 12
+    assert contract["maximum_main_fixed_coefficients"] == 15
+    assert contract["universe_stratified_intercepts"] is True
     assert contract["predictor_receipts_required"] is True
     assert contract["outcome_dependent_fallback_allowed"] is False
     assert contract["u3_u4_primary_denominator_allowed"] is False
-    assert len(out["primary_model_blockers"]) == 6
+    assert len(out["primary_model_blockers"]) == 5
     assert any("U6 independent double coding incomplete" in x for x in out["primary_model_blockers"])
     assert out["parallel_nonblocking_work"] == [
+        "U1 independent coding as external specificity validation",
         "U3 matched/case-control measurements and controls",
         "U4 pollinator-prey mechanism stress test",
     ]
