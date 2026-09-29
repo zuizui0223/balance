@@ -93,3 +93,24 @@ def test_handoff_manifest_registers_post_handoff_v4_analysis_workflow():
     assert "forbidden while any U2/U6" in analysis["fail_closed_rule"]
     assert (ROOT / analysis["readiness_cli"]).exists()
     assert (ROOT / analysis["manual_workflow"]).exists()
+
+
+
+def test_handoff_manifest_registers_validated_return_ingestion_workspace():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    ret = data["return_ingestion"]
+    assert ret["merger_module"] == "balance_domain/plant_coder_return.py"
+    assert ret["cli"] == "scripts/merge_plant_coder_returns.py"
+    assert ret["tracked_data_overwrite_required"] is False
+    assert ret["downstream_analysis_cli"] == "scripts/build_plant_v4_analysis_inputs.py"
+    assert ret["downstream_input_option"] == "--input-dir"
+    assert "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv" in ret[
+        "mutable_workspace_basenames"
+    ]
+    assert "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv" in ret[
+        "mutable_workspace_basenames"
+    ]
+    assert any("source packets" in item for item in ret["immutable_repo_inputs"])
+    assert "silently replaced" in ret["fail_closed_rule"]
+    assert (ROOT / ret["merger_module"]).exists()
+    assert (ROOT / ret["cli"]).exists()
