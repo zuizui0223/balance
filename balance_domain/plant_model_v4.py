@@ -157,6 +157,7 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
     full_design_full_rank = full_rank == len(full_columns)
 
     replicated_temporal_counts: dict[str, dict[str, int]] = {}
+    module_timing_counts: dict[str, dict[str, int]] = {}
     for universe in PRIMARY_UNIVERSES:
         subset = [row for row in resolved if row["universe_id"] == universe]
         replicated_temporal_counts[universe] = {
@@ -167,10 +168,51 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
             })
             for level in ("SIMULTANEOUS", "ORDERED_OR_ALTERNATING")
         }
-    temporal_generality_ready = all(
+        module_timing_counts[universe] = {
+            f"{module}__{timing}": len({
+                row["dependence_block"]
+                for row in subset
+                if row["module_opportunity2"] == module
+                and row["temporal_exposure3"] == timing
+            })
+            for module in MODULE_LEVELS
+            for timing in ("SIMULTANEOUS", "ORDERED_OR_ALTERNATING")
+        }
+
+    temporal_marginal_replication_ready = all(
         count >= MIN_BLOCKS_PER_REPLICATED_TEMPORAL_LEVEL_WITHIN_UNIVERSE
         for universe_counts in replicated_temporal_counts.values()
         for count in universe_counts.values()
+    )
+
+    shared_module_levels = [
+        module
+        for module in MODULE_LEVELS
+        if all(module_block_counts.get(module, 0) > 0 for _ in (0,))
+        and all(
+            any(
+                row["module_opportunity2"] == module
+                for row in resolved
+                if row["universe_id"] == universe
+            )
+            for universe in PRIMARY_UNIVERSES
+        )
+    ]
+    common_support_module_strata = [
+        module
+        for module in shared_module_levels
+        if all(
+            module_timing_counts[universe][f"{module}__SIMULTANEOUS"]
+            >= MIN_BLOCKS_PER_REPLICATED_TEMPORAL_LEVEL_WITHIN_UNIVERSE
+            and module_timing_counts[universe][
+                f"{module}__ORDERED_OR_ALTERNATING"
+            ] >= MIN_BLOCKS_PER_REPLICATED_TEMPORAL_LEVEL_WITHIN_UNIVERSE
+            for universe in PRIMARY_UNIVERSES
+        )
+    ]
+    temporal_common_support_ready = bool(common_support_module_strata)
+    temporal_generality_ready = (
+        temporal_marginal_replication_ready and temporal_common_support_ready
     )
 
     blockers: list[str] = []
@@ -247,13 +289,23 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
         "full_design_column_count": len(full_columns),
         "full_design_full_rank": full_design_full_rank,
         "temporal_cross_universe_support": replicated_temporal_counts,
+        "temporal_cross_universe_marginal_replication_ready": (
+            temporal_marginal_replication_ready
+        ),
+        "module_timing_joint_support_by_universe": module_timing_counts,
+        "shared_module_levels_across_universes": shared_module_levels,
+        "temporal_common_support_module_strata": common_support_module_strata,
+        "temporal_cross_universe_common_support_ready": (
+            temporal_common_support_ready
+        ),
         "temporal_cross_universe_generality_ready": temporal_generality_ready,
         "spatial_secondary_estimable": spatial_secondary_estimable,
         "blockers": blockers,
         "ready_for_primary_fit": not blockers,
         "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC",
         "generality_rule": (
-            "cross-universe language reserved for contrasts independently supported "
-            "within both U2 and U6"
+            "cross-universe timing language requires marginal timing replication plus "
+            "at least one shared module stratum with >=2 SIMULTANEOUS and >=2 ORDERED "
+            "dependence blocks in each U2 and U6"
         ),
     }
