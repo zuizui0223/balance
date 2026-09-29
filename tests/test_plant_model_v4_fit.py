@@ -117,18 +117,38 @@ def test_v4_fit_rejects_repeated_dependence_block():
 
 def _generality_rows():
     rows = _ready_rows()
-    rows.append(
+    rows.extend([
         _row(
             "r10",
             "U2_BARRETT_2002",
-            "u2_n2",
+            "u2_s3",
             "b10",
+            "SHARED_INTEGRATED",
+            "SINGLE_OR_CONTINUOUS",
+            "SIMULTANEOUS",
+            "SAME_UNIT",
+        ),
+        _row(
+            "r11",
+            "U2_BARRETT_2002",
+            "u2_n2",
+            "b11",
+            "TEMPORAL_SEPARATION",
+            "SINGLE_OR_CONTINUOUS",
+            "SEQUENTIAL_WITHIN_UNIT",
+            "SAME_UNIT",
+        ),
+        _row(
+            "r12",
+            "U2_BARRETT_2002",
+            "u2_n3",
+            "b12",
             "TEMPORAL_SEPARATION",
             "SINGLE_OR_CONTINUOUS",
             "SEASONALLY_ALTERNATING",
             "SAME_UNIT",
-        )
-    )
+        ),
+    ])
     return rows
 
 
@@ -142,6 +162,9 @@ def test_v4_temporal_generality_input_adds_only_u6_ordered_interaction():
     data = out["stan_data"]
     meta = out["metadata"]
 
+    assert meta["estimability"]["temporal_cross_universe_marginal_replication_ready"] is True
+    assert meta["estimability"]["temporal_cross_universe_common_support_ready"] is True
+    assert meta["estimability"]["temporal_common_support_module_strata"] == ["SINGLE"]
     assert meta["estimability"]["temporal_cross_universe_generality_ready"] is True
     assert data["interaction_prior_sd"] == 0.75
     assert meta["generality_interaction"] == "U6_x_temporal_ORDERED_OR_ALTERNATING"
