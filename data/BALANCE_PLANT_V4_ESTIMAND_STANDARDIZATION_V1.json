@@ -1,0 +1,47 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1",
+  "status": "FROZEN_PRE_OUTCOME_CLARIFICATION_OF_EXISTING_V4_ESTIMANDS",
+  "unit_of_support": "independent_dependence_block",
+  "principle": "standardize over supported predictor cells rather than weighting by the number of rows contributed by a sampling universe",
+  "H_T_primary": {
+    "estimand": "P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)",
+    "surface": "unique observed universe_id x module_opportunity2 cells in the final licensed U2+U6 assembly",
+    "weighting": "equal weight per supported universe x module cell",
+    "counterfactual": "hold universe and module fixed within each supported cell and replace temporal exposure with ORDERED_OR_ALTERNATING versus SIMULTANEOUS",
+    "extrapolation_ceiling": "no new universe x module combination is created"
+  },
+  "H_M_U2": {
+    "estimand": "P(STRUCTURAL_MODULE_DIVISION | MODULAR) - P(STRUCTURAL_MODULE_DIVISION | SINGLE)",
+    "surface": "temporal_exposure3 levels observed in final licensed U2 rows",
+    "weighting": "equal weight per supported U2 temporal level",
+    "counterfactual": "hold U2 universe and temporal level fixed and replace module opportunity with MODULAR versus SINGLE",
+    "extrapolation_ceiling": "no timing level absent from U2 is introduced"
+  },
+  "H_T_cross_universe": {
+    "estimand": "universe-specific ORDERED_OR_ALTERNATING minus SIMULTANEOUS probability contrast for NONSTRUCTURAL_SEPARATION",
+    "surface": "module_opportunity2 strata passing the frozen common-support gate",
+    "common_support_gate": "each retained module stratum has >=2 independent SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING dependence blocks in each U2 and U6",
+    "weighting": "equal weight per retained common-support module stratum within each universe",
+    "counterfactual": "hold universe and common-support module stratum fixed and replace temporal exposure with ORDERED_OR_ALTERNATING versus SIMULTANEOUS",
+    "claim_rule": "if no module stratum passes the common-support gate, the cross-universe contrast is not computed"
+  },
+  "posterior_reporting": {
+    "direction_probability": "P(Delta > 0 | data) is the fraction of posterior contrast draws strictly greater than zero",
+    "reverse_direction_probability": "P(Delta < 0 | data) is the fraction strictly less than zero",
+    "interaction_tail": "P(gamma_u6_ordered_nonstructural < -1.0 | data)",
+    "registered_prior_rule": "direction labels use both common-slope priors Normal(0,0.75) and Normal(0,1.5); the U6 x ORDERED interaction prior remains Normal(0,0.75)"
+  },
+  "prohibitions": [
+    "do not weight pooled H_T by raw universe sample size",
+    "do not add unsupported universe x module cells to the primary standardization surface",
+    "do not compute cross-universe H_T outside module strata that pass the frozen common-support gate",
+    "do not choose a standardization surface after inspecting architecture outcomes or fitted effect signs"
+  ],
+  "claim_ceiling": "prospective_postfit_estimand_definition_only_no_observed_effect",
+  "implementation": {
+    "standardization_builder": "balance_domain.plant_v4_estimands.build_v4_estimand_standardization",
+    "primary_postfit_summary": "balance_domain.plant_v4_estimands.summarize_v4_primary_postfit",
+    "temporal_generality_postfit_summary": "balance_domain.plant_v4_estimands.summarize_v4_temporal_generality_postfit",
+    "posterior_contrast_summary": "balance_domain.plant_v4_estimands.posterior_contrast_summary"
+  }
+}

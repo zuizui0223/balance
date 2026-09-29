@@ -226,5 +226,6 @@
       "prediction": ">0",
       "scope": "U2-anchored; not cross-universe replicated"
     }
-  }
+  },
+  "estimand_standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json"
 }

@@ -260,6 +260,32 @@ results remain results; they do not trigger response recoding or hypothesis repl
 Machine-readable registry:
 `data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json`.
 
+## Frozen post-fit standardization
+
+The registered directional hypotheses are probability contrasts rather than raw logit
+coefficients. Their counterfactual standardization surface is therefore frozen before
+independent architecture outcomes are opened.
+
+- `H_T` primary uses equal weight across the unique supported
+  `universe_id x module_opportunity2` cells in the final licensed assembly; timing alone
+  is replaced by `SIMULTANEOUS` versus `ORDERED_OR_ALTERNATING`.
+- `H_M` uses equal weight across temporal levels represented in final licensed U2 rows;
+  module opportunity alone is replaced by `SINGLE` versus `MODULAR`.
+- the cross-universe `H_T` contrast uses only module strata that pass the frozen
+  common-support gate, with equal weight across retained module strata within each
+  universe.
+
+Raw row counts never supply the standardization weights, so the larger sampling universe
+cannot dominate a probability contrast merely by contributing more rows. Unsupported
+universe-module cells are not created.
+
+Posterior direction probabilities are the fraction of registered contrast draws strictly
+above or below zero. They are evaluated under both registered common-slope priors. The
+U6-by-ORDERED interaction prior remains fixed at its preregistered value.
+
+Machine-readable contract:
+`data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json`.
+
 ## Generality hierarchy
 
 ### Cross-universe replicated candidate
