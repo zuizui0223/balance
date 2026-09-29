@@ -858,3 +858,103 @@ def build_u6_pass2_agreement_from_rows(rows: list[dict[str, str]]) -> dict:
 def build_u6_pass2_agreement(path: Path, freeze_manifest_path: Path) -> dict:
     rows = load_u6_pass2_double_coding(path, freeze_manifest_path)
     return build_u6_pass2_agreement_from_rows(rows)
+
+
+
+U6_ADJUDICATION_FIELDS = (
+    "dependency_group",
+    "architecture_mode",
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry",
+    "adjudication_status",
+    "adjudication_basis",
+    "notes",
+)
+
+U6_ADJUDICATION_STATUS = {"PENDING", "ADJUDICATED"}
+
+
+def load_u6_pass2_adjudication(
+    path: Path,
+    freeze_manifest_path: Path,
+    coding_rows: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """Validate one post-coding adjudication row per frozen U6 dependency group."""
+    manifest = load_u6_pass1_freeze_manifest(freeze_manifest_path)
+    expected_groups = set(manifest["included_dependency_groups"])
+
+    coding_by_group: dict[str, list[dict[str, str]]] = {}
+    for row in coding_rows:
+        coding_by_group.setdefault(row["dependency_group"], []).append(row)
+
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if tuple(reader.fieldnames or ()) != U6_ADJUDICATION_FIELDS:
+            raise ValueError("U6 adjudication columns must match canonical order")
+        rows = list(reader)
+
+    if len(rows) != len(expected_groups):
+        raise ValueError("U6 adjudication must contain exactly one row per frozen group")
+
+    seen: set[str] = set()
+    out: list[dict[str, str]] = []
+    for row_number, row in enumerate(rows, start=2):
+        if None in row:
+            raise ValueError(f"row {row_number} has fields outside U6 adjudication schema")
+        clean = {key: (row.get(key) or "").strip() for key in U6_ADJUDICATION_FIELDS}
+        for key in U6_ADJUDICATION_FIELDS[:-1]:
+            if not clean[key]:
+                raise ValueError(f"row {row_number} {key} must be non-empty")
+
+        group = clean["dependency_group"]
+        if group not in expected_groups:
+            raise ValueError(f"row {row_number} non-frozen U6 adjudication group {group!r}")
+        if group in seen:
+            raise ValueError(f"duplicate U6 adjudication group {group!r}")
+        seen.add(group)
+
+        if clean["adjudication_status"] not in U6_ADJUDICATION_STATUS:
+            raise ValueError(f"row {row_number} invalid adjudication_status")
+        if clean["architecture_mode"] not in RESOLUTION - {"NA"}:
+            raise ValueError(f"row {row_number} invalid architecture_mode")
+        if clean["module_substrate"] not in MODULE_SUBSTRATE:
+            raise ValueError(f"row {row_number} invalid module_substrate")
+        if clean["conflict_timing_geometry"] not in TIMING:
+            raise ValueError(f"row {row_number} invalid conflict_timing_geometry")
+        if clean["conflict_spatial_geometry"] not in SPATIAL:
+            raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
+
+        if clean["adjudication_status"] == "PENDING":
+            if clean["adjudication_basis"] != "AWAITING_INDEPENDENT_DOUBLE_CODING":
+                raise ValueError(f"row {row_number} pending adjudication basis drifted")
+            if any(
+                clean[field] != "UNRESOLVED"
+                for field in U6_AGREEMENT_FIELDS
+            ):
+                raise ValueError(
+                    f"row {row_number} pending adjudication must remain unresolved"
+                )
+        else:
+            coding_group = coding_by_group.get(group, [])
+            if len(coding_group) != 2 or any(
+                coder_row["coding_status"] != "CODED" for coder_row in coding_group
+            ):
+                raise ValueError(
+                    f"row {row_number} cannot adjudicate before both independent coder rows are CODED"
+                )
+            if any(clean[field] == "UNRESOLVED" for field in U6_AGREEMENT_FIELDS):
+                raise ValueError(
+                    f"row {row_number} ADJUDICATED requires resolved architecture and predictors"
+                )
+            if clean["adjudication_basis"] == "AWAITING_INDEPENDENT_DOUBLE_CODING":
+                raise ValueError(f"row {row_number} adjudicated row requires a frozen basis")
+            if not clean["notes"]:
+                raise ValueError(f"row {row_number} adjudicated row requires notes")
+
+        clean["notes"] = (row.get("notes") or "").strip()
+        out.append(clean)
+
+    if seen != expected_groups:
+        raise ValueError("U6 adjudication does not cover every frozen dependency group")
+    return out
