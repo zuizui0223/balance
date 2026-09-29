@@ -185,3 +185,29 @@ def test_u2_low_agreement_blocks_adjudication(tmp_path):
 
     with pytest.raises(ValueError, match="codebook repair/recode"):
         load_u2_adjudication(path, sample, coding)
+
+
+
+def test_u2_completed_coding_groups_must_match_frozen_sample():
+    sample = load_u2_double_code_sample(SAMPLE)
+    coding = []
+    for row in sample:
+        group = row["dependency_group"]
+        for coder in ("CODER_A", "CODER_B"):
+            coding.append({
+                "cluster_id": group,
+                "coder_id": coder,
+                "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+                "architecture_mode": "SHARED_INTEGRATED",
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "notes": "synthetic identity gate",
+            })
+    original = sample[0]["dependency_group"]
+    for row in coding:
+        if row["cluster_id"] == original:
+            row["cluster_id"] = "NON_FROZEN_INTRUDER"
+
+    with pytest.raises(ValueError, match="exactly match the frozen reliability sample"):
+        load_u2_adjudication(ADJUDICATION, sample, coding)
