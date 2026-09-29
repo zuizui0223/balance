@@ -59,6 +59,13 @@ def build_u2_licensed_rows(
     licensed = _licensed_predictors(predictor_receipts)
     sources = {row["dependency_group"]: row for row in source_packet_rows}
 
+    if len(adjudication_rows) != 20:
+        raise ValueError("U2 final assembly requires all 20 frozen reliability adjudication rows")
+    if any(row["adjudication_status"] != "ADJUDICATED" for row in adjudication_rows):
+        raise ValueError("U2 final assembly cannot omit pending adjudication rows")
+    if set(sources) != {row["cluster_id"] for row in adjudication_rows}:
+        raise ValueError("U2 source packet and final adjudication groups disagree")
+
     out: list[dict[str, str]] = []
     for row in adjudication_rows:
         if row["adjudication_status"] != "ADJUDICATED":
@@ -129,10 +136,16 @@ def build_u6_licensed_rows(
     if set(sources) != expected_groups:
         raise ValueError("U6 dependence and frozen source-packet groups disagree")
 
+    if len(adjudication_rows) != len(expected_groups):
+        raise ValueError("U6 final assembly requires one adjudication row per frozen group")
+    if {row["dependency_group"] for row in adjudication_rows} != expected_groups:
+        raise ValueError("U6 adjudication groups disagree with frozen dependence map")
+    if any(row["adjudication_status"] != "ADJUDICATED" for row in adjudication_rows):
+        raise ValueError("U6 final assembly cannot omit pending adjudication rows")
+
     adjudicated = {
         row["dependency_group"]: row
         for row in adjudication_rows
-        if row["adjudication_status"] == "ADJUDICATED"
     }
 
     out: list[dict[str, str]] = []
