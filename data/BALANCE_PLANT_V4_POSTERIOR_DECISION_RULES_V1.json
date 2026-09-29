@@ -44,5 +44,6 @@
     "do not use a supported H_M as cross-universe replication",
     "do not drop a contradicted or inconclusive result from reporting"
   ],
-  "claim_ceiling": "posterior_reporting_and_reactivation_gate_only_no_observed_result"
+  "claim_ceiling": "posterior_reporting_and_reactivation_gate_only_no_observed_result",
+  "estimand_standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json"
 }
