@@ -89,22 +89,40 @@ def build_plant_programme_map(
         ],
         "pooled_prevalence_estimate": None,
         "primary_model_contract": {
+            "specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2",
             "response": "architecture_class4",
-            "predictors": [
+            "primary_universes": [
+                "U1_HAAS_LORTIE_2020",
+                "U2_BARRETT_2002",
+                "U6_POLLEN_THEFT_HARGREAVES_2009",
+            ],
+            "raw_predictors": [
                 "module_substrate",
                 "conflict_timing_geometry",
                 "conflict_spatial_geometry",
             ],
+            "fit_predictor_contrasts": [
+                "module_opportunity2",
+                "temporal_exposure3",
+                "spatial_exposure2",
+            ],
+            "maximum_main_fixed_coefficients": 15,
             "predictor_receipts_required": True,
             "data_dependent_fallback_allowed": False,
+            "u3_u4_primary_denominator_allowed": False,
         },
         "primary_model_ready": False,
         "primary_model_blockers": [
             "U1 independent double coding incomplete",
             "U2 independent double coding incomplete",
-            "three outcome-independent predictor receipts per admitted cluster not yet closed",
-            "current outcome-blind U1/U2 screening surface has no STRUCTURAL_MODULE_DIVISION class",
-            "final cross-universe dependence/covariance ledger not yet frozen",
+            "U6 independent double coding incomplete",
+            "three adjudicated outcome-independent predictor receipts per admitted cluster not yet closed",
+            "final U1/U2/U6 model assembly and cross-universe dependence ledger not yet closed",
+            "v2 estimability gate cannot be evaluated until final adjudicated architecture classes are assembled",
+        ],
+        "parallel_nonblocking_work": [
+            "U3 matched/case-control measurements and controls",
+            "U4 pollinator-prey mechanism stress test",
         ],
         "claim_ceiling": (
             "programme_map_only_no_cross_lane_prevalence_pooling_"
