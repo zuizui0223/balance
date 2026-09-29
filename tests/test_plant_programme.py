@@ -27,11 +27,29 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert len(roles) == 4
     assert out["pooled_prevalence_estimate"] is None
     assert out["primary_model_ready"] is False
-    assert out["primary_model_contract"]["response"] == "architecture_class4"
-    assert out["primary_model_contract"]["predictor_receipts_required"] is True
-    assert out["primary_model_contract"]["data_dependent_fallback_allowed"] is False
-    assert len(out["primary_model_blockers"]) == 5
-    assert any("STRUCTURAL_MODULE_DIVISION" in x for x in out["primary_model_blockers"])
+    contract = out["primary_model_contract"]
+    assert contract["specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2"
+    assert contract["response"] == "architecture_class4"
+    assert contract["primary_universes"] == [
+        "U1_HAAS_LORTIE_2020",
+        "U2_BARRETT_2002",
+        "U6_POLLEN_THEFT_HARGREAVES_2009",
+    ]
+    assert contract["fit_predictor_contrasts"] == [
+        "module_opportunity2",
+        "temporal_exposure3",
+        "spatial_exposure2",
+    ]
+    assert contract["maximum_main_fixed_coefficients"] == 15
+    assert contract["predictor_receipts_required"] is True
+    assert contract["data_dependent_fallback_allowed"] is False
+    assert contract["u3_u4_primary_denominator_allowed"] is False
+    assert len(out["primary_model_blockers"]) == 6
+    assert any("U6 independent double coding incomplete" in x for x in out["primary_model_blockers"])
+    assert out["parallel_nonblocking_work"] == [
+        "U3 matched/case-control measurements and controls",
+        "U4 pollinator-prey mechanism stress test",
+    ]
 
 
 def test_u1_is_specificity_heavy_and_has_no_positive_conflict_in_provisional20():
