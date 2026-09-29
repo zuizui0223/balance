@@ -111,7 +111,7 @@ def test_v4_generality_can_fail_without_blocking_primary_fit():
 
     out = build_v4_estimability_report(rows)
     assert out["temporal_cross_universe_support"]["U6_POLLEN_THEFT_HARGREAVES_2009"] == {
-        "SIMULTANEOUS": 3,
+        "SIMULTANEOUS": 4,
         "ORDERED_OR_ALTERNATING": 1,
     }
     assert out["temporal_cross_universe_marginal_replication_ready"] is False
