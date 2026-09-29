@@ -1,0 +1,155 @@
+{
+  "schema_version": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_U6_INDEPENDENT_CODING",
+  "supersedes": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1",
+  "revision_reason": "The raw-category joint multinomial requires 42 fixed-effect coefficients before conflict-family adjustment; the frozen low-dimensional contrasts require 15 while preserving the four-class response and the three preregistered biological predictor axes.",
+  "primary_response": {
+    "name": "architecture_class4",
+    "mapping": {
+      "SHARED": [
+        "SHARED_INTEGRATED"
+      ],
+      "NONSTRUCTURAL_SEPARATION": [
+        "TEMPORAL_SEPARATION",
+        "SPATIAL_SEPARATION",
+        "SIGNAL_SEPARATION",
+        "TEMPORAL_AND_SPATIAL_SEPARATION"
+      ],
+      "STRUCTURAL_MODULE_DIVISION": [
+        "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+        "AMONG_FLOWER_MODULE_DIVISION"
+      ],
+      "MOSAIC": [
+        "POLYMORPHIC_OR_MOSAIC"
+      ]
+    },
+    "reference_class": "SHARED"
+  },
+  "raw_predictors_retained": [
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry"
+  ],
+  "primary_predictor_contrasts": {
+    "module_opportunity2": {
+      "SINGLE": [
+        "SINGLE_OR_CONTINUOUS"
+      ],
+      "MODULAR": [
+        "SERIAL_WITHIN_FLOWER",
+        "REPEATED_FLOWERS",
+        "PREEXISTING_SEPARATE_ORGANS",
+        "MULTILEVEL"
+      ]
+    },
+    "temporal_exposure3": {
+      "SIMULTANEOUS": [
+        "SIMULTANEOUS"
+      ],
+      "ORDERED_OR_ALTERNATING": [
+        "SEQUENTIAL_WITHIN_UNIT",
+        "SEASONALLY_ALTERNATING"
+      ],
+      "VARIABLE_CONTEXT": [
+        "CONTEXT_DEPENDENT",
+        "MIXED"
+      ]
+    },
+    "spatial_exposure2": {
+      "SAME_UNIT": [
+        "SAME_UNIT"
+      ],
+      "DISTRIBUTED": [
+        "BETWEEN_MODULES",
+        "AMONG_INDIVIDUALS",
+        "AMONG_POPULATIONS",
+        "ENVIRONMENTAL_MOSAIC",
+        "MIXED"
+      ]
+    }
+  },
+  "parameter_budget": {
+    "response_nonreference_logits": 3,
+    "raw_joint_model_columns_per_logit": 14,
+    "raw_joint_model_fixed_coefficients": 42,
+    "v2_main_columns_per_logit": 5,
+    "v2_main_fixed_coefficients": 15,
+    "module_x_timing_columns_per_logit": 7,
+    "module_x_timing_fixed_coefficients": 21,
+    "module_x_spatial_columns_per_logit": 6,
+    "module_x_spatial_fixed_coefficients": 18,
+    "conflict_family_not_counted_in_primary_fixed_effects": true
+  },
+  "required_entry_gates": [
+    "species_or_species_context_grain",
+    "conflict_positive_from_frozen_source_contract",
+    "resolved_adjudicated_architecture_mode",
+    "outcome_independent_adjudicated_module_substrate_receipt",
+    "outcome_independent_adjudicated_conflict_timing_geometry_receipt",
+    "outcome_independent_adjudicated_conflict_spatial_geometry_receipt",
+    "dependence_block_frozen"
+  ],
+  "estimability_gate": {
+    "minimum_independent_dependence_blocks_per_response_class": 2,
+    "all_primary_predictor_contrasts_must_have_at_least_two_observed_levels": true,
+    "primary_design_matrix_must_be_full_rank": true,
+    "unsupported_planned_probability_contrasts_are_reported_non_estimable": true,
+    "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
+  },
+  "primary_model": {
+    "family": "regularized_bayesian_multinomial_logit",
+    "formula": "architecture_class4 ~ module_opportunity2 + temporal_exposure3 + spatial_exposure2",
+    "reference_class": "SHARED",
+    "coefficient_prior": "Normal(0,0.75) on non-reference log-odds slopes",
+    "intercept_prior": "Normal(0,1.5)",
+    "prior_sensitivity": "repeat with Normal(0,1.5) slope priors",
+    "no_data_dependent_fallback": true,
+    "dependence": "one biological dependence block is not counted as independent replication; duplicated species/taxon concepts are clustered or collapsed according to the frozen dependence ledger"
+  },
+  "conflict_family_role": {
+    "primary_fixed_effect": false,
+    "reason": "Conflict family is strongly entangled with literature universe and would consume sparse degrees of freedom.",
+    "mandatory_sensitivities": [
+      "report architecture and predictor support by conflict_family",
+      "leave_one_sampling_universe_out where at least two universes remain informative",
+      "within_conflict_family predicted-probability contrasts where empirical support exists",
+      "do not interpret a pooled contrast as family-independent when support is family-segregated"
+    ]
+  },
+  "registered_interaction_extensions": [
+    {
+      "id": "I1_MODULE_X_TIMING",
+      "formula": "architecture_class4 ~ module_opportunity2 * temporal_exposure3 + spatial_exposure2",
+      "fixed_coefficients": 21,
+      "fit_rule": "fit only after the main model and only if every interaction cell needed for a reported contrast has empirical support; otherwise report non-estimable"
+    },
+    {
+      "id": "I2_MODULE_X_SPATIAL",
+      "formula": "architecture_class4 ~ module_opportunity2 * spatial_exposure2 + temporal_exposure3",
+      "fixed_coefficients": 18,
+      "fit_rule": "fit only after the main model and only if every interaction cell needed for a reported contrast has empirical support; otherwise report non-estimable"
+    }
+  ],
+  "planned_probability_contrasts": [
+    "P(STRUCTURAL_MODULE_DIVISION | MODULAR) - P(STRUCTURAL_MODULE_DIVISION | SINGLE)",
+    "P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)",
+    "P(MOSAIC | DISTRIBUTED) - P(MOSAIC | SAME_UNIT)",
+    "I1: module-opportunity structural contrast across temporal-exposure levels",
+    "I2: module-opportunity routing contrast across spatial-exposure levels"
+  ],
+  "secondary_models": [
+    "raw-category descriptive tables and support maps",
+    "regularized raw-category multinomial only as secondary sensitivity if support permits",
+    "binary structural_module_division model only as secondary estimand",
+    "full nominal architecture_mode detail as descriptive/regularized secondary analysis"
+  ],
+  "guardrails": [
+    "four-class response unchanged from V1",
+    "raw predictor values remain archived and auditable",
+    "contrast mapping frozen before U6 independent architecture coding",
+    "no predictor term is dropped because its coefficient is weak",
+    "no response class is collapsed because it is sparse",
+    "conflict family is handled by mandatory sensitivity rather than a post-hoc covariate choice"
+  ],
+  "claim_ceiling": "regularized_comparative_association_within_frozen_conflict_positive_literature_surfaces_not_causal_evolutionary_transition_probability"
+}
