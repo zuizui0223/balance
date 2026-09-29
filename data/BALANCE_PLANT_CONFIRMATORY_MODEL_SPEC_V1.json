@@ -1,6 +1,6 @@
 {
   "schema_version": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V1",
-  "status": "FROZEN_BEFORE_CONFIRMATORY_FIT",
+  "status": "SUPERSEDED_PRE_FIT_BY_V2_PARAMETER_BUDGET",
   "primary_response": {
     "name": "architecture_class4",
     "mapping": {
@@ -69,5 +69,7 @@
     "absence of one response class is reported as an estimability limitation rather than triggering post-hoc recoding",
     "interaction extensions are interpreted separately rather than selected by significance"
   ],
-  "claim_ceiling": "comparative_association_within_screened_conflict_positive_plant_literature_not_transition_probability_or_causal_identification"
+  "claim_ceiling": "comparative_association_within_screened_conflict_positive_plant_literature_not_transition_probability_or_causal_identification",
+  "superseded_by": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2",
+  "supersession_reason": "Raw predictor categories imply 42 fixed-effect coefficients before conflict-family adjustment; V2 freezes lower-dimensional predictor contrasts before U6 independent coding begins."
 }
