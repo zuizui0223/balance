@@ -33,7 +33,7 @@
     "architecture_adjudication_status": "ADJUDICATED",
     "predictor_receipt_status": "THREE_ADJUDICATED_OUTCOME_INDEPENDENT"
   },
-  "downstream_spec": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2",
-  "downstream_gate": "balance_domain.plant_model_v2.build_v2_estimability_report",
+  "downstream_spec": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3",
+  "downstream_gate": "balance_domain.plant_model_v3.build_v3_estimability_report",
   "claim_ceiling": "assembly_and_estimability_only_no_effect_until_registered_v2_fit"
 }
