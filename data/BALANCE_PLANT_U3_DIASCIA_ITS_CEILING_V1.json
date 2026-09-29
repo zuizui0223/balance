@@ -1,0 +1,43 @@
+{
+  "analysis": "balance_u3_diascia_public_its_proximity_audit_v1",
+  "status": "CASE_ITS_UNAVAILABLE",
+  "source_workflow_run_id": 36271294133,
+  "source_artifact_id": 10916175397,
+  "ncbi_genus_taxid": 255860,
+  "n_nucleotide_records_in_genus_inventory": 11,
+  "n_exact_species_with_selected_its": 2,
+  "high_value_raw_record_counts": {
+    "Diascia anastrepta": 0,
+    "Diascia barberae": 1,
+    "Diascia cordata": 0,
+    "Diascia integerrima": 0,
+    "Diascia lilacina": 0,
+    "Diascia megathura": 0,
+    "Diascia purpurea": 0,
+    "Diascia vigilis": 0
+  },
+  "selected_records": {
+    "Diascia capsularis": {
+      "accession": "AJ616319.1",
+      "description": "Diascia capsularis ITS1 (partial), 5.8S rRNA gene and ITS2 (partial)",
+      "length": 837
+    },
+    "Diascia rigescens": {
+      "accession": "DQ222397.1",
+      "description": "Diascia rigescens voucher AK 293615 internal transcribed spacer 1, 5.8S ribosomal RNA gene, and internal transcribed spacer 2, complete sequence; and 28S ribosomal RNA gene, partial sequence",
+      "length": 639
+    }
+  },
+  "missing_high_value_taxa": [
+    "Diascia anastrepta",
+    "Diascia megathura",
+    "Diascia purpurea",
+    "Diascia barberae",
+    "Diascia cordata",
+    "Diascia integerrima",
+    "Diascia vigilis",
+    "Diascia lilacina"
+  ],
+  "next_gate": "Public NCBI ITS cannot rank Diascia controls because the case has no public nucleotide record; use source-published topology or another public phylogenetic surface.",
+  "claim_ceiling": "public_NCBI_ITS_availability_ceiling_only_not_phylogenetic_ranking_not_control_adjudication"
+}
