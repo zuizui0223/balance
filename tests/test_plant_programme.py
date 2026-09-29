@@ -50,7 +50,7 @@ def test_programme_map_preserves_distinct_sampling_roles():
     ]
     assert contract["maximum_main_fixed_coefficients"] == 12
     assert contract["predictor_receipts_required"] is True
-    assert contract["data_dependent_fallback_allowed"] is False
+    assert contract["outcome_dependent_fallback_allowed"] is False
     assert contract["u3_u4_primary_denominator_allowed"] is False
     assert len(out["primary_model_blockers"]) == 6
     assert any("U6 independent double coding incomplete" in x for x in out["primary_model_blockers"])
