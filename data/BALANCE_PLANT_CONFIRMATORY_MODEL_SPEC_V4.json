@@ -139,9 +139,10 @@
     "minimum_independent_dependence_blocks_per_response_class": 2,
     "minimum_independent_dependence_blocks_per_primary_predictor_level": 2,
     "minimum_rows_per_primary_sampling_universe": 2,
-    "primary_slope_design_matrix_must_be_full_rank": true,
     "both_primary_sampling_universes_must_be_present": true,
-    "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
+    "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC",
+    "primary_common_slope_design_matrix_must_be_full_rank": true,
+    "primary_universe_stratified_design_matrix_must_be_full_rank": true
   },
   "claim_hierarchy": {
     "cross_universe_replicated": {
