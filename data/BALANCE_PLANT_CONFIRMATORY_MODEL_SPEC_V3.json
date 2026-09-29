@@ -1,6 +1,6 @@
 {
   "schema_version": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3",
-  "status": "FROZEN_PRE_OUTCOME_BEFORE_U6_INDEPENDENT_ARCHITECTURE_CODING",
+  "status": "SUPERSEDED_PRE_OUTCOME_BY_V4_UNIVERSE_STRATIFICATION",
   "supersedes": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2",
   "revision_reason": "Pre-outcome predictor-support audit across the 29 source-screened conflict-positive U2+U6 groups found spatial_exposure2 = SAME_UNIT 28 / DISTRIBUTED 1. Spatial exposure is therefore retained as a coded secondary axis but removed from the primary fixed-effect model before architecture outcomes are independently coded.",
   "primary_response": {
@@ -150,5 +150,7 @@
     "no response class is collapsed because it is sparse",
     "no spatial coefficient is interpreted as general when DISTRIBUTED support remains one dependence block"
   ],
-  "claim_ceiling": "regularized_comparative_association_for_module_and_temporal_routing_with_spatial_axis_secondary_not_causal_evolutionary_transition_probability"
+  "claim_ceiling": "regularized_comparative_association_for_module_and_temporal_routing_with_spatial_axis_secondary_not_causal_evolutionary_transition_probability",
+  "superseded_by": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
+  "supersession_reason": "Pre-outcome cross-universe audit showed module MODULAR and VARIABLE_CONTEXT timing are U2-only while only SIMULTANEOUS-vs-ORDERED timing is replicated in U2 and U6. V4 fixes the routing fit to conflict-focused U2+U6 with universe-stratified intercepts and moves U1 to external specificity validation."
 }
