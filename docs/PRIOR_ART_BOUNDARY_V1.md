@@ -79,7 +79,7 @@ Delta_W = W_D* - W_S*
 BALANCE identified when
 L > 0 and Delta_W < 0
 
-BITA decomposition when available
+SLK architecture-value decomposition when available
 Delta_W ?= sL-K.
 ```
 
@@ -109,7 +109,7 @@ bounded matched-context receipts on one fitness scale.
 ### Potentially substantive
 
 1. **Direct middle-world identification before mechanism decomposition.** Chapter 2 can be tested from `L>0` plus a matched direct `W_D*-W_S*<0` without first estimating `s` or `K`.
-2. **Two-sided empirical localization.** `xi` and `d_B` locate an observed context relative to independently registered SCH-facing and BITA-facing boundaries.
+2. **Two-sided empirical localization.** `xi` and `d_B` locate an observed context relative to independently registered SCH-facing and SLK-facing architecture-value boundaries.
 3. **Cross-worldline reconciliation.** `delta_parallel = Delta_W-(sL-K)` forces the direct architecture comparison and the decomposition to agree on context, scale, and cost definition rather than silently treating them as interchangeable.
 4. **Critical-concordance programme.** Direct and decomposed environmental zero crossings are independently estimated and classified as common, separated, multiple, or unresolved.
 5. **Claim-level separation.** Functional-state middle-world evidence is not promoted to structural-architecture evidence without a structural-y and architecture-cost gate.

@@ -8,7 +8,7 @@ The previous metric-depth theorem gives the local shortest perturbation from one
 
 ## Setup
 
-Let `t` index a connected path through a BALANCE domain. At each context define the metric-corrected local distances to the SCH-facing and BITA-facing boundaries:
+Let `t` index a connected path through a BALANCE domain. At each context define the metric-corrected local distances to the SCH-facing and SLK-facing architecture-value boundaries:
 
 \[
 d_S(t)
@@ -48,7 +48,7 @@ There is a unique context `t_Q` such that
 \boxed{d_S(t_Q)=d_D(t_Q).}
 \]
 
-Before `t_Q`, the nearest boundary is the SCH-facing boundary and `d_Q=d_S`, which increases. After `t_Q`, the nearest boundary is the BITA-facing boundary and `d_Q=d_D`, which decreases.
+Before `t_Q`, the nearest boundary is the SCH-facing boundary and `d_Q=d_S`, which increases. After `t_Q`, the nearest boundary is the SLK-facing architecture-value boundary and `d_Q=d_D`, which decreases.
 
 Therefore
 
