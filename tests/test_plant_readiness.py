@@ -55,6 +55,14 @@ def test_current_plant_v4_readiness_separates_primary_and_external_human_gates()
         "U2": {"n_groups": 22, "n_positive": 8, "n_unresolved": 0},
         "U6": {"n_groups": 21, "architecture_coding_complete": False},
     }
+    assert out["preoutcome_design_status"] == {
+        "v4_main_predictor_design_viable": True,
+        "v4_common_slope_design_full_rank": True,
+        "v4_universe_stratified_design_full_rank": True,
+        "temporal_marginal_replication_ready": True,
+        "temporal_common_support_ready": False,
+        "temporal_common_support_module_strata": [],
+    }
     assert out["primary_model_assembly_ready"] is False
     assert out["v4_estimability_ready_to_evaluate"] is False
 
@@ -74,11 +82,6 @@ def test_completed_double_coding_cannot_relabel_frozen_coder_ids(tmp_path):
             row["module_substrate"] = "UNRESOLVED"
             row["conflict_timing_geometry"] = "UNRESOLVED"
             row["conflict_spatial_geometry"] = "UNRESOLVED"
-            row["self_compatibility"] = "UNRESOLVED"
-            row["autonomous_selfing"] = "UNRESOLVED"
-            row["pollinator_dependence"] = "UNRESOLVED"
-            row["life_history"] = "UNRESOLVED"
-            row["coding_confidence"] = "LOW"
             row["notes"] = "synthetic complete coding"
             rows.append(row)
 
