@@ -1,0 +1,42 @@
+{
+  "analysis": "balance_plant_u3_representative_resolution_v2",
+  "review_doi": "10.1111/j.1469-8137.2010.03430.x",
+  "resolutions": {
+    "Bixaceae": {
+      "representative": "Amoreuxia wrightii",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY",
+      "evidence": [
+        "Flora of North America / Hodgson Bixaceae treatment: Amoreuxia has two dimorphic fertile stamen sets",
+        "A. wrightii species description: distal filaments 5-10 mm with yellow anthers; proximal filaments 11-17 mm with usually dark-red anthers",
+        "2010 review explicitly treats former Cochlospermaceae within Bixaceae under APG III"
+      ],
+      "table_s1_identity_claim": false
+    },
+    "Scrophulariaceae": {
+      "representative": "Verbascum phoeniceum",
+      "status": "SOURCE_RESOLVED_INDEPENDENTLY_POST_REVIEW",
+      "evidence": [
+        "Lunau et al. 2017 explicitly figures Verbascum phoeniceum (Scrophulariaceae) with within-flower heteranthery",
+        "Current Kew taxonomy retains Verbascum phoeniceum in Scrophulariaceae"
+      ],
+      "table_s1_identity_claim": false,
+      "timing_guard": "Evidence postdates the 2010 review and is used only as an independent family representative, not as reconstruction of Table S1."
+    },
+    "Malvaceae": {
+      "representative": null,
+      "status": "TABLE_S1_REPRESENTATIVE_PENDING",
+      "narrowed_lineage": "Mollia",
+      "evidence": [
+        "Darwin 1877 reports several Mollia species with long outer and short inner stamen cohorts carrying differently coloured pollen and explicitly examined M. lepidota and M. speciosa",
+        "Müller 1883 independently summarizes differently coloured anthers/pollen in several Mollia species",
+        "Current Kew/Smithsonian taxonomy places Mollia in Malvaceae"
+      ],
+      "reason_open": "The 2010 review states that Malvaceae had only one reported heterantherous species, while the historical evidence covers multiple Mollia species; exact single-species identity is not uniquely identified."
+    }
+  },
+  "resolved_family_representatives": 15,
+  "pending_exact_representative_families": [
+    "Malvaceae"
+  ],
+  "claim_ceiling": "representative_identity_provenance_only_not_table_s1_transcription_not_prevalence_not_historical_causation"
+}

@@ -1,0 +1,23 @@
+{
+  "analysis": "balance_plant_u3_senna_bicapsularis_function_v1",
+  "primary_source": {
+    "citation": "Luo, Gu & Zhang 2009 Journal of Systematics and Evolution 47:43-56",
+    "doi": "10.1111/j.1759-6831.2009.00002.x"
+  },
+  "direct_observations": [
+    "female Xylocopa preferentially buzzed short feeding stamens",
+    "vibration caused pollen from long stamens to be ejected onto the dorsal abdomen",
+    "the stigma contacted the same dorsal pollen-bearing region of the bee"
+  ],
+  "supporting_source": {
+    "citation": "Huang & Gong 2022 Plant Biology 24:998-1009",
+    "doi": "10.1111/plb.13457",
+    "result": "short-stamen pollen is enriched in fatty-acid and protein profiles associated with selective bee foraging"
+  },
+  "adjudication": {
+    "pollen_fate_conflict_status": "POSITIVE",
+    "evidence_class": "DIRECT_BEE_BEHAVIOR_AND_DIFFERENTIAL_POLLEN_ROUTING",
+    "architecture_mode": "WITHIN_FLOWER_DIVISION_OF_LABOUR"
+  },
+  "claim_ceiling": "direct_observed_reward_collection_vs_transfer_routing_for_Senna_bicapsularis_not_control_side_evidence_not_historical_causation"
+}

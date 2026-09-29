@@ -1,0 +1,41 @@
+{
+  "analysis": "balance_plant_u3_senna_alata_spectabilis_function_v1",
+  "source": {
+    "citation": "Amorim et al. 2017 Plant Biology 19:951-962",
+    "doi": "10.1111/plb.12607",
+    "title": "Ricochet pollination in Senna (Fabaceae) – petals deflect pollen jets and promote division of labour among flower structures"
+  },
+  "focal_taxa": [
+    "Senna alata",
+    "Senna spectabilis"
+  ],
+  "direct_methods": [
+    "floral organ arrangement and morphology",
+    "artificial sonication",
+    "field bee-flower interaction observations",
+    "species-level division-of-labour experiment",
+    "petal-removal experiment"
+  ],
+  "direct_result": "Pollen is differentially routed between bee-accessible reward positions and transfer-favoring positions; deflector-petal ricochet contributes to pollen reaching the bee back and promotes division of labour.",
+  "morphology_guard": {
+    "taxon": "Senna spectabilis",
+    "heteranthery_absence_basis": "seven fertile stamens equal in size and shape; three sterile staminodes",
+    "sources": [
+      "World Flora Online / Flora Zambesiaca",
+      "Muraleekrishnan et al. 2024 Journal of Threatened Taxa"
+    ],
+    "interpretation": "Functional within-flower division does not invalidate the frozen negative heteranthery morphology state."
+  },
+  "extraction_updates": {
+    "Senna alata": {
+      "conflict": "POSITIVE",
+      "architecture": "WITHIN_FLOWER_DIVISION_OF_LABOUR"
+    },
+    "Senna spectabilis": {
+      "conflict": "POSITIVE",
+      "architecture": "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+      "heteranthery_morphology": "ABSENT"
+    }
+  },
+  "claim_ceiling": "direct_functional_pollen_routing_and_division_of_labour_for_these_two_taxa_not_historical_causation_not_heteranthery_prevalence"
+}
