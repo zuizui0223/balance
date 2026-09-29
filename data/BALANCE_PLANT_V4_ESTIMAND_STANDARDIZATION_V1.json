@@ -37,5 +37,11 @@
     "do not compute cross-universe H_T outside module strata that pass the frozen common-support gate",
     "do not choose a standardization surface after inspecting architecture outcomes or fitted effect signs"
   ],
-  "claim_ceiling": "prospective_postfit_estimand_definition_only_no_observed_effect"
+  "claim_ceiling": "prospective_postfit_estimand_definition_only_no_observed_effect",
+  "implementation": {
+    "standardization_builder": "balance_domain.plant_v4_estimands.build_v4_estimand_standardization",
+    "primary_postfit_summary": "balance_domain.plant_v4_estimands.summarize_v4_primary_postfit",
+    "temporal_generality_postfit_summary": "balance_domain.plant_v4_estimands.summarize_v4_temporal_generality_postfit",
+    "posterior_contrast_summary": "balance_domain.plant_v4_estimands.posterior_contrast_summary"
+  }
 }
