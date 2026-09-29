@@ -29,11 +29,11 @@ def _row(row_id, universe, group, block, mode, module, timing, spatial, family):
 def _ready_rows():
     return [
         _row("r1", "U2_BARRETT_2002", "s1", "b1", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS", "SAME_UNIT", "SEXUAL_INTERFERENCE"),
-        _row("r2", "U6_POLLEN_THEFT_HARGREAVES_2009", "s2", "b2", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS", "SAME_UNIT", "POLLEN_REWARD_GAMETE"),
+        _row("r2", "U6_POLLEN_THEFT_HARGREAVES_2009", "s2", "b2", "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "MIXED", "SAME_UNIT", "POLLEN_REWARD_GAMETE"),
         _row("r3", "U2_BARRETT_2002", "n1", "b3", "TEMPORAL_SEPARATION", "SERIAL_WITHIN_FLOWER", "SEQUENTIAL_WITHIN_UNIT", "SAME_UNIT", "SEXUAL_INTERFERENCE"),
         _row("r4", "U6_POLLEN_THEFT_HARGREAVES_2009", "n2", "b4", "SPATIAL_SEPARATION", "REPEATED_FLOWERS", "SEASONALLY_ALTERNATING", "SAME_UNIT", "POLLEN_REWARD_GAMETE"),
         _row("r5", "U6_POLLEN_THEFT_HARGREAVES_2009", "d1", "b5", "WITHIN_FLOWER_DIVISION_OF_LABOUR", "SERIAL_WITHIN_FLOWER", "SIMULTANEOUS", "BETWEEN_MODULES", "POLLEN_REWARD_GAMETE"),
-        _row("r6", "U6_POLLEN_THEFT_HARGREAVES_2009", "d2", "b6", "AMONG_FLOWER_MODULE_DIVISION", "REPEATED_FLOWERS", "SIMULTANEOUS", "AMONG_INDIVIDUALS", "POLLEN_REWARD_GAMETE"),
+        _row("r6", "U6_POLLEN_THEFT_HARGREAVES_2009", "d2", "b6", "AMONG_FLOWER_MODULE_DIVISION", "REPEATED_FLOWERS", "CONTEXT_DEPENDENT", "AMONG_INDIVIDUALS", "POLLEN_REWARD_GAMETE"),
         _row("r7", "U1_HAAS_LORTIE_2020", "m1", "b7", "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT", "AMONG_POPULATIONS", "POLLINATOR_ANTAGONIST"),
         _row("r8", "U6_POLLEN_THEFT_HARGREAVES_2009", "m2", "b8", "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SEASONALLY_ALTERNATING", "ENVIRONMENTAL_MOSAIC", "POLLEN_REWARD_GAMETE"),
     ]
@@ -58,7 +58,7 @@ def test_primary_model_assembly_rejects_predictor_without_independent_receipts()
         validate_model_assembly_rows(rows)
 
 
-def test_primary_model_assembly_runs_v2_estimability_after_licensing():
+def test_primary_model_assembly_runs_v3_estimability_after_licensing():
     out = build_model_assembly_readout(_ready_rows())
     assert out["n_rows"] == 8
     assert out["architecture_class_counts"] == {
@@ -67,7 +67,7 @@ def test_primary_model_assembly_runs_v2_estimability_after_licensing():
         "SHARED": 2,
         "STRUCTURAL_MODULE_DIVISION": 2,
     }
-    assert out["v2_estimability"]["ready_for_primary_fit"] is True
+    assert out["v3_estimability"]["ready_for_primary_fit"] is True
     assert out["ready_for_primary_fit"] is True
     assert out["u3_u4_primary_denominator_allowed"] is False
 
@@ -78,5 +78,5 @@ def test_duplicate_dependence_block_can_reduce_class_support_without_row_deletio
     out = build_model_assembly_readout(rows)
     assert out["n_rows"] == 8
     assert out["n_dependence_blocks"] == 7
-    assert out["v2_estimability"]["response_class_dependence_block_counts"]["SHARED"] == 1
+    assert out["v3_estimability"]["response_class_dependence_block_counts"]["SHARED"] == 1
     assert out["ready_for_primary_fit"] is False
