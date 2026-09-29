@@ -65,12 +65,21 @@ Before confirmatory freeze:
 ```text
 raw agreement < 0.80
 on any core field
--> mandatory codebook repair + new independent recoding round
+-> REPAIR_REQUIRED
+-> no source adjudication yet
+-> versioned codebook repair
+-> new independent recoding round on the SAME frozen reliability groups
+-> recompute agreement
 ```
 
 The 0.80 value is a workflow trigger, not a claim that 0.80 has universal statistical meaning.
 
-No disagreement is resolved merely by letting one coder overrule the other.
+The biological sample is **not** replaced after seeing disagreement. Difficult groups remain
+in the frozen reliability frame; otherwise the repair process could select easier systems
+and inflate apparent reproducibility.
+
+No disagreement is resolved merely by letting one coder overrule the other. Source
+adjudication opens only after the repaired coding round clears the reliability gate.
 
 ## Adjudication after independent coding
 
@@ -81,7 +90,8 @@ After metrics are frozen:
 3. record an adjudicated value;
 4. record why the original wording permitted disagreement;
 5. update the codebook only by a versioned change;
-6. if codebook wording changes materially, independently recode a fresh sample.
+6. if codebook wording changes materially, independently recode the same frozen reliability
+   frame under the new codebook version and recompute agreement before adjudication.
 
 The final analysis ledger uses adjudicated values but preserves the pre-adjudication coder receipts.
 
@@ -138,14 +148,20 @@ conflict_spatial_geometry
 The receipt records source, evidence type, and whether the predictor value is logically
 independent of the focal architecture outcome.
 
-The frozen empty receipt frames are:
+The frozen predictor-receipt frames are:
 
 - `data/BALANCE_PLANT_U1_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv`
+  — 20 reliability groups x 3 predictors = 60 slots; still an empty outcome-blind frame
+  until U1 conflict-positive adjudication exists;
 - `data/BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv`
+  — 60 slots total; the eight source-screen conflict-positive groups already have all three
+  predictor values source-screened outcome-independently, but none is independently
+  adjudicated;
+- `data/BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv`
+  — 21 conflict-first groups x 3 predictors = 63 slots; all 63 are source-screened
+  outcome-independently, but none is independently adjudicated.
 
-Each contains exactly 20 dependency groups x 3 predictors = 60 slots, all initialized as
-`UNRESOLVED / UNCERTAIN / SCREENED`. They contain no architecture or conflict-status
-columns.
+These receipt frames contain no focal architecture outcome as a licensing shortcut.
 
 A predictor enters the model only after **both Gate A and Gate B** are closed.
 
