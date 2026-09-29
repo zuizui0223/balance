@@ -105,3 +105,16 @@ def test_packet_receipts_preserve_frozen_forbidden_input_contract(tmp_path):
         assert receipt["coder_id"] == coder
         assert receipt["forbidden_inputs"] == expected
         assert receipt["claim_ceiling"] == "independent_coder_handoff_only_no_biological_result"
+
+
+
+def test_coder_packet_zip_is_byte_deterministic(tmp_path):
+    first_dir = tmp_path / "first"
+    second_dir = tmp_path / "second"
+    first = builder.build_all(first_dir)
+    second = builder.build_all(second_dir)
+
+    for coder in ("CODER_A", "CODER_B"):
+        first_zip = first[coder][0].read_bytes()
+        second_zip = second[coder][0].read_bytes()
+        assert first_zip == second_zip
