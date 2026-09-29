@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .plant_macro import load_plant_macro_ledger
 from .plant_u1_full_screen import build_u1_full47_conflict_screen
+from .plant_u2_screen import build_u2_conflict_screen_readout
 from .plant_u3_cases import build_u3_case_readout
 from .plant_u4 import build_u4_readout
 
@@ -37,6 +38,7 @@ def build_plant_programme_map(
     u4_cases_path: Path,
     u1_blind_screen_path: Path | None = None,
     u1_production_screen_path: Path | None = None,
+    u2_conflict_screen_path: Path | None = None,
 ) -> dict:
     u1_provisional = _screen_readout(u1_screening_path, lane="U1")
     if (u1_blind_screen_path is None) != (u1_production_screen_path is None):
@@ -51,7 +53,12 @@ def build_plant_programme_map(
         if u1_blind_screen_path is not None
         else None
     )
-    u2 = _screen_readout(u2_screening_path, lane="U2")
+    u2_provisional = _screen_readout(u2_screening_path, lane="U2")
+    u2_strict = (
+        build_u2_conflict_screen_readout(u2_conflict_screen_path)
+        if u2_conflict_screen_path is not None
+        else None
+    )
     u3 = build_u3_case_readout(u3_cases_path, u3_universe_path)
     u4 = build_u4_readout(u4_cases_path)
 
@@ -90,7 +97,21 @@ def build_plant_programme_map(
                 "not_licensed": "prevalence comparison with U2-U6",
             },
             "U2": {
-                **u2,
+                "lane": "U2",
+                "n_records": (
+                    u2_strict["n_dependency_groups"] if u2_strict is not None
+                    else u2_provisional["n_records"]
+                ),
+                "n_dependency_groups": (
+                    u2_strict["n_dependency_groups"] if u2_strict is not None
+                    else u2_provisional["n_dependency_groups"]
+                ),
+                "conflict_status_counts": (
+                    u2_strict["conflict_status_counts"] if u2_strict is not None
+                    else u2_provisional["conflict_status_counts"]
+                ),
+                "strict_conflict_source_screen_complete": u2_strict is not None,
+                "provisional_macro_readout": u2_provisional,
                 "sampling_role": "MECHANISM_TARGETED_SEXUAL_INTERFERENCE",
                 "licensed_use": (
                     "source-defined mechanism screen plus independent-coder reliability sample"
