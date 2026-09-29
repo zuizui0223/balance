@@ -326,14 +326,17 @@ Primary blockers:
 3. **U6 independent double coding** is open but still unstarted across the frozen
    21 dependency groups.
 4. Every admitted row still requires three **adjudicated, outcome-independent** predictor
-   receipts. U2 currently has source-screened coverage but not independent adjudication;
-   U6 has 63 frozen empty receipt slots.
+   receipts. The source-screen stage is already complete for all eight U2 conflict-positive
+   groups and all 21 frozen U6 groups (63/63 U6 receipt slots resolved as
+   outcome-independent), but neither lane has independent predictor adjudication yet.
 5. The final U1/U2/U6 assembly must close cross-universe dependence and pass the
    allowlisted model-assembly contract. U3/U4 rows are rejected from this denominator.
 6. Only then can model-v3 estimability be evaluated: each of the four response classes
-   requires at least two independent dependence blocks, the three planned predictor
-   contrasts need empirical support, and the low-dimensional design matrix must be full
-   rank.
+   requires at least two independent dependence blocks; both levels of
+   `module_opportunity2` and all three levels of `temporal_exposure3` require at least
+   two independent blocks; and the 12-coefficient primary design matrix must be full rank.
+   `spatial_exposure2` is now secondary because the pre-outcome source-screen support is
+   28 SAME_UNIT versus 1 DISTRIBUTED block.
 
 Current source-screen diagnostics do **not** pre-decide the final class support. U1/U2
 currently lack a source-screened `STRUCTURAL_MODULE_DIVISION` row, while U6 architecture
