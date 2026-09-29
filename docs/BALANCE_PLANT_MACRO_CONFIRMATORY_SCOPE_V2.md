@@ -1,6 +1,6 @@
 # BALANCE plant macro confirmatory scope v2
 
-> **Superseded for model specification.** Biological scope remains current, but the model/fallback section is replaced by `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`. The frozen primary response remains the four-class architecture-routing estimand. V3 is the current pre-outcome model: V2 first reduced the raw-category parameter budget, then V3 used the frozen predictor-support audit to keep module opportunity and temporal exposure as primary axes while demoting the one-block distributed spatial contrast to secondary analysis.
+> **Superseded for model specification.** Biological scope remains current, but the model/fallback section is replaced by `docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V4.md`. The frozen primary response remains the four-class architecture-routing estimand. V4 is the current pre-outcome model: V2 reduced the raw-category parameter budget, V4 demoted the one-block distributed spatial contrast, and the cross-universe support audit then showed that only the temporal SIMULTANEOUS-versus-ORDERED contrast has both levels represented in U2 and U6. V4 therefore fits the conflict-focused U2+U6 routing surface with universe-specific multinomial intercepts; U1 remains external specificity validation.
 
 ## Decision update
 
@@ -201,7 +201,7 @@ When conflict is positive but module substrate is single/continuous and demands 
 ## Statistical plan
 
 The current primary parameterization is frozen in
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V4.md`.
 
 Raw categories remain the coding surface, but the primary fit uses preregistered
 low-dimensional contrasts:
