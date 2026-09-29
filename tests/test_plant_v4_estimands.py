@@ -1,4 +1,6 @@
+import json
 import math
+from pathlib import Path
 
 from balance_domain.plant_v4_estimands import (
     build_v4_estimand_standardization,
@@ -162,3 +164,34 @@ def test_generality_contrast_and_interaction_tail_use_registered_parameters():
     assert all(value > 0 for value in u2)
     assert all(value < 0 for value in u6)
     assert gamma_negative_margin_probability(draws) == 1.0
+
+
+
+ROOT = Path(__file__).resolve().parents[1]
+STANDARDIZATION = ROOT / "data" / "BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json"
+HYPOTHESES = ROOT / "data" / "BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json"
+MODEL_SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4.json"
+DECISION_RULES = ROOT / "data" / "BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json"
+
+
+def test_v4_registries_share_one_frozen_estimand_standardization_contract():
+    target = "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json"
+    registry = json.loads(STANDARDIZATION.read_text(encoding="utf-8"))
+    assert registry["status"] == "FROZEN_PRE_OUTCOME_CLARIFICATION_OF_EXISTING_V4_ESTIMANDS"
+    assert registry["principle"] == (
+        "standardize over supported predictor cells rather than weighting by the "
+        "number of rows contributed by a sampling universe"
+    )
+    assert registry["H_T_primary"]["weighting"] == (
+        "equal weight per supported universe x module cell"
+    )
+    assert registry["H_M_U2"]["weighting"] == (
+        "equal weight per supported U2 temporal level"
+    )
+    assert registry["H_T_cross_universe"]["weighting"] == (
+        "equal weight per retained common-support module stratum within each universe"
+    )
+
+    for path in (HYPOTHESES, MODEL_SPEC, DECISION_RULES):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        assert data["estimand_standardization_registry"] == target
