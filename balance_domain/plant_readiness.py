@@ -110,8 +110,7 @@ def build_plant_v3_readiness(
         "u6_cross_universe_dependence": len(u6_dependence) == 21,
     }
 
-    human_open = {
-        "u1_independent_double_coding": not u1_coding_started,
+    primary_human_open = {
         "u2_independent_double_coding": not u2_coding_started,
         "u6_independent_double_coding": not u6_readiness["coding_complete"],
         "u6_post_coding_adjudication": not u6_readiness["adjudication_complete"],
@@ -124,21 +123,25 @@ def build_plant_v3_readiness(
             ] < 21
         ),
     }
+    external_validation_open = {
+        "u1_independent_double_coding": not u1_coding_started,
+    }
 
-    blockers = [name for name, is_open in human_open.items() if is_open]
+    blockers = [name for name, is_open in primary_human_open.items() if is_open]
 
     return {
         "analysis": "balance_plant_v3_programme_readiness",
-        "model_specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3",
+        "model_specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
         "machine_complete": machine_complete,
         "all_machine_preparation_complete": all(machine_complete.values()),
-        "human_open_gates": human_open,
+        "primary_human_open_gates": primary_human_open,
+        "external_validation_open_gates": external_validation_open,
         "open_gate_names": blockers,
         "primary_model_assembly_ready": False,
         "v3_estimability_ready_to_evaluate": False,
         "reason": (
-            "independent coding/adjudication gates remain open; model assembly and "
-            "estimability must wait for adjudicated outcomes and predictor receipts"
+            "U2/U6 independent coding/adjudication gates remain open; V4 model assembly "
+            "and estimability must wait for adjudicated outcomes and predictor receipts"
         ),
         "source_screen_summary": {
             "U1": {
