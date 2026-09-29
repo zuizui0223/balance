@@ -194,7 +194,13 @@ temporal VARIABLE_CONTEXT
 
 common-slope design matrix
   full rank
+
+full U2/U6-intercept + common-slope design matrix
+  full rank
 ```
+
+This second rank check prevents a predictor that is perfectly determined by sampling
+universe from masquerading as an estimable common biological slope.
 
 Failure action:
 
