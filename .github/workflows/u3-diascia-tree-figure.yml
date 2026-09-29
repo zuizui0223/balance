@@ -1,0 +1,43 @@
+name: U3 Diascia tree figure audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/macro-persistent-compromise
+    paths:
+      - "balance_domain/diascia_tree_figure_recovery.py"
+      - "tests/test_diascia_tree_figure_recovery.py"
+      - ".github/workflows/u3-diascia-tree-figure.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  recover-figure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image dependency
+        run: python -m pip install pillow
+
+      - name: Recover and flatten published tree figure
+        run: |
+          mkdir -p /tmp/diascia-tree/files
+          python -m balance_domain.diascia_tree_figure_recovery \
+            --output /tmp/diascia-tree/receipt.json \
+            --workdir /tmp/diascia-tree/files
+          cat /tmp/diascia-tree/receipt.json
+
+      - name: Upload figure audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: u3-diascia-tree-figure
+          path: /tmp/diascia-tree
+          if-no-files-found: error
