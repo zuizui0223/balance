@@ -88,13 +88,15 @@ def _block_counts_by_level(
     return {level: len(blocks.get(level, set())) for level in levels}
 
 
-def _slope_design_matrix(rows: list[dict[str, str]]) -> tuple[list[str], list[list[int]]]:
-    columns = [
+def _design_matrices(
+    rows: list[dict[str, str]],
+) -> tuple[list[str], list[list[int]], list[str], list[list[int]]]:
+    slope_columns = [
         "module_MODULAR",
         "temporal_ORDERED_OR_ALTERNATING",
         "temporal_VARIABLE_CONTEXT",
     ]
-    matrix = [
+    slope_matrix = [
         [
             int(row["module_opportunity2"] == "MODULAR"),
             int(row["temporal_exposure3"] == "ORDERED_OR_ALTERNATING"),
@@ -102,7 +104,20 @@ def _slope_design_matrix(rows: list[dict[str, str]]) -> tuple[list[str], list[li
         ]
         for row in rows
     ]
-    return columns, matrix
+    full_columns = [
+        "intercept_U2",
+        "intercept_U6",
+        *slope_columns,
+    ]
+    full_matrix = [
+        [
+            int(row["universe_id"] == "U2_BARRETT_2002"),
+            int(row["universe_id"] == "U6_POLLEN_THEFT_HARGREAVES_2009"),
+            *slopes,
+        ]
+        for row, slopes in zip(rows, slope_matrix)
+    ]
+    return slope_columns, slope_matrix, full_columns, full_matrix
 
 
 def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
@@ -135,9 +150,11 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
         resolved, "spatial_exposure2", SPATIAL_LEVELS
     )
 
-    columns, matrix = _slope_design_matrix(resolved)
-    rank = _matrix_rank(matrix)
-    full_rank = rank == len(columns)
+    slope_columns, slope_matrix, full_columns, full_matrix = _design_matrices(resolved)
+    slope_rank = _matrix_rank(slope_matrix)
+    slope_full_rank = slope_rank == len(slope_columns)
+    full_rank = _matrix_rank(full_matrix)
+    full_design_full_rank = full_rank == len(full_columns)
 
     replicated_temporal_counts: dict[str, dict[str, int]] = {}
     for universe in PRIMARY_UNIVERSES:
@@ -201,8 +218,10 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
             + ",".join(sparse_temporal)
         )
 
-    if not full_rank:
+    if not slope_full_rank:
         blockers.append("primary_common_slope_design_matrix_rank_deficient")
+    if not full_design_full_rank:
+        blockers.append("primary_universe_stratified_design_matrix_rank_deficient")
 
     spatial_secondary_estimable = all(
         count >= MIN_BLOCKS_PER_PRIMARY_PREDICTOR_LEVEL
@@ -219,10 +238,14 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
         "module_level_dependence_block_counts": module_block_counts,
         "temporal_level_dependence_block_counts": temporal_block_counts,
         "spatial_secondary_dependence_block_counts": spatial_block_counts,
-        "slope_design_columns": columns,
-        "slope_design_rank": rank,
-        "slope_design_column_count": len(columns),
-        "slope_design_full_rank": full_rank,
+        "slope_design_columns": slope_columns,
+        "slope_design_rank": slope_rank,
+        "slope_design_column_count": len(slope_columns),
+        "slope_design_full_rank": slope_full_rank,
+        "full_design_columns": full_columns,
+        "full_design_rank": full_rank,
+        "full_design_column_count": len(full_columns),
+        "full_design_full_rank": full_design_full_rank,
         "temporal_cross_universe_support": replicated_temporal_counts,
         "temporal_cross_universe_generality_ready": temporal_generality_ready,
         "spatial_secondary_estimable": spatial_secondary_estimable,
