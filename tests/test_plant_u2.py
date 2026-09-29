@@ -211,3 +211,83 @@ def test_u2_completed_coding_groups_must_match_frozen_sample():
 
     with pytest.raises(ValueError, match="exactly match the frozen reliability sample"):
         load_u2_adjudication(ADJUDICATION, sample, coding)
+
+
+
+def _complete_u2_coding_for_adjudication_provenance(*, disagree_first_architecture=False):
+    coding = []
+    for i, row in enumerate(load_u2_double_code_sample(SAMPLE)):
+        group = row["dependency_group"]
+        for coder in ("CODER_A", "CODER_B"):
+            architecture = "SHARED_INTEGRATED"
+            if disagree_first_architecture and i == 0 and coder == "CODER_B":
+                architecture = "TEMPORAL_SEPARATION"
+            coding.append({
+                "cluster_id": group,
+                "coder_id": coder,
+                "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+                "architecture_mode": architecture,
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "notes": "synthetic adjudication provenance",
+            })
+    return coding
+
+
+def _write_u2_adjudication(tmp_path, first_row_updates):
+    with ADJUDICATION.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    rows[0].update(first_row_updates)
+    path = tmp_path / "u2_adjudication.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys(), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+    return path
+
+
+def test_u2_adjudication_cannot_override_coder_consensus(tmp_path):
+    coding = _complete_u2_coding_for_adjudication_provenance()
+    path = _write_u2_adjudication(
+        tmp_path,
+        {
+            "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+            "architecture_mode": "TEMPORAL_SEPARATION",
+            "module_substrate": "SINGLE_OR_CONTINUOUS",
+            "conflict_timing_geometry": "SIMULTANEOUS",
+            "conflict_spatial_geometry": "SAME_UNIT",
+            "adjudication_status": "ADJUDICATED",
+            "adjudication_basis": "CODER_CONSENSUS",
+            "notes": "synthetic consensus override attempt",
+        },
+    )
+    with pytest.raises(ValueError, match="cannot override coder consensus for architecture_mode"):
+        load_u2_adjudication(path, load_u2_double_code_sample(SAMPLE), coding)
+
+
+def test_u2_disagreement_can_be_resolved_only_with_source_review_basis(tmp_path):
+    coding = _complete_u2_coding_for_adjudication_provenance(
+        disagree_first_architecture=True
+    )
+    path = _write_u2_adjudication(
+        tmp_path,
+        {
+            "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+            "architecture_mode": "SHARED_INTEGRATED",
+            "module_substrate": "SINGLE_OR_CONTINUOUS",
+            "conflict_timing_geometry": "SIMULTANEOUS",
+            "conflict_spatial_geometry": "SAME_UNIT",
+            "adjudication_status": "ADJUDICATED",
+            "adjudication_basis": "SOURCE_REVIEW_OF_DISAGREEMENTS",
+            "notes": "synthetic source review of one architecture disagreement",
+        },
+    )
+    rows = load_u2_adjudication(
+        path,
+        load_u2_double_code_sample(SAMPLE),
+        coding,
+    )
+    first = next(row for row in rows if row["adjudication_status"] == "ADJUDICATED")
+    assert first["architecture_mode"] == "SHARED_INTEGRATED"
+    assert first["adjudication_basis"] == "SOURCE_REVIEW_OF_DISAGREEMENTS"
