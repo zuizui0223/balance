@@ -55,13 +55,14 @@ def merge_lane(
     out_dir.mkdir(parents=True, exist_ok=True)
     merged_path = out_dir / f"BALANCE_PLANT_{lane}_DOUBLE_CODE_RETURN_MERGED_V1.csv"
     receipt_path = out_dir / f"BALANCE_PLANT_{lane}_DOUBLE_CODE_RETURN_RECEIPT_V1.json"
-    write_merged_coder_returns(merged_path, rows)
+    write_merged_coder_returns(merged_path, rows, lane=lane)
+    group_field = "dependency_group" if lane == "U6" else "cluster_id"
 
     receipt = {
         "schema_version": "BALANCE_PLANT_CODER_RETURN_RECEIPT_V1",
         "lane": lane,
         "n_rows": len(rows),
-        "n_dependency_groups": len({row["cluster_id"] for row in rows}),
+        "n_dependency_groups": len({row[group_field] for row in rows}),
         "coder_ids": sorted({row["coder_id"] for row in rows}),
         "merged_ledger": str(merged_path),
         "next_step": "agreement diagnostics before any source adjudication",
