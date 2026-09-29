@@ -477,3 +477,48 @@ def test_u6_low_agreement_blocks_adjudication(tmp_path):
 
     with pytest.raises(ValueError, match="codebook repair/recode"):
         load_u6_pass2_adjudication(path, FREEZE, coding)
+
+
+def test_u6_small_disagreement_can_use_source_review_basis_after_reliability_pass(tmp_path):
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    coding = []
+    groups = manifest["included_dependency_groups"]
+    for i, group in enumerate(groups):
+        refs = ";".join(manifest["source_reference_ids_by_dependency_group"][group])
+        for coder in ("CODER_A", "CODER_B"):
+            architecture = "SHARED_INTEGRATED"
+            if i == 0 and coder == "CODER_B":
+                architecture = "TEMPORAL_SEPARATION"
+            coding.append({
+                "dependency_group": group,
+                "source_reference_ids": refs,
+                "coder_id": coder,
+                "architecture_mode": architecture,
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "coding_status": "CODED",
+                "notes": "synthetic disagreement",
+            })
+
+    with ADJUDICATION.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    rows[0].update({
+        "architecture_mode": "SHARED_INTEGRATED",
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+        "adjudication_status": "ADJUDICATED",
+        "adjudication_basis": "SOURCE_REVIEW_OF_DISAGREEMENTS",
+        "notes": "resolved one architecture disagreement from source evidence",
+    })
+    path = tmp_path / "u6_source_review_adjudication.csv"
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=rows[0].keys(), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+    out = load_u6_pass2_adjudication(path, FREEZE, coding)
+    first = next(row for row in out if row["adjudication_status"] == "ADJUDICATED")
+    assert first["adjudication_basis"] == "SOURCE_REVIEW_OF_DISAGREEMENTS"
+    assert first["architecture_mode"] == "SHARED_INTEGRATED"
