@@ -65,8 +65,10 @@ def test_programme_map_preserves_distinct_sampling_roles():
     assert contract["predictor_receipts_required"] is True
     assert contract["outcome_dependent_fallback_allowed"] is False
     assert contract["u1_u3_u4_primary_denominator_allowed"] is False
-    assert len(out["primary_model_blockers"]) == 5
+    assert len(out["primary_model_blockers"]) == 7
+    assert any("U2 post-coding adjudication incomplete" in x for x in out["primary_model_blockers"])
     assert any("U6 independent double coding incomplete" in x for x in out["primary_model_blockers"])
+    assert any("U6 post-coding adjudication incomplete" in x for x in out["primary_model_blockers"])
     assert out["parallel_nonblocking_work"] == [
         "U1 independent coding as external specificity validation",
         "U3 matched/case-control measurements and controls",
