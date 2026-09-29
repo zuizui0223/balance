@@ -26,6 +26,7 @@ MIN_BLOCKS_PER_RESPONSE_CLASS = 2
 MIN_BLOCKS_PER_PRIMARY_PREDICTOR_LEVEL = 2
 MIN_ROWS_PER_PRIMARY_UNIVERSE = 2
 MIN_BLOCKS_PER_REPLICATED_TEMPORAL_LEVEL_WITHIN_UNIVERSE = 2
+MIN_BLOCKS_PER_GENERALITY_OUTCOME_STATE = 2
 
 
 def _matrix_rank(matrix: list[list[int]]) -> int:
@@ -211,8 +212,34 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
         )
     ]
     temporal_common_support_ready = bool(common_support_module_strata)
+
+    temporal_generality_outcome_support: dict[str, dict[str, int]] = {}
+    for universe in PRIMARY_UNIVERSES:
+        subset = [row for row in resolved if row["universe_id"] == universe]
+        target_blocks = {
+            row["dependence_block"]
+            for row in subset
+            if row["architecture_class4"] == "NONSTRUCTURAL_SEPARATION"
+        }
+        other_blocks = {
+            row["dependence_block"]
+            for row in subset
+            if row["architecture_class4"] != "NONSTRUCTURAL_SEPARATION"
+        }
+        temporal_generality_outcome_support[universe] = {
+            "NONSTRUCTURAL_SEPARATION": len(target_blocks),
+            "OTHER_ARCHITECTURE": len(other_blocks),
+        }
+
+    temporal_outcome_support_ready = all(
+        count >= MIN_BLOCKS_PER_GENERALITY_OUTCOME_STATE
+        for universe_counts in temporal_generality_outcome_support.values()
+        for count in universe_counts.values()
+    )
     temporal_generality_ready = (
-        temporal_marginal_replication_ready and temporal_common_support_ready
+        temporal_marginal_replication_ready
+        and temporal_common_support_ready
+        and temporal_outcome_support_ready
     )
 
     blockers: list[str] = []
@@ -298,14 +325,21 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
         "temporal_cross_universe_common_support_ready": (
             temporal_common_support_ready
         ),
+        "temporal_cross_universe_outcome_support": (
+            temporal_generality_outcome_support
+        ),
+        "temporal_cross_universe_outcome_support_ready": (
+            temporal_outcome_support_ready
+        ),
         "temporal_cross_universe_generality_ready": temporal_generality_ready,
         "spatial_secondary_estimable": spatial_secondary_estimable,
         "blockers": blockers,
         "ready_for_primary_fit": not blockers,
         "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC",
         "generality_rule": (
-            "cross-universe timing language requires marginal timing replication plus "
+            "cross-universe timing language requires marginal timing replication, "
             "at least one shared module stratum with >=2 SIMULTANEOUS and >=2 ORDERED "
-            "dependence blocks in each U2 and U6"
+            "dependence blocks in each U2 and U6, and >=2 NONSTRUCTURAL plus >=2 "
+            "other-architecture dependence blocks within each universe"
         ),
     }
