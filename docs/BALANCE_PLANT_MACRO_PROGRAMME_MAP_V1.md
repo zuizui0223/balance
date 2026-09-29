@@ -292,7 +292,7 @@ binary structural field is unresolved. The raw nominal architecture categories
 remain secondary detail.
 
 There is no outcome-count-triggered fallback model. See
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V4.md`.
 
 ## U6 — pollen-theft conflict-first recovery universe
 
@@ -317,39 +317,32 @@ U6 Pass 1 is now closed: 157/157 anchor references are classified, 33 candidate 
 
 See `docs/BALANCE_PLANT_U6_POLLEN_THEFT_UNIVERSE_PROTOCOL_V1.md`.
 
-## What remains before the v3 primary model
+## What remains before the v4 primary model
 
-The primary denominator is now explicitly restricted to outcome-blind/conflict-first
-U1 + U2 + U6. U3 and U4 continue as parallel evidence lanes but do not block the primary
-model.
+The V4 routing denominator is explicitly restricted to the two conflict-focused, architecture-blind/source-first universes U2 + U6. U1 remains the broad external specificity-validation lane; U3 and U4 remain parallel evidence lanes.
 
 Primary blockers:
 
-1. **U1 independent reliability/adjudication** remains incomplete. The full 47-taxon
-   source screen itself is closed at 0 positive / 0 unresolved; the production 27 are no
-   longer an unsearched evidence block.
-2. **U2 independent double coding** remains incomplete.
-3. **U6 independent double coding** is open but still unstarted across the frozen
-   21 dependency groups.
-4. Every admitted row still requires three **adjudicated, outcome-independent** predictor
+1. **U2 independent double coding** remains incomplete.
+2. **U6 independent double coding** is open but still unstarted across the frozen 21 dependency groups.
+3. Every admitted row still requires three **adjudicated, outcome-independent** predictor
    receipts. The source-screen stage is already complete for all eight U2 conflict-positive
    groups and all 21 frozen U6 groups (63/63 U6 receipt slots resolved as
    outcome-independent), but neither lane has independent predictor adjudication yet.
-5. The final U1/U2/U6 assembly must close cross-universe dependence and pass the
+4. The final U2/U6 assembly must close cross-universe dependence and pass the
    allowlisted model-assembly contract. U3/U4 rows are rejected from this denominator.
-6. Only then can model-v3 estimability be evaluated: each of the four response classes
+5. Only then can model-v4 estimability be evaluated: each of the four response classes
    requires at least two independent dependence blocks; both levels of
    `module_opportunity2` and all three levels of `temporal_exposure3` require at least
    two independent blocks; and the 12-coefficient primary design matrix must be full rank.
    `spatial_exposure2` is now secondary because the pre-outcome source-screen support is
    28 SAME_UNIT versus 1 DISTRIBUTED block.
 
-Current source-screen diagnostics do **not** pre-decide the final class support. U1/U2
-currently lack a source-screened `STRUCTURAL_MODULE_DIVISION` row, while U6 architecture
-remains independently uncoded. No class is imported from U3 to repair that uncertainty.
+Current source-screen diagnostics do **not** pre-decide final architecture-class support. U2 currently has no source-screened `STRUCTURAL_MODULE_DIVISION` row and U6 architecture remains independently uncoded. No class is imported from U1, U3, or U4 to repair that uncertainty.
 
 Parallel but nonblocking work:
 
+- U1 independent coding/adjudication as external specificity validation;
 - U3 matched/case-control measurement completion, Monochoria controls, and Osbeckia;
 - U4 pollinator-prey mechanism stress tests.
 
@@ -361,4 +354,4 @@ pooled_prevalence_estimate = null
 ```
 
 The current primary statistical specification is
-`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V3.md`.
+`docs/BALANCE_PLANT_CONFIRMATORY_MODEL_FREEZE_V4.md`.
