@@ -113,12 +113,41 @@ def build_preoutcome_generality_audit(
         ),
     }
 
+    joint_module_timing = {}
+    for universe, rows in by_universe.items():
+        joint = Counter((r["module"], r["timing"]) for r in rows)
+        joint_module_timing[universe] = {
+            f"{module}__{timing}": joint.get((module, timing), 0)
+            for module in ("SINGLE", "MODULAR")
+            for timing in (
+                "SIMULTANEOUS",
+                "ORDERED_OR_ALTERNATING",
+                "VARIABLE_CONTEXT",
+            )
+        }
+
+    shared_module_levels = sorted(
+        levels["U2"]["module_opportunity2"] & levels["U6"]["module_opportunity2"]
+    )
+    common_support_strata = []
+    for module in shared_module_levels:
+        if all(
+            joint_module_timing[universe][f"{module}__SIMULTANEOUS"] >= 2
+            and joint_module_timing[universe][f"{module}__ORDERED_OR_ALTERNATING"] >= 2
+            for universe in ("U2", "U6")
+        ):
+            common_support_strata.append(module)
+
     return {
         "analysis": "balance_plant_preoutcome_cross_universe_generality",
         "universe_counts": {"U2": len(u2), "U6": len(u6)},
         "predictor_counts_by_universe": counts,
         "shared_predictor_levels": shared,
         "cross_universe_replicated_contrasts": replicated,
+        "module_timing_joint_counts_by_universe": joint_module_timing,
+        "shared_module_levels": shared_module_levels,
+        "temporal_common_support_module_strata": common_support_strata,
+        "temporal_cross_universe_common_support_ready": bool(common_support_strata),
         "only_current_cross_universe_two_level_contrast": (
             "timing_SIMULTANEOUS_vs_ORDERED"
             if sum(replicated.values()) == 1
@@ -127,8 +156,9 @@ def build_preoutcome_generality_audit(
         ),
         "sampling_universe_adjustment_recommended": True,
         "generality_claim_rule": (
-            "only contrasts with both levels represented in more than one independent "
-            "sampling universe may be described as cross-universe replicated"
+            "cross-universe timing generality requires both marginal timing replication "
+            "and at least one shared module-opportunity stratum with >=2 independent "
+            "SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING blocks in each U2 and U6"
         ),
         "architecture_outcomes_used": False,
         "claim_ceiling": "preoutcome_generality_design_audit_only",
