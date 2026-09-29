@@ -189,8 +189,7 @@ def build_v4_estimability_report(rows: Iterable[dict[str, str]]) -> dict:
     shared_module_levels = [
         module
         for module in MODULE_LEVELS
-        if all(module_block_counts.get(module, 0) > 0 for _ in (0,))
-        and all(
+        if all(
             any(
                 row["module_opportunity2"] == module
                 for row in resolved
