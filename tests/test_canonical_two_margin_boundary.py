@@ -175,7 +175,7 @@ def test_default_tolerance_agrees_on_near_architecture_boundary_across_routes():
     assert static.states == ("CRITICAL", "CRITICAL")
     assert direct.states == ("ARCHITECTURE_CRITICAL_INTERFACE",) * 2
     assert sampled.balance_indices == ()
-    assert scalar.state == "BALANCE_BITA_INTERFACE"
+    assert scalar.state == "BALANCE_ARCHITECTURE_INTERFACE"
     assert multi.state == "ARCHITECTURE_ENVELOPE_BOUNDARY"
     assert scalar_direct.state == "ARCHITECTURE_CRITICAL_INTERFACE"
 
@@ -191,7 +191,7 @@ def test_normalized_phase_near_boundary_is_invariant_to_fitness_unit_rescaling()
     # The same invariance must hold on the architecture interface.
     base_interface = normalized_phase_point(2.0, 0.5, 1.0, tolerance=tol)
     scaled_interface = normalized_phase_point(2.0e6, 0.5, 1.0e6, tolerance=tol)
-    assert base_interface.state == scaled_interface.state == "BALANCE_BITA_INTERFACE"
+    assert base_interface.state == scaled_interface.state == "BALANCE_ARCHITECTURE_INTERFACE"
 
 
 def test_phi_and_direct_gap_sign_conventions_collapse_to_same_reserve_margin():

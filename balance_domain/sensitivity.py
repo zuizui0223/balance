@@ -8,8 +8,13 @@ from .boundary import _finite_numeric
 @dataclass(frozen=True)
 class BoundarySensitivity:
     sch_boundary_shift: float
-    bita_boundary_shift: float
+    architecture_boundary_shift: float
     width_shift: float
+
+    @property
+    def bita_boundary_shift(self) -> float:
+        """Backward-compatible alias for the SLK-facing architecture shift."""
+        return self.architecture_boundary_shift
 
 
 @dataclass(frozen=True)
@@ -60,7 +65,7 @@ def boundary_sensitivity(*, a0: float, L_prime0: float, b2: float, rho_prime2: f
     width_exact = de2_exact - de0_exact
     return BoundarySensitivity(
         sch_boundary_shift=_finite_result(de0_exact, "SCH boundary sensitivity"),
-        bita_boundary_shift=_finite_result(de2_exact, "BITA boundary sensitivity"),
+        architecture_boundary_shift=_finite_result(de2_exact, "architecture boundary sensitivity"),
         width_shift=_finite_result(width_exact, "width sensitivity"),
     )
 

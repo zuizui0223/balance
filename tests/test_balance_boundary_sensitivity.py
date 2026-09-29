@@ -10,7 +10,7 @@ def test_linear_boundary_sensitivity_matches_exact_perturbation():
     # Perturb L by +eps*0.2 and rho by +eps*0.3.
     result = boundary_sensitivity(a0=0.2, L_prime0=1.0, b2=0.3, rho_prime2=-1.0)
     assert math.isclose(result.sch_boundary_shift, -0.2)
-    assert math.isclose(result.bita_boundary_shift, 0.3)
+    assert math.isclose(result.architecture_boundary_shift, 0.3)
     assert math.isclose(result.width_shift, 0.5)
 
 
@@ -85,3 +85,8 @@ def test_singular_slopes_fail_closed():
 
     with pytest.raises(ValueError):
         deepest_point_sensitivity(a=1.0, b=0.0, L_prime=1.0, rho_prime=1.0)
+
+
+def test_boundary_sensitivity_legacy_alias_matches_canonical_field():
+    result = boundary_sensitivity(a0=0.2, L_prime0=1.0, b2=0.3, rho_prime2=-1.0)
+    assert result.bita_boundary_shift == result.architecture_boundary_shift

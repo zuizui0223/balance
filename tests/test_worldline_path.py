@@ -16,8 +16,9 @@ def test_direct_worldline_path_maps_middle_world_without_s_k_decomposition():
         "SCH_NO_CONFLICT_WORLD",
         "BALANCE_MIDDLE_WORLD",
         "ARCHITECTURE_CRITICAL_INTERFACE",
-        "BITA_DIFFERENTIATION_WORLD",
+        "ARCHITECTURE_FAVOURED_WORLD",
     )
+    assert result.legacy_states[-1] == "BITA_DIFFERENTIATION_WORLD"
     assert result.critical_crossings == (2.0,)
     assert math.isclose(result.balance_intervals[0][0], 0.0, abs_tol=1e-8)
     assert math.isclose(result.balance_intervals[0][1], 2.0, abs_tol=1e-8)
