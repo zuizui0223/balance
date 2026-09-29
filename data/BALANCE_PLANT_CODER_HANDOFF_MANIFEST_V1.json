@@ -119,5 +119,32 @@
       "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json when the stricter generality gate is ready"
     ],
     "fail_closed_rule": "build is forbidden while any U2/U6 coding, adjudication, predictor-independence, assembly, or V4 estimability gate remains open"
+  },
+  "return_ingestion": {
+    "merger_module": "balance_domain/plant_coder_return.py",
+    "cli": "scripts/merge_plant_coder_returns.py",
+    "rule": "validate each coder return against the frozen lane group set and coder ID, then merge into canonical alternating CODER_A/CODER_B order",
+    "tracked_data_overwrite_required": false,
+    "recommended_workspace": "release/generated/plant_coder_returns",
+    "downstream_analysis_cli": "scripts/build_plant_v4_analysis_inputs.py",
+    "downstream_input_option": "--input-dir",
+    "mutable_workspace_basenames": [
+      "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+      "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+      "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
+      "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+    ],
+    "immutable_repo_inputs": [
+      "frozen samples",
+      "source packets",
+      "U6 Pass-1 freeze",
+      "U6 dependence map",
+      "model specifications"
+    ],
+    "fail_closed_rule": "malformed or partial human-return override is never silently replaced by a repo default if that override file exists"
   }
 }
