@@ -6,6 +6,7 @@ from balance_domain.plant_model_v4_fit import (
     build_v4_prior_sensitivity_input,
     build_v4_stan_input,
     build_v4_temporal_generality_input,
+    build_v4_temporal_generality_prior_sensitivity_input,
 )
 
 
@@ -165,6 +166,23 @@ def _generality_rows():
 def test_v4_temporal_generality_input_requires_replication_within_both_universes():
     with pytest.raises(ValueError, match="lacks within-universe"):
         build_v4_temporal_generality_input(_ready_rows())
+
+
+
+def test_v4_temporal_generality_prior_sensitivity_widens_only_common_slopes():
+    primary = build_v4_temporal_generality_input(_generality_rows())
+    wide = build_v4_temporal_generality_prior_sensitivity_input(_generality_rows())
+
+    assert primary["stan_data"]["slope_prior_sd"] == 0.75
+    assert wide["stan_data"]["slope_prior_sd"] == 1.5
+    assert wide["stan_data"]["interaction_prior_sd"] == primary["stan_data"]["interaction_prior_sd"] == 0.75
+    assert wide["stan_data"]["X"] == primary["stan_data"]["X"]
+    assert wide["stan_data"]["y"] == primary["stan_data"]["y"]
+    assert wide["stan_data"]["universe"] == primary["stan_data"]["universe"]
+    assert wide["stan_data"]["u6_ordered"] == primary["stan_data"]["u6_ordered"]
+    assert wide["metadata"]["interaction_prior_sensitivity_policy"] == (
+        "fixed_at_registered_0.75_only_common_slopes_widened"
+    )
 
 
 def test_v4_temporal_generality_input_adds_only_u6_ordered_interaction():

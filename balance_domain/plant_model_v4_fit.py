@@ -116,6 +116,26 @@ def build_v4_prior_sensitivity_input(rows: Iterable[dict[str, str]]) -> dict:
 
 
 
+
+def build_v4_temporal_generality_prior_sensitivity_input(
+    rows: Iterable[dict[str, str]],
+) -> dict:
+    """Return the temporal-generality model with the registered wider common-slope prior.
+
+    The interaction prior remains fixed at its preregistered 0.75 SD. The sensitivity
+    analysis widens only the common biological slopes, matching the frozen posterior
+    decision-rule contract.
+    """
+    payload = build_v4_temporal_generality_input(rows)
+    payload["stan_data"]["slope_prior_sd"] = 1.5
+    payload["metadata"]["analysis"] = (
+        "balance_plant_confirmatory_model_v4_temporal_generality_prior_sensitivity"
+    )
+    payload["metadata"]["interaction_prior_sensitivity_policy"] = (
+        "fixed_at_registered_0.75_only_common_slopes_widened"
+    )
+    return payload
+
 def build_v4_temporal_generality_input(rows: Iterable[dict[str, str]]) -> dict:
     """Build the preregistered U6 x ORDERED temporal-generalization sensitivity."""
     payload = build_v4_stan_input(rows)

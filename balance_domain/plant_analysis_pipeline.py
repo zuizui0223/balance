@@ -8,6 +8,7 @@ from .plant_model_v4_fit import (
     build_v4_prior_sensitivity_input,
     build_v4_stan_input,
     build_v4_temporal_generality_input,
+    build_v4_temporal_generality_prior_sensitivity_input,
 )
 
 
@@ -32,10 +33,14 @@ def build_v4_analysis_inputs(rows: Iterable[dict[str, str]]) -> dict:
     estimability = main["metadata"]["estimability"]
 
     generality = None
+    generality_prior_sensitivity = None
     generality_status = "NOT_READY"
     generality_blockers: list[str] = []
     if estimability["temporal_cross_universe_generality_ready"]:
         generality = build_v4_temporal_generality_input(licensed)
+        generality_prior_sensitivity = (
+            build_v4_temporal_generality_prior_sensitivity_input(licensed)
+        )
         generality_status = "READY"
     else:
         if not estimability.get(
@@ -59,6 +64,9 @@ def build_v4_analysis_inputs(rows: Iterable[dict[str, str]]) -> dict:
         "temporal_generality_status": generality_status,
         "temporal_generality_blockers": generality_blockers,
         "temporal_generality_stan_input": generality,
+        "temporal_generality_prior_sensitivity_stan_input": (
+            generality_prior_sensitivity
+        ),
         "main_fit_ready": True,
         "standalone_reactivation_decision": "NOT_EVALUATED_BY_PREFIT_PIPELINE",
         "claim_ceiling": "prefit_inputs_only_no_fitted_effect",

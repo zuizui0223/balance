@@ -56,6 +56,19 @@ def test_v4_pipeline_builds_main_prior_and_generality_inputs_when_all_gates_pass
     assert out["temporal_generality_blockers"] == []
     assert out["temporal_generality_stan_input"] is not None
     assert "u6_ordered" in out["temporal_generality_stan_input"]["stan_data"]
+    assert out["temporal_generality_prior_sensitivity_stan_input"] is not None
+    assert (
+        out["temporal_generality_prior_sensitivity_stan_input"]["stan_data"][
+            "slope_prior_sd"
+        ]
+        == 1.5
+    )
+    assert (
+        out["temporal_generality_prior_sensitivity_stan_input"]["stan_data"][
+            "interaction_prior_sd"
+        ]
+        == 0.75
+    )
     assert out["standalone_reactivation_decision"] == "NOT_EVALUATED_BY_PREFIT_PIPELINE"
 
 
@@ -69,6 +82,7 @@ def test_v4_pipeline_can_build_main_fit_while_generality_stays_blocked():
     assert out["assembly_readout"]["ready_for_primary_fit"] is True
     assert out["temporal_generality_status"] == "NOT_READY"
     assert out["temporal_generality_stan_input"] is None
+    assert out["temporal_generality_prior_sensitivity_stan_input"] is None
     assert "marginal_timing_replication" in out["temporal_generality_blockers"]
     assert "shared_module_timing_common_support" in out["temporal_generality_blockers"]
 
