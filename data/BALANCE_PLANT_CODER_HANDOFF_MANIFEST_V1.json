@@ -146,5 +146,18 @@
       "model specifications"
     ],
     "fail_closed_rule": "malformed or partial human-return override is never silently replaced by a repo default if that override file exists"
+  },
+  "agreement_reporting": {
+    "module": "balance_domain/plant_agreement_report.py",
+    "cli": "scripts/report_plant_coder_agreement.py",
+    "threshold_raw_agreement": 0.8,
+    "outputs": [
+      "BALANCE_PLANT_<LANE>_AGREEMENT_REPORT_V1.json",
+      "BALANCE_PLANT_<LANE>_DISAGREEMENTS_V1.csv"
+    ],
+    "low_agreement_action": "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS",
+    "pass_action": "SOURCE_ADJUDICATION",
+    "exact_disagreement_list_required": true,
+    "adjudication_allowed_only_if_all_fields_pass": true
   }
 }
