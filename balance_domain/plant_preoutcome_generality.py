@@ -12,6 +12,7 @@ from .plant_confirmatory import (
     primary_temporal_exposure,
 )
 from .plant_u2_screen import load_u2_conflict_screen
+from .plant_model_v4 import _matrix_rank
 
 
 def _complete_screened(
@@ -138,6 +139,24 @@ def build_preoutcome_generality_audit(
         ):
             common_support_strata.append(module)
 
+    slope_matrix = []
+    full_matrix = []
+    for universe_name, rows in by_universe.items():
+        for row in rows:
+            slopes = [
+                int(row["module"] == "MODULAR"),
+                int(row["timing"] == "ORDERED_OR_ALTERNATING"),
+                int(row["timing"] == "VARIABLE_CONTEXT"),
+            ]
+            slope_matrix.append(slopes)
+            full_matrix.append([
+                int(universe_name == "U2"),
+                int(universe_name == "U6"),
+                *slopes,
+            ])
+    slope_rank = _matrix_rank(slope_matrix)
+    full_rank = _matrix_rank(full_matrix)
+
     return {
         "analysis": "balance_plant_preoutcome_cross_universe_generality",
         "universe_counts": {"U2": len(u2), "U6": len(u6)},
@@ -148,6 +167,13 @@ def build_preoutcome_generality_audit(
         "shared_module_levels": shared_module_levels,
         "temporal_common_support_module_strata": common_support_strata,
         "temporal_cross_universe_common_support_ready": bool(common_support_strata),
+        "v4_preoutcome_slope_design_rank": slope_rank,
+        "v4_preoutcome_slope_design_column_count": 3,
+        "v4_preoutcome_slope_design_full_rank": slope_rank == 3,
+        "v4_preoutcome_full_design_rank": full_rank,
+        "v4_preoutcome_full_design_column_count": 5,
+        "v4_preoutcome_full_design_full_rank": full_rank == 5,
+        "v4_main_predictor_design_viable": slope_rank == 3 and full_rank == 5,
         "only_current_cross_universe_two_level_contrast": (
             "timing_SIMULTANEOUS_vs_ORDERED"
             if sum(replicated.values()) == 1
