@@ -15,7 +15,8 @@
     "u6_ordered_vs_simultaneous_direction_resolved": false,
     "directionally_concordant_across_u2_u6": null,
     "contradictory_universe_interaction_exceeds_practical_margin": null,
-    "temporal_common_support_module_stratum_ready": false
+    "temporal_common_support_module_stratum_ready": false,
+    "temporal_generality_outcome_support_ready": false
   },
   "practical_interaction_margin_log_odds": 1,
   "sufficient_reactivation_rule": [
@@ -23,6 +24,7 @@
     "V4 primary estimability and fit complete",
     "temporal generality sensitivity complete",
     "shared module-opportunity stratum passes the frozen >=2 SIMULTANEOUS and >=2 ORDERED blocks per U2/U6 universe common-support gate",
+    "each U2/U6 universe has >=2 NONSTRUCTURAL_SEPARATION and >=2 other-architecture dependence blocks under the frozen outcome-support gate",
     "ordered-versus-simultaneous routing contrast direction resolved separately in U2 and U6",
     "directions concordant across U2 and U6",
     "no practically large contradictory universe-by-timing interaction under the frozen margin"
@@ -30,6 +32,7 @@
   "insufficient_for_reactivation": [
     "nonzero pooled timing coefficient alone",
     "marginal timing replication without a shared module stratum that passes the frozen common-support gate",
+    "marginal or common-support timing replication without the frozen per-universe target-outcome support gate",
     "U2-only module association",
     "U2-only VARIABLE_CONTEXT association",
     "support-limited spatial association",
