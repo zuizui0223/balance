@@ -1,0 +1,154 @@
+{
+  "schema_version": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V3",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_U6_INDEPENDENT_ARCHITECTURE_CODING",
+  "supersedes": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V2",
+  "revision_reason": "Pre-outcome predictor-support audit across the 29 source-screened conflict-positive U2+U6 groups found spatial_exposure2 = SAME_UNIT 28 / DISTRIBUTED 1. Spatial exposure is therefore retained as a coded secondary axis but removed from the primary fixed-effect model before architecture outcomes are independently coded.",
+  "primary_response": {
+    "name": "architecture_class4",
+    "mapping": {
+      "SHARED": [
+        "SHARED_INTEGRATED"
+      ],
+      "NONSTRUCTURAL_SEPARATION": [
+        "TEMPORAL_SEPARATION",
+        "SPATIAL_SEPARATION",
+        "SIGNAL_SEPARATION",
+        "TEMPORAL_AND_SPATIAL_SEPARATION"
+      ],
+      "STRUCTURAL_MODULE_DIVISION": [
+        "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+        "AMONG_FLOWER_MODULE_DIVISION"
+      ],
+      "MOSAIC": [
+        "POLYMORPHIC_OR_MOSAIC"
+      ]
+    },
+    "reference_class": "SHARED"
+  },
+  "raw_predictors_retained": [
+    "module_substrate",
+    "conflict_timing_geometry",
+    "conflict_spatial_geometry"
+  ],
+  "primary_predictor_contrasts": {
+    "module_opportunity2": {
+      "SINGLE": [
+        "SINGLE_OR_CONTINUOUS"
+      ],
+      "MODULAR": [
+        "SERIAL_WITHIN_FLOWER",
+        "REPEATED_FLOWERS",
+        "PREEXISTING_SEPARATE_ORGANS",
+        "MULTILEVEL"
+      ]
+    },
+    "temporal_exposure3": {
+      "SIMULTANEOUS": [
+        "SIMULTANEOUS"
+      ],
+      "ORDERED_OR_ALTERNATING": [
+        "SEQUENTIAL_WITHIN_UNIT",
+        "SEASONALLY_ALTERNATING"
+      ],
+      "VARIABLE_CONTEXT": [
+        "CONTEXT_DEPENDENT",
+        "MIXED"
+      ]
+    }
+  },
+  "secondary_predictor_contrast": {
+    "spatial_exposure2": {
+      "SAME_UNIT": [
+        "SAME_UNIT"
+      ],
+      "DISTRIBUTED": [
+        "BETWEEN_MODULES",
+        "AMONG_INDIVIDUALS",
+        "AMONG_POPULATIONS",
+        "ENVIRONMENTAL_MOSAIC",
+        "MIXED"
+      ],
+      "preoutcome_support": {
+        "SAME_UNIT": 28,
+        "DISTRIBUTED": 1
+      },
+      "role": "secondary_descriptive_or_separate_sensitivity_only",
+      "promotion_rule": "never promoted to the primary joint model from the current frozen source-screen support"
+    }
+  },
+  "parameter_budget": {
+    "response_nonreference_logits": 3,
+    "raw_joint_model_fixed_coefficients": 42,
+    "v2_main_fixed_coefficients": 15,
+    "v3_main_columns_per_logit": 4,
+    "v3_main_fixed_coefficients": 12,
+    "module_x_timing_columns_per_logit": 6,
+    "module_x_timing_fixed_coefficients": 18
+  },
+  "required_entry_gates": [
+    "species_or_species_context_grain",
+    "conflict_positive_from_frozen_source_contract",
+    "resolved_adjudicated_architecture_mode",
+    "outcome_independent_adjudicated_module_substrate_receipt",
+    "outcome_independent_adjudicated_conflict_timing_geometry_receipt",
+    "outcome_independent_adjudicated_conflict_spatial_geometry_receipt",
+    "dependence_block_frozen"
+  ],
+  "primary_model": {
+    "family": "regularized_bayesian_multinomial_logit",
+    "formula": "architecture_class4 ~ module_opportunity2 + temporal_exposure3",
+    "reference_class": "SHARED",
+    "coefficient_prior": "Normal(0,0.75) on non-reference log-odds slopes",
+    "intercept_prior": "Normal(0,1.5)",
+    "prior_sensitivity": "repeat with Normal(0,1.5) slope priors",
+    "no_outcome_dependent_fallback": true,
+    "dependence": "one biological dependence block is not counted as independent replication; duplicated species/taxon concepts are clustered or collapsed according to the frozen dependence ledger"
+  },
+  "estimability_gate": {
+    "minimum_independent_dependence_blocks_per_response_class": 2,
+    "minimum_independent_dependence_blocks_per_primary_predictor_level": 2,
+    "primary_design_matrix_must_be_full_rank": true,
+    "failure_action": "DO_NOT_FIT_OR_DROP_TERMS_POST_HOC"
+  },
+  "registered_interaction_extension": {
+    "id": "I1_MODULE_X_TIMING",
+    "formula": "architecture_class4 ~ module_opportunity2 * temporal_exposure3",
+    "fixed_coefficients": 18,
+    "fit_rule": "fit only after the main model and only if every interaction cell required for a reported contrast has empirical support; otherwise report non-estimable"
+  },
+  "spatial_secondary_plan": {
+    "mandatory_support_table": true,
+    "separate_one_axis_model_allowed_only_if_final_adjudicated_DISTRIBUTED_blocks_at_least": 2,
+    "module_x_spatial_interaction_not_registered_for_primary_or_confirmatory_extension": true,
+    "interpretation_ceiling": "spatial generality remains under-sampled unless final independent adjudication changes support"
+  },
+  "conflict_family_role": {
+    "primary_fixed_effect": false,
+    "mandatory_sensitivities": [
+      "report architecture and predictor support by conflict_family",
+      "leave_one_sampling_universe_out where at least two universes remain informative",
+      "within_conflict_family probability contrasts where empirical support exists",
+      "do not describe a pooled contrast as family-independent when support is family-segregated"
+    ]
+  },
+  "primary_planned_probability_contrasts": [
+    "P(STRUCTURAL_MODULE_DIVISION | MODULAR) - P(STRUCTURAL_MODULE_DIVISION | SINGLE)",
+    "P(NONSTRUCTURAL_SEPARATION | ORDERED_OR_ALTERNATING) - P(NONSTRUCTURAL_SEPARATION | SIMULTANEOUS)",
+    "I1: module-opportunity structural contrast across temporal-exposure levels"
+  ],
+  "secondary_outputs": [
+    "spatial_exposure2 support table and architecture cross-tab",
+    "raw-category descriptive tables",
+    "binary structural_module_division analysis",
+    "full nominal architecture_mode descriptive/regularized analysis if supported"
+  ],
+  "guardrails": [
+    "four-class response unchanged",
+    "raw predictor values remain archived",
+    "spatial demotion occurred before U6 architecture coding",
+    "no primary term is dropped because its effect is weak",
+    "no response class is collapsed because it is sparse",
+    "no spatial coefficient is interpreted as general when DISTRIBUTED support remains one dependence block"
+  ],
+  "claim_ceiling": "regularized_comparative_association_for_module_and_temporal_routing_with_spatial_axis_secondary_not_causal_evolutionary_transition_probability"
+}
