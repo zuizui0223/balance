@@ -7,6 +7,8 @@ from balance_domain.plant_v4_estimands import (
     contrast_draws,
     gamma_negative_margin_probability,
     posterior_contrast_summary,
+    summarize_v4_primary_postfit,
+    summarize_v4_temporal_generality_postfit,
 )
 
 
@@ -195,3 +197,77 @@ def test_v4_registries_share_one_frozen_estimand_standardization_contract():
     for path in (HYPOTHESES, MODEL_SPEC, DECISION_RULES):
         data = json.loads(path.read_text(encoding="utf-8"))
         assert data["estimand_standardization_registry"] == target
+
+
+
+def test_postfit_primary_summary_applies_both_prior_direction_rule():
+    primary = [_draw(ordered_nonstructural=1.0, module_structural=1.0)] * 20
+    sensitivity = [_draw(ordered_nonstructural=1.0, module_structural=1.0)] * 20
+
+    out = summarize_v4_primary_postfit(
+        _rows(),
+        primary_draws=primary,
+        sensitivity_draws=sensitivity,
+    )
+    assert out["H_T_ORDERED_NONSTRUCTURAL"]["directional_label"] == "SUPPORTED"
+    assert out["H_M_MODULAR_STRUCTURAL"]["directional_label"] == "SUPPORTED"
+    assert (
+        out["H_T_ORDERED_NONSTRUCTURAL"]["primary_prior"]["p_positive"]
+        == 1.0
+    )
+    assert (
+        out["H_M_MODULAR_STRUCTURAL"]["sensitivity_prior"]["p_positive"]
+        == 1.0
+    )
+
+
+def test_postfit_generality_summary_connects_draws_to_frozen_decision():
+    primary = [_draw(ordered_nonstructural=1.0, gamma_nonstructural=0.0)] * 20
+    sensitivity = [_draw(ordered_nonstructural=1.0, gamma_nonstructural=0.0)] * 20
+
+    out = summarize_v4_temporal_generality_postfit(
+        _rows(),
+        primary_draws=primary,
+        sensitivity_draws=sensitivity,
+    )
+    assert out["decision"]["cross_universe_generality_supported"] is True
+    assert out["decision"]["u2_directional_label"] == "SUPPORTED"
+    assert out["decision"]["u6_directional_label"] == "SUPPORTED"
+    assert out["decision"]["interaction_label"] == (
+        "NO_PRACTICALLY_LARGE_CONTRADICTION"
+    )
+
+
+def test_postfit_generality_summary_detects_reverse_u6_interaction():
+    primary = [_draw(ordered_nonstructural=1.0, gamma_nonstructural=-2.0)] * 20
+    sensitivity = [_draw(ordered_nonstructural=1.0, gamma_nonstructural=-2.0)] * 20
+
+    out = summarize_v4_temporal_generality_postfit(
+        _rows(),
+        primary_draws=primary,
+        sensitivity_draws=sensitivity,
+    )
+    assert out["decision"]["cross_universe_generality_supported"] is False
+    assert out["decision"]["u2_directional_label"] == "SUPPORTED"
+    assert out["decision"]["u6_directional_label"] == "CONTRADICTED"
+    assert out["decision"]["interaction_label"] == "PRACTICALLY_CONTRADICTORY"
+
+
+def test_postfit_draws_reject_nonfinite_parameters():
+    bad = _draw(ordered_nonstructural=1.0)
+    bad["beta"][1][0] = float("nan")
+    grid = build_v4_estimand_standardization(_rows())
+
+    try:
+        contrast_draws(
+            [bad],
+            grid["H_T_primary"],
+            target_response="NONSTRUCTURAL_SEPARATION",
+            arm_field="temporal_exposure3",
+            positive_arm="ORDERED_OR_ALTERNATING",
+            negative_arm="SIMULTANEOUS",
+        )
+    except ValueError as exc:
+        assert "finite number" in str(exc)
+    else:
+        raise AssertionError("non-finite posterior parameters must fail closed")
