@@ -11,6 +11,7 @@ from balance_domain.plant_confirmatory import (
 from balance_domain.plant_u6 import (
     FORBIDDEN_PASS1_FIELDS,
     build_u6_candidate_adjudication_readout,
+    build_u6_evidence_readiness,
     build_u6_multi_batch_readout,
     build_u6_pass2_agreement_from_rows,
     load_u6_anchor,
@@ -334,3 +335,83 @@ def test_u6_adjudication_cannot_preempt_independent_coding(tmp_path):
     coding_rows = load_u6_pass2_double_coding(PASS2, FREEZE)
     with pytest.raises(ValueError, match="before both independent coder rows are CODED"):
         load_u6_pass2_adjudication(path, FREEZE, coding_rows)
+
+
+
+def test_u6_current_evidence_readiness_reports_exact_open_gates():
+    coding = load_u6_pass2_double_coding(PASS2, FREEZE)
+    adjudication = load_u6_pass2_adjudication(ADJUDICATION, FREEZE, coding)
+    receipts = load_plant_predictor_receipts(PREDICTOR_RECEIPTS)
+    dependence = load_u6_cross_universe_dependence(DEPENDENCE, FREEZE)
+
+    out = build_u6_evidence_readiness(coding, adjudication, receipts, dependence)
+    assert out["coding_complete"] is False
+    assert out["reliability_pass"] is False
+    assert out["adjudication_complete"] is False
+    assert out["n_groups_with_three_adjudicated_independent_predictors"] == 0
+    assert out["predictor_receipts_complete"] is False
+    assert out["dependence_map_complete"] is True
+    assert out["ready_for_combined_model_assembly"] is False
+    assert out["blockers"] == [
+        "independent_double_coding_incomplete",
+        "post_coding_adjudication_incomplete",
+        "outcome_independent_predictor_receipts_incomplete:0/21",
+    ]
+    assert out["combined_model_estimability_checked"] is False
+
+
+def test_u6_evidence_readiness_can_close_without_claiming_combined_estimability():
+    manifest = load_u6_pass1_freeze_manifest(FREEZE)
+    groups = manifest["included_dependency_groups"]
+    coding = []
+    adjudication = []
+    receipts = []
+    for group in groups:
+        source_refs = ";".join(manifest["source_reference_ids_by_dependency_group"][group])
+        for coder in ("CODER_A", "CODER_B"):
+            coding.append({
+                "dependency_group": group,
+                "source_reference_ids": source_refs,
+                "coder_id": coder,
+                "architecture_mode": "SHARED_INTEGRATED",
+                "module_substrate": "SINGLE_OR_CONTINUOUS",
+                "conflict_timing_geometry": "SIMULTANEOUS",
+                "conflict_spatial_geometry": "SAME_UNIT",
+                "coding_status": "CODED",
+                "notes": "",
+            })
+        adjudication.append({
+            "dependency_group": group,
+            "architecture_mode": "SHARED_INTEGRATED",
+            "module_substrate": "SINGLE_OR_CONTINUOUS",
+            "conflict_timing_geometry": "SIMULTANEOUS",
+            "conflict_spatial_geometry": "SAME_UNIT",
+            "adjudication_status": "ADJUDICATED",
+            "adjudication_basis": "SOURCE_REVIEW_AFTER_AGREEMENT",
+            "notes": "synthetic gate test",
+        })
+        for i, (predictor, value) in enumerate((
+            ("module_substrate", "SINGLE_OR_CONTINUOUS"),
+            ("conflict_timing_geometry", "SIMULTANEOUS"),
+            ("conflict_spatial_geometry", "SAME_UNIT"),
+        )):
+            receipts.append({
+                "receipt_id": f"{group}_{i}",
+                "cluster_id": group,
+                "predictor": predictor,
+                "reported_value": value,
+                "source_id": "synthetic",
+                "evidence_type": "PRE_OUTCOME_MEASUREMENT",
+                "outcome_independence": "TRUE",
+                "adjudication_status": "ADJUDICATED",
+                "notes": "",
+            })
+
+    dependence = load_u6_cross_universe_dependence(DEPENDENCE, FREEZE)
+    out = build_u6_evidence_readiness(coding, adjudication, receipts, dependence)
+    assert out["coding_complete"] is True
+    assert out["reliability_pass"] is True
+    assert out["adjudication_complete"] is True
+    assert out["predictor_receipts_complete"] is True
+    assert out["ready_for_combined_model_assembly"] is True
+    assert out["combined_model_estimability_checked"] is False
