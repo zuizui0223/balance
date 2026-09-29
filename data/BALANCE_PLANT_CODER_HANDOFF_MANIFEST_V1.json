@@ -106,5 +106,18 @@
       "U6"
     ],
     "sequence_rule": "separate from architecture coding; receipts must be adjudicated outcome-independent before V4 assembly"
+  },
+  "post_handoff_analysis": {
+    "readiness_cli": "scripts/build_plant_v4_analysis_inputs.py",
+    "manual_workflow": ".github/workflows/build-plant-v4-analysis-inputs.yml",
+    "build_command": "python scripts/build_plant_v4_analysis_inputs.py --build",
+    "outputs": [
+      "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv",
+      "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json",
+      "BALANCE_PLANT_V4_STAN_INPUT.json",
+      "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json",
+      "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json when the stricter generality gate is ready"
+    ],
+    "fail_closed_rule": "build is forbidden while any U2/U6 coding, adjudication, predictor-independence, assembly, or V4 estimability gate remains open"
   }
 }
