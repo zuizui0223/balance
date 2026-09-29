@@ -64,10 +64,14 @@ def test_v3_was_superseded_before_outcome_coding_by_universe_stratification():
     assert v3["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
 
 
-def test_v3_was_superseded_preoutcome_by_v4_universe_stratification():
-    v3 = json.loads(SPEC_V3.read_text(encoding="utf-8"))
-    assert v3["status"] == "SUPERSEDED_PRE_OUTCOME_BY_V4_UNIVERSE_STRATIFICATION"
-    assert v3["superseded_by"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
+def test_v4_cross_universe_claim_is_not_yet_common_support_ready():
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    claim = spec["claim_hierarchy"]["cross_universe_replicated"]
+    assert claim["status"] == "MARGINALLY_REPLICATED_BUT_COMMON_MODULE_SUPPORT_NOT_READY"
+    assert "SINGLE" in claim["current_common_support"]
+    sensitivity = spec["temporal_generality_sensitivity"]
+    assert sensitivity["current_preoutcome_status"] == "NOT_READY_COMMON_MODULE_SUPPORT"
+    assert "shared module-opportunity stratum" in sensitivity["fit_gate"]
 
 
 def test_signal_separation_is_explicitly_retained():
@@ -190,6 +194,9 @@ def test_v4_generality_hierarchy_is_preoutcome_and_timing_only_cross_universe():
     hierarchy = spec["claim_hierarchy"]
     assert hierarchy["cross_universe_replicated"]["contrast"] == (
         "temporal SIMULTANEOUS vs ORDERED_OR_ALTERNATING"
+    )
+    assert hierarchy["cross_universe_replicated"]["status"] == (
+        "MARGINALLY_REPLICATED_BUT_COMMON_MODULE_SUPPORT_NOT_READY"
     )
     assert hierarchy["U2_anchored"]["contrasts"] == [
         "module SINGLE vs MODULAR",
