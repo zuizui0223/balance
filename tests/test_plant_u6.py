@@ -286,16 +286,15 @@ def test_u6_agreement_report_is_frozen_to_four_pass2_fields():
 
 
 
-def test_u6_predictor_receipt_frame_is_frozen_before_architecture_results():
+def test_u6_predictor_receipt_frame_is_source_screened_but_not_adjudicated():
     rows = load_plant_predictor_receipts(PREDICTOR_RECEIPTS)
     assert len(rows) == 63
     assert len({row["cluster_id"] for row in rows}) == 21
     by_cluster = {}
     for row in rows:
         by_cluster.setdefault(row["cluster_id"], set()).add(row["predictor"])
-        assert row["reported_value"] == "UNRESOLVED"
-        assert row["evidence_type"] == "UNCLEAR"
-        assert row["outcome_independence"] == "UNCERTAIN"
+        assert row["reported_value"] != "UNRESOLVED"
+        assert row["outcome_independence"] == "TRUE"
         assert row["adjudication_status"] == "SCREENED"
     assert all(predictors == {
         "module_substrate",
@@ -306,8 +305,27 @@ def test_u6_predictor_receipt_frame_is_frozen_before_architecture_results():
     coverage = build_receipt_screening_coverage(rows)
     assert coverage["n_receipts"] == 63
     assert coverage["n_clusters"] == 21
-    assert coverage["n_complete_outcome_independent_clusters"] == 0
+    assert coverage["by_predictor"]["module_substrate"]["n_outcome_independent_resolved"] == 21
+    assert coverage["by_predictor"]["conflict_timing_geometry"]["n_outcome_independent_resolved"] == 21
+    assert coverage["by_predictor"]["conflict_spatial_geometry"]["n_outcome_independent_resolved"] == 21
+    assert coverage["n_complete_outcome_independent_clusters"] == 21
     assert coverage["n_complete_adjudicated_clusters"] == 0
+
+    assert {r["reported_value"] for r in rows if r["predictor"] == "module_substrate"} == {
+        "SINGLE_OR_CONTINUOUS"
+    }
+    assert {r["reported_value"] for r in rows if r["predictor"] == "conflict_spatial_geometry"} == {
+        "SAME_UNIT"
+    }
+    timing = {
+        r["cluster_id"]: r["reported_value"]
+        for r in rows if r["predictor"] == "conflict_timing_geometry"
+    }
+    assert {g for g, value in timing.items() if value == "SEQUENTIAL_WITHIN_UNIT"} == {
+        "Clusia_arrudae",
+        "Crescentia_alata",
+        "Tolmiea_menziesii",
+    }
 
 
 
