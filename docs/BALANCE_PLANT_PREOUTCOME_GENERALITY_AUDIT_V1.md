@@ -68,13 +68,27 @@ is supported in both independent universes.
 
 `VARIABLE_CONTEXT` is U2-only.
 
-Thus the only currently registered two-level predictor contrast with genuine cross-universe
-replication is:
+Thus the only two-level predictor contrast with **marginal representation in both
+universes** is:
 
 ```text
 temporal exposure:
 SIMULTANEOUS vs ORDERED_OR_ALTERNATING
 ```
+
+However, marginal representation is not enough for a clean cross-universe routing test.
+The only module-opportunity level shared by both universes is `SINGLE`, and within that
+common stratum the source-screen support is:
+
+```text
+                         U2   U6
+SIMULTANEOUS              1   18
+ORDERED_OR_ALTERNATING    2    3
+```
+
+The U2 simultaneous side therefore fails the frozen >=2-block common-support threshold.
+The temporal contrast is a **prospective marginally replicated candidate**, not yet a
+strict common-support generality test.
 
 ### Spatial exposure
 
@@ -92,15 +106,13 @@ The eventual architecture analysis must distinguish three different claim levels
 
 ### Level G1 — cross-universe replicated
 
-Currently only:
+**No contrast currently passes the strict common-support gate.**
 
-```text
-temporal:
-SIMULTANEOUS vs ORDERED_OR_ALTERNATING
-```
-
-If this contrast shows the same routing association within both U2 and U6, it can support a
-stronger generality statement across two independently defined conflict families.
+The temporal `SIMULTANEOUS vs ORDERED_OR_ALTERNATING` contrast is marginally represented
+in both universes, but U2 has only one `SINGLE + SIMULTANEOUS` block. It becomes eligible
+for Level G1 only if final independent adjudication supplies a shared module stratum with
+at least two blocks per timing level in each universe and the fitted directions are
+concordant.
 
 ### Level G2 — within-universe supported
 
@@ -151,10 +163,12 @@ The direct-conflict literature currently offers:
 - much weaker cross-family representation of pre-existing modularity and distributed
   conflict geometry.
 
-Therefore the most defensible candidate for a **general routing principle** is temporal
-conflict geometry.
+Therefore temporal conflict geometry remains the strongest **candidate** for a general
+routing principle, but the current evidence surface does not yet support a strict
+cross-universe generality test.
 
-That remains a hypothesis until architecture outcomes are independently coded.
+That remains a hypothesis until common-support, independent architecture coding, and
+universe-specific effect checks all pass.
 
 ## Claim ceiling
 
