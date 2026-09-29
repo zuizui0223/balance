@@ -16,6 +16,9 @@ if str(ROOT) not in sys.path:
 from balance_domain.plant_analysis_pipeline import build_v4_analysis_inputs  # noqa: E402
 from balance_domain.plant_assembly_builder import build_v4_licensed_assembly  # noqa: E402
 from balance_domain.plant_confirmatory import load_plant_predictor_receipts  # noqa: E402
+from balance_domain.plant_predictor_adjudication import (  # noqa: E402
+    load_predictor_adjudication_return,
+)
 from balance_domain.plant_macro_agreement import load_double_coding  # noqa: E402
 from balance_domain.plant_model_assembly import FIELDS as ASSEMBLY_FIELDS  # noqa: E402
 from balance_domain.plant_readiness import build_plant_v4_readiness  # noqa: E402
@@ -55,11 +58,13 @@ def _paths(input_dir: Path | None = None) -> dict[str, Path]:
         "u2_worksheet": data / "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
         "u2_adjudication": data / "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
         "u2_receipts": data / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+        "u2_receipts_frozen": data / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
         "u2_sources": data / "BALANCE_PLANT_U2_DOUBLE_CODE_SOURCE_PACKET_V1.csv",
         "u6_freeze": data / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json",
         "u6_worksheet": data / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
         "u6_adjudication": data / "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
         "u6_receipts": data / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+        "u6_receipts_frozen": data / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
         "u6_dependence": data / "BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv",
         "u6_source_recovery": data / "BALANCE_PLANT_U6_PASS2_SOURCE_RECOVERY_FRAME_V1.csv",
         "u6_sources": data / "BALANCE_PLANT_U6_PASS2_FROZEN_SOURCE_PACKET_V1.csv",
@@ -80,8 +85,18 @@ def _paths(input_dir: Path | None = None) -> dict[str, Path]:
     }
 
 
+def _validate_predictor_receipt_overrides(paths: dict[str, Path]) -> None:
+    """Validate reviewed receipt overrides against immutable frozen source-screen frames."""
+    for lane in ("u2", "u6"):
+        reviewed = paths[f"{lane}_receipts"]
+        frozen = paths[f"{lane}_receipts_frozen"]
+        if reviewed != frozen:
+            load_predictor_adjudication_return(reviewed, frozen)
+
+
 def current_readiness(input_dir: Path | None = None) -> dict:
     p = _paths(input_dir)
+    _validate_predictor_receipt_overrides(p)
     return build_plant_v4_readiness(
         u1_first20_conflict_path=p["u1_first20_conflict"],
         u1_production27_conflict_path=p["u1_production27_conflict"],
