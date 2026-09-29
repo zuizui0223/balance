@@ -114,3 +114,20 @@ def test_handoff_manifest_registers_validated_return_ingestion_workspace():
     assert "silently replaced" in ret["fail_closed_rule"]
     assert (ROOT / ret["merger_module"]).exists()
     assert (ROOT / ret["cli"]).exists()
+
+
+
+def test_handoff_manifest_registers_canonical_agreement_reporting():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    agreement = data["agreement_reporting"]
+    assert agreement["module"] == "balance_domain/plant_agreement_report.py"
+    assert agreement["cli"] == "scripts/report_plant_coder_agreement.py"
+    assert agreement["threshold_raw_agreement"] == 0.80
+    assert agreement["low_agreement_action"] == (
+        "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS"
+    )
+    assert agreement["pass_action"] == "SOURCE_ADJUDICATION"
+    assert agreement["exact_disagreement_list_required"] is True
+    assert agreement["adjudication_allowed_only_if_all_fields_pass"] is True
+    assert (ROOT / agreement["module"]).exists()
+    assert (ROOT / agreement["cli"]).exists()
