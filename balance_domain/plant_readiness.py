@@ -18,7 +18,7 @@ from .plant_u2 import (
 )
 from .plant_u2_screen import build_u2_conflict_screen_readout
 def _load_two_coder_stage(path: Path, blank_loader) -> tuple[str, list[dict[str, str]]]:
-    """Return UNSTARTED or COMPLETE; partial worksheets fail closed."""
+    """Return UNSTARTED or COMPLETE; partial or relabeled coder IDs fail closed."""
     try:
         rows = blank_loader(path)
         return "UNSTARTED", rows
@@ -30,6 +30,11 @@ def _load_two_coder_stage(path: Path, blank_loader) -> tuple[str, list[dict[str,
                 "double-coding worksheet is neither valid blank nor fully completed: "
                 f"blank={blank_error}; completed={coded_error}"
             ) from coded_error
+        coder_ids = {row["coder_id"] for row in rows}
+        if coder_ids != {"CODER_A", "CODER_B"}:
+            raise ValueError(
+                "completed double-coding worksheet must preserve CODER_A/CODER_B IDs"
+            )
         return "COMPLETE", rows
 
 
