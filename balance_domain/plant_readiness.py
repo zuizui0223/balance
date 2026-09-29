@@ -1,4 +1,4 @@
-"""Programme-wide readiness audit for BALANCE plant confirmatory model v3."""
+"""Programme-wide readiness audit for BALANCE plant confirmatory model v4."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -130,7 +130,7 @@ def build_plant_v4_readiness(
     blockers = [name for name, is_open in primary_human_open.items() if is_open]
 
     return {
-        "analysis": "balance_plant_v3_programme_readiness",
+        "analysis": "balance_plant_v4_programme_readiness",
         "model_specification": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
         "machine_complete": machine_complete,
         "all_machine_preparation_complete": all(machine_complete.values()),
@@ -138,6 +138,7 @@ def build_plant_v4_readiness(
         "external_validation_open_gates": external_validation_open,
         "open_gate_names": blockers,
         "primary_model_assembly_ready": False,
+        "v4_estimability_ready_to_evaluate": False,
         "v3_estimability_ready_to_evaluate": False,
         "reason": (
             "U2/U6 independent coding/adjudication gates remain open; V4 model assembly "
