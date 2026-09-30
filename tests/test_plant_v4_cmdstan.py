@@ -3,6 +3,7 @@ import importlib.util
 import json
 import math
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -23,6 +24,7 @@ CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
 
 def test_fit_execution_contract_is_frozen_before_outcome():
     data = load_fit_execution_contract(CONTRACT)
+    assert data["required_cmdstan_version"] == "2.40.0"
     assert data["sampling"] == {
         "chains": 4,
         "num_warmup": 1000,
@@ -341,3 +343,56 @@ def test_combine_chains_requires_cmdstan_version_metadata(tmp_path):
 
     with pytest.raises(ValueError, match="version metadata is required"):
         combine_cmdstan_chains(paths, require_gamma=False, max_depth=15)
+
+
+
+def test_runner_preflight_reads_frozen_cmdstan_version(tmp_path, monkeypatch):
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location(
+        "run_plant_v4_cmdstan_version_test",
+        runner_path,
+    )
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    stanc = bin_dir / "stanc"
+    stanc.write_text("", encoding="utf-8")
+
+    monkeypatch.setattr(
+        runner.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(
+            returncode=0,
+            stdout="stanc3 v2.40.0 (Unix)\n",
+        ),
+    )
+    assert runner._cmdstan_version(tmp_path) == "2.40.0"
+
+
+def test_runner_preflight_rejects_unparseable_cmdstan_version(tmp_path, monkeypatch):
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location(
+        "run_plant_v4_cmdstan_bad_version_test",
+        runner_path,
+    )
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    (bin_dir / "stanc").write_text("", encoding="utf-8")
+
+    monkeypatch.setattr(
+        runner.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(
+            returncode=0,
+            stdout="unknown compiler version\n",
+        ),
+    )
+    with pytest.raises(ValueError, match="could not parse"):
+        runner._cmdstan_version(tmp_path)
