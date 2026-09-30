@@ -31,12 +31,19 @@ def _write_rows(path, fields, rows):
         writer.writerows(rows)
 
 
-def _build_coder_return_bundle(return_dir, *, u2_timing_disagreements=0):
+def _build_coder_return_bundle(
+    return_dir,
+    *,
+    u2_timing_disagreements=0,
+    lanes=("U1", "U2", "U6"),
+):
     generic_sources = {
         "U1": ROOT / "data" / "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
         "U2": ROOT / "data" / "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
     }
     for lane, source in generic_sources.items():
+        if lane not in lanes:
+            continue
         fields, rows = _read_rows(source)
         assert tuple(fields) == FIELDS
         for coder in ("CODER_A", "CODER_B"):
@@ -66,29 +73,30 @@ def _build_coder_return_bundle(return_dir, *, u2_timing_disagreements=0):
                 selected,
             )
 
-    source = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
-    fields, rows = _read_rows(source)
-    assert tuple(fields) == PASS2_FIELDS
-    for coder in ("CODER_A", "CODER_B"):
-        selected = []
-        for row in rows:
-            if row["coder_id"] != coder:
-                continue
-            clean = dict(row)
-            clean.update({
-                "architecture_mode": "SHARED_INTEGRATED",
-                "module_substrate": "SINGLE_OR_CONTINUOUS",
-                "conflict_timing_geometry": "SIMULTANEOUS",
-                "conflict_spatial_geometry": "SAME_UNIT",
-                "coding_status": "CODED",
-                "notes": "synthetic completed return",
-            })
-            selected.append(clean)
-        _write_rows(
-            return_dir / CODER_RETURN_BASENAMES[("U6", coder)],
-            fields,
-            selected,
-        )
+    if "U6" in lanes:
+        source = ROOT / "data" / "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
+        fields, rows = _read_rows(source)
+        assert tuple(fields) == PASS2_FIELDS
+        for coder in ("CODER_A", "CODER_B"):
+            selected = []
+            for row in rows:
+                if row["coder_id"] != coder:
+                    continue
+                clean = dict(row)
+                clean.update({
+                    "architecture_mode": "SHARED_INTEGRATED",
+                    "module_substrate": "SINGLE_OR_CONTINUOUS",
+                    "conflict_timing_geometry": "SIMULTANEOUS",
+                    "conflict_spatial_geometry": "SAME_UNIT",
+                    "coding_status": "CODED",
+                    "notes": "synthetic completed return",
+                })
+                selected.append(clean)
+            _write_rows(
+                return_dir / CODER_RETURN_BASENAMES[("U6", coder)],
+                fields,
+                selected,
+            )
 
 
 def _build_predictor_returns(return_dir, *, reject_one_u2=False):
