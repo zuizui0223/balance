@@ -213,11 +213,13 @@ def read_cmdstan_chain(path: Path, *, require_gamma: bool) -> dict:
         ebfmi = 0.0
     else:
         energy_mean = sum(energies) / len(energies)
-        variance = sum((x - energy_mean) ** 2 for x in energies) / len(energies)
+        variance = sum(
+            (x - energy_mean) ** 2 for x in energies
+        ) / (len(energies) - 1)
         transition = sum(
             (energies[i] - energies[i - 1]) ** 2
             for i in range(1, len(energies))
-        ) / (len(energies) - 1)
+        ) / len(energies)
         ebfmi = transition / variance if variance > 0 else 0.0
 
     version = None
