@@ -155,7 +155,9 @@ def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
     assert result["primary_reliability_pass"] is True
     assert result["external_validation_reliability_pass"] is True
     assert result["predictor_primary_complete"] is True
+    assert result["predictor_return_status"] == "COMPLETE"
     assert result["primary_architecture_next_step"] == "SOURCE_ADJUDICATION"
+    assert result["external_validation_next_step"] == "SOURCE_ADJUDICATION"
     assert result["predictor_next_step"] == "PREDICTOR_ADJUDICATION_COMPLETE"
     assert result["ready_for_v4_assembly"] is False
 
@@ -228,6 +230,7 @@ def test_rejected_primary_predictor_receipt_blocks_predictor_completion(tmp_path
 
     assert result["primary_reliability_pass"] is True
     assert result["predictor_primary_complete"] is False
+    assert result["predictor_return_status"] == "INCOMPLETE"
     assert result["predictor_next_step"] == (
         "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
     )
@@ -253,6 +256,7 @@ def test_architecture_intake_can_proceed_while_predictor_review_is_pending(tmp_p
 
     assert result["primary_reliability_pass"] is True
     assert result["predictor_returns_received"] is False
+    assert result["predictor_return_status"] == "PENDING"
     assert result["predictor_primary_complete"] is False
     assert result["predictor_next_step"] == "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
     assert receipt["outputs"]["predictor_readouts"] == {}
