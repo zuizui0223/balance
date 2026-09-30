@@ -155,7 +155,8 @@
     "standard_entrypoint": "python scripts/audit_plant_human_returns.py --return-dir <dir>",
     "intake_rule": "require all six independent coder worksheets before persistent architecture intake; predictor U2/U6 reviewed frames may both be pending, but if either is supplied both are required",
     "required_coder_return_file_count": 6,
-    "optional_predictor_return_file_count": 2
+    "optional_predictor_return_file_count": 2,
+    "intake_runbook": "docs/BALANCE_PLANT_HUMAN_RETURN_INTAKE_V1.md"
   },
   "agreement_reporting": {
     "module": "balance_domain/plant_agreement_report.py",
