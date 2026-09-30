@@ -153,10 +153,12 @@
     "intake_contract": "data/BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json",
     "intake_cli": "scripts/audit_plant_human_returns.py",
     "standard_entrypoint": "python scripts/audit_plant_human_returns.py --return-dir <dir>",
-    "intake_rule": "require all six independent coder worksheets before persistent architecture intake; predictor U2/U6 reviewed frames may both be pending, but if either is supplied both are required",
-    "required_coder_return_file_count": 6,
-    "optional_predictor_return_file_count": 2,
-    "intake_runbook": "docs/BALANCE_PLANT_HUMAN_RETURN_INTAKE_V1.md"
+    "intake_rule": "accept primary U2/U6 architecture, U1 external-validation architecture, and predictor review as independent complete stages; partial files within a supplied stage fail closed",
+    "intake_runbook": "docs/BALANCE_PLANT_HUMAN_RETURN_INTAKE_V1.md",
+    "primary_architecture_return_file_count": 4,
+    "external_validation_return_file_count": 2,
+    "predictor_review_return_file_count": 2,
+    "stage_independence_rule": "U1 latency never blocks U2/U6 primary reliability; architecture latency never blocks predictor-review validation; predictor latency never blocks architecture reliability"
   },
   "agreement_reporting": {
     "module": "balance_domain/plant_agreement_report.py",
