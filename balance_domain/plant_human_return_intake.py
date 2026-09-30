@@ -1,7 +1,9 @@
-"""Fail-closed intake for returned BALANCE plant human-review files.
+"""Fail-closed staged intake for returned BALANCE plant human-review files.
 
-This module validates the complete independent-review return bundle before writing any
-persistent outputs. It does not adjudicate disagreements or fit a model.
+Architecture primary (U2+U6), architecture external validation (U1), and predictor
+receipt review are operationally independent return stages. Each stage is validated
+atomically when supplied; partial files within a stage fail closed. This module does
+not adjudicate disagreements or fit a model.
 """
 from __future__ import annotations
 
@@ -30,6 +32,21 @@ PREDICTOR_RETURN_BASENAMES = {
     "U6": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
 }
 
+PRIMARY_ARCHITECTURE_KEYS = (
+    "U2_CODER_A",
+    "U2_CODER_B",
+    "U6_CODER_A",
+    "U6_CODER_B",
+)
+EXTERNAL_ARCHITECTURE_KEYS = (
+    "U1_CODER_A",
+    "U1_CODER_B",
+)
+PREDICTOR_KEYS = (
+    "U2_PREDICTOR",
+    "U6_PREDICTOR",
+)
+
 MERGED_BASENAMES = {
     "U1": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
     "U2": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
@@ -50,26 +67,50 @@ def required_return_paths(return_dir: Path) -> dict[str, Path]:
     return paths
 
 
-def _validate_return_surface_presence(return_dir: Path) -> tuple[dict[str, Path], bool]:
-    paths = required_return_paths(return_dir)
-    coder_keys = [
-        key for key in paths
-        if key.endswith("_CODER_A") or key.endswith("_CODER_B")
-    ]
-    missing_coders = sorted(key for key in coder_keys if not paths[key].is_file())
-    if missing_coders:
+def _complete_stage_or_pending(
+    paths: dict[str, Path],
+    keys: tuple[str, ...],
+    *,
+    label: str,
+) -> bool:
+    present = [paths[key].is_file() for key in keys]
+    if any(present) and not all(present):
+        missing = [key for key, exists in zip(keys, present) if not exists]
         raise ValueError(
-            "architecture return bundle is incomplete; missing canonical coder files: "
-            + ", ".join(missing_coders)
+            f"{label} return stage is incomplete; missing canonical files: "
+            + ", ".join(missing)
         )
+    return all(present)
 
-    predictor_keys = ["U2_PREDICTOR", "U6_PREDICTOR"]
-    predictor_present = [paths[key].is_file() for key in predictor_keys]
-    if any(predictor_present) and not all(predictor_present):
+
+def _validate_return_surface_presence(
+    return_dir: Path,
+) -> tuple[dict[str, Path], dict[str, bool]]:
+    paths = required_return_paths(return_dir)
+    stages = {
+        "primary_architecture": _complete_stage_or_pending(
+            paths,
+            PRIMARY_ARCHITECTURE_KEYS,
+            label="primary architecture",
+        ),
+        "external_validation": _complete_stage_or_pending(
+            paths,
+            EXTERNAL_ARCHITECTURE_KEYS,
+            label="external-validation architecture",
+        ),
+        "predictor_review": _complete_stage_or_pending(
+            paths,
+            PREDICTOR_KEYS,
+            label="predictor review",
+        ),
+    }
+    if not any(stages.values()):
         raise ValueError(
-            "predictor return bundle must contain both U2 and U6 reviewed frames or neither"
+            "no complete human-return stage supplied; provide a complete primary "
+            "architecture stage, external-validation stage, predictor-review stage, "
+            "or any combination"
         )
-    return paths, all(predictor_present)
+    return paths, stages
 
 
 def _lane_kwargs(root: Path, lane: str) -> dict[str, Path]:
@@ -102,39 +143,55 @@ def _write_disagreements(path: Path, lane: str, report: dict) -> None:
                 writer.writerow({"lane": lane, "field": field, **item})
 
 
+def _merge_and_report_lane(
+    *,
+    root: Path,
+    paths: dict[str, Path],
+    lane: str,
+) -> tuple[list[dict[str, str]], dict]:
+    merged = merge_coder_returns(
+        lane=lane,
+        coder_a_path=paths[f"{lane}_CODER_A"],
+        coder_b_path=paths[f"{lane}_CODER_B"],
+        **_lane_kwargs(root, lane),
+    )
+    with tempfile.TemporaryDirectory(prefix="balance-plant-return-intake-") as tmp:
+        coding_path = Path(tmp) / MERGED_BASENAMES[lane]
+        write_merged_coder_returns(coding_path, merged, lane=lane)
+        agreement = build_lane_agreement_report(
+            lane=lane,
+            coding_path=coding_path,
+            **_lane_kwargs(root, lane),
+        )
+    return merged, agreement
+
+
 def validate_human_return_bundle(
     *,
     root: Path,
     return_dir: Path,
 ) -> dict:
-    """Validate all human returns without creating persistent output files."""
-    paths, predictor_returns_received = _validate_return_surface_presence(return_dir)
+    """Validate any complete human-return stages without persistent side effects."""
+    paths, stages = _validate_return_surface_presence(return_dir)
     merged: dict[str, list[dict[str, str]]] = {}
     agreement: dict[str, dict] = {}
 
-    for lane in ("U1", "U2", "U6"):
-        merged[lane] = merge_coder_returns(
-            lane=lane,
-            coder_a_path=paths[f"{lane}_CODER_A"],
-            coder_b_path=paths[f"{lane}_CODER_B"],
-            **_lane_kwargs(root, lane),
+    if stages["external_validation"]:
+        merged["U1"], agreement["U1"] = _merge_and_report_lane(
+            root=root,
+            paths=paths,
+            lane="U1",
         )
-
-    # Agreement loaders operate on canonical merged-ledger paths. Use a temporary
-    # directory so validation remains side-effect free until every return surface passes.
-    with tempfile.TemporaryDirectory(prefix="balance-plant-return-intake-") as tmp:
-        tmpdir = Path(tmp)
-        for lane in ("U1", "U2", "U6"):
-            coding_path = tmpdir / MERGED_BASENAMES[lane]
-            write_merged_coder_returns(coding_path, merged[lane], lane=lane)
-            agreement[lane] = build_lane_agreement_report(
+    if stages["primary_architecture"]:
+        for lane in ("U2", "U6"):
+            merged[lane], agreement[lane] = _merge_and_report_lane(
+                root=root,
+                paths=paths,
                 lane=lane,
-                coding_path=coding_path,
-                **_lane_kwargs(root, lane),
             )
 
     predictor: dict[str, dict | None] = {"U2": None, "U6": None}
-    if predictor_returns_received:
+    if stages["predictor_review"]:
         frozen_u2 = root / "data" / PREDICTOR_RETURN_BASENAMES["U2"]
         frozen_u6 = root / "data" / PREDICTOR_RETURN_BASENAMES["U6"]
         predictor = {
@@ -148,30 +205,47 @@ def validate_human_return_bundle(
             ),
         }
 
-    primary_reliability_pass = all(
-        agreement[lane]["reliability_pass"] for lane in ("U2", "U6")
-    )
-    external_validation_reliability_pass = agreement["U1"]["reliability_pass"]
+    primary_reliability_pass: bool | None = None
+    if stages["primary_architecture"]:
+        primary_reliability_pass = all(
+            agreement[lane]["reliability_pass"] for lane in ("U2", "U6")
+        )
+
+    external_validation_reliability_pass: bool | None = None
+    if stages["external_validation"]:
+        external_validation_reliability_pass = agreement["U1"]["reliability_pass"]
+
     predictor_primary_complete = (
-        predictor_returns_received
+        stages["predictor_review"]
         and predictor["U2"] is not None
         and predictor["U6"] is not None
         and predictor["U2"]["n_clusters_with_three_adjudicated_receipts"] == 8
         and predictor["U6"]["n_clusters_with_three_adjudicated_receipts"] == 21
     )
 
-    if not primary_reliability_pass:
+    if not stages["primary_architecture"]:
+        architecture_next = "AWAIT_PRIMARY_ARCHITECTURE_RETURNS"
+        primary_status = "PENDING"
+    elif not primary_reliability_pass:
         architecture_next = "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS"
+        primary_status = "RELIABILITY_FAIL"
     else:
         architecture_next = "SOURCE_ADJUDICATION"
+        primary_status = "RELIABILITY_PASS"
 
-    external_validation_next = (
-        "SOURCE_ADJUDICATION"
-        if external_validation_reliability_pass
-        else "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS"
-    )
+    if not stages["external_validation"]:
+        external_validation_next = "AWAIT_U1_EXTERNAL_VALIDATION_RETURNS"
+        external_status = "PENDING"
+    elif not external_validation_reliability_pass:
+        external_validation_next = (
+            "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS"
+        )
+        external_status = "RELIABILITY_FAIL"
+    else:
+        external_validation_next = "SOURCE_ADJUDICATION"
+        external_status = "RELIABILITY_PASS"
 
-    if not predictor_returns_received:
+    if not stages["predictor_review"]:
         predictor_next = "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
         predictor_status = "PENDING"
     elif predictor_primary_complete:
@@ -191,23 +265,26 @@ def validate_human_return_bundle(
             }
             for key, path in sorted(paths.items())
         },
+        "stage_received": stages,
         "merged_rows": merged,
         "agreement": agreement,
         "predictor_adjudication": predictor,
-        "predictor_returns_received": predictor_returns_received,
+        "primary_architecture_returns_received": stages["primary_architecture"],
+        "external_validation_returns_received": stages["external_validation"],
+        "predictor_returns_received": stages["predictor_review"],
+        "primary_return_status": primary_status,
+        "external_validation_return_status": external_status,
         "predictor_return_status": predictor_status,
         "primary_reliability_pass": primary_reliability_pass,
-        "external_validation_reliability_pass": (
-            external_validation_reliability_pass
-        ),
+        "external_validation_reliability_pass": external_validation_reliability_pass,
         "external_validation_adjudication_allowed": (
-            external_validation_reliability_pass
+            external_validation_reliability_pass is True
         ),
         "predictor_primary_complete": predictor_primary_complete,
         "primary_architecture_next_step": architecture_next,
         "external_validation_next_step": external_validation_next,
         "predictor_next_step": predictor_next,
-        "ready_for_architecture_adjudication": primary_reliability_pass,
+        "ready_for_architecture_adjudication": primary_reliability_pass is True,
         "ready_for_v4_assembly": False,
         "v4_assembly_blocker": (
             "architecture adjudication is a separate post-reliability human gate"
@@ -222,7 +299,7 @@ def write_human_return_intake(
     return_dir: Path,
     out_dir: Path,
 ) -> dict:
-    """Validate the supplied returns, then atomically create one immutable intake workspace."""
+    """Validate supplied return stages, then atomically create one immutable workspace."""
     result = validate_human_return_bundle(root=root, return_dir=return_dir)
 
     if out_dir.exists():
@@ -241,7 +318,7 @@ def write_human_return_intake(
         agreement_paths: dict[str, str] = {}
         disagreement_paths: dict[str, str] = {}
 
-        for lane in ("U1", "U2", "U6"):
+        for lane in sorted(result["merged_rows"]):
             merged_name = MERGED_BASENAMES[lane]
             merged_path = tmp_dir / merged_name
             write_merged_coder_returns(
@@ -308,12 +385,22 @@ def write_human_return_intake(
 
     return {
         "receipt": str(out_dir / receipt_name),
+        "primary_architecture_returns_received": result[
+            "primary_architecture_returns_received"
+        ],
+        "external_validation_returns_received": result[
+            "external_validation_returns_received"
+        ],
+        "predictor_returns_received": result["predictor_returns_received"],
+        "primary_return_status": result["primary_return_status"],
+        "external_validation_return_status": result[
+            "external_validation_return_status"
+        ],
+        "predictor_return_status": result["predictor_return_status"],
         "primary_reliability_pass": result["primary_reliability_pass"],
         "external_validation_reliability_pass": result[
             "external_validation_reliability_pass"
         ],
-        "predictor_returns_received": result["predictor_returns_received"],
-        "predictor_return_status": result["predictor_return_status"],
         "predictor_primary_complete": result["predictor_primary_complete"],
         "primary_architecture_next_step": result[
             "primary_architecture_next_step"
