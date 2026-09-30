@@ -63,6 +63,15 @@ def load_fit_execution_contract(path: Path) -> dict:
             raise ValueError(f"V4 diagnostic contract drifted for {key}")
     if diagnostics.get("automatic_retuning_allowed") is not False:
         raise ValueError("V4 fit contract must forbid automatic retuning")
+
+    required_workspace = {
+        "existing_output_directory_overwrite_allowed": False,
+        "one_run_per_workspace": True,
+        "stale_optional_outputs_forbidden": True,
+        "new_run_requires_new_output_directory": True,
+    }
+    if data.get("workspace_policy") != required_workspace:
+        raise ValueError("V4 fit workspace policy drifted")
     return data
 
 
