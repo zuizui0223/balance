@@ -1,23 +1,15 @@
 {
   "schema_version": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1",
   "status": "FROZEN_BEFORE_INDEPENDENT_HUMAN_RETURNS",
-  "required_return_files": {
-    "U1_CODER_A": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
-    "U1_CODER_B": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
-    "U2_CODER_A": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
-    "U2_CODER_B": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
-    "U6_CODER_A": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
-    "U6_CODER_B": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
-    "U2_PREDICTOR": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
-    "U6_PREDICTOR": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
-  },
   "intake_order": [
-    "require all eight canonical return files before persistent output",
+    "require all six canonical independent-coder return files before persistent architecture intake outputs",
+    "permit predictor review to remain pending without blocking architecture reliability",
+    "if either predictor reviewed frame is supplied, require both U2 and U6 reviewed frames",
     "validate each single-coder return against frozen lane identity and group set",
     "merge CODER_A and CODER_B into canonical lane ledgers",
     "compute lane agreement and exact disagreements",
-    "validate U2/U6 predictor adjudication returns against frozen receipt frames",
-    "write deterministic intake workspace only after every validation succeeds"
+    "when present, validate U2/U6 predictor adjudication returns against frozen receipt frames",
+    "write deterministic intake workspace only after every supplied surface validates"
   ],
   "primary_reliability_rule": {
     "lanes": [
@@ -40,8 +32,10 @@
     "rejection_or_incomplete_action": "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
   },
   "prohibitions": [
-    "do not create persistent intake outputs from a partial return bundle",
-    "do not silently fall back to tracked blank worksheets when a return file is missing",
+    "do not create persistent architecture intake outputs from a partial six-coder return bundle",
+    "do not silently fall back to tracked blank worksheets when a coder return file is missing",
+    "do not accept only one of the two predictor reviewed frames",
+    "do not make predictor-review latency block architecture reliability reporting",
     "do not adjudicate architecture disagreements inside intake",
     "do not synthesize rejected predictor receipts",
     "do not set ready_for_v4_assembly=true at intake stage"
@@ -50,5 +44,18 @@
     "module": "balance_domain.plant_human_return_intake",
     "cli": "scripts/audit_plant_human_returns.py"
   },
-  "claim_ceiling": "return_ingestion_and_reliability_gate_only_no_biological_result"
+  "claim_ceiling": "return_ingestion_and_reliability_gate_only_no_biological_result",
+  "required_architecture_return_files": {
+    "U1_CODER_A": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
+    "U1_CODER_B": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
+    "U2_CODER_A": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
+    "U2_CODER_B": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
+    "U6_CODER_A": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
+    "U6_CODER_B": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv"
+  },
+  "optional_predictor_return_pair": {
+    "U2_PREDICTOR": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "U6_PREDICTOR": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "rule": "both reviewed predictor frames may be absent while architecture reliability proceeds; if either is supplied, both are required"
+  }
 }
