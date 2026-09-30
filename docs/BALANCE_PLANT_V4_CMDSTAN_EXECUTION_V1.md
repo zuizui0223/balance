@@ -23,9 +23,16 @@ The execution engine is fixed prospectively at:
 CmdStan = 2.40.0
 ```
 
-The runner reads `bin/stanc --version` before compilation and refuses to proceed when the
-installed version differs. Recording a later version in the fit receipt is not a substitute
-for this preflight check.
+A fresh official CmdStan source tarball does not necessarily contain an installed
+`bin/stanc` entry. The runner therefore first executes CmdStan's own registered target
+
+```text
+make bin/stanc
+```
+
+when the compiler is absent. It then reads `bin/stanc --version` before model compilation
+and refuses to proceed when the installed version differs. Recording a later version in the
+fit receipt is not a substitute for this preflight check.
 
 ## Frozen sampling configuration
 
