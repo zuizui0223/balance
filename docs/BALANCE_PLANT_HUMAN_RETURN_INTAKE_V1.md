@@ -139,6 +139,7 @@ than overwriting the earlier evidence state.
 Successful intake writes one workspace containing:
 
 - canonical merged U1/U2/U6 double-coding ledgers;
+- exact-byte copies of reviewed U2/U6 predictor receipt frames when those returns are present;
 - U1/U2/U6 agreement reports;
 - exact disagreement CSVs;
 - U2/U6 predictor-adjudication readouts when predictor returns are present;
