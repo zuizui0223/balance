@@ -28,8 +28,9 @@ def main() -> None:
         type=Path,
         default=None,
         help=(
-            "Directory containing all six coder-return worksheets. Reviewed U2/U6 predictor "
-            "receipt frames are optional as a pair; supplying only one fails closed."
+            "Directory containing one or more complete return stages: primary U2/U6 "
+            "architecture (4 files), external U1 architecture (2 files), and/or U2/U6 "
+            "predictor review (2 files). Partial files within any supplied stage fail closed."
         ),
     )
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
