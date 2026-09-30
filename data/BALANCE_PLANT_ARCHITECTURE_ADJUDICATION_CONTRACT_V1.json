@@ -1,0 +1,60 @@
+{
+  "schema_version": "BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_CONTRACT_V1",
+  "status": "FROZEN_BEFORE_INDEPENDENT_HUMAN_RETURNS",
+  "input_contract": "data/BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json",
+  "input_receipt_schema": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1",
+  "reliability_gate": {
+    "threshold_raw_agreement": 0.8,
+    "all_registered_fields_must_pass": true,
+    "failure_action": "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS",
+    "packet_generation_allowed_only_if_lane_passes": true
+  },
+  "consensus_rule": {
+    "condition": "CODER_A and CODER_B agree on every registered lane field after reliability pass",
+    "adjudication_status": "ADJUDICATED",
+    "adjudication_basis": "CODER_CONSENSUS",
+    "notes": "AUTO_CODER_CONSENSUS_AFTER_RELIABILITY_PASS",
+    "human_source_review_required": false
+  },
+  "disagreement_rule": {
+    "condition": "at least one registered field differs between CODER_A and CODER_B",
+    "adjudication_status": "PENDING",
+    "adjudication_basis": "AWAITING_SOURCE_REVIEW_OF_DISAGREEMENTS",
+    "coded_fields": "UNRESOLVED",
+    "completion_basis": "SOURCE_REVIEW_OF_DISAGREEMENTS",
+    "human_source_review_required": true,
+    "consensus_field_override_allowed": false
+  },
+  "packet_contents": [
+    "plant macro codebook",
+    "architecture adjudication protocol",
+    "frozen lane source packet",
+    "canonical agreement report",
+    "long-format coder A/B review context",
+    "canonical lane adjudication worksheet",
+    "embedded packet receipt"
+  ],
+  "primary_lanes": [
+    "U2",
+    "U6"
+  ],
+  "external_validation_lane": "U1",
+  "output_policy": {
+    "deterministic_zip": true,
+    "existing_output_directory_overwrite_allowed": false,
+    "write_mode": "temporary_sibling_workspace_then_atomic_rename"
+  },
+  "implementation": {
+    "module": "balance_domain.plant_architecture_adjudication",
+    "cli": "scripts/build_plant_architecture_adjudication_packets.py",
+    "protocol": "docs/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_PROTOCOL_V1.md"
+  },
+  "prohibitions": [
+    "do not generate a lane adjudication packet when any lane agreement field has raw agreement below 0.80",
+    "do not change coder-consensus fields during source adjudication",
+    "do not expose V4 fitted results or publication decisions in adjudication packets",
+    "do not use predictor-review decisions as architecture evidence",
+    "do not silently replace the frozen dependency-group set"
+  ],
+  "claim_ceiling": "post_reliability_architecture_adjudication_handoff_only_no_biological_result"
+}
