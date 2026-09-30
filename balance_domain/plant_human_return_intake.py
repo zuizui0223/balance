@@ -182,6 +182,7 @@ def validate_human_return_bundle(
         predictor_status = "INCOMPLETE"
 
     return {
+        "schema_version": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1",
         "analysis": "balance_plant_human_return_intake",
         "input_files": {
             key: {
