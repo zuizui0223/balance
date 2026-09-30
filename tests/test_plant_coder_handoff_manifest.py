@@ -115,7 +115,8 @@ def test_handoff_manifest_registers_validated_return_ingestion_workspace():
         "data/BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json"
     )
     assert ret["intake_cli"] == "scripts/audit_plant_human_returns.py"
-    assert ret["required_return_file_count"] == 8
+    assert ret["required_coder_return_file_count"] == 6
+    assert ret["optional_predictor_return_file_count"] == 2
     assert ret["standard_entrypoint"].startswith(
         "python scripts/audit_plant_human_returns.py"
     )
