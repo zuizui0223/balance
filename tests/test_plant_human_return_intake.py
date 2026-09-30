@@ -173,6 +173,10 @@ def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
     assert receipt["agreement"]["U6"]["failed_fields"] == []
     assert (out_dir / receipt["outputs"]["merged_ledgers"]["U2"]).exists()
     assert (out_dir / receipt["outputs"]["agreement_reports"]["U6"]).exists()
+    for lane in ("U2", "U6"):
+        reviewed = out_dir / receipt["outputs"]["predictor_reviewed_frames"][lane]
+        original = returns / PREDICTOR_RETURN_BASENAMES[lane]
+        assert reviewed.read_bytes() == original.read_bytes()
 
 
 def test_incomplete_bundle_fails_before_creating_output_directory(tmp_path):
@@ -259,6 +263,7 @@ def test_architecture_intake_can_proceed_while_predictor_review_is_pending(tmp_p
     assert result["predictor_return_status"] == "PENDING"
     assert result["predictor_primary_complete"] is False
     assert result["predictor_next_step"] == "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
+    assert receipt["outputs"]["predictor_reviewed_frames"] == {}
     assert receipt["outputs"]["predictor_readouts"] == {}
     assert result["ready_for_v4_assembly"] is False
 
