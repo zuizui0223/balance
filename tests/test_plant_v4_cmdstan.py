@@ -396,3 +396,58 @@ def test_runner_preflight_rejects_unparseable_cmdstan_version(tmp_path, monkeypa
     )
     with pytest.raises(ValueError, match="could not parse"):
         runner._cmdstan_version(tmp_path)
+
+
+
+def test_runner_bootstraps_stanc_with_cmdstan_make_target(tmp_path, monkeypatch):
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location(
+        "run_plant_v4_cmdstan_bootstrap_test",
+        runner_path,
+    )
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+
+    calls = []
+
+    def fake_run_checked(argv, *, cwd, log_path):
+        calls.append((argv, cwd, log_path))
+        (tmp_path / "bin").mkdir(exist_ok=True)
+        (tmp_path / "bin" / "stanc").write_text("", encoding="utf-8")
+
+    monkeypatch.setattr(runner, "_run_checked", fake_run_checked)
+    stanc = runner._ensure_stanc(
+        cmdstan_dir=tmp_path,
+        make_command="make",
+        log_dir=tmp_path / "logs",
+    )
+    assert stanc == tmp_path / "bin" / "stanc"
+    assert calls[0][0] == ["make", "bin/stanc"]
+    assert calls[0][1] == tmp_path
+    assert calls[0][2] == tmp_path / "logs" / "stanc.install.log"
+
+
+def test_runner_does_not_reinstall_existing_stanc(tmp_path, monkeypatch):
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location(
+        "run_plant_v4_cmdstan_existing_stanc_test",
+        runner_path,
+    )
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+
+    (tmp_path / "bin").mkdir()
+    stanc = tmp_path / "bin" / "stanc"
+    stanc.write_text("", encoding="utf-8")
+
+    def should_not_run(*args, **kwargs):
+        raise AssertionError("existing stanc must not trigger make")
+
+    monkeypatch.setattr(runner, "_run_checked", should_not_run)
+    assert runner._ensure_stanc(
+        cmdstan_dir=tmp_path,
+        make_command="make",
+        log_dir=tmp_path / "logs",
+    ) == stanc

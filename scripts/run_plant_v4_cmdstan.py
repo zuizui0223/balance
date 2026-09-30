@@ -65,6 +65,26 @@ def _exe_suffix() -> str:
     return ".exe" if os.name == "nt" else ""
 
 
+def _ensure_stanc(
+    *,
+    cmdstan_dir: Path,
+    make_command: str,
+    log_dir: Path,
+) -> Path:
+    """Install the release-matched stanc binary using CmdStan's own make target."""
+    stanc = cmdstan_dir / "bin" / f"stanc{_exe_suffix()}"
+    if stanc.exists():
+        return stanc
+    _run_checked(
+        [make_command, f"bin/stanc{_exe_suffix()}"],
+        cwd=cmdstan_dir,
+        log_path=log_dir / "stanc.install.log",
+    )
+    if not stanc.exists():
+        raise RuntimeError("CmdStan make bin/stanc did not create the compiler")
+    return stanc
+
+
 def _cmdstan_version(cmdstan_dir: Path) -> str:
     stanc = cmdstan_dir / "bin" / f"stanc{_exe_suffix()}"
     if not stanc.exists():
@@ -281,6 +301,14 @@ def run_all(
     make_command: str = "make",
 ) -> dict:
     contract = load_fit_execution_contract(contract_path)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    build_dir = out_dir / "_cmdstan_build"
+    build_dir.mkdir(parents=True, exist_ok=True)
+    _ensure_stanc(
+        cmdstan_dir=cmdstan_dir,
+        make_command=make_command,
+        log_dir=build_dir,
+    )
     cmdstan_version = _cmdstan_version(cmdstan_dir)
     required_version = contract["required_cmdstan_version"]
     if cmdstan_version != required_version:
@@ -313,8 +341,6 @@ def run_all(
             "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
         ))
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    build_dir = out_dir / "_cmdstan_build"
     model_executables: dict[Path, Path] = {}
     for job_id in active_jobs:
         model = FIT_SPECS[job_id]["model"]
