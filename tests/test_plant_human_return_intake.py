@@ -171,8 +171,8 @@ def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
     ] == 21
     assert receipt["agreement"]["U2"]["failed_fields"] == []
     assert receipt["agreement"]["U6"]["failed_fields"] == []
-    assert Path(receipt["outputs"]["merged_ledgers"]["U2"]).exists()
-    assert Path(receipt["outputs"]["agreement_reports"]["U6"]).exists()
+    assert (out_dir / receipt["outputs"]["merged_ledgers"]["U2"]).exists()
+    assert (out_dir / receipt["outputs"]["agreement_reports"]["U6"]).exists()
 
 
 def test_incomplete_bundle_fails_before_creating_output_directory(tmp_path):
@@ -287,3 +287,22 @@ def test_one_sided_predictor_return_fails_before_persistent_output(tmp_path):
         )
 
     assert not out_dir.exists()
+
+
+
+def test_existing_intake_workspace_is_never_overwritten(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    _complete_bundle(returns)
+    out_dir.mkdir()
+    sentinel = out_dir / "sentinel.txt"
+    sentinel.write_text("preserve me", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+        )
+
+    assert sentinel.read_text(encoding="utf-8") == "preserve me"
