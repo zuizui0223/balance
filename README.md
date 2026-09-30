@@ -202,6 +202,15 @@ python scripts/report_plant_v4_readiness.py
 This reports the machine-complete preparation, remaining U2/U6 human coding/adjudication
 gates, pre-outcome V4 design status, and the fail-closed standalone-paper reactivation gate.
 
+After genuine human returns close the assembly gates, the frozen CmdStan execution entrypoint is:
+
+```bash
+python scripts/run_plant_v4_cmdstan.py --cmdstan-dir /path/to/cmdstan
+```
+
+The runner uses the preregistered sampling/diagnostic contract in
+`data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json` and refuses posterior decisions
+when convergence diagnostics fail.
 
 The flowering-plant confirmatory lane has a frozen four-class primary response:
 
