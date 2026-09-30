@@ -63,6 +63,9 @@
     "persistent_output_written_only_after_all_supplied_surfaces_validate": true,
     "existing_output_directory_overwrite_allowed": false,
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
-    "output_references": "workspace_relative_basenames"
-  }
+    "output_references": "workspace_relative_basenames",
+    "reviewed_predictor_frames_preserved_when_received": true,
+    "predictor_frame_copy_rule": "exact bytes under canonical mutable basenames so downstream --input-dir cannot silently fall back to tracked SCREENED frames"
+  },
+  "receipt_schema_version": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1"
 }
