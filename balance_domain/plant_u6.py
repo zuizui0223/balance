@@ -937,7 +937,32 @@ def load_u6_pass2_adjudication(
             raise ValueError(f"row {row_number} invalid conflict_spatial_geometry")
 
         if clean["adjudication_status"] == "PENDING":
-            if clean["adjudication_basis"] != "AWAITING_INDEPENDENT_DOUBLE_CODING":
+            allowed_pending_basis = {"AWAITING_INDEPENDENT_DOUBLE_CODING"}
+            coding_group = coding_by_group.get(group, [])
+            if (
+                not agreement_repair_required
+                and len(coding_group) == 2
+                and all(
+                    coder_row["coding_status"] == "CODED"
+                    for coder_row in coding_group
+                )
+                and {row["coder_id"] for row in coding_group}
+                == {"CODER_A", "CODER_B"}
+            ):
+                pair_by_coder = {
+                    row["coder_id"]: row
+                    for row in coding_group
+                }
+                disagreements = [
+                    field for field in U6_AGREEMENT_FIELDS
+                    if pair_by_coder["CODER_A"][field]
+                    != pair_by_coder["CODER_B"][field]
+                ]
+                if disagreements:
+                    allowed_pending_basis.add(
+                        "AWAITING_SOURCE_REVIEW_OF_DISAGREEMENTS"
+                    )
+            if clean["adjudication_basis"] not in allowed_pending_basis:
                 raise ValueError(f"row {row_number} pending adjudication basis drifted")
             if any(
                 clean[field] != "UNRESOLVED"
