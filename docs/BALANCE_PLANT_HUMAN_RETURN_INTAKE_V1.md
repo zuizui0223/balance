@@ -120,6 +120,20 @@ RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS
 
 A rejected frozen receipt is not silently edited into an acceptable one.
 
+## Workspace immutability
+
+An intake output directory is a one-shot evidence workspace.
+
+- if the requested output directory already exists, intake fails;
+- all supplied returns are validated before persistent output is written;
+- files are first written to a temporary sibling directory;
+- the temporary directory is atomically renamed to the final workspace only after every
+  output is complete;
+- output paths recorded in the receipt are workspace-relative basenames.
+
+A corrected recode or later predictor return therefore uses a new output directory rather
+than overwriting the earlier evidence state.
+
 ## Outputs
 
 Successful intake writes one workspace containing:
