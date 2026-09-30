@@ -179,7 +179,7 @@ def test_incomplete_bundle_fails_before_creating_output_directory(tmp_path):
     _complete_bundle(returns)
     (returns / CODER_RETURN_BASENAMES[("U6", "CODER_B")]).unlink()
 
-    with pytest.raises(ValueError, match="bundle is incomplete"):
+    with pytest.raises(ValueError, match="architecture return bundle is incomplete"):
         write_human_return_intake(
             root=ROOT,
             return_dir=returns,
@@ -236,3 +236,50 @@ def test_rejected_primary_predictor_receipt_blocks_predictor_completion(tmp_path
         "n_clusters_with_three_adjudicated_receipts"
     ] == 7
     assert result["ready_for_v4_assembly"] is False
+
+
+
+def test_architecture_intake_can_proceed_while_predictor_review_is_pending(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    _build_coder_return_bundle(returns)
+
+    result = write_human_return_intake(
+        root=ROOT,
+        return_dir=returns,
+        out_dir=out_dir,
+    )
+    receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
+
+    assert result["primary_reliability_pass"] is True
+    assert result["predictor_returns_received"] is False
+    assert result["predictor_primary_complete"] is False
+    assert result["predictor_next_step"] == "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
+    assert receipt["outputs"]["predictor_readouts"] == {}
+    assert result["ready_for_v4_assembly"] is False
+
+
+def test_one_sided_predictor_return_fails_before_persistent_output(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    _build_coder_return_bundle(returns)
+
+    lane = "U2"
+    source = ROOT / "data" / PREDICTOR_RETURN_BASENAMES[lane]
+    fields, rows = _read_rows(source)
+    for row in rows:
+        row["adjudication_status"] = "REJECTED"
+    _write_rows(
+        returns / PREDICTOR_RETURN_BASENAMES[lane],
+        fields,
+        rows,
+    )
+
+    with pytest.raises(ValueError, match="both U2 and U6 reviewed frames or neither"):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+        )
+
+    assert not out_dir.exists()
