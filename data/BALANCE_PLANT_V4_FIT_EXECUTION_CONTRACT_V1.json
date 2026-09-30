@@ -78,8 +78,16 @@
     "do not continue to posterior decision if any registered diagnostic gate fails",
     "do not automatically retune the sampler after a diagnostic failure",
     "do not fit the temporal generality models unless both registered generality input files exist",
-    "do not replace the registered probability estimands with raw logit coefficient signs"
+    "do not replace the registered probability estimands with raw logit coefficient signs",
+    "do not reuse or overwrite a prior V4 fit output directory",
+    "do not allow stale optional generality outputs from an earlier run to coexist with a later primary-only fit"
   ],
   "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result",
-  "required_cmdstan_version": "2.40.0"
+  "required_cmdstan_version": "2.40.0",
+  "workspace_policy": {
+    "existing_output_directory_overwrite_allowed": false,
+    "one_run_per_workspace": true,
+    "stale_optional_outputs_forbidden": true,
+    "new_run_requires_new_output_directory": true
+  }
 }
