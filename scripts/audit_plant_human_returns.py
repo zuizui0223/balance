@@ -28,8 +28,8 @@ def main() -> None:
         type=Path,
         required=True,
         help=(
-            "Directory containing all six coder-return worksheets plus the reviewed "
-            "U2/U6 predictor receipt frames under their canonical basenames."
+            "Directory containing all six coder-return worksheets. Reviewed U2/U6 predictor "
+            "receipt frames are optional as a pair; supplying only one fails closed."
         ),
     )
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
