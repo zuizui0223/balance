@@ -165,6 +165,12 @@ def validate_human_return_bundle(
     else:
         architecture_next = "SOURCE_ADJUDICATION"
 
+    external_validation_next = (
+        "SOURCE_ADJUDICATION"
+        if external_validation_reliability_pass
+        else "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS"
+    )
+
     if not predictor_returns_received:
         predictor_next = "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
         predictor_status = "PENDING"
