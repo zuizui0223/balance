@@ -240,7 +240,28 @@ def load_u1_adjudication(
             "conflict_spatial_geometry",
         )
         if clean["adjudication_status"] == "PENDING":
-            if clean["adjudication_basis"] != "AWAITING_INDEPENDENT_DOUBLE_CODING":
+            allowed_pending_basis = {"AWAITING_INDEPENDENT_DOUBLE_CODING"}
+            if coding_rows is not None and not agreement_repair_required:
+                pair = coding_by_group.get(group, [])
+                if (
+                    len(pair) == 2
+                    and {item["coder_id"] for item in pair}
+                    == {"CODER_A", "CODER_B"}
+                ):
+                    pair_by_coder = {
+                        item["coder_id"]: item
+                        for item in pair
+                    }
+                    disagreements = [
+                        field for field in coded_fields
+                        if pair_by_coder["CODER_A"][field]
+                        != pair_by_coder["CODER_B"][field]
+                    ]
+                    if disagreements:
+                        allowed_pending_basis.add(
+                            "AWAITING_SOURCE_REVIEW_OF_DISAGREEMENTS"
+                        )
+            if clean["adjudication_basis"] not in allowed_pending_basis:
                 raise ValueError(f"row {n} pending adjudication basis drifted")
             if any(clean[field] != "UNRESOLVED" for field in coded_fields):
                 raise ValueError(f"row {n} pending adjudication must remain unresolved")
