@@ -170,5 +170,22 @@
     "pass_action": "SOURCE_ADJUDICATION",
     "exact_disagreement_list_required": true,
     "adjudication_allowed_only_if_all_fields_pass": true
+  },
+  "architecture_adjudication": {
+    "contract": "data/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_CONTRACT_V1.json",
+    "protocol": "docs/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_PROTOCOL_V1.md",
+    "module": "balance_domain/plant_architecture_adjudication.py",
+    "builder": "scripts/build_plant_architecture_adjudication_packets.py",
+    "input": "canonical human-return intake workspace",
+    "reliability_gate": "all registered lane fields raw agreement >=0.80",
+    "consensus_action": "auto ADJUDICATED with CODER_CONSENSUS after reliability pass",
+    "disagreement_action": "PENDING with AWAITING_SOURCE_REVIEW_OF_DISAGREEMENTS",
+    "low_agreement_action": "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS",
+    "primary_lanes": [
+      "U2",
+      "U6"
+    ],
+    "external_validation_lane": "U1",
+    "claim_ceiling": "post_reliability_architecture_adjudication_handoff_only_no_biological_result"
   }
 }
