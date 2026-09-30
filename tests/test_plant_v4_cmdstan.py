@@ -1,4 +1,5 @@
 import csv
+import importlib.util
 import json
 import math
 from pathlib import Path
@@ -251,3 +252,44 @@ def test_diagnostic_gate_is_fail_closed(tmp_path):
     assert failed["status"] == "FAIL"
     assert failed["checks"]["rhat"] is False
     assert failed["automatic_retuning_permitted"] is False
+
+
+
+def test_v4_fit_execution_contract_is_linked_across_active_surfaces():
+    target = "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
+    spec = json.loads(
+        (ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    rules = json.loads(
+        (ROOT / "data" / "BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    handoff = json.loads(
+        (ROOT / "data" / "BALANCE_PLANT_CODER_HANDOFF_MANIFEST_V1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert spec["fit_execution_contract"] == target
+    assert spec["fit_execution_runner"] == "scripts/run_plant_v4_cmdstan.py"
+    assert rules["fit_execution_contract"] == target
+    assert handoff["post_handoff_analysis"]["fit_execution_contract"] == target
+    assert handoff["post_handoff_analysis"]["fit_runner"] == (
+        "scripts/run_plant_v4_cmdstan.py"
+    )
+
+
+def test_runner_fit_specs_match_frozen_contract():
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location("run_plant_v4_cmdstan", runner_path)
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+
+    contract = load_fit_execution_contract(CONTRACT)
+    registered = {item["id"]: item for item in contract["fit_jobs"]}
+    assert set(runner.FIT_SPECS) == set(registered)
+    for job_id, item in registered.items():
+        assert runner.FIT_SPECS[job_id]["input"] == item["input"]
