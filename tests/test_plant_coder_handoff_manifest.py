@@ -116,8 +116,10 @@ def test_handoff_manifest_registers_validated_return_ingestion_workspace():
     )
     assert ret["intake_cli"] == "scripts/audit_plant_human_returns.py"
     assert ret["intake_runbook"] == "docs/BALANCE_PLANT_HUMAN_RETURN_INTAKE_V1.md"
-    assert ret["required_coder_return_file_count"] == 6
-    assert ret["optional_predictor_return_file_count"] == 2
+    assert ret["primary_architecture_return_file_count"] == 4
+    assert ret["external_validation_return_file_count"] == 2
+    assert ret["predictor_review_return_file_count"] == 2
+    assert "U1 latency never blocks" in ret["stage_independence_rule"]
     assert ret["standard_entrypoint"].startswith(
         "python scripts/audit_plant_human_returns.py"
     )
