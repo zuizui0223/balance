@@ -26,7 +26,7 @@ def main() -> None:
     parser.add_argument(
         "--return-dir",
         type=Path,
-        required=True,
+        default=None,
         help=(
             "Directory containing all six coder-return worksheets. Reviewed U2/U6 predictor "
             "receipt frames are optional as a pair; supplying only one fails closed."
@@ -41,15 +41,19 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.list_required:
+        base = args.return_dir or Path(".")
         print(json.dumps(
             {
                 key: path.name
-                for key, path in required_return_paths(args.return_dir).items()
+                for key, path in required_return_paths(base).items()
             },
             indent=2,
             sort_keys=True,
         ))
         return
+
+    if args.return_dir is None:
+        parser.error("--return-dir is required unless --list-required is used")
 
     print(json.dumps(
         write_human_return_intake(
