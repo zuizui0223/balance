@@ -39,6 +39,12 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "refresh": 100,
     }
     assert data["diagnostics"]["automatic_retuning_allowed"] is False
+    assert data["workspace_policy"] == {
+        "existing_output_directory_overwrite_allowed": False,
+        "one_run_per_workspace": True,
+        "stale_optional_outputs_forbidden": True,
+        "new_run_requires_new_output_directory": True,
+    }
 
 
 def test_cmdstan_argv_uses_only_frozen_sampling_settings(tmp_path):
@@ -451,3 +457,30 @@ def test_runner_does_not_reinstall_existing_stanc(tmp_path, monkeypatch):
         make_command="make",
         log_dir=tmp_path / "logs",
     ) == stanc
+
+
+
+def test_runner_refuses_existing_fit_workspace_before_any_execution(tmp_path):
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location(
+        "run_plant_v4_cmdstan_immutable_workspace_test",
+        runner_path,
+    )
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+
+    out_dir = tmp_path / "fit"
+    out_dir.mkdir()
+    sentinel = out_dir / "sentinel.txt"
+    sentinel.write_text("preserve prior fit evidence", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        runner.run_all(
+            cmdstan_dir=tmp_path / "cmdstan",
+            input_dir=tmp_path / "inputs",
+            out_dir=out_dir,
+            contract_path=CONTRACT,
+        )
+
+    assert sentinel.read_text(encoding="utf-8") == "preserve prior fit evidence"
