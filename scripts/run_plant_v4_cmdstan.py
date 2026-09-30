@@ -301,7 +301,12 @@ def run_all(
     make_command: str = "make",
 ) -> dict:
     contract = load_fit_execution_contract(contract_path)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    if out_dir.exists():
+        raise ValueError(
+            "V4 fit output directory already exists; choose a new immutable "
+            "workspace so previous fit evidence is never mixed or overwritten"
+        )
+    out_dir.mkdir(parents=True, exist_ok=False)
     build_dir = out_dir / "_cmdstan_build"
     build_dir.mkdir(parents=True, exist_ok=True)
     _ensure_stanc(
