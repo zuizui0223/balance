@@ -270,8 +270,15 @@ def write_human_return_intake(
             disagreement_paths[lane] = disagreement_name
 
         predictor_paths: dict[str, str] = {}
+        predictor_reviewed_frames: dict[str, str] = {}
         if result["predictor_returns_received"]:
             for lane in ("U2", "U6"):
+                reviewed_name = PREDICTOR_RETURN_BASENAMES[lane]
+                reviewed_source = return_dir / reviewed_name
+                reviewed_target = tmp_dir / reviewed_name
+                reviewed_target.write_bytes(reviewed_source.read_bytes())
+                predictor_reviewed_frames[lane] = reviewed_name
+
                 name = f"BALANCE_PLANT_{lane}_PREDICTOR_ADJUDICATION_READOUT_V1.json"
                 path = tmp_dir / name
                 path.write_text(
@@ -293,6 +300,7 @@ def write_human_return_intake(
             "merged_ledgers": merged_paths,
             "agreement_reports": agreement_paths,
             "disagreement_ledgers": disagreement_paths,
+            "predictor_reviewed_frames": predictor_reviewed_frames,
             "predictor_readouts": predictor_paths,
         }
         receipt_name = "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
