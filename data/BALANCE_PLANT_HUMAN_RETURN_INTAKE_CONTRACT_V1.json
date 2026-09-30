@@ -38,7 +38,8 @@
     "do not make predictor-review latency block architecture reliability reporting",
     "do not adjudicate architecture disagreements inside intake",
     "do not synthesize rejected predictor receipts",
-    "do not set ready_for_v4_assembly=true at intake stage"
+    "do not set ready_for_v4_assembly=true at intake stage",
+    "do not overwrite an existing intake workspace"
   ],
   "implementation": {
     "module": "balance_domain.plant_human_return_intake",
@@ -57,5 +58,11 @@
     "U2_PREDICTOR": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
     "U6_PREDICTOR": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
     "rule": "both reviewed predictor frames may be absent while architecture reliability proceeds; if either is supplied, both are required"
+  },
+  "workspace_policy": {
+    "persistent_output_written_only_after_all_supplied_surfaces_validate": true,
+    "existing_output_directory_overwrite_allowed": false,
+    "write_mode": "temporary_sibling_workspace_then_atomic_rename",
+    "output_references": "workspace_relative_basenames"
   }
 }
