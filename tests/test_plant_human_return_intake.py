@@ -134,7 +134,7 @@ def _complete_bundle(return_dir, **kwargs):
     )
 
 
-def test_required_return_bundle_has_six_coder_files_and_two_predictor_files(tmp_path):
+def test_canonical_return_paths_cover_three_independent_stages(tmp_path):
     paths = required_return_paths(tmp_path)
     assert set(paths) == {
         "U1_CODER_A",
@@ -160,6 +160,11 @@ def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
         out_dir=out_dir,
     )
 
+    assert result["primary_architecture_returns_received"] is True
+    assert result["external_validation_returns_received"] is True
+    assert result["predictor_returns_received"] is True
+    assert result["primary_return_status"] == "RELIABILITY_PASS"
+    assert result["external_validation_return_status"] == "RELIABILITY_PASS"
     assert result["primary_reliability_pass"] is True
     assert result["external_validation_reliability_pass"] is True
     assert result["predictor_primary_complete"] is True
@@ -189,7 +194,7 @@ def test_incomplete_bundle_fails_before_creating_output_directory(tmp_path):
     _complete_bundle(returns)
     (returns / CODER_RETURN_BASENAMES[("U6", "CODER_B")]).unlink()
 
-    with pytest.raises(ValueError, match="architecture return bundle is incomplete"):
+    with pytest.raises(ValueError, match="primary architecture return stage is incomplete"):
         write_human_return_intake(
             root=ROOT,
             return_dir=returns,
@@ -250,10 +255,10 @@ def test_rejected_primary_predictor_receipt_blocks_predictor_completion(tmp_path
 
 
 
-def test_architecture_intake_can_proceed_while_predictor_review_is_pending(tmp_path):
+def test_primary_architecture_intake_does_not_wait_for_u1_or_predictor_review(tmp_path):
     returns = tmp_path / "returns"
     out_dir = tmp_path / "intake"
-    _build_coder_return_bundle(returns)
+    _build_coder_return_bundle(returns, lanes=("U2", "U6"))
 
     result = write_human_return_intake(
         root=ROOT,
@@ -262,11 +267,20 @@ def test_architecture_intake_can_proceed_while_predictor_review_is_pending(tmp_p
     )
     receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
 
-    assert result["primary_reliability_pass"] is True
+    assert result["primary_architecture_returns_received"] is True
+    assert result["external_validation_returns_received"] is False
     assert result["predictor_returns_received"] is False
+    assert result["primary_reliability_pass"] is True
+    assert result["external_validation_reliability_pass"] is None
+    assert result["external_validation_return_status"] == "PENDING"
+    assert result["external_validation_next_step"] == (
+        "AWAIT_U1_EXTERNAL_VALIDATION_RETURNS"
+    )
     assert result["predictor_return_status"] == "PENDING"
     assert result["predictor_primary_complete"] is False
     assert result["predictor_next_step"] == "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
+    assert set(receipt["outputs"]["merged_ledgers"]) == {"U2", "U6"}
+    assert "U1" not in receipt["agreement"]
     assert receipt["outputs"]["predictor_readouts"] == {}
     assert result["ready_for_v4_assembly"] is False
 
@@ -287,7 +301,7 @@ def test_one_sided_predictor_return_fails_before_persistent_output(tmp_path):
         rows,
     )
 
-    with pytest.raises(ValueError, match="both U2 and U6 reviewed frames or neither"):
+    with pytest.raises(ValueError, match="predictor review return stage is incomplete"):
         write_human_return_intake(
             root=ROOT,
             return_dir=returns,
@@ -323,7 +337,7 @@ def test_machine_readable_intake_contract_matches_canonical_basenames():
         .read_text(encoding="utf-8")
     )
     required = contract["required_architecture_return_files"]
-    optional = contract["optional_predictor_return_pair"]
+    predictor = contract["predictor_return_pair"]
 
     assert required == {
         "U1_CODER_A": CODER_RETURN_BASENAMES[("U1", "CODER_A")],
@@ -333,6 +347,90 @@ def test_machine_readable_intake_contract_matches_canonical_basenames():
         "U6_CODER_A": CODER_RETURN_BASENAMES[("U6", "CODER_A")],
         "U6_CODER_B": CODER_RETURN_BASENAMES[("U6", "CODER_B")],
     }
-    assert optional["U2_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U2"]
-    assert optional["U6_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U6"]
+    assert predictor["U2_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U2"]
+    assert predictor["U6_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U6"]
+    stages = contract["intake_stages"]
+    assert stages["PRIMARY_ARCHITECTURE"]["blocks_primary_v4"] is True
+    assert stages["EXTERNAL_VALIDATION"]["blocks_primary_v4"] is False
+    assert stages["PREDICTOR_REVIEW"]["blocks_primary_v4"] is True
     assert contract["workspace_policy"]["existing_output_directory_overwrite_allowed"] is False
+
+
+
+def test_external_validation_can_be_intaken_without_primary_architecture(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    _build_coder_return_bundle(returns, lanes=("U1",))
+
+    result = write_human_return_intake(
+        root=ROOT,
+        return_dir=returns,
+        out_dir=out_dir,
+    )
+    receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
+
+    assert result["primary_architecture_returns_received"] is False
+    assert result["primary_reliability_pass"] is None
+    assert result["primary_return_status"] == "PENDING"
+    assert result["primary_architecture_next_step"] == (
+        "AWAIT_PRIMARY_ARCHITECTURE_RETURNS"
+    )
+    assert result["external_validation_returns_received"] is True
+    assert result["external_validation_reliability_pass"] is True
+    assert result["external_validation_return_status"] == "RELIABILITY_PASS"
+    assert set(receipt["outputs"]["merged_ledgers"]) == {"U1"}
+
+
+def test_predictor_review_can_be_intaken_without_any_architecture_returns(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    _build_predictor_returns(returns)
+
+    result = write_human_return_intake(
+        root=ROOT,
+        return_dir=returns,
+        out_dir=out_dir,
+    )
+    receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
+
+    assert result["primary_architecture_returns_received"] is False
+    assert result["external_validation_returns_received"] is False
+    assert result["primary_reliability_pass"] is None
+    assert result["external_validation_reliability_pass"] is None
+    assert result["predictor_returns_received"] is True
+    assert result["predictor_return_status"] == "COMPLETE"
+    assert result["predictor_primary_complete"] is True
+    assert receipt["outputs"]["merged_ledgers"] == {}
+    assert set(receipt["outputs"]["predictor_readouts"]) == {"U2", "U6"}
+
+
+def test_partial_external_validation_stage_fails_closed(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    _build_coder_return_bundle(returns, lanes=("U1",))
+    (returns / CODER_RETURN_BASENAMES[("U1", "CODER_B")]).unlink()
+
+    with pytest.raises(
+        ValueError,
+        match="external-validation architecture return stage is incomplete",
+    ):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+        )
+    assert not out_dir.exists()
+
+
+def test_no_complete_return_stage_fails_closed(tmp_path):
+    returns = tmp_path / "returns"
+    returns.mkdir()
+    out_dir = tmp_path / "intake"
+
+    with pytest.raises(ValueError, match="no complete human-return stage supplied"):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+        )
+    assert not out_dir.exists()
