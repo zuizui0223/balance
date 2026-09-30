@@ -49,15 +49,26 @@ def required_return_paths(return_dir: Path) -> dict[str, Path]:
     return paths
 
 
-def _require_complete_return_bundle(return_dir: Path) -> dict[str, Path]:
+def _validate_return_surface_presence(return_dir: Path) -> tuple[dict[str, Path], bool]:
     paths = required_return_paths(return_dir)
-    missing = sorted(key for key, path in paths.items() if not path.is_file())
-    if missing:
+    coder_keys = [
+        key for key in paths
+        if key.endswith("_CODER_A") or key.endswith("_CODER_B")
+    ]
+    missing_coders = sorted(key for key in coder_keys if not paths[key].is_file())
+    if missing_coders:
         raise ValueError(
-            "human return bundle is incomplete; missing canonical return files: "
-            + ", ".join(missing)
+            "architecture return bundle is incomplete; missing canonical coder files: "
+            + ", ".join(missing_coders)
         )
-    return paths
+
+    predictor_keys = ["U2_PREDICTOR", "U6_PREDICTOR"]
+    predictor_present = [paths[key].is_file() for key in predictor_keys]
+    if any(predictor_present) and not all(predictor_present):
+        raise ValueError(
+            "predictor return bundle must contain both U2 and U6 reviewed frames or neither"
+        )
+    return paths, all(predictor_present)
 
 
 def _lane_kwargs(root: Path, lane: str) -> dict[str, Path]:
@@ -96,7 +107,7 @@ def validate_human_return_bundle(
     return_dir: Path,
 ) -> dict:
     """Validate all human returns without creating persistent output files."""
-    paths = _require_complete_return_bundle(return_dir)
+    paths, predictor_returns_received = _validate_return_surface_presence(return_dir)
     merged: dict[str, list[dict[str, str]]] = {}
     agreement: dict[str, dict] = {}
 
@@ -121,25 +132,30 @@ def validate_human_return_bundle(
                 **_lane_kwargs(root, lane),
             )
 
-    frozen_u2 = root / "data" / PREDICTOR_RETURN_BASENAMES["U2"]
-    frozen_u6 = root / "data" / PREDICTOR_RETURN_BASENAMES["U6"]
-    predictor = {
-        "U2": build_predictor_adjudication_readout(
-            paths["U2_PREDICTOR"],
-            frozen_u2,
-        ),
-        "U6": build_predictor_adjudication_readout(
-            paths["U6_PREDICTOR"],
-            frozen_u6,
-        ),
-    }
+    predictor: dict[str, dict | None] = {"U2": None, "U6": None}
+    if predictor_returns_received:
+        frozen_u2 = root / "data" / PREDICTOR_RETURN_BASENAMES["U2"]
+        frozen_u6 = root / "data" / PREDICTOR_RETURN_BASENAMES["U6"]
+        predictor = {
+            "U2": build_predictor_adjudication_readout(
+                paths["U2_PREDICTOR"],
+                frozen_u2,
+            ),
+            "U6": build_predictor_adjudication_readout(
+                paths["U6_PREDICTOR"],
+                frozen_u6,
+            ),
+        }
 
     primary_reliability_pass = all(
         agreement[lane]["reliability_pass"] for lane in ("U2", "U6")
     )
     external_validation_reliability_pass = agreement["U1"]["reliability_pass"]
     predictor_primary_complete = (
-        predictor["U2"]["n_clusters_with_three_adjudicated_receipts"] == 8
+        predictor_returns_received
+        and predictor["U2"] is not None
+        and predictor["U6"] is not None
+        and predictor["U2"]["n_clusters_with_three_adjudicated_receipts"] == 8
         and predictor["U6"]["n_clusters_with_three_adjudicated_receipts"] == 21
     )
 
@@ -148,24 +164,27 @@ def validate_human_return_bundle(
     else:
         architecture_next = "SOURCE_ADJUDICATION"
 
-    predictor_next = (
-        "PREDICTOR_ADJUDICATION_COMPLETE"
-        if predictor_primary_complete
-        else "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
-    )
+    if not predictor_returns_received:
+        predictor_next = "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
+    elif predictor_primary_complete:
+        predictor_next = "PREDICTOR_ADJUDICATION_COMPLETE"
+    else:
+        predictor_next = "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
 
     return {
         "analysis": "balance_plant_human_return_intake",
         "input_files": {
             key: {
                 "basename": path.name,
-                "sha256": _sha256(path),
+                "received": path.is_file(),
+                **({"sha256": _sha256(path)} if path.is_file() else {}),
             }
             for key, path in sorted(paths.items())
         },
         "merged_rows": merged,
         "agreement": agreement,
         "predictor_adjudication": predictor,
+        "predictor_returns_received": predictor_returns_received,
         "primary_reliability_pass": primary_reliability_pass,
         "external_validation_reliability_pass": (
             external_validation_reliability_pass
@@ -221,17 +240,18 @@ def write_human_return_intake(
         disagreement_paths[lane] = str(disagreement_path)
 
     predictor_paths: dict[str, str] = {}
-    for lane in ("U2", "U6"):
-        path = out_dir / f"BALANCE_PLANT_{lane}_PREDICTOR_ADJUDICATION_READOUT_V1.json"
-        path.write_text(
-            json.dumps(
-                result["predictor_adjudication"][lane],
-                indent=2,
-                sort_keys=True,
-            ) + "\n",
-            encoding="utf-8",
-        )
-        predictor_paths[lane] = str(path)
+    if result["predictor_returns_received"]:
+        for lane in ("U2", "U6"):
+            path = out_dir / f"BALANCE_PLANT_{lane}_PREDICTOR_ADJUDICATION_READOUT_V1.json"
+            path.write_text(
+                json.dumps(
+                    result["predictor_adjudication"][lane],
+                    indent=2,
+                    sort_keys=True,
+                ) + "\n",
+                encoding="utf-8",
+            )
+            predictor_paths[lane] = str(path)
 
     receipt = {
         key: value
@@ -256,6 +276,7 @@ def write_human_return_intake(
         "external_validation_reliability_pass": result[
             "external_validation_reliability_pass"
         ],
+        "predictor_returns_received": result["predictor_returns_received"],
         "predictor_primary_complete": result["predictor_primary_complete"],
         "primary_architecture_next_step": result[
             "primary_architecture_next_step"
