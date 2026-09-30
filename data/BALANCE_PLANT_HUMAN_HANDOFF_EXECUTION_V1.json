@@ -1,0 +1,104 @@
+{
+  "schema_version": "BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1",
+  "status": "PACKETS_GENERATED_AWAITING_INDEPENDENT_HUMAN_RETURNS",
+  "primary_model": "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4",
+  "architecture_coding": {
+    "github_actions_run_id": 36627044379,
+    "workflow_head_sha": "0d47d939f8cc9bccf6d3738406b308a55854aa4e",
+    "source_main_sha": "a4c3296c46829581502b1af6d6e2e5fa2e7a67f3",
+    "validation_tests": "57 passed",
+    "packets": {
+      "CODER_A": {
+        "artifact_id": 11060792789,
+        "artifact_name": "balance-plant-coder-a-packet-v1",
+        "artifact_size_bytes": 13395,
+        "artifact_created_at": "2026-09-29T20:32:36Z",
+        "artifact_expires_at": "2026-12-28T20:32:22Z",
+        "packet_sha256": "2701ef155ddffcc97758ee8aa96532d566a077d4a386f760c3ac977e4699b9eb",
+        "receipt_sha256": "5502b9aa89ca23794701176551242d212003cd1a2ef5c7390ab94fc9fbbb1e70"
+      },
+      "CODER_B": {
+        "artifact_id": 11060622867,
+        "artifact_name": "balance-plant-coder-b-packet-v1",
+        "artifact_size_bytes": 13392,
+        "artifact_created_at": "2026-09-29T20:32:37Z",
+        "artifact_expires_at": "2026-12-28T20:32:22Z",
+        "packet_sha256": "452330e898ef7f9ab0593ad1f8c20a695854a3f2afd5a16c0e38ad09ebc0eaee",
+        "receipt_sha256": "862fe5b6cce418cc40f49a05d893288206365c53bf8e00db1975bbdc974e01a8"
+      }
+    },
+    "audit": {
+      "shared_evidence_byte_identical_between_coders": true,
+      "worksheet_identity_rule": "byte-equivalent after removing coder_id and coder-specific filename",
+      "worksheet_rows": {
+        "U1": 20,
+        "U2": 20,
+        "U6": 21
+      },
+      "U1_blank_coding_fields": true,
+      "U2_blank_coding_fields": true,
+      "U6_architecture_fields": [
+        "UNRESOLVED"
+      ],
+      "U6_predictor_fields": [
+        "UNRESOLVED"
+      ],
+      "U6_coding_status": [
+        "UNSTARTED"
+      ],
+      "cross_role_shared_hashes": {
+        "codebook_sha256": "0429c7aa1dc362cba05deb0fa7072b274853f0413f068df9b7ca9a8072a08ace",
+        "U2_source_packet_sha256": "529c2cc94b0421dd25b6eb759a9b9cd656f0b514b0a69e00adbcac019a997ba4",
+        "U6_source_packet_sha256": "182f6a74f9834d7be866e176c4b5d1ff450e11aebb56e0fe6d89542c370abd2c"
+      }
+    }
+  },
+  "predictor_receipt_adjudication": {
+    "github_actions_run_id": 36667887456,
+    "workflow_head_sha": "f4c13cf65bf3043f02627d1b885454cdc3beba54",
+    "source_main_sha": "524178f8866d18f8eba5d99a9220c1de95d88d54",
+    "validation_tests": "32 passed",
+    "artifact_id": 11077260854,
+    "artifact_name": "balance-plant-predictor-adjudication-packet-v1",
+    "artifact_size_bytes": 14725,
+    "artifact_created_at": "2026-09-30T04:13:56Z",
+    "artifact_expires_at": "2026-12-29T04:13:47Z",
+    "github_artifact_zip_sha256": "318147e62ba3c5a00e654c8638d81c622b54d34e7dd8ecbba191bebba5aac181",
+    "packet_sha256": "dee4c07fd5e9a1e754145f21f5fddfe89881c38720424389ba629eaf79e51e76",
+    "receipt_sha256": "c6cb6776b99b59b8cfcb16b5723d483c4f7a783510c6a91589de97f766bbbecf",
+    "architecture_outputs_included": false,
+    "audit": {
+      "U2_receipt_rows": 60,
+      "U2_resolved_reported_values": 24,
+      "U2_adjudication_status_counts": {
+        "SCREENED": 60
+      },
+      "U2_outcome_independence_counts": {
+        "TRUE": 24,
+        "UNCERTAIN": 36
+      },
+      "U6_receipt_rows": 63,
+      "U6_resolved_reported_values": 63,
+      "U6_adjudication_status_counts": {
+        "SCREENED": 63
+      },
+      "U6_outcome_independence_counts": {
+        "TRUE": 63
+      },
+      "focal_architecture_label_hits_in_receipt_value_source_or_notes": 0,
+      "cross_role_shared_hashes_match_architecture_coder_packets": true
+    }
+  },
+  "return_sequence": [
+    "CODER_A completes U1/U2/U6 worksheets independently",
+    "CODER_B completes U1/U2/U6 worksheets independently",
+    "predictor reviewer returns U2/U6 receipt frames with ADJUDICATED or REJECTED statuses",
+    "validate and merge coder returns",
+    "compute agreement and exact disagreement lists",
+    "if any raw agreement <0.80, repair codebook and independently recode the same frozen groups",
+    "after reliability pass, adjudicate architecture disagreements",
+    "validate predictor receipt adjudication",
+    "build licensed U2/U6 assembly and run V4 estimability gate"
+  ],
+  "claim_ceiling": "handoff_execution_and_artifact_provenance_only_no_biological_result"
+}
