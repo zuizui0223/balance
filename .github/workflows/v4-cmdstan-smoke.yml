@@ -1,0 +1,73 @@
+name: Smoke BALANCE V4 CmdStan 2.40.0
+
+on:
+  push:
+    branches:
+      - ops/v4-cmdstan-240-smoke-20260930
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download frozen CmdStan release
+        run: |
+          curl -L --fail --retry 3 \
+            https://github.com/stan-dev/cmdstan/releases/download/v2.40.0/cmdstan-2.40.0.tar.gz \
+            -o /tmp/cmdstan-2.40.0.tar.gz
+          echo "26d21c9737b35728e926f9b7a5d7362b38dc23e2e7d5e166c890e1fa74dac90c  /tmp/cmdstan-2.40.0.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/cmdstan-2.40.0.tar.gz -C /tmp
+
+      - name: Exercise production bootstrap preflight and model compilation
+        run: |
+          python - <<'PY'
+          import importlib.util
+          import json
+          from pathlib import Path
+
+          root = Path.cwd()
+          runner_path = root / "scripts" / "run_plant_v4_cmdstan.py"
+          spec = importlib.util.spec_from_file_location("v4runner", runner_path)
+          runner = importlib.util.module_from_spec(spec)
+          assert spec.loader is not None
+          spec.loader.exec_module(runner)
+
+          cmdstan = Path("/tmp/cmdstan-2.40.0")
+          contract = json.loads(
+              (root / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json").read_text()
+          )
+          build = Path("/tmp/balance-v4-cmdstan-smoke")
+          build.mkdir(parents=True, exist_ok=True)
+          runner._ensure_stanc(
+              cmdstan_dir=cmdstan,
+              make_command="make",
+              log_dir=build,
+          )
+          version = runner._cmdstan_version(cmdstan)
+          assert version == contract["required_cmdstan_version"] == "2.40.0"
+
+          main_exe = runner._compile_model(
+              cmdstan_dir=cmdstan,
+              stan_path=root / "comparative" / "models" / "BALANCE_PLANT_V4_MULTINOMIAL.stan",
+              build_dir=build,
+              make_command="make",
+          )
+          gen_exe = runner._compile_model(
+              cmdstan_dir=cmdstan,
+              stan_path=root / "comparative" / "models" / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY.stan",
+              build_dir=build,
+              make_command="make",
+          )
+          assert main_exe.exists()
+          assert gen_exe.exists()
+          print("cmdstan_version", version)
+          print("main_model_sha256", runner.sha256_file(main_exe))
+          print("generality_model_sha256", runner.sha256_file(gen_exe))
+          PY
