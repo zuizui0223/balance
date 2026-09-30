@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -62,6 +63,26 @@ FIT_SPECS = {
 
 def _exe_suffix() -> str:
     return ".exe" if os.name == "nt" else ""
+
+
+def _cmdstan_version(cmdstan_dir: Path) -> str:
+    stanc = cmdstan_dir / "bin" / f"stanc{_exe_suffix()}"
+    if not stanc.exists():
+        raise FileNotFoundError(f"CmdStan stanc executable is missing: {stanc}")
+    proc = subprocess.run(
+        [str(stanc), "--version"],
+        cwd=cmdstan_dir,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError("unable to read CmdStan/stanc version")
+    match = re.search(r"(?<!\d)(\d+\.\d+\.\d+)(?!\d)", proc.stdout or "")
+    if match is None:
+        raise ValueError(f"could not parse CmdStan/stanc version: {proc.stdout!r}")
+    return match.group(1)
 
 
 def _run_checked(argv: list[str], *, cwd: Path, log_path: Path) -> None:
@@ -260,6 +281,14 @@ def run_all(
     make_command: str = "make",
 ) -> dict:
     contract = load_fit_execution_contract(contract_path)
+    cmdstan_version = _cmdstan_version(cmdstan_dir)
+    required_version = contract["required_cmdstan_version"]
+    if cmdstan_version != required_version:
+        raise RuntimeError(
+            f"CmdStan version mismatch: required {required_version}, "
+            f"found {cmdstan_version}"
+        )
+
     required = ("PRIMARY", "PRIMARY_PRIOR_SENSITIVITY")
     for job_id in required:
         path = input_dir / FIT_SPECS[job_id]["input"]
@@ -325,6 +354,8 @@ def run_all(
         "schema_version": "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1",
         "contract": str(contract_path),
         "contract_sha256": sha256_file(contract_path),
+        "required_cmdstan_version": required_version,
+        "preflight_cmdstan_version": cmdstan_version,
         "active_jobs": active_jobs,
         "job_receipts": {
             job_id: str(fit["receipt_path"])
