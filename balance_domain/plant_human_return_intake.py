@@ -8,6 +8,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -215,71 +216,92 @@ def write_human_return_intake(
     return_dir: Path,
     out_dir: Path,
 ) -> dict:
-    """Validate the complete bundle, then write one deterministic intake workspace."""
+    """Validate the supplied returns, then atomically create one immutable intake workspace."""
     result = validate_human_return_bundle(root=root, return_dir=return_dir)
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    merged_paths: dict[str, str] = {}
-    agreement_paths: dict[str, str] = {}
-    disagreement_paths: dict[str, str] = {}
-
-    for lane in ("U1", "U2", "U6"):
-        merged_path = out_dir / MERGED_BASENAMES[lane]
-        write_merged_coder_returns(
-            merged_path,
-            result["merged_rows"][lane],
-            lane=lane,
+    if out_dir.exists():
+        raise ValueError(
+            "human return intake output directory already exists; choose a new "
+            "workspace so earlier intake evidence is never silently overwritten"
         )
-        merged_paths[lane] = str(merged_path)
+    out_dir.parent.mkdir(parents=True, exist_ok=True)
+    tmp_dir = Path(tempfile.mkdtemp(
+        prefix=f".{out_dir.name}.tmp-",
+        dir=out_dir.parent,
+    ))
 
-        report_path = out_dir / f"BALANCE_PLANT_{lane}_AGREEMENT_REPORT_V1.json"
-        report_path.write_text(
-            json.dumps(result["agreement"][lane], indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-        )
-        agreement_paths[lane] = str(report_path)
+    try:
+        merged_paths: dict[str, str] = {}
+        agreement_paths: dict[str, str] = {}
+        disagreement_paths: dict[str, str] = {}
 
-        disagreement_path = out_dir / f"BALANCE_PLANT_{lane}_DISAGREEMENTS_V1.csv"
-        _write_disagreements(
-            disagreement_path,
-            lane,
-            result["agreement"][lane],
-        )
-        disagreement_paths[lane] = str(disagreement_path)
+        for lane in ("U1", "U2", "U6"):
+            merged_name = MERGED_BASENAMES[lane]
+            merged_path = tmp_dir / merged_name
+            write_merged_coder_returns(
+                merged_path,
+                result["merged_rows"][lane],
+                lane=lane,
+            )
+            merged_paths[lane] = merged_name
 
-    predictor_paths: dict[str, str] = {}
-    if result["predictor_returns_received"]:
-        for lane in ("U2", "U6"):
-            path = out_dir / f"BALANCE_PLANT_{lane}_PREDICTOR_ADJUDICATION_READOUT_V1.json"
-            path.write_text(
-                json.dumps(
-                    result["predictor_adjudication"][lane],
-                    indent=2,
-                    sort_keys=True,
-                ) + "\n",
+            report_name = f"BALANCE_PLANT_{lane}_AGREEMENT_REPORT_V1.json"
+            report_path = tmp_dir / report_name
+            report_path.write_text(
+                json.dumps(result["agreement"][lane], indent=2, sort_keys=True) + "\n",
                 encoding="utf-8",
             )
-            predictor_paths[lane] = str(path)
+            agreement_paths[lane] = report_name
 
-    receipt = {
-        key: value
-        for key, value in result.items()
-        if key != "merged_rows"
-    }
-    receipt["outputs"] = {
-        "merged_ledgers": merged_paths,
-        "agreement_reports": agreement_paths,
-        "disagreement_ledgers": disagreement_paths,
-        "predictor_readouts": predictor_paths,
-    }
-    receipt_path = out_dir / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
-    receipt_path.write_text(
-        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+            disagreement_name = f"BALANCE_PLANT_{lane}_DISAGREEMENTS_V1.csv"
+            disagreement_path = tmp_dir / disagreement_name
+            _write_disagreements(
+                disagreement_path,
+                lane,
+                result["agreement"][lane],
+            )
+            disagreement_paths[lane] = disagreement_name
+
+        predictor_paths: dict[str, str] = {}
+        if result["predictor_returns_received"]:
+            for lane in ("U2", "U6"):
+                name = f"BALANCE_PLANT_{lane}_PREDICTOR_ADJUDICATION_READOUT_V1.json"
+                path = tmp_dir / name
+                path.write_text(
+                    json.dumps(
+                        result["predictor_adjudication"][lane],
+                        indent=2,
+                        sort_keys=True,
+                    ) + "\n",
+                    encoding="utf-8",
+                )
+                predictor_paths[lane] = name
+
+        receipt = {
+            key: value
+            for key, value in result.items()
+            if key != "merged_rows"
+        }
+        receipt["outputs"] = {
+            "merged_ledgers": merged_paths,
+            "agreement_reports": agreement_paths,
+            "disagreement_ledgers": disagreement_paths,
+            "predictor_readouts": predictor_paths,
+        }
+        receipt_name = "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
+        receipt_path = tmp_dir / receipt_name
+        receipt_path.write_text(
+            json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+        tmp_dir.rename(out_dir)
+    except Exception:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+        raise
 
     return {
-        "receipt": str(receipt_path),
+        "receipt": str(out_dir / receipt_name),
         "primary_reliability_pass": result["primary_reliability_pass"],
         "external_validation_reliability_pass": result[
             "external_validation_reliability_pass"
