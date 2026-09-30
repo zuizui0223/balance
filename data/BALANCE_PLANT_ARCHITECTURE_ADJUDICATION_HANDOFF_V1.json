@@ -1,0 +1,65 @@
+{
+  "schema_version": "BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_HANDOFF_V1",
+  "status": "FROZEN_BEFORE_ARCHITECTURE_ADJUDICATION_RETURNS",
+  "scopes": {
+    "PRIMARY": {
+      "lanes": [
+        "U2",
+        "U6"
+      ],
+      "reliability_requirement": "U2_AND_U6_RELIABILITY_PASS",
+      "blocks_primary_v4": true,
+      "packet_name": "BALANCE_PLANT_PRIMARY_ARCHITECTURE_ADJUDICATION_PACKET_V1.zip",
+      "return_files": [
+        "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+        "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv"
+      ]
+    },
+    "EXTERNAL": {
+      "lanes": [
+        "U1"
+      ],
+      "reliability_requirement": "U1_RELIABILITY_PASS",
+      "blocks_primary_v4": false,
+      "packet_name": "BALANCE_PLANT_EXTERNAL_ARCHITECTURE_ADJUDICATION_PACKET_V1.zip",
+      "return_files": [
+        "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv"
+      ]
+    }
+  },
+  "packet_contents": [
+    "plant codebook",
+    "architecture adjudication protocol",
+    "frozen lane source packet",
+    "merged independent coder ledger",
+    "agreement report",
+    "exact disagreement ledger",
+    "canonical adjudication template"
+  ],
+  "forbidden_packet_classes": [
+    "predictor receipt adjudication outputs",
+    "V4 fit inputs or outputs",
+    "posterior summaries",
+    "publication/reactivation outputs"
+  ],
+  "adjudication_rules": [
+    "coder consensus cannot be overridden",
+    "disagreement resolution uses SOURCE_REVIEW_OF_DISAGREEMENTS",
+    "consensus rows use CODER_CONSENSUS",
+    "all final rows must be ADJUDICATED",
+    "notes are required",
+    "reliability failure routes to codebook repair and recoding rather than adjudication"
+  ],
+  "workspace_policy": {
+    "existing_output_directory_overwrite_allowed": false,
+    "write_mode": "temporary_sibling_workspace_then_atomic_rename",
+    "copy_validated_merged_coding_ledger": true,
+    "copy_validated_adjudication_return": true
+  },
+  "implementation": {
+    "module": "balance_domain.plant_architecture_adjudication",
+    "packet_cli": "scripts/build_plant_architecture_adjudication_packet.py",
+    "return_cli": "scripts/validate_plant_architecture_adjudication.py"
+  },
+  "claim_ceiling": "architecture_adjudication_handoff_and_validation_only_no_biological_result"
+}
