@@ -205,8 +205,17 @@ def read_cmdstan_chain(path: Path, *, require_gamma: bool) -> dict:
                 for k in range(1, 4)
             ]
         draws.append(draw)
-        divergences += int(_finite(row["divergent__"], f"row {row_number} divergent__"))
-        treedepths.append(int(_finite(row["treedepth__"], f"row {row_number} treedepth__")))
+        divergent = _finite(row["divergent__"], f"row {row_number} divergent__")
+        if divergent not in {0.0, 1.0}:
+            raise ValueError(f"row {row_number} divergent__ must be exactly 0 or 1")
+        divergences += int(divergent)
+
+        treedepth = _finite(row["treedepth__"], f"row {row_number} treedepth__")
+        if treedepth < 0 or not treedepth.is_integer():
+            raise ValueError(
+                f"row {row_number} treedepth__ must be a non-negative integer"
+            )
+        treedepths.append(int(treedepth))
         energies.append(_finite(row["energy__"], f"row {row_number} energy__"))
 
     if len(energies) < 2:
@@ -260,6 +269,8 @@ def combine_cmdstan_chains(
     if not chains:
         raise ValueError("V4 fit requires at least one chain CSV")
     versions = {chain["stan_version"] for chain in chains}
+    if None in versions:
+        raise ValueError("CmdStan chain version metadata is required")
     if len(versions) != 1:
         raise ValueError("CmdStan chain version mismatch")
     return {
