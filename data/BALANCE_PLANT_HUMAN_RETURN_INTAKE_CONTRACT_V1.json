@@ -70,7 +70,8 @@
     "do not adjudicate architecture disagreements inside intake",
     "do not synthesize rejected predictor receipts",
     "do not set ready_for_v4_assembly=true at intake stage",
-    "do not overwrite an existing intake workspace"
+    "do not overwrite an existing intake workspace",
+    "do not discard validated reviewed predictor receipt frames after intake"
   ],
   "implementation": {
     "module": "balance_domain.plant_human_return_intake",
@@ -94,6 +95,7 @@
     "persistent_output_written_only_after_all_supplied_stages_validate": true,
     "existing_output_directory_overwrite_allowed": false,
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
-    "output_references": "workspace_relative_basenames"
+    "output_references": "workspace_relative_basenames",
+    "copy_validated_predictor_review_frames": true
   }
 }

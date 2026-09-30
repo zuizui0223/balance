@@ -186,6 +186,13 @@ def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
     assert receipt["agreement"]["U6"]["failed_fields"] == []
     assert (out_dir / receipt["outputs"]["merged_ledgers"]["U2"]).exists()
     assert (out_dir / receipt["outputs"]["agreement_reports"]["U6"]).exists()
+    for lane in ("U2", "U6"):
+        reviewed = out_dir / receipt["outputs"]["predictor_reviewed_frames"][lane]
+        assert reviewed.name == PREDICTOR_RETURN_BASENAMES[lane]
+        assert reviewed.exists()
+        assert reviewed.read_bytes() == (
+            returns / PREDICTOR_RETURN_BASENAMES[lane]
+        ).read_bytes()
 
 
 def test_incomplete_bundle_fails_before_creating_output_directory(tmp_path):
@@ -354,6 +361,7 @@ def test_machine_readable_intake_contract_matches_canonical_basenames():
     assert stages["EXTERNAL_VALIDATION"]["blocks_primary_v4"] is False
     assert stages["PREDICTOR_REVIEW"]["blocks_primary_v4"] is True
     assert contract["workspace_policy"]["existing_output_directory_overwrite_allowed"] is False
+    assert contract["workspace_policy"]["copy_validated_predictor_review_frames"] is True
 
 
 
@@ -401,7 +409,14 @@ def test_predictor_review_can_be_intaken_without_any_architecture_returns(tmp_pa
     assert result["predictor_return_status"] == "COMPLETE"
     assert result["predictor_primary_complete"] is True
     assert receipt["outputs"]["merged_ledgers"] == {}
+    assert set(receipt["outputs"]["predictor_reviewed_frames"]) == {"U2", "U6"}
     assert set(receipt["outputs"]["predictor_readouts"]) == {"U2", "U6"}
+    for lane in ("U2", "U6"):
+        reviewed = out_dir / receipt["outputs"]["predictor_reviewed_frames"][lane]
+        assert reviewed.exists()
+        assert reviewed.read_bytes() == (
+            returns / PREDICTOR_RETURN_BASENAMES[lane]
+        ).read_bytes()
 
 
 def test_partial_external_validation_stage_fails_closed(tmp_path):
