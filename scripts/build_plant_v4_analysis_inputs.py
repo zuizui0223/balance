@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -176,69 +178,88 @@ def build_outputs(
     )
     pipeline = build_v4_analysis_inputs(assembly)
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    assembly_path = out_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
-    readout_path = out_dir / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
-    main_path = out_dir / "BALANCE_PLANT_V4_STAN_INPUT.json"
-    prior_path = out_dir / "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
-    generality_path = out_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"
-    generality_prior_path = (
-        out_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
-    )
+    if out_dir.exists():
+        raise ValueError(
+            "V4 pre-fit output directory already exists; choose a new immutable "
+            "workspace so prior assembly/model-input evidence is never overwritten"
+        )
+    out_dir.parent.mkdir(parents=True, exist_ok=True)
+    tmp_dir = Path(tempfile.mkdtemp(
+        prefix=f".{out_dir.name}.tmp-",
+        dir=out_dir.parent,
+    ))
+    try:
+        assembly_path = tmp_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
+        readout_path = tmp_dir / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+        main_path = tmp_dir / "BALANCE_PLANT_V4_STAN_INPUT.json"
+        prior_path = tmp_dir / "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
+        generality_path = tmp_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"
+        generality_prior_path = (
+            tmp_dir
+            / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
+        )
 
-    _write_csv(assembly_path, assembly)
-    readout_path.write_text(
-        json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    main_path.write_text(
-        json.dumps(pipeline["main_stan_input"], indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    prior_path.write_text(
-        json.dumps(
-            pipeline["prior_sensitivity_stan_input"],
-            indent=2,
-            sort_keys=True,
-        ) + "\n",
-        encoding="utf-8",
-    )
-    if pipeline["temporal_generality_stan_input"] is not None:
-        generality_path.write_text(
+        _write_csv(assembly_path, assembly)
+        readout_path.write_text(
+            json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        main_path.write_text(
+            json.dumps(pipeline["main_stan_input"], indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        prior_path.write_text(
             json.dumps(
-                pipeline["temporal_generality_stan_input"],
+                pipeline["prior_sensitivity_stan_input"],
                 indent=2,
                 sort_keys=True,
             ) + "\n",
             encoding="utf-8",
         )
-        generality_prior_path.write_text(
-            json.dumps(
-                pipeline["temporal_generality_prior_sensitivity_stan_input"],
-                indent=2,
-                sort_keys=True,
-            ) + "\n",
-            encoding="utf-8",
-        )
-    else:
-        for path in (generality_path, generality_prior_path):
-            if path.exists():
-                path.unlink()
+        if pipeline["temporal_generality_stan_input"] is not None:
+            generality_path.write_text(
+                json.dumps(
+                    pipeline["temporal_generality_stan_input"],
+                    indent=2,
+                    sort_keys=True,
+                ) + "\n",
+                encoding="utf-8",
+            )
+            generality_prior_path.write_text(
+                json.dumps(
+                    pipeline["temporal_generality_prior_sensitivity_stan_input"],
+                    indent=2,
+                    sort_keys=True,
+                ) + "\n",
+                encoding="utf-8",
+            )
+
+        tmp_dir.rename(out_dir)
+    except Exception:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+        raise
+
+    def final(name: str) -> str:
+        return str(out_dir / name)
 
     return {
-        "assembly": str(assembly_path),
-        "assembly_readout": str(readout_path),
-        "main_stan_input": str(main_path),
-        "prior_sensitivity_stan_input": str(prior_path),
+        "assembly": final("BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"),
+        "assembly_readout": final("BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"),
+        "main_stan_input": final("BALANCE_PLANT_V4_STAN_INPUT.json"),
+        "prior_sensitivity_stan_input": final(
+            "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
+        ),
         "temporal_generality_status": pipeline["temporal_generality_status"],
         "temporal_generality_blockers": pipeline["temporal_generality_blockers"],
         "temporal_generality_input": (
-            str(generality_path)
+            final("BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json")
             if pipeline["temporal_generality_stan_input"] is not None
             else None
         ),
         "temporal_generality_prior_sensitivity_input": (
-            str(generality_prior_path)
+            final(
+                "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
+            )
             if pipeline["temporal_generality_prior_sensitivity_stan_input"]
             is not None
             else None
