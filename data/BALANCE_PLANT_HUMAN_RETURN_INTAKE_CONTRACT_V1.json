@@ -1,0 +1,54 @@
+{
+  "schema_version": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1",
+  "status": "FROZEN_BEFORE_INDEPENDENT_HUMAN_RETURNS",
+  "required_return_files": {
+    "U1_CODER_A": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
+    "U1_CODER_B": "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
+    "U2_CODER_A": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
+    "U2_CODER_B": "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
+    "U6_CODER_A": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv",
+    "U6_CODER_B": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv",
+    "U2_PREDICTOR": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "U6_PREDICTOR": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+  },
+  "intake_order": [
+    "require all eight canonical return files before persistent output",
+    "validate each single-coder return against frozen lane identity and group set",
+    "merge CODER_A and CODER_B into canonical lane ledgers",
+    "compute lane agreement and exact disagreements",
+    "validate U2/U6 predictor adjudication returns against frozen receipt frames",
+    "write deterministic intake workspace only after every validation succeeds"
+  ],
+  "primary_reliability_rule": {
+    "lanes": [
+      "U2",
+      "U6"
+    ],
+    "threshold_raw_agreement": 0.8,
+    "all_fields_must_pass": true,
+    "fail_action": "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS",
+    "pass_action": "SOURCE_ADJUDICATION"
+  },
+  "external_validation_reliability_rule": {
+    "lane": "U1",
+    "blocks_primary_v4": false,
+    "threshold_raw_agreement": 0.8
+  },
+  "predictor_completion_rule": {
+    "U2_required_clusters_with_three_adjudicated_receipts": 8,
+    "U6_required_clusters_with_three_adjudicated_receipts": 21,
+    "rejection_or_incomplete_action": "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
+  },
+  "prohibitions": [
+    "do not create persistent intake outputs from a partial return bundle",
+    "do not silently fall back to tracked blank worksheets when a return file is missing",
+    "do not adjudicate architecture disagreements inside intake",
+    "do not synthesize rejected predictor receipts",
+    "do not set ready_for_v4_assembly=true at intake stage"
+  ],
+  "implementation": {
+    "module": "balance_domain.plant_human_return_intake",
+    "cli": "scripts/audit_plant_human_returns.py"
+  },
+  "claim_ceiling": "return_ingestion_and_reliability_gate_only_no_biological_result"
+}
