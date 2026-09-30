@@ -5,9 +5,9 @@
 This is the canonical entrypoint after independent human review files begin to return.
 
 It does **not** adjudicate disagreements and it does **not** fit V4. It validates returned
-surfaces against the frozen handoff, merges the two architecture coders, computes agreement,
-and optionally validates predictor-receipt review when both U2 and U6 predictor files have
-returned.
+surfaces against the frozen handoff, merges whichever complete architecture stages have
+returned, computes agreement for those lanes, and independently validates predictor-receipt
+review when that stage has returned.
 
 Machine-readable contract:
 `data/BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json`.
@@ -18,59 +18,79 @@ Canonical CLI:
 python scripts/audit_plant_human_returns.py --return-dir <RETURN_DIR>
 ```
 
-Use `--list-required` to print the canonical basenames.
+Use `--list-required` to print all canonical basenames.
 
-## Required architecture returns
+## Independent return stages
 
-All six files are required before persistent architecture-intake outputs are written:
+The three human-review stages are operationally independent.
+
+### 1. Primary architecture stage
+
+Requires all four files together:
 
 ```text
-BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv
-BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv
 BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv
 BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv
 BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv
 BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv
 ```
 
-If any of these is absent, intake fails before creating the output directory.
+All four may be absent while the primary architecture stage is pending. If any one is
+supplied, all four are required.
 
-Tracked blank worksheets are never substituted for missing returns.
+### 2. External-validation architecture stage
 
-## Predictor-review returns
+Requires the U1 pair:
 
-The predictor reviewer is an independent gate and is not allowed to delay architecture
-agreement reporting.
+```text
+BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_A_V1.csv
+BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv
+```
 
-These two files are therefore optional **as a pair**:
+Both may be absent while U1 external validation is pending. If either is supplied, both are
+required.
+
+**U1 latency does not block U2/U6 primary reliability.**
+
+### 3. Predictor-review stage
+
+Requires the reviewed U2/U6 pair:
 
 ```text
 BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv
 BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv
 ```
 
-Allowed states:
+Both may be absent while predictor review is pending. If either is supplied, both are
+required.
 
-```text
-neither present -> architecture intake proceeds; predictor status = pending
-both present    -> both are validated
-only one present -> fail closed
-```
+**Architecture-return latency does not block predictor-review validation, and predictor
+latency does not block architecture reliability reporting.**
+
+At least one complete stage must be present for intake to run.
 
 ## Validation order
 
-The intake performs the following checks before writing persistent outputs:
+For every supplied stage, the intake validates all stage files before persistent output is
+written.
 
-1. all six coder-return files exist;
-2. each file contains exactly the frozen lane groups for the declared coder ID;
-3. U6 source-reference IDs still match the Pass-1 freeze;
-4. coder returns merge into canonical lane order;
-5. raw agreement, Cohen kappa, Gwet AC1, and exact disagreements are computed;
-6. if predictor returns are present, reviewed receipt IDs exactly match the frozen frames;
-7. reviewed receipts cannot rewrite frozen predictor values, source IDs, or notes;
-8. ADJUDICATED predictor receipts must remain source-side and outcome-independent.
+Architecture stages:
 
-## Reliability branching
+1. every supplied coder file contains exactly the frozen lane groups for the declared coder;
+2. U6 source-reference IDs still match the Pass-1 freeze;
+3. coder returns merge into canonical lane order;
+4. raw agreement, Cohen kappa, Gwet AC1, and exact disagreements are computed.
+
+Predictor stage:
+
+1. reviewed receipt IDs exactly match the frozen U2/U6 frames;
+2. reviewed receipts cannot rewrite frozen predictor values, source IDs, or notes;
+3. ADJUDICATED receipts must remain source-side and outcome-independent.
+
+A partial stage fails before creating the output directory. Tracked blank worksheets are
+never substituted for a missing file inside a supplied stage.
+
+## Primary reliability branching
 
 Primary architecture reliability is U2 + U6.
 
@@ -78,6 +98,12 @@ Every registered agreement field must have:
 
 ```text
 raw agreement >= 0.80
+```
+
+If the primary stage has not returned:
+
+```text
+AWAIT_PRIMARY_ARCHITECTURE_RETURNS
 ```
 
 If any primary field falls below 0.80:
@@ -94,8 +120,23 @@ If all U2/U6 fields pass:
 SOURCE_ADJUDICATION
 ```
 
-U1 reliability is reported separately because U1 is external specificity validation and
-does not block the U2+U6 primary V4 denominator.
+## U1 external-validation branching
+
+U1 is reported separately because it is external specificity validation.
+
+If U1 has not returned:
+
+```text
+AWAIT_U1_EXTERNAL_VALIDATION_RETURNS
+```
+
+If U1 reliability passes:
+
+```text
+SOURCE_ADJUDICATION
+```
+
+A delayed or failed U1 stage never changes the U2/U6 primary reliability result.
 
 ## Predictor branching
 
@@ -106,7 +147,7 @@ U2: 8 clusters x 3 ADJUDICATED outcome-independent receipts
 U6: 21 clusters x 3 ADJUDICATED outcome-independent receipts
 ```
 
-If predictor files have not yet returned:
+If the predictor stage has not returned:
 
 ```text
 AWAIT_PREDICTOR_ADJUDICATION_RETURNS
@@ -124,25 +165,26 @@ A rejected frozen receipt is not silently edited into an acceptable one.
 
 An intake output directory is a one-shot evidence workspace.
 
+- one or more complete stages may be supplied;
+- all supplied stages must validate before any persistent output is written;
 - if the requested output directory already exists, intake fails;
-- all supplied returns are validated before persistent output is written;
 - files are first written to a temporary sibling directory;
 - the temporary directory is atomically renamed to the final workspace only after every
-  output is complete;
+  supplied-stage output is complete;
 - output paths recorded in the receipt are workspace-relative basenames.
 
-A corrected recode or later predictor return therefore uses a new output directory rather
-than overwriting the earlier evidence state.
+A later stage return or corrected recode therefore uses a new output directory rather than
+overwriting an earlier evidence state.
 
 ## Outputs
 
-Successful intake writes one workspace containing:
+Successful intake writes only outputs for stages actually supplied:
 
-- canonical merged U1/U2/U6 double-coding ledgers;
-- U1/U2/U6 agreement reports;
-- exact disagreement CSVs;
-- U2/U6 predictor-adjudication readouts when predictor returns are present;
-- one intake receipt with SHA256 values for every supplied human-return file.
+- canonical merged double-coding ledgers for supplied architecture lanes;
+- agreement reports and exact-disagreement CSVs for supplied architecture lanes;
+- U2/U6 predictor-adjudication readouts when predictor review is supplied;
+- one intake receipt with SHA256 values for every supplied human-return file and explicit
+  PENDING / RELIABILITY_PASS / RELIABILITY_FAIL / COMPLETE / INCOMPLETE stage status.
 
 The intake receipt always reports:
 
