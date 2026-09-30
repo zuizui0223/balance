@@ -166,10 +166,13 @@ def validate_human_return_bundle(
 
     if not predictor_returns_received:
         predictor_next = "AWAIT_PREDICTOR_ADJUDICATION_RETURNS"
+        predictor_status = "PENDING"
     elif predictor_primary_complete:
         predictor_next = "PREDICTOR_ADJUDICATION_COMPLETE"
+        predictor_status = "COMPLETE"
     else:
         predictor_next = "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
+        predictor_status = "INCOMPLETE"
 
     return {
         "analysis": "balance_plant_human_return_intake",
@@ -185,12 +188,17 @@ def validate_human_return_bundle(
         "agreement": agreement,
         "predictor_adjudication": predictor,
         "predictor_returns_received": predictor_returns_received,
+        "predictor_return_status": predictor_status,
         "primary_reliability_pass": primary_reliability_pass,
         "external_validation_reliability_pass": (
             external_validation_reliability_pass
         ),
+        "external_validation_adjudication_allowed": (
+            external_validation_reliability_pass
+        ),
         "predictor_primary_complete": predictor_primary_complete,
         "primary_architecture_next_step": architecture_next,
+        "external_validation_next_step": external_validation_next,
         "predictor_next_step": predictor_next,
         "ready_for_architecture_adjudication": primary_reliability_pass,
         "ready_for_v4_assembly": False,
@@ -277,9 +285,13 @@ def write_human_return_intake(
             "external_validation_reliability_pass"
         ],
         "predictor_returns_received": result["predictor_returns_received"],
+        "predictor_return_status": result["predictor_return_status"],
         "predictor_primary_complete": result["predictor_primary_complete"],
         "primary_architecture_next_step": result[
             "primary_architecture_next_step"
+        ],
+        "external_validation_next_step": result[
+            "external_validation_next_step"
         ],
         "predictor_next_step": result["predictor_next_step"],
         "ready_for_v4_assembly": False,
