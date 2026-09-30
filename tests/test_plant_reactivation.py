@@ -25,6 +25,11 @@ def test_current_v4_reactivation_gate_stays_dormant():
     assert data["posterior_decision_evaluator"] == (
         "balance_domain.plant_v4_decision.temporal_generality_decision"
     )
+    assert data["fit_execution_contract"] == (
+        "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
+    )
+    assert data["fit_execution_runner"] == "scripts/run_plant_v4_cmdstan.py"
+    assert "PASS diagnostics" in data["fit_diagnostic_requirement"]
     assert out["standalone_reactivation_eligible"] is False
     assert out["activation_action"] == "KEEP_DORMANT"
     assert "u2_independent_coding_and_adjudication_complete" in out["blockers"]
