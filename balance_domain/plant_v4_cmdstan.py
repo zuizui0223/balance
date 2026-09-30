@@ -31,6 +31,8 @@ def load_fit_execution_contract(path: Path) -> dict:
         raise ValueError("V4 fit execution contract schema mismatch")
     if data.get("status") != "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING":
         raise ValueError("V4 fit execution contract is not frozen pre-outcome")
+    if data.get("required_cmdstan_version") != "2.40.0":
+        raise ValueError("V4 fit execution contract CmdStan version drifted")
     sampling = data.get("sampling", {})
     required_sampling = {
         "chains": 4,

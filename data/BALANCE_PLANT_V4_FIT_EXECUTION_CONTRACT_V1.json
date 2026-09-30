@@ -70,7 +70,8 @@
     "record_input_sha256": true,
     "record_chain_csv_sha256": true,
     "record_command_argv": true,
-    "record_stansummary_csv": true
+    "record_stansummary_csv": true,
+    "required_cmdstan_version": "2.40.0"
   },
   "prohibitions": [
     "do not change chain count, warmup, sampling iterations, seed, adapt_delta, or max_depth after seeing fitted effect signs",
@@ -79,5 +80,6 @@
     "do not fit the temporal generality models unless both registered generality input files exist",
     "do not replace the registered probability estimands with raw logit coefficient signs"
   ],
-  "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result"
+  "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result",
+  "required_cmdstan_version": "2.40.0"
 }
