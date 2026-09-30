@@ -119,7 +119,10 @@
       "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json when the stricter generality gate is ready",
       "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json when the stricter generality gate is ready"
     ],
-    "fail_closed_rule": "build is forbidden while any U2/U6 coding, adjudication, predictor-independence, assembly, or V4 estimability gate remains open"
+    "fail_closed_rule": "build is forbidden while any U2/U6 coding, adjudication, predictor-independence, assembly, or V4 estimability gate remains open",
+    "fit_execution_contract": "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json",
+    "fit_runner": "scripts/run_plant_v4_cmdstan.py",
+    "fit_execution_doc": "docs/BALANCE_PLANT_V4_CMDSTAN_EXECUTION_V1.md"
   },
   "return_ingestion": {
     "merger_module": "balance_domain/plant_coder_return.py",

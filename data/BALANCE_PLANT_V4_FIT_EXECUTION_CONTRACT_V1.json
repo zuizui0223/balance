@@ -1,0 +1,83 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING",
+  "engine": "CMDSTAN_NUTS",
+  "command_interface": "CmdStan CLI",
+  "primary_model": "comparative/models/BALANCE_PLANT_V4_MULTINOMIAL.stan",
+  "temporal_generality_model": "comparative/models/BALANCE_PLANT_V4_TEMPORAL_GENERALITY.stan",
+  "fit_jobs": [
+    {
+      "id": "PRIMARY",
+      "input": "BALANCE_PLANT_V4_STAN_INPUT.json",
+      "model": "PRIMARY"
+    },
+    {
+      "id": "PRIMARY_PRIOR_SENSITIVITY",
+      "input": "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json",
+      "model": "PRIMARY"
+    },
+    {
+      "id": "TEMPORAL_GENERALITY",
+      "input": "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json",
+      "model": "TEMPORAL_GENERALITY",
+      "optional_gate": "temporal_generality_status=READY"
+    },
+    {
+      "id": "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+      "input": "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json",
+      "model": "TEMPORAL_GENERALITY",
+      "optional_gate": "temporal_generality_status=READY"
+    }
+  ],
+  "sampling": {
+    "chains": 4,
+    "num_warmup": 1000,
+    "num_samples": 2000,
+    "save_warmup": false,
+    "thin": 1,
+    "adapt_delta": 0.99,
+    "max_depth": 15,
+    "metric": "diag_e",
+    "seed": 20260930,
+    "output_sig_figs": 18,
+    "refresh": 100
+  },
+  "diagnostics": {
+    "max_divergences": 0,
+    "max_treedepth_hits": 0,
+    "min_ebfmi": 0.3,
+    "max_parameter_rhat": 1.01,
+    "min_parameter_ess_bulk": 400,
+    "min_parameter_ess_tail": 400,
+    "parameter_families": [
+      "alpha",
+      "beta",
+      "gamma_u6_ordered"
+    ],
+    "failure_action": "STOP_POSTERIOR_DECISION_AND_RECORD_DIAGNOSTIC_FAILURE",
+    "automatic_retuning_allowed": false
+  },
+  "postfit": {
+    "assembly_input": "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv",
+    "primary_summary": "balance_domain.plant_v4_estimands.summarize_v4_primary_postfit",
+    "temporal_generality_summary": "balance_domain.plant_v4_estimands.summarize_v4_temporal_generality_postfit",
+    "standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json",
+    "posterior_decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json"
+  },
+  "reproducibility": {
+    "record_cmdstan_version": true,
+    "record_model_sha256": true,
+    "record_input_sha256": true,
+    "record_chain_csv_sha256": true,
+    "record_command_argv": true,
+    "record_stansummary_csv": true
+  },
+  "prohibitions": [
+    "do not change chain count, warmup, sampling iterations, seed, adapt_delta, or max_depth after seeing fitted effect signs",
+    "do not continue to posterior decision if any registered diagnostic gate fails",
+    "do not automatically retune the sampler after a diagnostic failure",
+    "do not fit the temporal generality models unless both registered generality input files exist",
+    "do not replace the registered probability estimands with raw logit coefficient signs"
+  ],
+  "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result"
+}
