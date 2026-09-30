@@ -15,6 +15,18 @@ CmdStanPy dependency and CI does not install CmdStan. Actual fitting begins only
 licensed assembly and V4 pre-fit JSON inputs have been generated from genuine human
 returns.
 
+## Frozen CmdStan version
+
+The execution engine is fixed prospectively at:
+
+```text
+CmdStan = 2.40.0
+```
+
+The runner reads `bin/stanc --version` before compilation and refuses to proceed when the
+installed version differs. Recording a later version in the fit receipt is not a substitute
+for this preflight check.
+
 ## Frozen sampling configuration
 
 Every registered fit uses:
