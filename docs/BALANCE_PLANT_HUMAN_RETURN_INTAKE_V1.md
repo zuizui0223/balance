@@ -182,6 +182,7 @@ Successful intake writes only outputs for stages actually supplied:
 
 - canonical merged double-coding ledgers for supplied architecture lanes;
 - agreement reports and exact-disagreement CSVs for supplied architecture lanes;
+- validated U2/U6 reviewed predictor-receipt CSV frames when predictor review is supplied;
 - U2/U6 predictor-adjudication readouts when predictor review is supplied;
 - one intake receipt with SHA256 values for every supplied human-return file and explicit
   PENDING / RELIABILITY_PASS / RELIABILITY_FAIL / COMPLETE / INCOMPLETE stage status.
