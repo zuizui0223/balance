@@ -21,6 +21,12 @@ def test_canonical_v4_readiness_report_matches_current_frozen_state():
     out = module.build_report()
 
     readiness = out["programme_readiness"]
+    handoff = out["human_handoff_execution"]
+    assert handoff["status"] == "PACKETS_GENERATED_AWAITING_INDEPENDENT_HUMAN_RETURNS"
+    assert handoff["architecture_coder_packets_generated"] is True
+    assert handoff["predictor_adjudication_packet_generated"] is True
+    assert handoff["independent_human_returns_received"] is False
+    assert handoff["next_action"] == "COLLECT_INDEPENDENT_HUMAN_RETURNS"
     assert out["analysis"] == "balance_plant_v4_readiness_snapshot"
     assert readiness["model_specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
     assert readiness["all_machine_preparation_complete"] is True
