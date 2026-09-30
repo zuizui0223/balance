@@ -293,3 +293,51 @@ def test_runner_fit_specs_match_frozen_contract():
     assert set(runner.FIT_SPECS) == set(registered)
     for job_id, item in registered.items():
         assert runner.FIT_SPECS[job_id]["input"] == item["input"]
+
+
+
+def test_cmdstan_chain_parser_rejects_invalid_sampler_flags(tmp_path):
+    path = tmp_path / "bad_divergent.csv"
+    _chain_csv(path, gamma=False)
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    header_index = next(i for i, line in enumerate(lines) if not line.startswith("#"))
+    fields = lines[header_index].split(",")
+    divergent_index = fields.index("divergent__")
+    first = lines[header_index + 1].split(",")
+    first[divergent_index] = "2"
+    lines[header_index + 1] = ",".join(first)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="exactly 0 or 1"):
+        read_cmdstan_chain(path, require_gamma=False)
+
+    path = tmp_path / "bad_depth.csv"
+    _chain_csv(path, gamma=False)
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    header_index = next(i for i, line in enumerate(lines) if not line.startswith("#"))
+    fields = lines[header_index].split(",")
+    depth_index = fields.index("treedepth__")
+    first = lines[header_index + 1].split(",")
+    first[depth_index] = "3.5"
+    lines[header_index + 1] = ",".join(first)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="non-negative integer"):
+        read_cmdstan_chain(path, require_gamma=False)
+
+
+def test_combine_chains_requires_cmdstan_version_metadata(tmp_path):
+    paths = []
+    for i in range(4):
+        path = tmp_path / f"chain_{i}.csv"
+        _chain_csv(path, gamma=False)
+        text = path.read_text(encoding="utf-8")
+        text = "\n".join(
+            line for line in text.splitlines()
+            if not line.startswith("# stan_version_")
+        ) + "\n"
+        path.write_text(text, encoding="utf-8")
+        paths.append(path)
+
+    with pytest.raises(ValueError, match="version metadata is required"):
+        combine_cmdstan_chains(paths, require_gamma=False, max_depth=15)
