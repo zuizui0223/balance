@@ -129,6 +129,11 @@ def build_outputs(
     out_dir: Path = DEFAULT_OUT,
     input_dir: Path | None = None,
 ) -> dict:
+    if out_dir.exists():
+        raise ValueError(
+            "V4 pre-fit output directory already exists; choose a new immutable "
+            "workspace so prior assembly/model-input evidence is never overwritten"
+        )
     readiness = current_readiness(input_dir)
     if not readiness["primary_model_assembly_ready"]:
         raise RuntimeError(
@@ -178,11 +183,6 @@ def build_outputs(
     )
     pipeline = build_v4_analysis_inputs(assembly)
 
-    if out_dir.exists():
-        raise ValueError(
-            "V4 pre-fit output directory already exists; choose a new immutable "
-            "workspace so prior assembly/model-input evidence is never overwritten"
-        )
     out_dir.parent.mkdir(parents=True, exist_ok=True)
     tmp_dir = Path(tempfile.mkdtemp(
         prefix=f".{out_dir.name}.tmp-",
