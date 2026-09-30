@@ -306,3 +306,25 @@ def test_existing_intake_workspace_is_never_overwritten(tmp_path):
         )
 
     assert sentinel.read_text(encoding="utf-8") == "preserve me"
+
+
+
+def test_machine_readable_intake_contract_matches_canonical_basenames():
+    contract = json.loads(
+        (ROOT / "data" / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json")
+        .read_text(encoding="utf-8")
+    )
+    required = contract["required_architecture_return_files"]
+    optional = contract["optional_predictor_return_pair"]
+
+    assert required == {
+        "U1_CODER_A": CODER_RETURN_BASENAMES[("U1", "CODER_A")],
+        "U1_CODER_B": CODER_RETURN_BASENAMES[("U1", "CODER_B")],
+        "U2_CODER_A": CODER_RETURN_BASENAMES[("U2", "CODER_A")],
+        "U2_CODER_B": CODER_RETURN_BASENAMES[("U2", "CODER_B")],
+        "U6_CODER_A": CODER_RETURN_BASENAMES[("U6", "CODER_A")],
+        "U6_CODER_B": CODER_RETURN_BASENAMES[("U6", "CODER_B")],
+    }
+    assert optional["U2_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U2"]
+    assert optional["U6_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U6"]
+    assert contract["workspace_policy"]["existing_output_directory_overwrite_allowed"] is False
