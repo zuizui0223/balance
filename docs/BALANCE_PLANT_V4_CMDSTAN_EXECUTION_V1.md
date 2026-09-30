@@ -174,6 +174,20 @@ The runner compiles the two registered Stan programs, executes the registered fi
 per-chain logs and CSV files, invokes `stansummary`, writes fit receipts and diagnostics,
 and only then writes the post-fit probability-contrast summaries.
 
+## Immutable fit workspace
+
+A V4 fit output directory is a one-run evidence workspace.
+
+- the requested `--out-dir` must not already exist;
+- rerunning the same or a corrected fit requires a new output directory;
+- previous chain CSVs, diagnostic files, receipts, and optional generality summaries are
+  never silently overwritten;
+- a primary-only rerun can therefore never inherit stale temporal-generality output from
+  an earlier run.
+
+This mirrors the immutable human-return intake policy and keeps every fit attempt
+distinguishable by its own directory and receipts.
+
 ## Reproducibility receipt
 
 Every fit receipt records:
