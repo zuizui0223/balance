@@ -254,6 +254,13 @@ def test_analysis_builder_writes_atomic_receipt_bound_output_workspace(tmp_path,
         "PRIMARY_PRIOR_SENSITIVITY",
     ]
     assert receipt["temporal_generality_status"] == "NOT_READY"
+    assert receipt["analysis_input_provenance_contract"] == (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+    )
+    contract_path = ROOT / receipt["analysis_input_provenance_contract"]
+    assert receipt["analysis_input_provenance_contract_sha256"] == hashlib.sha256(
+        contract_path.read_bytes()
+    ).hexdigest()
     assert receipt["source_human_workspace_receipt_sha256"] == hashlib.sha256(
         human_receipt_path.read_bytes()
     ).hexdigest()
@@ -266,3 +273,16 @@ def test_analysis_builder_writes_atomic_receipt_bound_output_workspace(tmp_path,
 
     with pytest.raises(ValueError, match="output directory already exists"):
         cli.build_outputs(out_dir, input_dir=workspace)
+
+
+
+def test_analysis_input_provenance_contract_is_frozen_and_matches_builder():
+    contract = cli._load_analysis_input_provenance_contract()
+    assert contract["source_workspace"]["required_primary_files"] == list(
+        cli.PRIMARY_HUMAN_BASENAMES
+    )
+    assert contract["source_workspace"]["file_sha256_must_match_receipt"] is True
+    assert contract["output_workspace"]["existing_output_directory_overwrite_allowed"] is False
+    assert contract["output_workspace"]["write_mode"] == (
+        "temporary_sibling_workspace_then_atomic_rename"
+    )
