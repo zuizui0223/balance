@@ -72,7 +72,10 @@
     "record_command_argv": true,
     "record_stansummary_csv": true,
     "required_cmdstan_version": "2.40.0",
-    "record_chain_count_and_draw_count": true
+    "record_chain_count_and_draw_count": true,
+    "record_licensed_assembly_sha256": true,
+    "record_analysis_input_receipt_sha256": true,
+    "record_source_human_workspace_receipt_sha256": true
   },
   "prohibitions": [
     "do not change chain count, warmup, sampling iterations, seed, adapt_delta, or max_depth after seeing fitted effect signs",
@@ -81,7 +84,12 @@
     "do not fit the temporal generality models unless both registered generality input files exist",
     "do not replace the registered probability estimands with raw logit coefficient signs",
     "do not accept missing, duplicated, truncated, or wrong-version chain CSVs",
-    "do not evaluate convergence from a stansummary missing any registered model parameter"
+    "do not evaluate convergence from a stansummary missing any registered model parameter",
+    "do not mix V4 input wrappers from different licensed assemblies or pre-fit builds",
+    "do not fit temporal-generality inputs when the licensed assembly fails the frozen generality support gate",
+    "do not reuse or overwrite a prior V4 fit output directory",
+    "do not allow stale optional generality outputs from an earlier run to coexist with a later primary-only fit",
+    "do not fit an analysis-input bundle whose receipt hashes do not match the supplied files"
   ],
   "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result",
   "required_cmdstan_version": "2.40.0",
@@ -93,5 +101,24 @@
     "stansummary_complete_parameter_set_required": true,
     "primary_parameter_count": 15,
     "generality_parameter_count": 18
+  },
+  "input_bundle_integrity": {
+    "licensed_assembly_required": true,
+    "wrappers_must_equal_deterministic_rebuild_from_assembly": true,
+    "primary_and_primary_sensitivity_required": true,
+    "generality_pair_presence_must_match_assembly_support_gate": true,
+    "generality_primary_and_sensitivity_must_exist_together": true,
+    "record_licensed_assembly_sha256": true,
+    "record_input_wrapper_sha256": true,
+    "analysis_input_receipt_required": true,
+    "analysis_input_receipt_files_must_match_workspace": true,
+    "record_analysis_input_receipt_sha256": true,
+    "record_source_human_workspace_receipt_sha256": true
+  },
+  "workspace_policy": {
+    "existing_output_directory_overwrite_allowed": false,
+    "one_run_per_workspace": true,
+    "stale_optional_outputs_forbidden": true,
+    "new_run_requires_new_output_directory": true
   }
 }
