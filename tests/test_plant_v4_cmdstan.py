@@ -867,6 +867,8 @@ def _fake_run_all_boundary(monkeypatch, runner, tmp_path, *, diagnostic_status):
     assembly_path.write_text("synthetic\n", encoding="utf-8")
     analysis_receipt = tmp_path / "analysis_receipt.json"
     analysis_receipt.write_text("{}\n", encoding="utf-8")
+    source_human_receipt = tmp_path / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    source_human_receipt.write_text("{}\n", encoding="utf-8")
 
     monkeypatch.setattr(
         runner,
@@ -884,7 +886,10 @@ def _fake_run_all_boundary(monkeypatch, runner, tmp_path, *, diagnostic_status):
             "analysis_input_receipt_sha256": hashlib.sha256(
                 analysis_receipt.read_bytes()
             ).hexdigest(),
-            "source_human_workspace_receipt_sha256": "3" * 64,
+            "source_human_workspace_receipt_path": source_human_receipt,
+            "source_human_workspace_receipt_sha256": hashlib.sha256(
+                source_human_receipt.read_bytes()
+            ).hexdigest(),
             "temporal_generality_expected": False,
         },
     )
