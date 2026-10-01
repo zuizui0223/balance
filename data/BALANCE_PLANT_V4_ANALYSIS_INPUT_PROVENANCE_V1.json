@@ -1,0 +1,65 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1",
+  "status": "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING",
+  "source_workspace": {
+    "receipt": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json",
+    "required_schema": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
+    "required_analysis": "balance_plant_v4_human_input_workspace",
+    "primary_model_assembly_ready_required": true,
+    "all_primary_human_gates_closed_required": true,
+    "required_primary_files": [
+      "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+      "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+      "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+      "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+    ],
+    "file_sha256_must_match_receipt": true
+  },
+  "analysis_input_receipt": {
+    "schema": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
+    "basename": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json",
+    "copy_source_human_workspace_receipt": true,
+    "record_source_human_workspace_receipt_sha256": true,
+    "record_primary_human_file_sha256": true,
+    "record_licensed_assembly_sha256": true,
+    "record_assembly_readout_sha256": true,
+    "record_active_wrapper_sha256": true,
+    "record_temporal_generality_status": true,
+    "record_active_fit_jobs": true
+  },
+  "output_workspace": {
+    "existing_output_directory_overwrite_allowed": false,
+    "write_mode": "temporary_sibling_workspace_then_atomic_rename",
+    "stale_optional_generality_outputs_allowed": false,
+    "new_build_requires_new_output_directory": true
+  },
+  "fit_preflight": {
+    "analysis_input_receipt_required": true,
+    "copied_human_workspace_receipt_required": true,
+    "crosscheck_human_receipt_file_hash_map": true,
+    "verify_assembly_and_wrapper_hashes": true,
+    "deterministic_wrapper_rebuild_from_assembly_required": true,
+    "generality_pair_presence_must_match_assembly_support_gate": true
+  },
+  "production_entrypoint": {
+    "cli": "scripts/build_plant_v4_analysis_inputs.py",
+    "required_arguments": [
+      "--input-dir <composed-human-workspace>",
+      "--out-dir <new-analysis-input-workspace>",
+      "--build"
+    ],
+    "github_workflow_role": "contract_and_tracked_input_readiness_validation_only"
+  },
+  "prohibitions": [
+    "do not build production V4 inputs from tracked blank/default human files",
+    "do not build from an unreceipted human workspace",
+    "do not accept a composed human file whose SHA256 differs from its source receipt",
+    "do not overwrite or reuse a prior analysis-input workspace",
+    "do not fit wrappers whose SHA256 differs from the analysis-input receipt",
+    "do not mix wrappers from different licensed assemblies",
+    "do not preserve stale optional generality wrappers when the final assembly fails the generality support gate"
+  ],
+  "claim_ceiling": "analysis_input_provenance_contract_only_no_fitted_or_biological_result"
+}
