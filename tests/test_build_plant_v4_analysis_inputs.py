@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import importlib
 import json
 import sys
@@ -128,3 +129,62 @@ def test_handoff_manifest_post_handoff_paths_exist_in_production_layer():
     assert analysis["manual_workflow"] == ".github/workflows/build-plant-v4-analysis-inputs.yml"
     assert (ROOT / analysis["readiness_cli"]).exists()
     assert (ROOT / analysis["manual_workflow"]).exists()
+
+
+
+def _write_minimal_composed_workspace(path):
+    path.mkdir()
+    files = {}
+    for basename in cli.PRIMARY_HUMAN_BASENAMES:
+        target = path / basename
+        target.write_text(f"synthetic::{basename}\n", encoding="utf-8")
+        files[basename] = {
+            "composed_sha256": hashlib.sha256(target.read_bytes()).hexdigest()
+        }
+    receipt = {
+        "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
+        "analysis": "balance_plant_v4_human_input_workspace",
+        "primary_model_assembly_ready": True,
+        "primary_human_open_gates": {
+            "u2_independent_double_coding": False,
+            "u2_post_coding_adjudication": False,
+            "u6_independent_double_coding": False,
+            "u6_post_coding_adjudication": False,
+            "u2_predictor_independent_adjudication": False,
+            "u6_predictor_independent_adjudication": False,
+        },
+        "next_step": "BUILD_V4_ANALYSIS_INPUTS",
+        "files": files,
+    }
+    receipt_path = path / cli.HUMAN_WORKSPACE_RECEIPT
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return receipt_path
+
+
+def test_analysis_builder_requires_receipt_bound_composed_workspace(tmp_path):
+    workspace = tmp_path / "composed"
+    receipt_path = _write_minimal_composed_workspace(workspace)
+
+    path, receipt = cli._validated_human_workspace_receipt(workspace)
+    assert path == receipt_path
+    assert receipt["primary_model_assembly_ready"] is True
+
+
+def test_analysis_builder_rejects_composed_workspace_hash_drift(tmp_path):
+    workspace = tmp_path / "composed"
+    _write_minimal_composed_workspace(workspace)
+    target = workspace / cli.PRIMARY_HUMAN_BASENAMES[0]
+    target.write_bytes(target.read_bytes() + b"tamper")
+
+    with pytest.raises(ValueError, match="human workspace SHA256 mismatch"):
+        cli._validated_human_workspace_receipt(workspace)
+
+
+def test_analysis_builder_rejects_unreceipted_workspace(tmp_path):
+    workspace = tmp_path / "composed"
+    workspace.mkdir()
+    with pytest.raises(ValueError, match="human workspace receipt is missing"):
+        cli._validated_human_workspace_receipt(workspace)
