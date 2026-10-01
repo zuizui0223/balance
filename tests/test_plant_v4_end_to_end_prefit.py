@@ -253,6 +253,15 @@ def test_synthetic_human_returns_reach_real_v4_analysis_bundle(tmp_path):
     assert composed_result["primary_model_assembly_ready"] is True
     assert composed_result["external_validation_included"] is False
 
+    composed_receipt = json.loads(
+        (composed / analysis_cli.COMPOSED_WORKSPACE_RECEIPT).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert set(composed_receipt["files"]) == set(
+        analysis_cli.PRIMARY_MUTABLE_BASENAMES
+    )
+
     analysis = tmp_path / "analysis"
     result = analysis_cli.build_outputs(
         analysis,
