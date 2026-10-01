@@ -6,7 +6,8 @@
     "required_for_external_input_dir": true,
     "require_primary_model_assembly_ready": true,
     "verify_exact_receipt_declared_mutable_file_set": true,
-    "verify_composed_sha256_before_any_production_build": true
+    "verify_composed_sha256_before_any_production_build": true,
+    "copy_receipt_into_analysis_bundle": true
   },
   "required_outputs": [
     "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv",
@@ -25,7 +26,8 @@
     "filename": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json",
     "record_source_human_workspace_receipt_sha256": true,
     "record_every_generated_file_sha256": true,
-    "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect"
+    "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect",
+    "source_human_workspace_receipt_copy_required": true
   },
   "workspace_policy": {
     "existing_output_directory_overwrite_allowed": false,
@@ -36,10 +38,16 @@
   "downstream_fit": {
     "runner": "scripts/run_plant_v4_cmdstan.py",
     "input_bundle_must_be_deterministically_rebuildable_from_licensed_assembly": true,
-    "analysis_input_receipt_verification_required": true
+    "analysis_input_receipt_verification_required": true,
+    "copied_source_human_workspace_receipt_verification_required": true
   },
   "implementation": {
     "builder": "scripts/build_plant_v4_analysis_inputs.py"
   },
-  "claim_ceiling": "analysis_input_bundle_integrity_only_no_fitted_effect"
+  "claim_ceiling": "analysis_input_bundle_integrity_only_no_fitted_effect",
+  "prohibitions": [
+    "do not build production analysis inputs from mutable files lacking the canonical composed human-workspace receipt",
+    "do not overwrite an existing analysis-input workspace",
+    "do not fit a bundle whose licensed assembly, readout, Stan wrappers, or copied source human-workspace receipt fail receipt-bound SHA256 verification"
+  ]
 }
