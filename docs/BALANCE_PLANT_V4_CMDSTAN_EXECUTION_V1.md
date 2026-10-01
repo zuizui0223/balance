@@ -105,6 +105,31 @@ For every fit, the runner:
 
 This prevents audit metadata from accidentally becoming a Stan data variable.
 
+## Chain and summary completeness
+
+Every registered fit must contain exactly four unique chain CSV files, matching the frozen
+chain count. Each chain must contain exactly 2,000 post-warmup draws under the registered
+`thin=1` contract, and every chain must report CmdStan version `2.40.0`.
+
+The convergence summary must contain the complete registered parameter set:
+
+```text
+PRIMARY / PRIMARY_PRIOR_SENSITIVITY
+  alpha: 6 parameters
+  beta:  9 parameters
+  total: 15
+
+TEMPORAL_GENERALITY / TEMPORAL_GENERALITY_PRIOR_SENSITIVITY
+  alpha: 6
+  beta:  9
+  gamma_u6_ordered: 3
+  total: 18
+```
+
+Missing, duplicated, or unexpected registered parameters fail closed before diagnostic
+thresholds are evaluated. A truncated chain cannot be compensated by pooling the remaining
+chains.
+
 ## Diagnostics
 
 Posterior reporting is blocked unless every registered fit passes:
