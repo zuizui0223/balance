@@ -556,7 +556,7 @@ def test_stansummary_requires_complete_registered_parameter_set(tmp_path):
     missing.write_text(
         "\n".join(
             line for line in rows
-            if not line.startswith("alpha[1,1],")
+            if "alpha[1,1]" not in line
         ) + "\n",
         encoding="utf-8",
     )
@@ -567,7 +567,7 @@ def test_stansummary_requires_complete_registered_parameter_set(tmp_path):
         )
 
     duplicate = tmp_path / "summary_duplicate.csv"
-    alpha_line = next(line for line in rows if line.startswith("alpha[1,1],"))
+    alpha_line = next(line for line in rows if "alpha[1,1]" in line)
     duplicate.write_text(
         "\n".join([*rows, alpha_line]) + "\n",
         encoding="utf-8",
