@@ -1,0 +1,72 @@
+name: Smoke BALANCE plant V4 CmdStan 2.40.0
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download frozen CmdStan 2.40.0 release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl -fL             https://github.com/stan-dev/cmdstan/releases/download/v2.40.0/cmdstan-2.40.0.tar.gz             -o cmdstan-2.40.0.tar.gz
+          tar -xzf cmdstan-2.40.0.tar.gz
+          test -d "$RUNNER_TEMP/cmdstan-2.40.0"
+
+      - name: Compile and sample both V4 Stan models
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/smoke_test_plant_v4_cmdstan.py             --cmdstan-dir "$RUNNER_TEMP/cmdstan-2.40.0"             --work-dir "$RUNNER_TEMP/v4-cmdstan-smoke"
+
+      - name: Verify smoke receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["RUNNER_TEMP"]) / "v4-cmdstan-smoke"
+          receipt = json.loads((root / "SMOKE_RECEIPT.json").read_text())
+          assert receipt["analysis"] == "balance_plant_v4_cmdstan_smoke"
+          assert receipt["cmdstan_version"] == "2.40.0"
+          assert receipt["primary"]["gamma_present"] is False
+          assert receipt["generality"]["gamma_present"] is True
+          assert Path(receipt["primary"]["output"]).is_file()
+          assert Path(receipt["generality"]["output"]).is_file()
+          assert receipt["claim_ceiling"] == (
+              "engine_compatibility_smoke_only_not_production_fit"
+          )
+          PY
+
+      - name: Collect smoke evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release/generated/plant_v4_cmdstan_smoke
+          cp "$RUNNER_TEMP/v4-cmdstan-smoke/SMOKE_RECEIPT.json"             release/generated/plant_v4_cmdstan_smoke/
+          cp "$RUNNER_TEMP/v4-cmdstan-smoke/primary/sample.log"             release/generated/plant_v4_cmdstan_smoke/PRIMARY.sample.log
+          cp "$RUNNER_TEMP/v4-cmdstan-smoke/primary/chain_1.csv"             release/generated/plant_v4_cmdstan_smoke/PRIMARY.chain_1.csv
+          cp "$RUNNER_TEMP/v4-cmdstan-smoke/generality/sample.log"             release/generated/plant_v4_cmdstan_smoke/GENERALITY.sample.log
+          cp "$RUNNER_TEMP/v4-cmdstan-smoke/generality/chain_1.csv"             release/generated/plant_v4_cmdstan_smoke/GENERALITY.chain_1.csv
+
+      - name: Upload smoke evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-v4-cmdstan-2-40-0-smoke
+          path: release/generated/plant_v4_cmdstan_smoke/
+          if-no-files-found: error
