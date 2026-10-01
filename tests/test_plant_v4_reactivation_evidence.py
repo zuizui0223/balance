@@ -39,14 +39,14 @@ def _human_receipt():
     }
 
 
-def _assembly_readout():
+def _assembly_readout(*, generality=True):
     return {
         "analysis": "balance_plant_confirmatory_model_assembly_v4",
         "ready_for_primary_fit": True,
         "v4_estimability": {
-            "temporal_cross_universe_common_support_ready": True,
-            "temporal_cross_universe_outcome_support_ready": True,
-            "temporal_cross_universe_generality_ready": True,
+            "temporal_cross_universe_common_support_ready": generality,
+            "temporal_cross_universe_outcome_support_ready": generality,
+            "temporal_cross_universe_generality_ready": generality,
         },
     }
 
@@ -138,7 +138,7 @@ def test_reactivation_bridge_does_not_treat_concordant_negative_direction_as_eli
 def test_reactivation_bridge_without_generality_fit_stays_dormant():
     out = evaluate_v4_reactivation_evidence(
         human_workspace_receipt=_human_receipt(),
-        assembly_readout=_assembly_readout(),
+        assembly_readout=_assembly_readout(generality=False),
         fit_execution_receipt=_fit_receipt(generality=False),
         temporal_generality_postfit_summary=None,
     )
@@ -249,7 +249,6 @@ def test_receipt_bound_reactivation_cli_rejects_upstream_hash_drift(tmp_path):
 def test_reactivation_bridge_rejects_generality_job_assembly_mismatch():
     assembly = _assembly_readout()
     fit = _fit_receipt(generality=False)
-    fit["temporal_generality_expected_from_assembly"] = True
     with pytest.raises(ValueError, match="generality expectation disagrees"):
         derive_v4_reactivation_conditions(
             human_workspace_receipt=_human_receipt(),
