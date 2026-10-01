@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from balance_domain.plant_analysis_pipeline import build_v4_analysis_inputs  # noqa: E402
 from balance_domain.plant_model_assembly import load_model_assembly  # noqa: E402
 from balance_domain.plant_v4_cmdstan import (  # noqa: E402
     cmdstan_sample_argv,
@@ -36,6 +37,8 @@ from balance_domain.plant_v4_estimands import (  # noqa: E402
 CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
 DEFAULT_INPUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_fit"
+ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+ASSEMBLY_READOUT = "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
 
 FIT_SPECS = {
     "PRIMARY": {
@@ -302,6 +305,157 @@ def _run_fit_job(
     }
 
 
+
+def _load_json_object(path: Path) -> dict:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise FileNotFoundError(f"required V4 input is missing: {path}") from exc
+    if not isinstance(data, dict):
+        raise ValueError(f"V4 input must be a JSON object: {path}")
+    return data
+
+
+def _validate_input_bundle(input_dir: Path) -> dict:
+    """Rebuild the frozen V4 wrappers from the licensed assembly and require identity."""
+    assembly_path = input_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
+    if not assembly_path.exists():
+        raise FileNotFoundError(f"required V4 licensed assembly is missing: {assembly_path}")
+    assembly = load_model_assembly(assembly_path)
+    expected = build_v4_analysis_inputs(assembly)
+
+    expected_by_job = {
+        "PRIMARY": expected["main_stan_input"],
+        "PRIMARY_PRIOR_SENSITIVITY": expected["prior_sensitivity_stan_input"],
+        "TEMPORAL_GENERALITY": expected["temporal_generality_stan_input"],
+        "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY": expected[
+            "temporal_generality_prior_sensitivity_stan_input"
+        ],
+    }
+
+    analysis_receipt_path = input_dir / ANALYSIS_INPUT_RECEIPT
+    analysis_receipt = _load_json_object(analysis_receipt_path)
+    if (
+        analysis_receipt.get("schema_version")
+        != "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1"
+    ):
+        raise ValueError("V4 analysis-input receipt schema mismatch")
+    if analysis_receipt.get("analysis") != "balance_plant_v4_analysis_input_bundle":
+        raise ValueError("V4 analysis-input receipt analysis mismatch")
+    if analysis_receipt.get("primary_fit_ready") is not True:
+        raise ValueError("V4 analysis-input receipt is not primary-fit ready")
+    source_human_sha = analysis_receipt.get(
+        "source_human_workspace_receipt_sha256"
+    )
+    if not isinstance(source_human_sha, str) or len(source_human_sha) != 64:
+        raise ValueError(
+            "V4 analysis-input receipt lacks source human-workspace receipt SHA256"
+        )
+
+    expected_receipt_files = {
+        "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv": assembly_path,
+        ASSEMBLY_READOUT: input_dir / ASSEMBLY_READOUT,
+        FIT_SPECS["PRIMARY"]["input"]: input_dir / FIT_SPECS["PRIMARY"]["input"],
+        FIT_SPECS["PRIMARY_PRIOR_SENSITIVITY"]["input"]: (
+            input_dir / FIT_SPECS["PRIMARY_PRIOR_SENSITIVITY"]["input"]
+        ),
+    }
+    if expected_by_job["TEMPORAL_GENERALITY"] is not None:
+        expected_receipt_files[
+            FIT_SPECS["TEMPORAL_GENERALITY"]["input"]
+        ] = input_dir / FIT_SPECS["TEMPORAL_GENERALITY"]["input"]
+        expected_receipt_files[
+            FIT_SPECS["TEMPORAL_GENERALITY_PRIOR_SENSITIVITY"]["input"]
+        ] = input_dir / FIT_SPECS["TEMPORAL_GENERALITY_PRIOR_SENSITIVITY"]["input"]
+
+    receipt_hashes = analysis_receipt.get("files_sha256")
+    if (
+        not isinstance(receipt_hashes, dict)
+        or set(receipt_hashes) != set(expected_receipt_files)
+    ):
+        raise ValueError(
+            "V4 analysis-input receipt file set disagrees with deterministic rebuild"
+        )
+    for name, path in sorted(expected_receipt_files.items()):
+        if not path.is_file():
+            raise FileNotFoundError(f"required V4 analysis-input file is missing: {path}")
+        observed = sha256_file(path)
+        if receipt_hashes.get(name) != observed:
+            raise ValueError(
+                f"V4 analysis-input receipt SHA256 mismatch for {name}: "
+                f"{observed} != {receipt_hashes.get(name)}"
+            )
+
+    readout_actual = _load_json_object(input_dir / ASSEMBLY_READOUT)
+    if readout_actual != expected["assembly_readout"]:
+        raise ValueError(
+            "V4 assembly readout does not match deterministic rebuild from licensed assembly"
+        )
+    if (
+        analysis_receipt.get("temporal_generality_status")
+        != expected["temporal_generality_status"]
+    ):
+        raise ValueError("V4 analysis-input receipt generality status drifted")
+
+    active_jobs = []
+    wrapper_sha256 = {}
+    for job_id in ("PRIMARY", "PRIMARY_PRIOR_SENSITIVITY"):
+        path = input_dir / FIT_SPECS[job_id]["input"]
+        actual = _load_json_object(path)
+        if actual != expected_by_job[job_id]:
+            raise ValueError(
+                f"{job_id} input does not match deterministic rebuild from licensed assembly"
+            )
+        active_jobs.append(job_id)
+        wrapper_sha256[job_id] = sha256_file(path)
+
+    generality_jobs = (
+        "TEMPORAL_GENERALITY",
+        "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+    )
+    expected_generality = expected_by_job["TEMPORAL_GENERALITY"] is not None
+    if (
+        expected_by_job["TEMPORAL_GENERALITY_PRIOR_SENSITIVITY"] is not None
+    ) != expected_generality:
+        raise ValueError("internal V4 generality pipeline produced an incomplete pair")
+
+    generality_paths = [
+        input_dir / FIT_SPECS[job_id]["input"]
+        for job_id in generality_jobs
+    ]
+    present = [path.exists() for path in generality_paths]
+    if expected_generality:
+        if not all(present):
+            raise ValueError(
+                "licensed assembly requires both temporal-generality input files"
+            )
+        for job_id, path in zip(generality_jobs, generality_paths):
+            actual = _load_json_object(path)
+            if actual != expected_by_job[job_id]:
+                raise ValueError(
+                    f"{job_id} input does not match deterministic rebuild from licensed assembly"
+                )
+            active_jobs.append(job_id)
+            wrapper_sha256[job_id] = sha256_file(path)
+    elif any(present):
+        raise ValueError(
+            "temporal-generality inputs are present even though the licensed assembly "
+            "does not pass the frozen generality support gate"
+        )
+
+    return {
+        "assembly": assembly,
+        "assembly_path": assembly_path,
+        "assembly_sha256": sha256_file(assembly_path),
+        "active_jobs": active_jobs,
+        "wrapper_sha256": wrapper_sha256,
+        "analysis_input_receipt_path": analysis_receipt_path,
+        "analysis_input_receipt_sha256": sha256_file(analysis_receipt_path),
+        "source_human_workspace_receipt_sha256": source_human_sha,
+        "temporal_generality_expected": expected_generality,
+    }
+
+
 def run_all(
     *,
     cmdstan_dir: Path,
@@ -311,7 +465,13 @@ def run_all(
     make_command: str = "make",
 ) -> dict:
     contract = load_fit_execution_contract(contract_path)
-    out_dir.mkdir(parents=True, exist_ok=True)
+    input_bundle = _validate_input_bundle(input_dir)
+    if out_dir.exists():
+        raise ValueError(
+            "V4 fit output directory already exists; choose a new immutable "
+            "workspace so previous fit evidence is never mixed or overwritten"
+        )
+    out_dir.mkdir(parents=True, exist_ok=False)
     build_dir = out_dir / "_cmdstan_build"
     build_dir.mkdir(parents=True, exist_ok=True)
     _ensure_stanc(
@@ -327,29 +487,7 @@ def run_all(
             f"found {cmdstan_version}"
         )
 
-    required = ("PRIMARY", "PRIMARY_PRIOR_SENSITIVITY")
-    for job_id in required:
-        path = input_dir / FIT_SPECS[job_id]["input"]
-        if not path.exists():
-            raise FileNotFoundError(f"required V4 input is missing: {path}")
-
-    generality_paths = [
-        input_dir / FIT_SPECS[job_id]["input"]
-        for job_id in (
-            "TEMPORAL_GENERALITY",
-            "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
-        )
-    ]
-    if generality_paths[0].exists() != generality_paths[1].exists():
-        raise ValueError(
-            "temporal generality primary and prior-sensitivity inputs must exist together"
-        )
-    active_jobs = list(required)
-    if all(path.exists() for path in generality_paths):
-        active_jobs.extend((
-            "TEMPORAL_GENERALITY",
-            "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
-        ))
+    active_jobs = list(input_bundle["active_jobs"])
 
     model_executables: dict[Path, Path] = {}
     for job_id in active_jobs:
@@ -393,6 +531,19 @@ def run_all(
         "required_cmdstan_version": required_version,
         "preflight_cmdstan_version": cmdstan_version,
         "active_jobs": active_jobs,
+        "licensed_assembly": str(input_bundle["assembly_path"]),
+        "licensed_assembly_sha256": input_bundle["assembly_sha256"],
+        "input_wrapper_sha256": input_bundle["wrapper_sha256"],
+        "analysis_input_receipt": str(input_bundle["analysis_input_receipt_path"]),
+        "analysis_input_receipt_sha256": input_bundle[
+            "analysis_input_receipt_sha256"
+        ],
+        "source_human_workspace_receipt_sha256": input_bundle[
+            "source_human_workspace_receipt_sha256"
+        ],
+        "temporal_generality_expected_from_assembly": input_bundle[
+            "temporal_generality_expected"
+        ],
         "job_receipts": {
             job_id: str(fit["receipt_path"])
             for job_id, fit in fits.items()
@@ -414,8 +565,7 @@ def run_all(
             + ", ".join(diagnostic_failures)
         )
 
-    assembly_path = input_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
-    assembly = load_model_assembly(assembly_path)
+    assembly = input_bundle["assembly"]
     primary_summary = summarize_v4_primary_postfit(
         assembly,
         primary_draws=fits["PRIMARY"]["draws"],
