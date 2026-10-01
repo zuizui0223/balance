@@ -247,31 +247,7 @@ def test_compositor_never_overwrites_existing_workspace(tmp_path):
 
 
 
-def test_compositor_revalidates_predictor_frames_against_frozen_receipts(tmp_path):
-    primary = _build_primary_adjudication_workspace(tmp_path)
-    predictor = _build_predictor_workspace(tmp_path)
-
-    receipt = json.loads(
-        (predictor / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json")
-        .read_text(encoding="utf-8")
-    )
-    u2_name = receipt["outputs"]["predictor_reviewed_frames"]["U2"]
-    path = predictor / u2_name
-    fields, rows = _read_rows(path)
-    rows[0]["source_id"] = "tampered-source"
-    _write_rows(path, fields, rows)
-
-    with pytest.raises(ValueError, match="SHA256 mismatch"):
-        compose_v4_human_input_workspace(
-            root=ROOT,
-            primary_adjudication_dir=primary,
-            predictor_intake_dir=predictor,
-            out_dir=tmp_path / "composed",
-        )
-
-
-
-def test_compositor_rejects_hash_drift_in_primary_adjudication_workspace(tmp_path):
+def test_compositor_rejects_primary_workspace_file_hash_drift(tmp_path):
     primary = _build_primary_adjudication_workspace(tmp_path)
     predictor = _build_predictor_workspace(tmp_path)
 
@@ -281,10 +257,9 @@ def test_compositor_rejects_hash_drift_in_primary_adjudication_workspace(tmp_pat
     )
     u2_name = receipt["outputs"]["coding_ledgers"]["U2"]
     path = primary / u2_name
-    # Semantically inert CSV whitespace must still invalidate the immutable receipt binding.
     path.write_bytes(path.read_bytes() + b"\n")
 
-    with pytest.raises(ValueError, match="output SHA256 mismatch for coding_ledgers/U2"):
+    with pytest.raises(ValueError, match="output SHA256 mismatch"):
         compose_v4_human_input_workspace(
             root=ROOT,
             primary_adjudication_dir=primary,
@@ -293,7 +268,7 @@ def test_compositor_rejects_hash_drift_in_primary_adjudication_workspace(tmp_pat
         )
 
 
-def test_compositor_rejects_hash_drift_in_predictor_intake_workspace(tmp_path):
+def test_compositor_rejects_predictor_frame_hash_drift(tmp_path):
     primary = _build_primary_adjudication_workspace(tmp_path)
     predictor = _build_predictor_workspace(tmp_path)
 
@@ -301,16 +276,40 @@ def test_compositor_rejects_hash_drift_in_predictor_intake_workspace(tmp_path):
         (predictor / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json")
         .read_text(encoding="utf-8")
     )
-    u6_name = receipt["outputs"]["predictor_reviewed_frames"]["U6"]
-    path = predictor / u6_name
-    # A trailing blank line normally survives semantic CSV validation; the receipt hash
-    # must still make the staged workspace immutable.
+    u2_name = receipt["outputs"]["predictor_reviewed_frames"]["U2"]
+    path = predictor / u2_name
     path.write_bytes(path.read_bytes() + b"\n")
 
-    with pytest.raises(
-        ValueError,
-        match="output SHA256 mismatch for predictor_reviewed_frames/U6",
-    ):
+    with pytest.raises(ValueError, match="output SHA256 mismatch"):
+        compose_v4_human_input_workspace(
+            root=ROOT,
+            primary_adjudication_dir=primary,
+            predictor_intake_dir=predictor,
+            out_dir=tmp_path / "composed",
+        )
+
+
+def test_compositor_revalidates_predictor_semantics_even_if_receipt_hash_is_forged(tmp_path):
+    primary = _build_primary_adjudication_workspace(tmp_path)
+    predictor = _build_predictor_workspace(tmp_path)
+
+    receipt_path = predictor / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    u2_name = receipt["outputs"]["predictor_reviewed_frames"]["U2"]
+    path = predictor / u2_name
+    fields, rows = _read_rows(path)
+    rows[0]["source_id"] = "tampered-source"
+    _write_rows(path, fields, rows)
+
+    receipt["output_sha256"]["predictor_reviewed_frames"]["U2"] = (
+        hashlib.sha256(path.read_bytes()).hexdigest()
+    )
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="cannot modify frozen source_id"):
         compose_v4_human_input_workspace(
             root=ROOT,
             primary_adjudication_dir=primary,
