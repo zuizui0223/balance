@@ -8,6 +8,14 @@ from pathlib import Path
 import pytest
 
 from balance_domain.plant_macro_agreement import FIELDS
+from balance_domain.plant_v4_workspace import (
+    U2_ADJUDICATION,
+    U2_CODING,
+    U2_PREDICTOR,
+    U6_ADJUDICATION,
+    U6_CODING,
+    U6_PREDICTOR,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -292,3 +300,15 @@ def test_analysis_builder_copies_source_receipt_and_hash_binds_outputs(tmp_path,
 
     with pytest.raises(ValueError, match="output directory already exists"):
         cli.build_outputs(out_dir, input_dir=workspace)
+
+
+
+def test_v4_analysis_builder_primary_basenames_match_compositor_contract():
+    assert cli.PRIMARY_MUTABLE_BASENAMES == {
+        U2_CODING,
+        U2_ADJUDICATION,
+        U2_PREDICTOR,
+        U6_CODING,
+        U6_ADJUDICATION,
+        U6_PREDICTOR,
+    }
