@@ -124,7 +124,11 @@ This means:
 - wrappers copied from another intake/assembly workspace are rejected even if their Stan
   dimensions happen to be valid;
 - the licensed assembly SHA256 and every wrapper SHA256 are written into the execution
-  receipt.
+  receipt;
+- `BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json` is required and every file hash in
+  that receipt is verified before compilation;
+- the analysis-input receipt SHA256 and its upstream composed-human-workspace receipt SHA256
+  are propagated into the fit execution receipt.
 
 Posterior summaries therefore cannot be standardized over one assembly while being fitted
 to another.
@@ -235,8 +239,12 @@ and only then writes the post-fit probability-contrast summaries.
 
 ## Reproducibility receipt
 
-Every fit receipt records:
+Every completed fit execution receipt records:
 
+- licensed assembly SHA256;
+- analysis-input bundle receipt SHA256;
+- upstream composed-human-workspace receipt SHA256;
+- every per-job `FIT_RECEIPT.json` SHA256;
 - source Stan model SHA256;
 - compiled executable SHA256;
 - audited input-wrapper SHA256;
@@ -245,7 +253,20 @@ Every fit receipt records:
 - exact command argv for every chain;
 - every chain CSV SHA256;
 - `stansummary` output SHA256;
-- diagnostic gate result.
+- diagnostic gate result;
+- primary post-fit summary SHA256;
+- temporal-generality post-fit summary SHA256 when that registered fit is active.
+
+Execution status is explicit:
+
+```text
+DIAGNOSTIC_FAIL
+DIAGNOSTICS_PASS_POSTFIT_PENDING
+COMPLETE
+```
+
+A diagnostic failure receipt contains no post-fit outputs. `COMPLETE` is written only after
+all registered post-fit outputs are present and hash-bound.
 
 ## Claim ceiling
 
