@@ -71,7 +71,8 @@
     "do not synthesize rejected predictor receipts",
     "do not set ready_for_v4_assembly=true at intake stage",
     "do not overwrite an existing intake workspace",
-    "do not discard validated reviewed predictor receipt frames after intake"
+    "do not discard validated reviewed predictor receipt frames after intake",
+    "do not trust a persistent intake output whose SHA256 no longer matches the intake receipt"
   ],
   "implementation": {
     "module": "balance_domain.plant_human_return_intake",
@@ -96,6 +97,7 @@
     "existing_output_directory_overwrite_allowed": false,
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
     "output_references": "workspace_relative_basenames",
-    "copy_validated_predictor_review_frames": true
+    "copy_validated_predictor_review_frames": true,
+    "receipt_binds_output_sha256": true
   }
 }

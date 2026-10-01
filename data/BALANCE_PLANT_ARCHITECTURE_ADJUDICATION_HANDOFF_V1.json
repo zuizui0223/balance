@@ -48,13 +48,16 @@
     "consensus rows use CODER_CONSENSUS",
     "all final rows must be ADJUDICATED",
     "notes are required",
-    "reliability failure routes to codebook repair and recoding rather than adjudication"
+    "reliability failure routes to codebook repair and recoding rather than adjudication",
+    "intake workspace outputs must match receipt-bound SHA256 before packet build or return validation"
   ],
   "workspace_policy": {
     "existing_output_directory_overwrite_allowed": false,
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
     "copy_validated_merged_coding_ledger": true,
-    "copy_validated_adjudication_return": true
+    "copy_validated_adjudication_return": true,
+    "receipt_binds_output_sha256": true,
+    "downstream_composition_must_verify_output_sha256": true
   },
   "implementation": {
     "module": "balance_domain.plant_architecture_adjudication",

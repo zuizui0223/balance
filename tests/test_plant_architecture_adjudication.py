@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 import zipfile
 from pathlib import Path
@@ -214,6 +215,12 @@ def test_primary_adjudication_return_builds_immutable_validated_workspace(tmp_pa
     receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
     assert receipt["primary_model_gate_closed"] is True
     assert receipt["external_validation_gate_closed"] is False
+    for family, mapping in receipt["outputs"].items():
+        for lane, basename in mapping.items():
+            path = workspace / basename
+            assert receipt["output_sha256"][family][lane] == (
+                hashlib.sha256(path.read_bytes()).hexdigest()
+            )
 
     with pytest.raises(ValueError, match="output directory already exists"):
         write_architecture_adjudication_workspace(
@@ -269,3 +276,21 @@ def test_external_u1_adjudication_is_independent_of_primary(tmp_path):
     receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
     assert receipt["external_validation_gate_closed"] is True
     assert receipt["primary_model_gate_closed"] is False
+
+
+
+def test_architecture_handoff_rejects_tampered_intake_output(tmp_path):
+    intake = _intake(tmp_path, scope="PRIMARY")
+    receipt_path = intake / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    merged_name = receipt["outputs"]["merged_ledgers"]["U2"]
+    merged = intake / merged_name
+    merged.write_bytes(merged.read_bytes() + b"\n")
+
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
+        build_architecture_adjudication_packet(
+            root=ROOT,
+            intake_dir=intake,
+            scope="PRIMARY",
+            out_dir=tmp_path / "packet",
+        )

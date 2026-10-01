@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -186,6 +187,12 @@ def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
     assert receipt["agreement"]["U6"]["failed_fields"] == []
     assert (out_dir / receipt["outputs"]["merged_ledgers"]["U2"]).exists()
     assert (out_dir / receipt["outputs"]["agreement_reports"]["U6"]).exists()
+    for family, mapping in receipt["outputs"].items():
+        for lane, basename in mapping.items():
+            path = out_dir / basename
+            assert receipt["output_sha256"][family][lane] == (
+                hashlib.sha256(path.read_bytes()).hexdigest()
+            )
     for lane in ("U2", "U6"):
         reviewed = out_dir / receipt["outputs"]["predictor_reviewed_frames"][lane]
         assert reviewed.name == PREDICTOR_RETURN_BASENAMES[lane]
