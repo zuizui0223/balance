@@ -304,7 +304,7 @@ def test_analysis_builder_copies_source_receipt_and_hash_binds_outputs(tmp_path,
 
 
 def test_v4_analysis_builder_primary_basenames_match_compositor_contract():
-    assert analysis_cli.PRIMARY_MUTABLE_BASENAMES == {
+    assert cli.PRIMARY_MUTABLE_BASENAMES == {
         U2_CODING,
         U2_ADJUDICATION,
         U2_PREDICTOR,
