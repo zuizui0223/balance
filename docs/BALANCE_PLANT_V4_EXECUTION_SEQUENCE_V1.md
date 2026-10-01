@@ -155,15 +155,42 @@ Registered sampler diagnostics are fail-closed. Automatic retuning is forbidden.
 When diagnostics pass, the runner automatically computes the frozen probability estimands
 and decision labels.
 
+The evidence-eligibility bridge is then run read-only against the immutable analysis-input
+and fit workspaces:
+
+```bash
+python scripts/evaluate_plant_v4_reactivation.py \
+  --input-dir <V4_ANALYSIS_INPUT_WORKSPACE> \
+  --fit-dir <V4_FIT_WORKSPACE>
+```
+
+Before deriving any reactivation condition it revalidates the receipt chain:
+
+```text
+fit execution receipt
+-> analysis-input receipt hash
+-> copied human-workspace receipt hash
+-> licensed assembly hash
+-> assembly-readout hash
+-> post-fit summary hashes
+```
+
+The bridge derives the frozen required conditions rather than asking a reviewer to
+transcribe them manually. In particular, a timing direction counts as resolved for this
+reactivation gate only when the preregistered positive direction is `SUPPORTED` under
+both registered priors. Concordant negative directions do not silently satisfy the gate.
+
 A completed fit does **not** automatically reactivate the BALANCE paper.
 
 ```text
 fit/post-fit evidence
+-> receipt-bound evidence-eligibility bridge
 -> frozen reactivation evidence gate
 -> explicit human publication review
 ```
 
-The publication status is never changed automatically by the fit runner.
+The publication status is never changed automatically by either the fit runner or the
+evidence bridge.
 
 ## Immutable-workspace rule
 

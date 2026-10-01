@@ -22,7 +22,11 @@ def test_v4_execution_sequence_is_frozen_and_ordered():
         "S8_POSTFIT_AND_REACTIVATION_REVIEW",
     ]
     assert data["stages"][6]["required_cmdstan_version"] == "2.40.0"
+    assert data["stages"][7]["cli"] == "scripts/evaluate_plant_v4_reactivation.py"
     assert data["stages"][7]["publication_status_change_automatic"] is False
+    assert data["stages"][7]["evidence_bridge"] == (
+        "balance_domain.plant_reactivation.evaluate_v4_reactivation_evidence"
+    )
     assert data["stage_independence"]["predictor_review_may_finish_before_architecture_returns"] is True
     assert data["stage_independence"]["U1_external_may_finish_later_than_primary"] is True
 
@@ -36,6 +40,7 @@ def test_v4_execution_sequence_references_existing_cli_and_contract_surfaces():
         "scripts/compose_plant_v4_human_workspace.py",
         "scripts/build_plant_v4_analysis_inputs.py",
         "scripts/run_plant_v4_cmdstan.py",
+        "scripts/evaluate_plant_v4_reactivation.py",
         "data/BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json",
         "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json",
         "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json",

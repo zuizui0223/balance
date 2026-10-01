@@ -90,7 +90,11 @@
       "decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
       "reactivation_gate": "data/BALANCE_PLANT_V4_REACTIVATION_GATE_V1.json",
       "publication_status_change_automatic": false,
-      "rule": "fit/postfit evidence may establish evidence eligibility only; publication reactivation still requires explicit human review"
+      "rule": "fit/postfit evidence may establish evidence eligibility only; publication reactivation still requires explicit human review",
+      "cli": "scripts/evaluate_plant_v4_reactivation.py",
+      "command": "python scripts/evaluate_plant_v4_reactivation.py --input-dir <V4_ANALYSIS_INPUT_WORKSPACE> --fit-dir <V4_FIT_WORKSPACE>",
+      "evidence_bridge": "balance_domain.plant_reactivation.evaluate_v4_reactivation_evidence",
+      "receipt_chain_rule": "reverify fit receipt -> analysis-input receipt -> copied human-workspace receipt -> licensed assembly/readout -> postfit output hashes before eligibility"
     }
   ],
   "stage_independence": {

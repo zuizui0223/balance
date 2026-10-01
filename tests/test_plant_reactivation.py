@@ -29,6 +29,12 @@ def test_current_v4_reactivation_gate_stays_dormant():
         "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
     )
     assert data["fit_execution_runner"] == "scripts/run_plant_v4_cmdstan.py"
+    assert data["reactivation_evidence_bridge"] == (
+        "balance_domain.plant_reactivation.evaluate_v4_reactivation_evidence"
+    )
+    assert data["reactivation_evidence_cli"] == (
+        "scripts/evaluate_plant_v4_reactivation.py"
+    )
     assert "PASS diagnostics" in data["fit_diagnostic_requirement"]
     assert out["standalone_reactivation_eligible"] is False
     assert out["activation_action"] == "KEEP_DORMANT"
