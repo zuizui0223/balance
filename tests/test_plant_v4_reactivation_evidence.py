@@ -191,6 +191,7 @@ def _build_evidence_workspaces(tmp_path):
     analysis_path = input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
     analysis = {
         "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
+        "primary_fit_ready": True,
         "source_human_workspace_receipt_sha256": _sha(human_path),
         "files_sha256": {
             "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json": _sha(readout_path),
@@ -241,4 +242,30 @@ def test_receipt_bound_reactivation_cli_rejects_upstream_hash_drift(tmp_path):
     human.write_bytes(human.read_bytes() + b"\n")
 
     with pytest.raises(ValueError, match="human-workspace receipt SHA256 mismatch"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
+
+
+
+def test_reactivation_bridge_rejects_generality_job_assembly_mismatch():
+    assembly = _assembly_readout()
+    fit = _fit_receipt(generality=False)
+    fit["temporal_generality_expected_from_assembly"] = True
+    with pytest.raises(ValueError, match="generality expectation disagrees"):
+        derive_v4_reactivation_conditions(
+            human_workspace_receipt=_human_receipt(),
+            assembly_readout=assembly,
+            fit_execution_receipt=fit,
+            temporal_generality_postfit_summary=None,
+        )
+
+
+def test_receipt_bound_reactivation_cli_rejects_noncanonical_postfit_name(tmp_path):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    fit_path = fit_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
+    fit = json.loads(fit_path.read_text(encoding="utf-8"))
+    fit["postfit_outputs"]["primary"] = str(fit_dir / "other-primary.json")
+    _write_json(fit_path, fit)
+
+    with pytest.raises(ValueError, match="primary postfit output basename drifted"):
         module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
