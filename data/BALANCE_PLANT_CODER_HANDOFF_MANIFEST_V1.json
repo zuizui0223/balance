@@ -172,5 +172,30 @@
     "pass_action": "SOURCE_ADJUDICATION",
     "exact_disagreement_list_required": true,
     "adjudication_allowed_only_if_all_fields_pass": true
+  },
+  "architecture_adjudication": {
+    "contract": "data/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_HANDOFF_V1.json",
+    "protocol": "docs/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_PROTOCOL_V1.md",
+    "module": "balance_domain.plant_architecture_adjudication",
+    "packet_cli": "scripts/build_plant_architecture_adjudication_packet.py",
+    "return_cli": "scripts/validate_plant_architecture_adjudication.py",
+    "primary_scope": {
+      "lanes": [
+        "U2",
+        "U6"
+      ],
+      "reliability_requirement": "U2_AND_U6_RELIABILITY_PASS",
+      "blocks_primary_v4": true
+    },
+    "external_scope": {
+      "lanes": [
+        "U1"
+      ],
+      "reliability_requirement": "U1_RELIABILITY_PASS",
+      "blocks_primary_v4": false
+    },
+    "packet_rule": "include codebook/source packets/merged coding/agreement/exact disagreements/adjudication template; exclude predictor review and fit/publication outputs",
+    "return_rule": "validate all rows through canonical lane loaders; coder consensus cannot be overridden; disagreement decisions require source-review basis",
+    "workspace_rule": "validated adjudication outputs are written atomically to a new immutable workspace"
   }
 }

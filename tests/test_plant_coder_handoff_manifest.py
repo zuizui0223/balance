@@ -157,3 +157,32 @@ def test_handoff_manifest_registers_canonical_agreement_reporting():
     assert agreement["adjudication_allowed_only_if_all_fields_pass"] is True
     assert (ROOT / agreement["module"]).exists()
     assert (ROOT / agreement["cli"]).exists()
+
+
+
+def test_handoff_manifest_registers_architecture_adjudication_entrypoints():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    adjudication = data["architecture_adjudication"]
+    assert adjudication["contract"] == (
+        "data/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_HANDOFF_V1.json"
+    )
+    assert adjudication["protocol"] == (
+        "docs/BALANCE_PLANT_ARCHITECTURE_ADJUDICATION_PROTOCOL_V1.md"
+    )
+    assert adjudication["module"] == (
+        "balance_domain.plant_architecture_adjudication"
+    )
+    assert adjudication["packet_cli"] == (
+        "scripts/build_plant_architecture_adjudication_packet.py"
+    )
+    assert adjudication["return_cli"] == (
+        "scripts/validate_plant_architecture_adjudication.py"
+    )
+    assert adjudication["primary_scope"]["lanes"] == ["U2", "U6"]
+    assert adjudication["primary_scope"]["blocks_primary_v4"] is True
+    assert adjudication["external_scope"]["lanes"] == ["U1"]
+    assert adjudication["external_scope"]["blocks_primary_v4"] is False
+    for key in ("contract", "protocol", "packet_cli", "return_cli"):
+        assert (ROOT / adjudication[key]).exists()
+    module_path = ROOT / (adjudication["module"].replace(".", "/") + ".py")
+    assert module_path.exists()
