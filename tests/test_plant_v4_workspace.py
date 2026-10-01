@@ -261,7 +261,7 @@ def test_compositor_revalidates_predictor_frames_against_frozen_receipts(tmp_pat
     rows[0]["source_id"] = "tampered-source"
     _write_rows(path, fields, rows)
 
-    with pytest.raises(ValueError, match="cannot modify frozen source_id"):
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
         compose_v4_human_input_workspace(
             root=ROOT,
             primary_adjudication_dir=primary,
