@@ -116,7 +116,9 @@
     "analysis_input_receipt_required": true,
     "analysis_input_receipt_files_must_match_workspace": true,
     "record_analysis_input_receipt_sha256": true,
-    "record_source_human_workspace_receipt_sha256": true
+    "record_source_human_workspace_receipt_sha256": true,
+    "source_human_workspace_receipt_copy_required": true,
+    "copied_source_human_workspace_receipt_sha256_must_match": true
   },
   "workspace_policy": {
     "existing_output_directory_overwrite_allowed": false,
