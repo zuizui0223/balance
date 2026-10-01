@@ -38,6 +38,7 @@ CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
 DEFAULT_INPUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_fit"
 ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+HUMAN_WORKSPACE_RECEIPT = "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
 ASSEMBLY_READOUT = "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
 
 FIT_SPECS = {
@@ -351,6 +352,27 @@ def _validate_input_bundle(input_dir: Path) -> dict:
         raise ValueError(
             "V4 analysis-input receipt lacks source human-workspace receipt SHA256"
         )
+    if analysis_receipt.get("source_human_workspace_receipt") != HUMAN_WORKSPACE_RECEIPT:
+        raise ValueError("V4 analysis-input receipt source human-workspace name drifted")
+    if analysis_receipt.get("source_human_workspace_receipt_copied") is not True:
+        raise ValueError("V4 analysis-input receipt does not require copied human receipt")
+
+    source_human_path = input_dir / HUMAN_WORKSPACE_RECEIPT
+    if not source_human_path.is_file():
+        raise FileNotFoundError(
+            f"required copied V4 human-workspace receipt is missing: {source_human_path}"
+        )
+    if sha256_file(source_human_path) != source_human_sha:
+        raise ValueError("copied V4 human-workspace receipt SHA256 mismatch")
+    source_human_receipt = _load_json_object(source_human_path)
+    if source_human_receipt.get("schema_version") != "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1":
+        raise ValueError("copied V4 human-workspace receipt schema mismatch")
+    if source_human_receipt.get("analysis") != "balance_plant_v4_human_input_workspace":
+        raise ValueError("copied V4 human-workspace receipt analysis mismatch")
+    if source_human_receipt.get("primary_model_assembly_ready") is not True:
+        raise ValueError("copied V4 human-workspace receipt is not assembly-ready")
+    if any((source_human_receipt.get("primary_human_open_gates") or {}).values()):
+        raise ValueError("copied V4 human-workspace receipt has primary human gates open")
 
     expected_receipt_files = {
         "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv": assembly_path,
@@ -451,6 +473,7 @@ def _validate_input_bundle(input_dir: Path) -> dict:
         "wrapper_sha256": wrapper_sha256,
         "analysis_input_receipt_path": analysis_receipt_path,
         "analysis_input_receipt_sha256": sha256_file(analysis_receipt_path),
+        "source_human_workspace_receipt_path": source_human_path,
         "source_human_workspace_receipt_sha256": source_human_sha,
         "temporal_generality_expected": expected_generality,
     }
@@ -538,6 +561,9 @@ def run_all(
         "analysis_input_receipt_sha256": input_bundle[
             "analysis_input_receipt_sha256"
         ],
+        "source_human_workspace_receipt": str(
+            input_bundle["source_human_workspace_receipt_path"]
+        ),
         "source_human_workspace_receipt_sha256": input_bundle[
             "source_human_workspace_receipt_sha256"
         ],
