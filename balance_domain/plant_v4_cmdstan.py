@@ -33,6 +33,10 @@ def load_fit_execution_contract(path: Path) -> dict:
         raise ValueError("V4 fit execution contract is not frozen pre-outcome")
     if data.get("required_cmdstan_version") != "2.40.0":
         raise ValueError("V4 fit execution contract CmdStan version drifted")
+    if data.get("analysis_input_bundle_contract") != (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
+    ):
+        raise ValueError("V4 fit analysis-input bundle contract pointer drifted")
     sampling = data.get("sampling", {})
     required_sampling = {
         "chains": 4,
