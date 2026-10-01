@@ -90,6 +90,14 @@ def test_handoff_manifest_registers_post_handoff_v4_analysis_workflow():
     assert analysis["readiness_cli"] == "scripts/build_plant_v4_analysis_inputs.py"
     assert analysis["manual_workflow"] == ".github/workflows/build-plant-v4-analysis-inputs.yml"
     assert analysis["build_command"].endswith("--build")
+    assert analysis["analysis_input_bundle_contract"] == (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
+    )
+    assert "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json" in analysis["outputs"]
+    assert "canonical composed human-input workspace receipt" in (
+        analysis["production_input_rule"]
+    )
+    assert "immutable analysis-input bundle" in analysis["output_workspace_policy"]
     assert "forbidden while any U2/U6" in analysis["fail_closed_rule"]
     assert (
         "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json when the stricter "
