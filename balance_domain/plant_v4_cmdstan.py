@@ -33,6 +33,10 @@ def load_fit_execution_contract(path: Path) -> dict:
         raise ValueError("V4 fit execution contract is not frozen pre-outcome")
     if data.get("required_cmdstan_version") != "2.40.0":
         raise ValueError("V4 fit execution contract CmdStan version drifted")
+    if data.get("analysis_input_bundle_contract") != (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
+    ):
+        raise ValueError("V4 fit analysis-input bundle contract pointer drifted")
     sampling = data.get("sampling", {})
     required_sampling = {
         "chains": 4,
@@ -84,6 +88,12 @@ def load_fit_execution_contract(path: Path) -> dict:
         "generality_primary_and_sensitivity_must_exist_together": True,
         "record_licensed_assembly_sha256": True,
         "record_input_wrapper_sha256": True,
+        "analysis_input_receipt_required": True,
+        "analysis_input_receipt_files_must_match_workspace": True,
+        "record_analysis_input_receipt_sha256": True,
+        "record_source_human_workspace_receipt_sha256": True,
+        "source_human_workspace_receipt_copy_required": True,
+        "copied_source_human_workspace_receipt_sha256_must_match": True,
     }
     if data.get("input_bundle_integrity") != required_input_integrity:
         raise ValueError("V4 fit input-bundle integrity contract drifted")
@@ -96,6 +106,16 @@ def load_fit_execution_contract(path: Path) -> dict:
     }
     if data.get("workspace_policy") != required_workspace:
         raise ValueError("V4 fit workspace policy drifted")
+
+    required_output_integrity = {
+        "job_receipt_sha256_required": True,
+        "successful_postfit_output_sha256_required": True,
+        "diagnostic_failure_receipt_must_record_no_postfit_outputs": True,
+        "execution_status_required": True,
+        "complete_status_requires_postfit_outputs": True,
+    }
+    if data.get("fit_output_integrity") != required_output_integrity:
+        raise ValueError("V4 fit output-integrity contract drifted")
     return data
 
 

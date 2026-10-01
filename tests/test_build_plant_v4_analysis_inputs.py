@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import importlib
 import json
 import sys
@@ -35,9 +36,22 @@ def test_v4_analysis_cli_reports_current_readiness_without_building():
 
 
 def test_v4_analysis_cli_build_fails_closed_while_human_gates_are_open(tmp_path):
+    out_dir = tmp_path / "analysis"
     with pytest.raises(RuntimeError, match="V4 primary assembly is not ready"):
-        cli.build_outputs(tmp_path)
-    assert not any(tmp_path.iterdir())
+        cli.build_outputs(out_dir)
+    assert not out_dir.exists()
+
+
+def test_v4_analysis_cli_rejects_existing_output_workspace_before_gate_evaluation(tmp_path):
+    out_dir = tmp_path / "analysis"
+    out_dir.mkdir()
+    sentinel = out_dir / "sentinel.txt"
+    sentinel.write_text("preserve", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        cli.build_outputs(out_dir)
+
+    assert sentinel.read_text(encoding="utf-8") == "preserve"
 
 
 
@@ -128,3 +142,153 @@ def test_handoff_manifest_post_handoff_paths_exist_in_production_layer():
     assert analysis["manual_workflow"] == ".github/workflows/build-plant-v4-analysis-inputs.yml"
     assert (ROOT / analysis["readiness_cli"]).exists()
     assert (ROOT / analysis["manual_workflow"]).exists()
+
+
+
+def _write_dummy_composed_workspace(path, *, include_external=False):
+    path.mkdir()
+    basenames = set(cli.PRIMARY_MUTABLE_BASENAMES)
+    if include_external:
+        basenames |= cli.EXTERNAL_MUTABLE_BASENAMES
+
+    files = {}
+    for basename in sorted(basenames):
+        target = path / basename
+        target.write_text(f"{basename}\n", encoding="utf-8")
+        digest = hashlib.sha256(target.read_bytes()).hexdigest()
+        files[basename] = {
+            "source": f"/immutable/source/{basename}",
+            "source_sha256": digest,
+            "composed_sha256": digest,
+        }
+
+    receipt = {
+        "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
+        "analysis": "balance_plant_v4_human_input_workspace",
+        "external_validation_included": include_external,
+        "files": files,
+        "primary_human_open_gates": {
+            "u2_independent_double_coding": False,
+            "u2_post_coding_adjudication": False,
+            "u6_independent_double_coding": False,
+            "u6_post_coding_adjudication": False,
+            "u2_predictor_independent_adjudication": False,
+            "u6_predictor_independent_adjudication": False,
+        },
+        "primary_model_assembly_ready": True,
+        "v4_estimability_ready_to_evaluate": True,
+        "next_step": "BUILD_V4_ANALYSIS_INPUTS",
+        "claim_ceiling": "validated_human_input_composition_only_no_model_effect",
+    }
+    receipt_path = path / cli.COMPOSED_WORKSPACE_RECEIPT
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return receipt_path
+
+
+def test_v4_production_build_requires_canonical_composed_workspace_receipt(tmp_path):
+    workspace = tmp_path / "handoff"
+    workspace.mkdir()
+
+    with pytest.raises(ValueError, match="requires the canonical composed human-input"):
+        cli.build_outputs(tmp_path / "analysis", input_dir=workspace)
+
+
+def test_v4_composed_workspace_receipt_hash_binding_is_fail_closed(tmp_path):
+    workspace = tmp_path / "handoff"
+    receipt_path = _write_dummy_composed_workspace(workspace)
+
+    validated = cli._validate_composed_input_workspace(workspace)
+    assert validated["receipt_path"] == receipt_path
+    assert validated["receipt_sha256"] == hashlib.sha256(
+        receipt_path.read_bytes()
+    ).hexdigest()
+
+    target = workspace / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+    target.write_bytes(target.read_bytes() + b"\n")
+
+    with pytest.raises(ValueError, match="composed workspace SHA256 mismatch"):
+        cli._validate_composed_input_workspace(workspace)
+
+
+def test_v4_composed_workspace_receipt_rejects_file_set_drift(tmp_path):
+    workspace = tmp_path / "handoff"
+    receipt_path = _write_dummy_composed_workspace(workspace)
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["files"].pop("BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv")
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="file set disagrees"):
+        cli._validate_composed_input_workspace(workspace)
+
+
+
+def test_analysis_builder_copies_source_receipt_and_hash_binds_outputs(tmp_path, monkeypatch):
+    workspace = tmp_path / "composed"
+    human_receipt_path = _write_dummy_composed_workspace(workspace)
+    out_dir = tmp_path / "analysis_inputs"
+
+    monkeypatch.setattr(
+        cli,
+        "current_readiness",
+        lambda input_dir=None: {
+            "primary_model_assembly_ready": True,
+            "open_gate_names": [],
+        },
+    )
+    monkeypatch.setattr(cli, "load_double_coding", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_double_code_sample", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_plant_predictor_receipts", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_source_packet", lambda path: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_double_coding", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_cross_universe_dependence", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_frozen_source_packet", lambda *args, **kwargs: [])
+
+    assembly = [{
+        field: ("row-1" if field == "analysis_row_id" else "synthetic")
+        for field in cli.ASSEMBLY_FIELDS
+    }]
+    monkeypatch.setattr(cli, "build_v4_licensed_assembly", lambda **kwargs: assembly)
+    pipeline = {
+        "assembly_readout": {"ready_for_primary_fit": True},
+        "main_stan_input": {"stan_data": {"N": 1}, "metadata": {"kind": "main"}},
+        "prior_sensitivity_stan_input": {
+            "stan_data": {"N": 1},
+            "metadata": {"kind": "prior"},
+        },
+        "temporal_generality_stan_input": None,
+        "temporal_generality_prior_sensitivity_stan_input": None,
+        "temporal_generality_status": "NOT_READY",
+        "temporal_generality_blockers": ["shared_module_timing_common_support"],
+    }
+    monkeypatch.setattr(cli, "build_v4_analysis_inputs", lambda rows: pipeline)
+
+    result = cli.build_outputs(out_dir, input_dir=workspace)
+    copied = Path(result["source_human_workspace_receipt"])
+    assert copied.name == cli.COMPOSED_WORKSPACE_RECEIPT
+    assert copied.read_bytes() == human_receipt_path.read_bytes()
+
+    receipt_path = Path(result["analysis_inputs_receipt"])
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["source_human_workspace_receipt"] == cli.COMPOSED_WORKSPACE_RECEIPT
+    assert receipt["source_human_workspace_receipt_copied"] is True
+    assert receipt["source_human_workspace_receipt_sha256"] == hashlib.sha256(
+        copied.read_bytes()
+    ).hexdigest()
+    assert receipt["primary_fit_ready"] is True
+    assert receipt["temporal_generality_status"] == "NOT_READY"
+
+    for basename, expected_sha in receipt["files_sha256"].items():
+        path = out_dir / basename
+        assert path.is_file()
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected_sha
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        cli.build_outputs(out_dir, input_dir=workspace)

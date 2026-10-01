@@ -1,0 +1,53 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1",
+  "status": "FROZEN_BEFORE_INDEPENDENT_HUMAN_RETURNS",
+  "source_workspace": {
+    "receipt": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json",
+    "required_for_external_input_dir": true,
+    "require_primary_model_assembly_ready": true,
+    "verify_exact_receipt_declared_mutable_file_set": true,
+    "verify_composed_sha256_before_any_production_build": true,
+    "copy_receipt_into_analysis_bundle": true
+  },
+  "required_outputs": [
+    "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv",
+    "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json",
+    "BALANCE_PLANT_V4_STAN_INPUT.json",
+    "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
+  ],
+  "optional_generality_outputs": {
+    "gate": "frozen temporal generality support gate",
+    "pair_required_together": [
+      "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json",
+      "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
+    ]
+  },
+  "receipt": {
+    "filename": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json",
+    "record_source_human_workspace_receipt_sha256": true,
+    "record_every_generated_file_sha256": true,
+    "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect",
+    "source_human_workspace_receipt_copy_required": true
+  },
+  "workspace_policy": {
+    "existing_output_directory_overwrite_allowed": false,
+    "write_mode": "temporary_sibling_workspace_then_atomic_rename",
+    "stale_optional_outputs_forbidden": true,
+    "one_build_per_workspace": true
+  },
+  "downstream_fit": {
+    "runner": "scripts/run_plant_v4_cmdstan.py",
+    "input_bundle_must_be_deterministically_rebuildable_from_licensed_assembly": true,
+    "analysis_input_receipt_verification_required": true,
+    "copied_source_human_workspace_receipt_verification_required": true
+  },
+  "implementation": {
+    "builder": "scripts/build_plant_v4_analysis_inputs.py"
+  },
+  "claim_ceiling": "analysis_input_bundle_integrity_only_no_fitted_effect",
+  "prohibitions": [
+    "do not build production analysis inputs from mutable files lacking the canonical composed human-workspace receipt",
+    "do not overwrite an existing analysis-input workspace",
+    "do not fit a bundle whose licensed assembly, readout, Stan wrappers, or copied source human-workspace receipt fail receipt-bound SHA256 verification"
+  ]
+}

@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -35,6 +38,81 @@ from balance_domain.plant_u6 import (  # noqa: E402
 )
 
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
+COMPOSED_WORKSPACE_RECEIPT = "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+
+PRIMARY_MUTABLE_BASENAMES = {
+    "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+}
+EXTERNAL_MUTABLE_BASENAMES = {
+    "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+}
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _validate_composed_input_workspace(input_dir: Path) -> dict:
+    receipt_path = input_dir / COMPOSED_WORKSPACE_RECEIPT
+    if not receipt_path.is_file():
+        raise ValueError(
+            "V4 production build requires the canonical composed human-input "
+            f"workspace receipt: {receipt_path}"
+        )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if receipt.get("schema_version") != "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1":
+        raise ValueError("V4 composed human-input workspace schema mismatch")
+    if receipt.get("analysis") != "balance_plant_v4_human_input_workspace":
+        raise ValueError("V4 composed human-input workspace analysis mismatch")
+    if receipt.get("primary_model_assembly_ready") is not True:
+        raise ValueError("V4 composed human-input workspace is not assembly-ready")
+    if receipt.get("next_step") != "BUILD_V4_ANALYSIS_INPUTS":
+        raise ValueError("V4 composed human-input workspace next-step contract drifted")
+
+    expected = set(PRIMARY_MUTABLE_BASENAMES)
+    if receipt.get("external_validation_included") is True:
+        expected |= EXTERNAL_MUTABLE_BASENAMES
+
+    files = receipt.get("files")
+    if not isinstance(files, dict) or set(files) != expected:
+        raise ValueError(
+            "V4 composed human-input workspace file set disagrees with its receipt"
+        )
+
+    for basename in sorted(expected):
+        info = files.get(basename)
+        if not isinstance(info, dict):
+            raise ValueError(f"V4 workspace receipt lacks provenance for {basename}")
+        expected_sha = info.get("composed_sha256")
+        source_sha = info.get("source_sha256")
+        if (
+            not isinstance(expected_sha, str)
+            or len(expected_sha) != 64
+            or source_sha != expected_sha
+        ):
+            raise ValueError(f"V4 workspace receipt SHA256 contract invalid for {basename}")
+        path = input_dir / basename
+        if not path.is_file():
+            raise ValueError(f"V4 composed workspace file is missing: {path}")
+        observed = _sha256(path)
+        if observed != expected_sha:
+            raise ValueError(
+                f"V4 composed workspace SHA256 mismatch for {basename}: "
+                f"{observed} != {expected_sha}"
+            )
+
+    return {
+        "receipt_path": receipt_path,
+        "receipt_sha256": _sha256(receipt_path),
+        "receipt": receipt,
+    }
 
 
 def _override(default: Path, input_dir: Path | None) -> Path:
@@ -127,6 +205,16 @@ def build_outputs(
     out_dir: Path = DEFAULT_OUT,
     input_dir: Path | None = None,
 ) -> dict:
+    if out_dir.exists():
+        raise ValueError(
+            "V4 analysis-input output directory already exists; choose a new immutable "
+            "workspace so earlier pre-fit evidence is never mixed or overwritten"
+        )
+    human_workspace = (
+        _validate_composed_input_workspace(input_dir)
+        if input_dir is not None
+        else None
+    )
     readiness = current_readiness(input_dir)
     if not readiness["primary_model_assembly_ready"]:
         raise RuntimeError(
@@ -176,60 +264,126 @@ def build_outputs(
     )
     pipeline = build_v4_analysis_inputs(assembly)
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    assembly_path = out_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
-    readout_path = out_dir / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
-    main_path = out_dir / "BALANCE_PLANT_V4_STAN_INPUT.json"
-    prior_path = out_dir / "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
-    generality_path = out_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"
-    generality_prior_path = (
-        out_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
-    )
+    out_dir.parent.mkdir(parents=True, exist_ok=True)
+    tmp_dir = Path(tempfile.mkdtemp(
+        prefix=f".{out_dir.name}.tmp-",
+        dir=out_dir.parent,
+    ))
+    try:
+        assembly_path = tmp_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
+        readout_path = tmp_dir / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+        main_path = tmp_dir / "BALANCE_PLANT_V4_STAN_INPUT.json"
+        prior_path = tmp_dir / "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
+        generality_path = tmp_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"
+        generality_prior_path = (
+            tmp_dir / "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
+        )
 
-    _write_csv(assembly_path, assembly)
-    readout_path.write_text(
-        json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    main_path.write_text(
-        json.dumps(pipeline["main_stan_input"], indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    prior_path.write_text(
-        json.dumps(
-            pipeline["prior_sensitivity_stan_input"],
-            indent=2,
-            sort_keys=True,
-        ) + "\n",
-        encoding="utf-8",
-    )
-    if pipeline["temporal_generality_stan_input"] is not None:
-        generality_path.write_text(
+        _write_csv(assembly_path, assembly)
+        readout_path.write_text(
+            json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        main_path.write_text(
+            json.dumps(pipeline["main_stan_input"], indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        prior_path.write_text(
             json.dumps(
-                pipeline["temporal_generality_stan_input"],
+                pipeline["prior_sensitivity_stan_input"],
                 indent=2,
                 sort_keys=True,
             ) + "\n",
             encoding="utf-8",
         )
-        generality_prior_path.write_text(
-            json.dumps(
-                pipeline["temporal_generality_prior_sensitivity_stan_input"],
-                indent=2,
-                sort_keys=True,
-            ) + "\n",
+        generated = {
+            assembly_path.name: assembly_path,
+            readout_path.name: readout_path,
+            main_path.name: main_path,
+            prior_path.name: prior_path,
+        }
+        if pipeline["temporal_generality_stan_input"] is not None:
+            generality_path.write_text(
+                json.dumps(
+                    pipeline["temporal_generality_stan_input"],
+                    indent=2,
+                    sort_keys=True,
+                ) + "\n",
+                encoding="utf-8",
+            )
+            generality_prior_path.write_text(
+                json.dumps(
+                    pipeline["temporal_generality_prior_sensitivity_stan_input"],
+                    indent=2,
+                    sort_keys=True,
+                ) + "\n",
+                encoding="utf-8",
+            )
+            generated[generality_path.name] = generality_path
+            generated[generality_prior_path.name] = generality_prior_path
+
+        copied_human_receipt = None
+        if human_workspace is not None:
+            copied_human_receipt = tmp_dir / COMPOSED_WORKSPACE_RECEIPT
+            shutil.copyfile(human_workspace["receipt_path"], copied_human_receipt)
+            if _sha256(copied_human_receipt) != human_workspace["receipt_sha256"]:
+                raise ValueError(
+                    "copied V4 human-workspace receipt SHA256 drifted during bundle build"
+                )
+
+        receipt = {
+            "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
+            "analysis": "balance_plant_v4_analysis_input_bundle",
+            "source_human_workspace_receipt_sha256": (
+                human_workspace["receipt_sha256"]
+                if human_workspace is not None
+                else None
+            ),
+            "source_human_workspace_receipt": (
+                COMPOSED_WORKSPACE_RECEIPT
+                if human_workspace is not None
+                else None
+            ),
+            "source_human_workspace_receipt_copied": human_workspace is not None,
+            "files_sha256": {
+                name: _sha256(path)
+                for name, path in sorted(generated.items())
+            },
+            "temporal_generality_status": pipeline["temporal_generality_status"],
+            "primary_fit_ready": True,
+            "workspace_policy": "one_build_per_immutable_output_directory",
+            "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect",
+        }
+        receipt_path = tmp_dir / ANALYSIS_INPUT_RECEIPT
+        receipt_path.write_text(
+            json.dumps(receipt, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-    else:
-        for path in (generality_path, generality_prior_path):
-            if path.exists():
-                path.unlink()
+        tmp_dir.rename(out_dir)
+    except Exception:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+        raise
+
+    assembly_path = out_dir / assembly_path.name
+    readout_path = out_dir / readout_path.name
+    main_path = out_dir / main_path.name
+    prior_path = out_dir / prior_path.name
+    generality_path = out_dir / generality_path.name
+    generality_prior_path = out_dir / generality_prior_path.name
+    receipt_path = out_dir / ANALYSIS_INPUT_RECEIPT
+    copied_human_receipt_path = out_dir / COMPOSED_WORKSPACE_RECEIPT
 
     return {
         "assembly": str(assembly_path),
         "assembly_readout": str(readout_path),
         "main_stan_input": str(main_path),
         "prior_sensitivity_stan_input": str(prior_path),
+        "analysis_inputs_receipt": str(receipt_path),
+        "source_human_workspace_receipt": (
+            str(copied_human_receipt_path)
+            if copied_human_receipt_path.exists()
+            else None
+        ),
         "temporal_generality_status": pipeline["temporal_generality_status"],
         "temporal_generality_blockers": pipeline["temporal_generality_blockers"],
         "temporal_generality_input": (

@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import importlib.util
 import json
 import math
@@ -28,6 +29,9 @@ CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
 def test_fit_execution_contract_is_frozen_before_outcome():
     data = load_fit_execution_contract(CONTRACT)
     assert data["required_cmdstan_version"] == "2.40.0"
+    assert data["analysis_input_bundle_contract"] == (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
+    )
     assert data["sampling"] == {
         "chains": 4,
         "num_warmup": 1000,
@@ -50,12 +54,25 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "generality_primary_and_sensitivity_must_exist_together": True,
         "record_licensed_assembly_sha256": True,
         "record_input_wrapper_sha256": True,
+        "analysis_input_receipt_required": True,
+        "analysis_input_receipt_files_must_match_workspace": True,
+        "record_analysis_input_receipt_sha256": True,
+        "record_source_human_workspace_receipt_sha256": True,
+        "source_human_workspace_receipt_copy_required": True,
+        "copied_source_human_workspace_receipt_sha256_must_match": True,
     }
     assert data["workspace_policy"] == {
         "existing_output_directory_overwrite_allowed": False,
         "one_run_per_workspace": True,
         "stale_optional_outputs_forbidden": True,
         "new_run_requires_new_output_directory": True,
+    }
+    assert data["fit_output_integrity"] == {
+        "job_receipt_sha256_required": True,
+        "successful_postfit_output_sha256_required": True,
+        "diagnostic_failure_receipt_must_record_no_postfit_outputs": True,
+        "execution_status_required": True,
+        "complete_status_requires_postfit_outputs": True,
     }
     assert data["chain_integrity"] == {
         "expected_chain_count": 4,
@@ -641,6 +658,11 @@ def _write_prefit_bundle(path, rows):
         writer.writerows(rows)
 
     pipeline = build_v4_analysis_inputs(rows)
+    readout = path / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+    readout.write_text(
+        json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     payloads = {
         "BALANCE_PLANT_V4_STAN_INPUT.json": pipeline["main_stan_input"],
         "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json": (
@@ -660,6 +682,55 @@ def _write_prefit_bundle(path, rows):
             json.dumps(payload, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
+
+    generated = {
+        assembly.name: assembly,
+        readout.name: readout,
+        **{name: path / name for name in payloads},
+    }
+    human_receipt = path / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    human_receipt.write_text(
+        json.dumps(
+            {
+                "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
+                "analysis": "balance_plant_v4_human_input_workspace",
+                "primary_model_assembly_ready": True,
+                "primary_human_open_gates": {
+                    "u2_independent_double_coding": False,
+                    "u2_post_coding_adjudication": False,
+                    "u6_independent_double_coding": False,
+                    "u6_post_coding_adjudication": False,
+                    "u2_predictor_independent_adjudication": False,
+                    "u6_predictor_independent_adjudication": False,
+                },
+                "next_step": "BUILD_V4_ANALYSIS_INPUTS",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    human_receipt_sha = hashlib.sha256(human_receipt.read_bytes()).hexdigest()
+    receipt = {
+        "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
+        "analysis": "balance_plant_v4_analysis_input_bundle",
+        "source_human_workspace_receipt_sha256": human_receipt_sha,
+        "source_human_workspace_receipt": human_receipt.name,
+        "source_human_workspace_receipt_copied": True,
+        "files_sha256": {
+            name: hashlib.sha256(file.read_bytes()).hexdigest()
+            for name, file in sorted(generated.items())
+        },
+        "temporal_generality_status": pipeline["temporal_generality_status"],
+        "primary_fit_ready": True,
+        "workspace_policy": "one_build_per_immutable_output_directory",
+        "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect",
+    }
+    (path / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json").write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     return pipeline
 
 
@@ -678,6 +749,11 @@ def test_runner_preflight_binds_all_wrappers_to_one_licensed_assembly(tmp_path):
     assert out["temporal_generality_expected"] is True
     assert len(out["wrapper_sha256"]) == 4
     assert out["assembly_sha256"]
+    assert out["analysis_input_receipt_sha256"]
+    assert len(out["source_human_workspace_receipt_sha256"]) == 64
+    assert out["source_human_workspace_receipt_path"].name == (
+        "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    )
 
 
 def test_runner_preflight_rejects_wrapper_from_different_assembly(tmp_path):
@@ -690,7 +766,7 @@ def test_runner_preflight_rejects_wrapper_from_different_assembly(tmp_path):
     prior["stan_data"]["X"][0][0] = 1 - prior["stan_data"]["X"][0][0]
     prior_path.write_text(json.dumps(prior), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="does not match deterministic rebuild"):
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
         runner._validate_input_bundle(input_dir)
 
 
@@ -746,3 +822,184 @@ def test_runner_refuses_existing_fit_workspace_before_any_execution(tmp_path):
         )
 
     assert sentinel.read_text(encoding="utf-8") == "preserve prior fit evidence"
+
+
+
+def test_runner_preflight_requires_analysis_input_receipt(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_missing_analysis_receipt_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+    (input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json").unlink()
+
+    with pytest.raises(FileNotFoundError, match="required V4 input is missing"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_rejects_analysis_receipt_hash_drift(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_analysis_hash_drift_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    readout = input_dir / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+    readout.write_bytes(readout.read_bytes() + b"\n")
+
+    with pytest.raises(ValueError, match="analysis-input receipt SHA256 mismatch"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_requires_source_human_workspace_receipt_hash(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_human_receipt_hash_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    receipt_path = input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["source_human_workspace_receipt_sha256"] = None
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="lacks source human-workspace receipt SHA256"):
+        runner._validate_input_bundle(input_dir)
+
+
+
+def _fake_run_all_boundary(monkeypatch, runner, tmp_path, *, diagnostic_status):
+    assembly_path = tmp_path / "assembly.csv"
+    assembly_path.write_text("synthetic\n", encoding="utf-8")
+    analysis_receipt = tmp_path / "analysis_receipt.json"
+    analysis_receipt.write_text("{}\n", encoding="utf-8")
+    source_human_receipt = tmp_path / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    source_human_receipt.write_text("{}\n", encoding="utf-8")
+
+    monkeypatch.setattr(
+        runner,
+        "_validate_input_bundle",
+        lambda _input_dir: {
+            "assembly": [{"synthetic": "row"}],
+            "assembly_path": assembly_path,
+            "assembly_sha256": hashlib.sha256(assembly_path.read_bytes()).hexdigest(),
+            "active_jobs": ["PRIMARY", "PRIMARY_PRIOR_SENSITIVITY"],
+            "wrapper_sha256": {
+                "PRIMARY": "1" * 64,
+                "PRIMARY_PRIOR_SENSITIVITY": "2" * 64,
+            },
+            "analysis_input_receipt_path": analysis_receipt,
+            "analysis_input_receipt_sha256": hashlib.sha256(
+                analysis_receipt.read_bytes()
+            ).hexdigest(),
+            "source_human_workspace_receipt_path": source_human_receipt,
+            "source_human_workspace_receipt_sha256": hashlib.sha256(
+                source_human_receipt.read_bytes()
+            ).hexdigest(),
+            "temporal_generality_expected": False,
+        },
+    )
+    monkeypatch.setattr(runner, "_ensure_stanc", lambda **kwargs: tmp_path / "stanc")
+    monkeypatch.setattr(runner, "_cmdstan_version", lambda _path: "2.40.0")
+    monkeypatch.setattr(
+        runner,
+        "_compile_model",
+        lambda **kwargs: tmp_path / "compiled-model",
+    )
+    monkeypatch.setattr(
+        runner,
+        "_ensure_stansummary",
+        lambda **kwargs: tmp_path / "stansummary",
+    )
+
+    def fake_fit(*, job_id, out_dir, **kwargs):
+        job_dir = out_dir / job_id
+        job_dir.mkdir(parents=True, exist_ok=True)
+        receipt_path = job_dir / "FIT_RECEIPT.json"
+        receipt_path.write_text(
+            json.dumps({"job_id": job_id, "status": diagnostic_status}) + "\n",
+            encoding="utf-8",
+        )
+        return {
+            "receipt": {"job_id": job_id},
+            "receipt_path": receipt_path,
+            "draws": [],
+            "diagnostics": {"status": diagnostic_status},
+        }
+
+    monkeypatch.setattr(runner, "_run_fit_job", fake_fit)
+    return assembly_path
+
+
+def test_runner_complete_receipt_hash_binds_job_and_postfit_outputs(tmp_path, monkeypatch):
+    runner = _load_runner("run_plant_v4_cmdstan_final_receipt_success_test")
+    _fake_run_all_boundary(
+        monkeypatch,
+        runner,
+        tmp_path,
+        diagnostic_status="PASS",
+    )
+    monkeypatch.setattr(
+        runner,
+        "summarize_v4_primary_postfit",
+        lambda *args, **kwargs: {"analysis": "synthetic-primary"},
+    )
+
+    out_dir = tmp_path / "fit-success"
+    result = runner.run_all(
+        cmdstan_dir=tmp_path / "cmdstan",
+        input_dir=tmp_path / "inputs",
+        out_dir=out_dir,
+        contract_path=CONTRACT,
+    )
+    assert result["execution_status"] == "COMPLETE"
+
+    receipt_path = out_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["execution_status"] == "COMPLETE"
+    assert receipt["diagnostic_failures"] == []
+    assert set(receipt["job_receipt_sha256"]) == {
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+    }
+    for job_id, path in receipt["job_receipts"].items():
+        assert receipt["job_receipt_sha256"][job_id] == hashlib.sha256(
+            Path(path).read_bytes()
+        ).hexdigest()
+
+    assert set(receipt["postfit_outputs"]) == {"primary"}
+    primary_path = Path(receipt["postfit_outputs"]["primary"])
+    assert receipt["postfit_output_sha256"]["primary"] == hashlib.sha256(
+        primary_path.read_bytes()
+    ).hexdigest()
+
+
+def test_runner_diagnostic_failure_receipt_has_no_postfit_outputs(tmp_path, monkeypatch):
+    runner = _load_runner("run_plant_v4_cmdstan_final_receipt_failure_test")
+    _fake_run_all_boundary(
+        monkeypatch,
+        runner,
+        tmp_path,
+        diagnostic_status="FAIL",
+    )
+
+    def should_not_summarize(*args, **kwargs):
+        raise AssertionError("postfit summary must not run after diagnostic failure")
+
+    monkeypatch.setattr(runner, "summarize_v4_primary_postfit", should_not_summarize)
+
+    out_dir = tmp_path / "fit-fail"
+    with pytest.raises(RuntimeError, match="diagnostics failed"):
+        runner.run_all(
+            cmdstan_dir=tmp_path / "cmdstan",
+            input_dir=tmp_path / "inputs",
+            out_dir=out_dir,
+            contract_path=CONTRACT,
+        )
+
+    receipt = json.loads(
+        (out_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json")
+        .read_text(encoding="utf-8")
+    )
+    assert receipt["execution_status"] == "DIAGNOSTIC_FAIL"
+    assert receipt["postfit_decision_allowed"] is False
+    assert receipt["postfit_outputs"] == {}
+    assert receipt["postfit_output_sha256"] == {}
+    assert set(receipt["job_receipt_sha256"]) == {
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+    }
