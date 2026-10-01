@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import importlib.util
 import json
 import math
@@ -6,6 +7,9 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+
+from balance_domain.plant_analysis_pipeline import build_v4_analysis_inputs
+from balance_domain.plant_model_assembly import FIELDS as ASSEMBLY_FIELDS
 
 from balance_domain.plant_v4_cmdstan import (
     cmdstan_sample_argv,
@@ -39,6 +43,25 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "refresh": 100,
     }
     assert data["diagnostics"]["automatic_retuning_allowed"] is False
+    assert data["input_bundle_integrity"] == {
+        "licensed_assembly_required": True,
+        "wrappers_must_equal_deterministic_rebuild_from_assembly": True,
+        "primary_and_primary_sensitivity_required": True,
+        "generality_pair_presence_must_match_assembly_support_gate": True,
+        "generality_primary_and_sensitivity_must_exist_together": True,
+        "record_licensed_assembly_sha256": True,
+        "record_input_wrapper_sha256": True,
+        "analysis_input_receipt_required": True,
+        "analysis_input_receipt_files_must_match_workspace": True,
+        "record_analysis_input_receipt_sha256": True,
+        "record_source_human_workspace_receipt_sha256": True,
+    }
+    assert data["workspace_policy"] == {
+        "existing_output_directory_overwrite_allowed": False,
+        "one_run_per_workspace": True,
+        "stale_optional_outputs_forbidden": True,
+        "new_run_requires_new_output_directory": True,
+    }
     assert data["chain_integrity"] == {
         "expected_chain_count": 4,
         "expected_postwarmup_draws_per_chain": 2000,
@@ -559,3 +582,240 @@ def test_stansummary_requires_complete_registered_parameter_set(tmp_path):
             duplicate,
             parameter_families=("alpha", "beta"),
         )
+
+
+
+def _assembly_row(row_id, universe, mode, module, timing, spatial="SAME_UNIT"):
+    return {
+        "analysis_row_id": row_id,
+        "universe_id": universe,
+        "dependency_group": row_id,
+        "dependence_block": f"block::{row_id}",
+        "system_taxon": row_id,
+        "conflict_family": (
+            "SEXUAL_INTERFERENCE"
+            if universe == "U2_BARRETT_2002"
+            else "POLLEN_REWARD_GAMETE"
+        ),
+        "conflict_receipt_status": "ADJUDICATED_POSITIVE",
+        "architecture_mode": mode,
+        "module_substrate": module,
+        "conflict_timing_geometry": timing,
+        "conflict_spatial_geometry": spatial,
+        "architecture_adjudication_status": "ADJUDICATED",
+        "predictor_receipt_status": "THREE_ADJUDICATED_OUTCOME_INDEPENDENT",
+        "source_basis": "synthetic",
+        "claim_ceiling": "comparative_only",
+    }
+
+
+def _generality_ready_assembly():
+    u2 = "U2_BARRETT_2002"
+    u6 = "U6_POLLEN_THEFT_HARGREAVES_2009"
+    return [
+        _assembly_row("u2_s1", u2, "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _assembly_row("u2_s2", u2, "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _assembly_row("u2_n1", u2, "TEMPORAL_SEPARATION", "SERIAL_WITHIN_FLOWER", "SEASONALLY_ALTERNATING"),
+        _assembly_row("u2_n2", u2, "SPATIAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _assembly_row("u2_n3", u2, "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _assembly_row("u2_d1", u2, "WITHIN_FLOWER_DIVISION_OF_LABOUR", "REPEATED_FLOWERS", "CONTEXT_DEPENDENT"),
+        _assembly_row("u2_m1", u2, "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "MIXED", "BETWEEN_MODULES"),
+        _assembly_row("u6_s1", u6, "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _assembly_row("u6_n1", u6, "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _assembly_row("u6_n2", u6, "SPATIAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _assembly_row("u6_d1", u6, "AMONG_FLOWER_MODULE_DIVISION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _assembly_row("u6_m1", u6, "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SEASONALLY_ALTERNATING"),
+    ]
+
+
+def _load_runner(name):
+    runner_path = ROOT / "scripts" / "run_plant_v4_cmdstan.py"
+    module_spec = importlib.util.spec_from_file_location(name, runner_path)
+    runner = importlib.util.module_from_spec(module_spec)
+    assert module_spec.loader is not None
+    module_spec.loader.exec_module(runner)
+    return runner
+
+
+def _write_prefit_bundle(path, rows):
+    path.mkdir()
+    assembly = path / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
+    with assembly.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=ASSEMBLY_FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    pipeline = build_v4_analysis_inputs(rows)
+    readout = path / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+    readout.write_text(
+        json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    payloads = {
+        "BALANCE_PLANT_V4_STAN_INPUT.json": pipeline["main_stan_input"],
+        "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json": (
+            pipeline["prior_sensitivity_stan_input"]
+        ),
+    }
+    if pipeline["temporal_generality_stan_input"] is not None:
+        payloads["BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"] = (
+            pipeline["temporal_generality_stan_input"]
+        )
+        payloads[
+            "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
+        ] = pipeline["temporal_generality_prior_sensitivity_stan_input"]
+
+    for name, payload in payloads.items():
+        (path / name).write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+    generated = {
+        assembly.name: assembly,
+        readout.name: readout,
+        **{name: path / name for name in payloads},
+    }
+    receipt = {
+        "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
+        "analysis": "balance_plant_v4_analysis_input_bundle",
+        "source_human_workspace_receipt_sha256": "a" * 64,
+        "source_human_workspace_receipt": "/synthetic/human-workspace-receipt.json",
+        "files_sha256": {
+            name: hashlib.sha256(file.read_bytes()).hexdigest()
+            for name, file in sorted(generated.items())
+        },
+        "temporal_generality_status": pipeline["temporal_generality_status"],
+        "primary_fit_ready": True,
+        "workspace_policy": "one_build_per_immutable_output_directory",
+        "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect",
+    }
+    (path / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json").write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return pipeline
+
+
+def test_runner_preflight_binds_all_wrappers_to_one_licensed_assembly(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_input_bundle_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    out = runner._validate_input_bundle(input_dir)
+    assert out["active_jobs"] == [
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+        "TEMPORAL_GENERALITY",
+        "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+    ]
+    assert out["temporal_generality_expected"] is True
+    assert len(out["wrapper_sha256"]) == 4
+    assert out["assembly_sha256"]
+    assert out["analysis_input_receipt_sha256"]
+    assert out["source_human_workspace_receipt_sha256"] == "a" * 64
+
+
+def test_runner_preflight_rejects_wrapper_from_different_assembly(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_mixed_bundle_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    prior_path = input_dir / "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json"
+    prior = json.loads(prior_path.read_text(encoding="utf-8"))
+    prior["stan_data"]["X"][0][0] = 1 - prior["stan_data"]["X"][0][0]
+    prior_path.write_text(json.dumps(prior), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="does not match deterministic rebuild"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_rejects_stale_generality_files_when_gate_is_closed(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_stale_generality_test")
+    ready_dir = tmp_path / "ready"
+    ready_pipeline = _write_prefit_bundle(ready_dir, _generality_ready_assembly())
+
+    blocked_rows = _generality_ready_assembly()
+    next(
+        row for row in blocked_rows
+        if row["analysis_row_id"] == "u6_m1"
+    )["conflict_timing_geometry"] = "SIMULTANEOUS"
+    blocked_dir = tmp_path / "blocked"
+    blocked_pipeline = _write_prefit_bundle(blocked_dir, blocked_rows)
+    assert blocked_pipeline["temporal_generality_stan_input"] is None
+
+    for name, key in (
+        (
+            "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json",
+            "temporal_generality_stan_input",
+        ),
+        (
+            "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json",
+            "temporal_generality_prior_sensitivity_stan_input",
+        ),
+    ):
+        (blocked_dir / name).write_text(
+            json.dumps(ready_pipeline[key]),
+            encoding="utf-8",
+        )
+
+    with pytest.raises(ValueError, match="present even though"):
+        runner._validate_input_bundle(blocked_dir)
+
+
+def test_runner_refuses_existing_fit_workspace_before_any_execution(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_immutable_workspace_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    out_dir = tmp_path / "fit"
+    out_dir.mkdir()
+    sentinel = out_dir / "sentinel.txt"
+    sentinel.write_text("preserve prior fit evidence", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        runner.run_all(
+            cmdstan_dir=tmp_path / "cmdstan",
+            input_dir=input_dir,
+            out_dir=out_dir,
+            contract_path=CONTRACT,
+        )
+
+    assert sentinel.read_text(encoding="utf-8") == "preserve prior fit evidence"
+
+
+
+def test_runner_preflight_requires_analysis_input_receipt(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_missing_analysis_receipt_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+    (input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json").unlink()
+
+    with pytest.raises(FileNotFoundError, match="required V4 input is missing"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_rejects_analysis_receipt_hash_drift(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_analysis_hash_drift_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    readout = input_dir / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+    readout.write_bytes(readout.read_bytes() + b"\n")
+
+    with pytest.raises(ValueError, match="analysis-input receipt SHA256 mismatch"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_requires_source_human_workspace_receipt_hash(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_human_receipt_hash_test")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    receipt_path = input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["source_human_workspace_receipt_sha256"] = None
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="lacks source human-workspace receipt SHA256"):
+        runner._validate_input_bundle(input_dir)
