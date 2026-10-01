@@ -40,6 +40,9 @@ from balance_domain.plant_u6 import (  # noqa: E402
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 HUMAN_WORKSPACE_RECEIPT = "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
 ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+ANALYSIS_INPUT_PROVENANCE_CONTRACT = (
+    ROOT / "data" / "BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+)
 PRIMARY_HUMAN_BASENAMES = (
     "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
     "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
@@ -52,6 +55,31 @@ PRIMARY_HUMAN_BASENAMES = (
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _load_analysis_input_provenance_contract() -> dict:
+    data = json.loads(
+        ANALYSIS_INPUT_PROVENANCE_CONTRACT.read_text(encoding="utf-8")
+    )
+    if data.get("schema_version") != "BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1":
+        raise ValueError("V4 analysis-input provenance contract schema mismatch")
+    if data.get("status") != (
+        "FROZEN_PRE_OUTCOME_BEFORE_INDEPENDENT_ARCHITECTURE_CODING"
+    ):
+        raise ValueError("V4 analysis-input provenance contract is not frozen pre-outcome")
+    source = data.get("source_workspace") or {}
+    if source.get("receipt") != HUMAN_WORKSPACE_RECEIPT:
+        raise ValueError("V4 analysis-input provenance source receipt drifted")
+    if tuple(source.get("required_primary_files") or ()) != PRIMARY_HUMAN_BASENAMES:
+        raise ValueError("V4 analysis-input provenance primary file set drifted")
+    if source.get("file_sha256_must_match_receipt") is not True:
+        raise ValueError("V4 analysis-input provenance must require source SHA256")
+    workspace = data.get("output_workspace") or {}
+    if workspace.get("existing_output_directory_overwrite_allowed") is not False:
+        raise ValueError("V4 analysis-input workspace overwrite policy drifted")
+    if workspace.get("write_mode") != "temporary_sibling_workspace_then_atomic_rename":
+        raise ValueError("V4 analysis-input workspace write mode drifted")
+    return data
 
 
 def _validated_human_workspace_receipt(input_dir: Path | None) -> tuple[Path, dict]:
@@ -184,6 +212,7 @@ def build_outputs(
     out_dir: Path = DEFAULT_OUT,
     input_dir: Path | None = None,
 ) -> dict:
+    _load_analysis_input_provenance_contract()
     readiness = current_readiness(input_dir)
     if not readiness["primary_model_assembly_ready"]:
         raise RuntimeError(
@@ -303,6 +332,12 @@ def build_outputs(
         analysis_receipt = {
             "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
             "analysis": "balance_plant_v4_analysis_inputs",
+            "analysis_input_provenance_contract": (
+                "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+            ),
+            "analysis_input_provenance_contract_sha256": _sha256(
+                ANALYSIS_INPUT_PROVENANCE_CONTRACT
+            ),
             "source_human_workspace_receipt": HUMAN_WORKSPACE_RECEIPT,
             "source_human_workspace_receipt_sha256": _sha256(copied_human_receipt),
             "source_human_workspace_file_sha256": {
