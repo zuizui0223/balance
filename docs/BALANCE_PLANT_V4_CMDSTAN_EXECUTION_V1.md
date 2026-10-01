@@ -239,11 +239,12 @@ and only then writes the post-fit probability-contrast summaries.
 
 ## Reproducibility receipt
 
-Every fit receipt records:
+Every completed fit execution receipt records:
 
 - licensed assembly SHA256;
 - analysis-input bundle receipt SHA256;
 - upstream composed-human-workspace receipt SHA256;
+- every per-job `FIT_RECEIPT.json` SHA256;
 - source Stan model SHA256;
 - compiled executable SHA256;
 - audited input-wrapper SHA256;
@@ -252,7 +253,20 @@ Every fit receipt records:
 - exact command argv for every chain;
 - every chain CSV SHA256;
 - `stansummary` output SHA256;
-- diagnostic gate result.
+- diagnostic gate result;
+- primary post-fit summary SHA256;
+- temporal-generality post-fit summary SHA256 when that registered fit is active.
+
+Execution status is explicit:
+
+```text
+DIAGNOSTIC_FAIL
+DIAGNOSTICS_PASS_POSTFIT_PENDING
+COMPLETE
+```
+
+A diagnostic failure receipt contains no post-fit outputs. `COMPLETE` is written only after
+all registered post-fit outputs are present and hash-bound.
 
 ## Claim ceiling
 
