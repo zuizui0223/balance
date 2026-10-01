@@ -233,6 +233,37 @@ The runner compiles the two registered Stan programs, executes the registered fi
 per-chain logs and CSV files, invokes `stansummary`, writes fit receipts and diagnostics,
 and only then writes the post-fit probability-contrast summaries.
 
+## Input provenance chain
+
+CmdStan execution is permitted only for an analysis-input workspace produced from a
+validated composed human-review workspace.
+
+The chain is:
+
+```text
+BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json
+  -> six primary human-input SHA256 values
+  -> BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json
+  -> licensed assembly SHA256
+  -> assembly-readout SHA256
+  -> active Stan-wrapper SHA256 values
+  -> fit execution receipt
+```
+
+The analysis builder copies the source human-workspace receipt into the immutable analysis
+input directory and records its SHA256. The fit preflight independently checks:
+
+1. the copied human receipt schema, analysis identity, closed primary-human gates, and file
+   hash map;
+2. the analysis-input receipt hash references;
+3. the licensed assembly SHA256;
+4. each active wrapper SHA256;
+5. exact deterministic rebuild of every wrapper from that licensed assembly;
+6. generality-pair presence against the frozen support gate.
+
+A missing receipt, changed hash, mixed assembly/wrapper bundle, stale optional generality
+file, or reused output workspace fails before CmdStan compilation or sampling.
+
 ## Reproducibility receipt
 
 Every fit receipt records:
