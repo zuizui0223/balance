@@ -67,6 +67,18 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "primary_parameter_count": 15,
         "generality_parameter_count": 18,
     }
+    assert data["input_bundle_integrity"] == {
+        "licensed_assembly_required": True,
+        "wrappers_must_equal_deterministic_rebuild_from_assembly": True,
+        "primary_and_primary_sensitivity_required": True,
+        "generality_pair_presence_must_match_assembly_support_gate": True,
+        "generality_primary_and_sensitivity_must_exist_together": True,
+        "record_licensed_assembly_sha256": True,
+        "record_input_wrapper_sha256": True,
+        "analysis_input_receipt_required": True,
+        "source_human_workspace_receipt_copy_required": True,
+        "receipt_hashes_must_match_assembly_and_wrappers": True,
+    }
 
 
 def test_cmdstan_argv_uses_only_frozen_sampling_settings(tmp_path):
@@ -833,3 +845,61 @@ def test_runner_refuses_existing_fit_workspace_before_any_execution(tmp_path):
         )
 
     assert sentinel.read_text(encoding="utf-8") == "preserve prior fit evidence"
+
+
+
+def test_runner_preflight_rejects_analysis_receipt_assembly_hash_drift(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_bad_analysis_receipt_assembly_hash")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    receipt_path = input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["output_sha256"]["licensed_assembly"] = "0" * 64
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="licensed assembly SHA256"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_rejects_copied_human_receipt_hash_drift(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_bad_human_receipt_hash")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    human = input_dir / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    human.write_bytes(human.read_bytes() + b"\n")
+
+    with pytest.raises(ValueError, match="human workspace receipt SHA256 mismatch"):
+        runner._validate_input_bundle(input_dir)
+
+
+def test_runner_preflight_crosschecks_human_and_analysis_receipt_file_hashes(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_cross_receipt_hash_map")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    human_path = input_dir / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    human = json.loads(human_path.read_text(encoding="utf-8"))
+    basename = "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv"
+    human["files"][basename]["composed_sha256"] = "f" * 64
+    human_path.write_text(
+        json.dumps(human, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    analysis_path = input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+    analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
+    analysis["source_human_workspace_receipt_sha256"] = hashlib.sha256(
+        human_path.read_bytes()
+    ).hexdigest()
+    analysis_path.write_text(
+        json.dumps(analysis, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="human-workspace/analysis-input receipt mismatch"):
+        runner._validate_input_bundle(input_dir)
