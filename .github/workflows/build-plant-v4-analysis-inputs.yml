@@ -1,4 +1,4 @@
-name: Build BALANCE plant V4 analysis inputs
+name: Validate BALANCE plant V4 analysis-input contracts
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,26 +22,30 @@ jobs:
 
       - name: Validate V4 contracts
         run: |
-          python -m pytest -q             tests/test_plant_readiness.py             tests/test_plant_assembly_builder.py             tests/test_plant_model_assembly.py             tests/test_plant_model_v4.py             tests/test_plant_model_v4_fit.py             tests/test_plant_analysis_pipeline.py             tests/test_build_plant_v4_analysis_inputs.py
+          python -m pytest -q \
+            tests/test_plant_readiness.py \
+            tests/test_plant_assembly_builder.py \
+            tests/test_plant_model_assembly.py \
+            tests/test_plant_model_v4.py \
+            tests/test_plant_model_v4_fit.py \
+            tests/test_plant_analysis_pipeline.py \
+            tests/test_build_plant_v4_analysis_inputs.py \
+            tests/test_plant_v4_cmdstan.py
 
-      - name: Print current readiness
+      - name: Print tracked-input readiness
         run: |
           python scripts/build_plant_v4_analysis_inputs.py
 
-      - name: Build licensed V4 analysis inputs
+      - name: Explain production build boundary
         run: |
-          python scripts/build_plant_v4_analysis_inputs.py --build
+          cat <<'EOF'
+          This workflow validates the frozen V4 contracts only.
+          Production analysis inputs require a validated composed human-review workspace,
+          which is intentionally not stored in the repository or synthesized in CI.
 
-      - name: Validate required outputs
-        run: |
-          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv
-          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_ASSEMBLY_READOUT.json
-          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_STAN_INPUT.json
-          test -s release/generated/plant_v4_analysis_inputs/BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json
-
-      - name: Upload V4 pre-fit inputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: balance-plant-v4-analysis-inputs
-          path: release/generated/plant_v4_analysis_inputs/
-          if-no-files-found: error
+          Run locally/on an authorized evidence workspace:
+            python scripts/build_plant_v4_analysis_inputs.py \
+              --input-dir <composed-human-workspace> \
+              --out-dir <new-analysis-input-workspace> \
+              --build
+          EOF
