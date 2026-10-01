@@ -127,8 +127,11 @@ This means:
   receipt;
 - `BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json` is required and every file hash in
   that receipt is verified before compilation;
-- the analysis-input receipt SHA256 and its upstream composed-human-workspace receipt SHA256
-  are propagated into the fit execution receipt.
+- the canonical `BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json` must be copied
+  into the analysis-input bundle; its SHA256, schema, assembly-ready flag, and closed
+  primary-human-gate state are revalidated before compilation;
+- the analysis-input receipt SHA256 and the copied upstream composed-human-workspace receipt
+  path+SHA256 are propagated into the fit execution receipt.
 
 Posterior summaries therefore cannot be standardized over one assembly while being fitted
 to another.
