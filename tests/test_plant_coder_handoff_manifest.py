@@ -186,3 +186,20 @@ def test_handoff_manifest_registers_architecture_adjudication_entrypoints():
         assert (ROOT / adjudication[key]).exists()
     module_path = ROOT / (adjudication["module"].replace(".", "/") + ".py")
     assert module_path.exists()
+
+
+
+def test_handoff_manifest_registers_final_human_workspace_composition():
+    data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    composition = data["human_input_composition"]
+    assert composition["contract"] == (
+        "data/BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_CONTRACT_V1.json"
+    )
+    assert composition["module"] == "balance_domain.plant_v4_workspace"
+    assert composition["cli"] == "scripts/compose_plant_v4_human_workspace.py"
+    assert composition["external_validation_blocks_primary"] is False
+    assert "zero primary human open gates" in composition["validation_rule"]
+    for key in ("contract", "cli"):
+        assert (ROOT / composition[key]).exists()
+    module_path = ROOT / (composition["module"].replace(".", "/") + ".py")
+    assert module_path.exists()

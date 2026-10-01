@@ -1,0 +1,54 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_CONTRACT_V1",
+  "status": "FROZEN_BEFORE_INDEPENDENT_HUMAN_RETURNS",
+  "required_sources": {
+    "primary_architecture_adjudication": {
+      "receipt": "BALANCE_PLANT_PRIMARY_ARCHITECTURE_ADJUDICATION_RECEIPT_V1.json",
+      "required_scope": "PRIMARY",
+      "required_complete": true,
+      "required_primary_model_gate_closed": true
+    },
+    "predictor_review_intake": {
+      "receipt": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json",
+      "required_predictor_return_status": "COMPLETE",
+      "required_predictor_primary_complete": true
+    }
+  },
+  "optional_source": {
+    "external_u1_adjudication": {
+      "receipt": "BALANCE_PLANT_EXTERNAL_ARCHITECTURE_ADJUDICATION_RECEIPT_V1.json",
+      "required_scope": "EXTERNAL",
+      "blocks_primary_v4": false
+    }
+  },
+  "composed_primary_files": [
+    "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+  ],
+  "optional_external_files": [
+    "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv"
+  ],
+  "validation": [
+    "copy only validated files named by source workspace receipts",
+    "record source and composed SHA256 for every file",
+    "rerun canonical V4 readiness against the composed workspace",
+    "require zero primary human open gates",
+    "require primary_model_assembly_ready=true before atomic rename"
+  ],
+  "workspace_policy": {
+    "existing_output_directory_overwrite_allowed": false,
+    "write_mode": "temporary_sibling_workspace_then_atomic_rename",
+    "downstream_input_option": "--input-dir"
+  },
+  "next_step": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <workspace> --build",
+  "implementation": {
+    "module": "balance_domain.plant_v4_workspace",
+    "cli": "scripts/compose_plant_v4_human_workspace.py"
+  },
+  "claim_ceiling": "validated_human_input_composition_only_no_model_effect"
+}

@@ -197,5 +197,18 @@
     "packet_rule": "include codebook/source packets/merged coding/agreement/exact disagreements/adjudication template; exclude predictor review and fit/publication outputs",
     "return_rule": "validate all rows through canonical lane loaders; coder consensus cannot be overridden; disagreement decisions require source-review basis",
     "workspace_rule": "validated adjudication outputs are written atomically to a new immutable workspace"
+  },
+  "human_input_composition": {
+    "contract": "data/BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_CONTRACT_V1.json",
+    "module": "balance_domain.plant_v4_workspace",
+    "cli": "scripts/compose_plant_v4_human_workspace.py",
+    "required_sources": [
+      "validated PRIMARY architecture adjudication workspace",
+      "validated COMPLETE predictor-review intake workspace"
+    ],
+    "optional_source": "validated EXTERNAL U1 architecture adjudication workspace",
+    "validation_rule": "copy only receipt-declared validated files, preserve byte identity, rerun canonical V4 readiness, and require zero primary human open gates before atomic rename",
+    "downstream_command": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <workspace> --build",
+    "external_validation_blocks_primary": false
   }
 }
