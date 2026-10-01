@@ -127,7 +127,8 @@
     "fit_execution_doc": "docs/BALANCE_PLANT_V4_CMDSTAN_EXECUTION_V1.md",
     "provenance_rule": "successful build requires the composed human-workspace receipt, verifies its primary file SHA256 values, writes an immutable analysis-input receipt binding that source receipt to the licensed assembly and every active Stan wrapper, and the fit runner must verify that receipt before CmdStan",
     "manual_workflow_role": "CONTRACT_AND_TRACKED_INPUT_READINESS_VALIDATION_ONLY",
-    "production_build_requires_external_composed_workspace": true
+    "production_build_requires_external_composed_workspace": true,
+    "analysis_input_provenance_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
   },
   "return_ingestion": {
     "merger_module": "balance_domain/plant_coder_return.py",
