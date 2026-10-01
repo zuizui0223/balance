@@ -117,12 +117,16 @@
       "BALANCE_PLANT_V4_STAN_INPUT.json",
       "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json",
       "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json when the stricter generality gate is ready",
-      "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json when the stricter generality gate is ready"
+      "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json when the stricter generality gate is ready",
+      "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
     ],
     "fail_closed_rule": "build is forbidden while any U2/U6 coding, adjudication, predictor-independence, assembly, or V4 estimability gate remains open",
     "fit_execution_contract": "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json",
     "fit_runner": "scripts/run_plant_v4_cmdstan.py",
-    "fit_execution_doc": "docs/BALANCE_PLANT_V4_CMDSTAN_EXECUTION_V1.md"
+    "fit_execution_doc": "docs/BALANCE_PLANT_V4_CMDSTAN_EXECUTION_V1.md",
+    "analysis_input_bundle_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json",
+    "production_input_rule": "external --input-dir builds require BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json with matching composed file SHA256 values",
+    "output_workspace_policy": "one immutable analysis-input bundle per output directory; repeated/corrected builds require a new directory"
   },
   "return_ingestion": {
     "merger_module": "balance_domain/plant_coder_return.py",
