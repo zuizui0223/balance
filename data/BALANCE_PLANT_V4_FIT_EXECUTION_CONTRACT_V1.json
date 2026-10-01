@@ -119,5 +119,6 @@
     "one_run_per_workspace": true,
     "stale_optional_outputs_forbidden": true,
     "new_run_requires_new_output_directory": true
-  }
+  },
+  "analysis_input_provenance_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
 }
