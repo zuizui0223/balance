@@ -52,6 +52,22 @@ If external U1 is supplied, the U1 merged coding and adjudication files are adde
 
 Every copied file receives a source SHA256 and composed SHA256 in the workspace receipt.
 
+## Source-receipt hash binding
+
+Every file copied from a validated human-review workspace must match the SHA256 frozen in
+that workspace's receipt before it is read or copied.
+
+This applies to:
+
+- U2/U6 merged coding ledgers;
+- U2/U6 final architecture-adjudication ledgers;
+- U2/U6 reviewed predictor-receipt frames;
+- optional U1 merged coding/adjudication ledgers.
+
+Semantic CSV validation is not a substitute for this check. Even a change that leaves parsed
+rows unchanged, such as trailing whitespace or a blank line, invalidates the immutable
+workspace receipt and the compositor fails closed.
+
 ## Final validation
 
 Before the workspace is committed, the compositor reruns
