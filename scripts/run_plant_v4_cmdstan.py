@@ -239,10 +239,17 @@ def _run_fit_job(
     ]
     _run_checked(summary_argv, cwd=cmdstan_dir, log_path=summary_log)
 
+    expected_draws_per_chain = (
+        int(contract["sampling"]["num_samples"])
+        // int(contract["sampling"]["thin"])
+    )
     combined = combine_cmdstan_chains(
         chain_files,
         require_gamma=bool(spec["require_gamma"]),
         max_depth=int(contract["sampling"]["max_depth"]),
+        expected_chains=int(contract["sampling"]["chains"]),
+        expected_draws_per_chain=expected_draws_per_chain,
+        required_version=contract["required_cmdstan_version"],
     )
     families = (
         ("alpha", "beta", "gamma_u6_ordered")
@@ -269,6 +276,9 @@ def _run_fit_job(
         "input_wrapper_sha256": input_provenance["wrapper_sha256"],
         "materialized_stan_data_sha256": input_provenance["stan_data_sha256"],
         "cmdstan_version": combined["stan_version"],
+        "n_chains": combined["n_chains"],
+        "draws_per_chain": combined["draws_per_chain"],
+        "n_draws_total": combined["n_draws_total"],
         "chain_csv_sha256": {
             path.name: sha256_file(path)
             for path in chain_files

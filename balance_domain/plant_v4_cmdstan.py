@@ -63,6 +63,18 @@ def load_fit_execution_contract(path: Path) -> dict:
             raise ValueError(f"V4 diagnostic contract drifted for {key}")
     if diagnostics.get("automatic_retuning_allowed") is not False:
         raise ValueError("V4 fit contract must forbid automatic retuning")
+
+    required_integrity = {
+        "expected_chain_count": 4,
+        "expected_postwarmup_draws_per_chain": 2000,
+        "unique_chain_paths_required": True,
+        "chain_cmdstan_version_must_equal_required": True,
+        "stansummary_complete_parameter_set_required": True,
+        "primary_parameter_count": 15,
+        "generality_parameter_count": 18,
+    }
+    if data.get("chain_integrity") != required_integrity:
+        raise ValueError("V4 fit chain-integrity contract drifted")
     return data
 
 
@@ -266,19 +278,55 @@ def combine_cmdstan_chains(
     *,
     require_gamma: bool,
     max_depth: int,
+    expected_chains: int | None = None,
+    expected_draws_per_chain: int | None = None,
+    required_version: str | None = None,
 ) -> dict:
-    chains = [read_cmdstan_chain(Path(path), require_gamma=require_gamma) for path in paths]
-    if not chains:
+    paths = [Path(path) for path in paths]
+    if not paths:
         raise ValueError("V4 fit requires at least one chain CSV")
+    if len({str(path.resolve()) for path in paths}) != len(paths):
+        raise ValueError("V4 fit chain paths must be unique")
+    if expected_chains is not None and len(paths) != expected_chains:
+        raise ValueError(
+            f"V4 fit requires exactly {expected_chains} chains, found {len(paths)}"
+        )
+
+    chains = [
+        read_cmdstan_chain(path, require_gamma=require_gamma)
+        for path in paths
+    ]
+    if expected_draws_per_chain is not None:
+        bad = [
+            (Path(chain["path"]).name, chain["n_draws"])
+            for chain in chains
+            if chain["n_draws"] != expected_draws_per_chain
+        ]
+        if bad:
+            detail = ", ".join(f"{name}={n}" for name, n in bad)
+            raise ValueError(
+                "CmdStan chain draw count drifted from frozen sampling contract: "
+                + detail
+            )
+
     versions = {chain["stan_version"] for chain in chains}
     if None in versions:
         raise ValueError("CmdStan chain version metadata is required")
     if len(versions) != 1:
         raise ValueError("CmdStan chain version mismatch")
+    version = next(iter(versions))
+    if required_version is not None and version != required_version:
+        raise ValueError(
+            f"CmdStan chain version must be {required_version}, found {version}"
+        )
+
     return {
         "chains": chains,
+        "n_chains": len(chains),
+        "draws_per_chain": [chain["n_draws"] for chain in chains],
+        "n_draws_total": sum(chain["n_draws"] for chain in chains),
         "draws": [draw for chain in chains for draw in chain["draws"]],
-        "stan_version": next(iter(versions)),
+        "stan_version": version,
         "divergences": sum(chain["divergences"] for chain in chains),
         "treedepth_hits": sum(
             sum(depth >= max_depth for depth in chain["treedepths"])
@@ -292,8 +340,36 @@ def _norm_header(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.casefold())
 
 
+def _expected_stansummary_parameters(
+    parameter_families: Iterable[str],
+) -> set[str]:
+    families = tuple(parameter_families)
+    expected: set[str] = set()
+    for family in families:
+        if family == "alpha":
+            expected.update(
+                f"alpha.{u}.{k}"
+                for u in range(1, 3)
+                for k in range(1, 4)
+            )
+        elif family == "beta":
+            expected.update(
+                f"beta.{p}.{k}"
+                for p in range(1, 4)
+                for k in range(1, 4)
+            )
+        elif family == "gamma_u6_ordered":
+            expected.update(
+                f"gamma_u6_ordered.{k}"
+                for k in range(1, 4)
+            )
+        else:
+            raise ValueError(f"unregistered V4 parameter family {family!r}")
+    return expected
+
+
 def read_stansummary_csv(path: Path, *, parameter_families: Iterable[str]) -> dict:
-    """Read the stansummary CSV and return parameter-only convergence diagnostics."""
+    """Read stansummary and require the complete registered parameter set."""
     with path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         fields = list(reader.fieldnames or ())
@@ -310,7 +386,9 @@ def read_stansummary_csv(path: Path, *, parameter_families: Iterable[str]) -> di
         raise ValueError("stansummary CSV lacks R_hat/ESS_bulk/ESS_tail columns")
 
     families = tuple(parameter_families)
+    expected = _expected_stansummary_parameters(families)
     selected = []
+    seen: set[str] = set()
     for row in rows:
         name = (row.get(name_field) or "").strip()
         normalized_name = name.replace("[", ".").replace("]", "").replace(",", ".")
@@ -320,16 +398,34 @@ def read_stansummary_csv(path: Path, *, parameter_families: Iterable[str]) -> di
             for family in families
         ):
             continue
+        if normalized_name in seen:
+            raise ValueError(
+                f"stansummary CSV repeats registered parameter {name!r}"
+            )
+        seen.add(normalized_name)
         selected.append({
             "name": name,
+            "normalized_name": normalized_name,
             "rhat": _finite(row[rhat_field], f"{name} R_hat"),
             "ess_bulk": _finite(row[bulk_field], f"{name} ESS_bulk"),
             "ess_tail": _finite(row[tail_field], f"{name} ESS_tail"),
         })
-    if not selected:
-        raise ValueError("stansummary CSV contains no registered V4 parameters")
+
+    missing = sorted(expected - seen)
+    unexpected = sorted(seen - expected)
+    if missing or unexpected:
+        detail = []
+        if missing:
+            detail.append("missing=" + ",".join(missing))
+        if unexpected:
+            detail.append("unexpected=" + ",".join(unexpected))
+        raise ValueError(
+            "stansummary registered parameter set mismatch: " + "; ".join(detail)
+        )
+
     return {
         "parameters": selected,
+        "n_parameters": len(selected),
         "max_rhat": max(row["rhat"] for row in selected),
         "min_ess_bulk": min(row["ess_bulk"] for row in selected),
         "min_ess_tail": min(row["ess_tail"] for row in selected),

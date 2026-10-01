@@ -71,15 +71,27 @@
     "record_chain_csv_sha256": true,
     "record_command_argv": true,
     "record_stansummary_csv": true,
-    "required_cmdstan_version": "2.40.0"
+    "required_cmdstan_version": "2.40.0",
+    "record_chain_count_and_draw_count": true
   },
   "prohibitions": [
     "do not change chain count, warmup, sampling iterations, seed, adapt_delta, or max_depth after seeing fitted effect signs",
     "do not continue to posterior decision if any registered diagnostic gate fails",
     "do not automatically retune the sampler after a diagnostic failure",
     "do not fit the temporal generality models unless both registered generality input files exist",
-    "do not replace the registered probability estimands with raw logit coefficient signs"
+    "do not replace the registered probability estimands with raw logit coefficient signs",
+    "do not accept missing, duplicated, truncated, or wrong-version chain CSVs",
+    "do not evaluate convergence from a stansummary missing any registered model parameter"
   ],
   "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result",
-  "required_cmdstan_version": "2.40.0"
+  "required_cmdstan_version": "2.40.0",
+  "chain_integrity": {
+    "expected_chain_count": 4,
+    "expected_postwarmup_draws_per_chain": 2000,
+    "unique_chain_paths_required": true,
+    "chain_cmdstan_version_must_equal_required": true,
+    "stansummary_complete_parameter_set_required": true,
+    "primary_parameter_count": 15,
+    "generality_parameter_count": 18
+  }
 }

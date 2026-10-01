@@ -39,6 +39,15 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "refresh": 100,
     }
     assert data["diagnostics"]["automatic_retuning_allowed"] is False
+    assert data["chain_integrity"] == {
+        "expected_chain_count": 4,
+        "expected_postwarmup_draws_per_chain": 2000,
+        "unique_chain_paths_required": True,
+        "chain_cmdstan_version_must_equal_required": True,
+        "stansummary_complete_parameter_set_required": True,
+        "primary_parameter_count": 15,
+        "generality_parameter_count": 18,
+    }
 
 
 def test_cmdstan_argv_uses_only_frozen_sampling_settings(tmp_path):
@@ -227,6 +236,7 @@ def test_stansummary_parser_limits_diagnostics_to_registered_parameters(tmp_path
         parameter_families=("alpha", "beta", "gamma_u6_ordered"),
     )
     assert len(out["parameters"]) == 18
+    assert out["n_parameters"] == 18
     assert out["max_rhat"] == pytest.approx(1.005)
     assert out["min_ess_bulk"] == 800
     assert out["min_ess_tail"] == 700
@@ -451,3 +461,101 @@ def test_runner_does_not_reinstall_existing_stanc(tmp_path, monkeypatch):
         make_command="make",
         log_dir=tmp_path / "logs",
     ) == stanc
+
+
+
+def test_combine_chains_requires_frozen_count_draws_unique_paths_and_version(tmp_path):
+    paths = []
+    for i in range(4):
+        path = tmp_path / f"chain_complete_{i}.csv"
+        _chain_csv(path, gamma=False, version="2.40.0")
+        paths.append(path)
+
+    out = combine_cmdstan_chains(
+        paths,
+        require_gamma=False,
+        max_depth=15,
+        expected_chains=4,
+        expected_draws_per_chain=4,
+        required_version="2.40.0",
+    )
+    assert out["n_chains"] == 4
+    assert out["draws_per_chain"] == [4, 4, 4, 4]
+    assert out["n_draws_total"] == 16
+
+    with pytest.raises(ValueError, match="exactly 4 chains"):
+        combine_cmdstan_chains(
+            paths[:3],
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.40.0",
+        )
+
+    with pytest.raises(ValueError, match="chain paths must be unique"):
+        combine_cmdstan_chains(
+            [paths[0], paths[0], paths[2], paths[3]],
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.40.0",
+        )
+
+    with pytest.raises(ValueError, match="draw count drifted"):
+        combine_cmdstan_chains(
+            paths,
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=5,
+            required_version="2.40.0",
+        )
+
+    with pytest.raises(ValueError, match="must be 2.39.0"):
+        combine_cmdstan_chains(
+            paths,
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.39.0",
+        )
+
+
+def test_stansummary_requires_complete_registered_parameter_set(tmp_path):
+    path = tmp_path / "summary_complete.csv"
+    _stansummary(path)
+    out = read_stansummary_csv(
+        path,
+        parameter_families=("alpha", "beta"),
+    )
+    assert out["n_parameters"] == 15
+
+    rows = path.read_text(encoding="utf-8").splitlines()
+    missing = tmp_path / "summary_missing.csv"
+    missing.write_text(
+        "\n".join(
+            line for line in rows
+            if "alpha[1,1]" not in line
+        ) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="parameter set mismatch"):
+        read_stansummary_csv(
+            missing,
+            parameter_families=("alpha", "beta"),
+        )
+
+    duplicate = tmp_path / "summary_duplicate.csv"
+    alpha_line = next(line for line in rows if "alpha[1,1]" in line)
+    duplicate.write_text(
+        "\n".join([*rows, alpha_line]) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="repeats registered parameter"):
+        read_stansummary_csv(
+            duplicate,
+            parameter_families=("alpha", "beta"),
+        )
