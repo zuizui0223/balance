@@ -322,6 +322,15 @@ def build_outputs(
             generated[generality_path.name] = generality_path
             generated[generality_prior_path.name] = generality_prior_path
 
+        copied_human_receipt = None
+        if human_workspace is not None:
+            copied_human_receipt = tmp_dir / COMPOSED_WORKSPACE_RECEIPT
+            shutil.copyfile(human_workspace["receipt_path"], copied_human_receipt)
+            if _sha256(copied_human_receipt) != human_workspace["receipt_sha256"]:
+                raise ValueError(
+                    "copied V4 human-workspace receipt SHA256 drifted during bundle build"
+                )
+
         receipt = {
             "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
             "analysis": "balance_plant_v4_analysis_input_bundle",
@@ -331,10 +340,11 @@ def build_outputs(
                 else None
             ),
             "source_human_workspace_receipt": (
-                str(human_workspace["receipt_path"])
+                COMPOSED_WORKSPACE_RECEIPT
                 if human_workspace is not None
                 else None
             ),
+            "source_human_workspace_receipt_copied": human_workspace is not None,
             "files_sha256": {
                 name: _sha256(path)
                 for name, path in sorted(generated.items())
@@ -361,6 +371,7 @@ def build_outputs(
     generality_path = out_dir / generality_path.name
     generality_prior_path = out_dir / generality_prior_path.name
     receipt_path = out_dir / ANALYSIS_INPUT_RECEIPT
+    copied_human_receipt_path = out_dir / COMPOSED_WORKSPACE_RECEIPT
 
     return {
         "assembly": str(assembly_path),
@@ -368,6 +379,11 @@ def build_outputs(
         "main_stan_input": str(main_path),
         "prior_sensitivity_stan_input": str(prior_path),
         "analysis_inputs_receipt": str(receipt_path),
+        "source_human_workspace_receipt": (
+            str(copied_human_receipt_path)
+            if copied_human_receipt_path.exists()
+            else None
+        ),
         "temporal_generality_status": pipeline["temporal_generality_status"],
         "temporal_generality_blockers": pipeline["temporal_generality_blockers"],
         "temporal_generality_input": (
