@@ -205,6 +205,11 @@ def build_outputs(
     out_dir: Path = DEFAULT_OUT,
     input_dir: Path | None = None,
 ) -> dict:
+    if out_dir.exists():
+        raise ValueError(
+            "V4 analysis-input output directory already exists; choose a new immutable "
+            "workspace so earlier pre-fit evidence is never mixed or overwritten"
+        )
     human_workspace = (
         _validate_composed_input_workspace(input_dir)
         if input_dir is not None
@@ -259,11 +264,6 @@ def build_outputs(
     )
     pipeline = build_v4_analysis_inputs(assembly)
 
-    if out_dir.exists():
-        raise ValueError(
-            "V4 analysis-input output directory already exists; choose a new immutable "
-            "workspace so earlier pre-fit evidence is never mixed or overwritten"
-        )
     out_dir.parent.mkdir(parents=True, exist_ok=True)
     tmp_dir = Path(tempfile.mkdtemp(
         prefix=f".{out_dir.name}.tmp-",
