@@ -84,6 +84,9 @@ def load_fit_execution_contract(path: Path) -> dict:
         "generality_primary_and_sensitivity_must_exist_together": True,
         "record_licensed_assembly_sha256": True,
         "record_input_wrapper_sha256": True,
+        "analysis_input_receipt_required": True,
+        "source_human_workspace_receipt_copy_required": True,
+        "receipt_hashes_must_match_assembly_and_wrappers": True,
     }
     if data.get("input_bundle_integrity") != required_input_integrity:
         raise ValueError("V4 fit input-bundle integrity contract drifted")
