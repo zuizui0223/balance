@@ -104,6 +104,16 @@ def load_fit_execution_contract(path: Path) -> dict:
     }
     if data.get("workspace_policy") != required_workspace:
         raise ValueError("V4 fit workspace policy drifted")
+
+    required_output_integrity = {
+        "job_receipt_sha256_required": True,
+        "successful_postfit_output_sha256_required": True,
+        "diagnostic_failure_receipt_must_record_no_postfit_outputs": True,
+        "execution_status_required": True,
+        "complete_status_requires_postfit_outputs": True,
+    }
+    if data.get("fit_output_integrity") != required_output_integrity:
+        raise ValueError("V4 fit output-integrity contract drifted")
     return data
 
 
