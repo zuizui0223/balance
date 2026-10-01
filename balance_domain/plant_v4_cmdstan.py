@@ -75,6 +75,27 @@ def load_fit_execution_contract(path: Path) -> dict:
     }
     if data.get("chain_integrity") != required_integrity:
         raise ValueError("V4 fit chain-integrity contract drifted")
+
+    required_input_integrity = {
+        "licensed_assembly_required": True,
+        "wrappers_must_equal_deterministic_rebuild_from_assembly": True,
+        "primary_and_primary_sensitivity_required": True,
+        "generality_pair_presence_must_match_assembly_support_gate": True,
+        "generality_primary_and_sensitivity_must_exist_together": True,
+        "record_licensed_assembly_sha256": True,
+        "record_input_wrapper_sha256": True,
+    }
+    if data.get("input_bundle_integrity") != required_input_integrity:
+        raise ValueError("V4 fit input-bundle integrity contract drifted")
+
+    required_workspace = {
+        "existing_output_directory_overwrite_allowed": False,
+        "one_run_per_workspace": True,
+        "stale_optional_outputs_forbidden": True,
+        "new_run_requires_new_output_directory": True,
+    }
+    if data.get("workspace_policy") != required_workspace:
+        raise ValueError("V4 fit workspace policy drifted")
     return data
 
 
