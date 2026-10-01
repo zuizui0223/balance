@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import importlib.util
 import json
 import math
@@ -641,25 +642,111 @@ def _write_prefit_bundle(path, rows):
         writer.writerows(rows)
 
     pipeline = build_v4_analysis_inputs(rows)
+    readout = path / "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
+    readout.write_text(
+        json.dumps(pipeline["assembly_readout"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     payloads = {
-        "BALANCE_PLANT_V4_STAN_INPUT.json": pipeline["main_stan_input"],
-        "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json": (
-            pipeline["prior_sensitivity_stan_input"]
+        "PRIMARY": (
+            "BALANCE_PLANT_V4_STAN_INPUT.json",
+            pipeline["main_stan_input"],
+        ),
+        "PRIMARY_PRIOR_SENSITIVITY": (
+            "BALANCE_PLANT_V4_PRIOR_SENSITIVITY_INPUT.json",
+            pipeline["prior_sensitivity_stan_input"],
         ),
     }
     if pipeline["temporal_generality_stan_input"] is not None:
-        payloads["BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json"] = (
-            pipeline["temporal_generality_stan_input"]
+        payloads["TEMPORAL_GENERALITY"] = (
+            "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_INPUT.json",
+            pipeline["temporal_generality_stan_input"],
         )
-        payloads[
-            "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json"
-        ] = pipeline["temporal_generality_prior_sensitivity_stan_input"]
+        payloads["TEMPORAL_GENERALITY_PRIOR_SENSITIVITY"] = (
+            "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_PRIOR_SENSITIVITY_INPUT.json",
+            pipeline["temporal_generality_prior_sensitivity_stan_input"],
+        )
 
-    for name, payload in payloads.items():
-        (path / name).write_text(
+    wrapper_paths = {}
+    for job_id, (name, payload) in payloads.items():
+        wrapper = path / name
+        wrapper.write_text(
             json.dumps(payload, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
+        wrapper_paths[job_id] = wrapper
+
+    primary_human_basenames = (
+        "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+        "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+        "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+        "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+        "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
+        "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    )
+    source_hashes = {
+        name: hashlib.sha256(name.encode("utf-8")).hexdigest()
+        for name in primary_human_basenames
+    }
+    human_receipt = {
+        "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
+        "analysis": "balance_plant_v4_human_input_workspace",
+        "primary_model_assembly_ready": True,
+        "primary_human_open_gates": {
+            "u2_independent_double_coding": False,
+            "u2_post_coding_adjudication": False,
+            "u6_independent_double_coding": False,
+            "u6_post_coding_adjudication": False,
+            "u2_predictor_independent_adjudication": False,
+            "u6_predictor_independent_adjudication": False,
+        },
+        "next_step": "BUILD_V4_ANALYSIS_INPUTS",
+        "files": {
+            name: {"composed_sha256": digest}
+            for name, digest in source_hashes.items()
+        },
+    }
+    human_receipt_path = (
+        path / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    )
+    human_receipt_path.write_text(
+        json.dumps(human_receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    outputs = {
+        "licensed_assembly": assembly.name,
+        "assembly_readout": readout.name,
+        **{job_id: wrapper.name for job_id, wrapper in wrapper_paths.items()},
+    }
+    output_sha256 = {
+        "licensed_assembly": hashlib.sha256(assembly.read_bytes()).hexdigest(),
+        "assembly_readout": hashlib.sha256(readout.read_bytes()).hexdigest(),
+        **{
+            job_id: hashlib.sha256(wrapper.read_bytes()).hexdigest()
+            for job_id, wrapper in wrapper_paths.items()
+        },
+    }
+    analysis_receipt = {
+        "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
+        "analysis": "balance_plant_v4_analysis_inputs",
+        "source_human_workspace_receipt": (
+            "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+        ),
+        "source_human_workspace_receipt_sha256": hashlib.sha256(
+            human_receipt_path.read_bytes()
+        ).hexdigest(),
+        "source_human_workspace_file_sha256": source_hashes,
+        "temporal_generality_status": pipeline["temporal_generality_status"],
+        "active_fit_jobs": list(wrapper_paths),
+        "outputs": outputs,
+        "output_sha256": output_sha256,
+        "claim_ceiling": "analysis_input_provenance_only_no_fitted_effect",
+    }
+    (path / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json").write_text(
+        json.dumps(analysis_receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     return pipeline
 
 
