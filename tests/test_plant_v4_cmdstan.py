@@ -65,6 +65,13 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "stale_optional_outputs_forbidden": True,
         "new_run_requires_new_output_directory": True,
     }
+    assert data["fit_output_integrity"] == {
+        "job_receipt_sha256_required": True,
+        "successful_postfit_output_sha256_required": True,
+        "diagnostic_failure_receipt_must_record_no_postfit_outputs": True,
+        "execution_status_required": True,
+        "complete_status_requires_postfit_outputs": True,
+    }
     assert data["chain_integrity"] == {
         "expected_chain_count": 4,
         "expected_postwarmup_draws_per_chain": 2000,
@@ -822,3 +829,142 @@ def test_runner_preflight_requires_source_human_workspace_receipt_hash(tmp_path)
 
     with pytest.raises(ValueError, match="lacks source human-workspace receipt SHA256"):
         runner._validate_input_bundle(input_dir)
+
+
+
+def _fake_run_all_boundary(monkeypatch, runner, tmp_path, *, diagnostic_status):
+    assembly_path = tmp_path / "assembly.csv"
+    assembly_path.write_text("synthetic\n", encoding="utf-8")
+    analysis_receipt = tmp_path / "analysis_receipt.json"
+    analysis_receipt.write_text("{}\n", encoding="utf-8")
+
+    monkeypatch.setattr(
+        runner,
+        "_validate_input_bundle",
+        lambda _input_dir: {
+            "assembly": [{"synthetic": "row"}],
+            "assembly_path": assembly_path,
+            "assembly_sha256": hashlib.sha256(assembly_path.read_bytes()).hexdigest(),
+            "active_jobs": ["PRIMARY", "PRIMARY_PRIOR_SENSITIVITY"],
+            "wrapper_sha256": {
+                "PRIMARY": "1" * 64,
+                "PRIMARY_PRIOR_SENSITIVITY": "2" * 64,
+            },
+            "analysis_input_receipt_path": analysis_receipt,
+            "analysis_input_receipt_sha256": hashlib.sha256(
+                analysis_receipt.read_bytes()
+            ).hexdigest(),
+            "source_human_workspace_receipt_sha256": "3" * 64,
+            "temporal_generality_expected": False,
+        },
+    )
+    monkeypatch.setattr(runner, "_ensure_stanc", lambda **kwargs: tmp_path / "stanc")
+    monkeypatch.setattr(runner, "_cmdstan_version", lambda _path: "2.40.0")
+    monkeypatch.setattr(
+        runner,
+        "_compile_model",
+        lambda **kwargs: tmp_path / "compiled-model",
+    )
+    monkeypatch.setattr(
+        runner,
+        "_ensure_stansummary",
+        lambda **kwargs: tmp_path / "stansummary",
+    )
+
+    def fake_fit(*, job_id, out_dir, **kwargs):
+        job_dir = out_dir / job_id
+        job_dir.mkdir(parents=True, exist_ok=True)
+        receipt_path = job_dir / "FIT_RECEIPT.json"
+        receipt_path.write_text(
+            json.dumps({"job_id": job_id, "status": diagnostic_status}) + "\n",
+            encoding="utf-8",
+        )
+        return {
+            "receipt": {"job_id": job_id},
+            "receipt_path": receipt_path,
+            "draws": [],
+            "diagnostics": {"status": diagnostic_status},
+        }
+
+    monkeypatch.setattr(runner, "_run_fit_job", fake_fit)
+    return assembly_path
+
+
+def test_runner_complete_receipt_hash_binds_job_and_postfit_outputs(tmp_path, monkeypatch):
+    runner = _load_runner("run_plant_v4_cmdstan_final_receipt_success_test")
+    _fake_run_all_boundary(
+        monkeypatch,
+        runner,
+        tmp_path,
+        diagnostic_status="PASS",
+    )
+    monkeypatch.setattr(
+        runner,
+        "summarize_v4_primary_postfit",
+        lambda *args, **kwargs: {"analysis": "synthetic-primary"},
+    )
+
+    out_dir = tmp_path / "fit-success"
+    result = runner.run_all(
+        cmdstan_dir=tmp_path / "cmdstan",
+        input_dir=tmp_path / "inputs",
+        out_dir=out_dir,
+        contract_path=CONTRACT,
+    )
+    assert result["execution_status"] == "COMPLETE"
+
+    receipt_path = out_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["execution_status"] == "COMPLETE"
+    assert receipt["diagnostic_failures"] == []
+    assert set(receipt["job_receipt_sha256"]) == {
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+    }
+    for job_id, path in receipt["job_receipts"].items():
+        assert receipt["job_receipt_sha256"][job_id] == hashlib.sha256(
+            Path(path).read_bytes()
+        ).hexdigest()
+
+    assert set(receipt["postfit_outputs"]) == {"primary"}
+    primary_path = Path(receipt["postfit_outputs"]["primary"])
+    assert receipt["postfit_output_sha256"]["primary"] == hashlib.sha256(
+        primary_path.read_bytes()
+    ).hexdigest()
+
+
+def test_runner_diagnostic_failure_receipt_has_no_postfit_outputs(tmp_path, monkeypatch):
+    runner = _load_runner("run_plant_v4_cmdstan_final_receipt_failure_test")
+    _fake_run_all_boundary(
+        monkeypatch,
+        runner,
+        tmp_path,
+        diagnostic_status="FAIL",
+    )
+
+    def should_not_summarize(*args, **kwargs):
+        raise AssertionError("postfit summary must not run after diagnostic failure")
+
+    monkeypatch.setattr(runner, "summarize_v4_primary_postfit", should_not_summarize)
+
+    out_dir = tmp_path / "fit-fail"
+    with pytest.raises(RuntimeError, match="diagnostics failed"):
+        runner.run_all(
+            cmdstan_dir=tmp_path / "cmdstan",
+            input_dir=tmp_path / "inputs",
+            out_dir=out_dir,
+            contract_path=CONTRACT,
+        )
+
+    receipt = json.loads(
+        (out_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json")
+        .read_text(encoding="utf-8")
+    )
+    assert receipt["execution_status"] == "DIAGNOSTIC_FAIL"
+    assert receipt["postfit_decision_allowed"] is False
+    assert receipt["postfit_outputs"] == {}
+    assert receipt["postfit_output_sha256"] == {}
+    assert set(receipt["job_receipt_sha256"]) == {
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+    }
