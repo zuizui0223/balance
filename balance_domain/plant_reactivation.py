@@ -112,6 +112,9 @@ def derive_v4_reactivation_conditions(
     ):
         raise ValueError("V4 human-workspace receipt analysis mismatch")
 
+    if human_workspace_receipt.get("primary_model_assembly_ready") is not True:
+        raise ValueError("V4 human-workspace receipt is not primary-assembly ready")
+
     primary_open = human_workspace_receipt.get("primary_human_open_gates")
     if not isinstance(primary_open, dict):
         raise ValueError("V4 human-workspace receipt lacks primary human gates")
@@ -157,10 +160,31 @@ def derive_v4_reactivation_conditions(
         "PRIMARY",
         "PRIMARY_PRIOR_SENSITIVITY",
     } <= active_jobs
-    generality_fit_complete = execution_complete and {
+
+    generality_jobs = {
         "TEMPORAL_GENERALITY",
         "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
-    } <= active_jobs
+    }
+    partial_generality_jobs = active_jobs & generality_jobs
+    if partial_generality_jobs and partial_generality_jobs != generality_jobs:
+        raise ValueError("V4 fit execution receipt contains an incomplete generality pair")
+
+    assembly_generality_ready = (
+        estimability.get("temporal_cross_universe_generality_ready") is True
+    )
+    receipt_generality_expected = fit_execution_receipt.get(
+        "temporal_generality_expected_from_assembly"
+    )
+    if receipt_generality_expected is not assembly_generality_ready:
+        raise ValueError(
+            "V4 fit receipt generality expectation disagrees with assembly estimability"
+        )
+    generality_pair_active = generality_jobs <= active_jobs
+    if generality_pair_active is not assembly_generality_ready:
+        raise ValueError(
+            "V4 fit active generality jobs disagree with assembly support gate"
+        )
+    generality_fit_complete = execution_complete and generality_pair_active
 
     u2_supported = False
     u6_supported = False
