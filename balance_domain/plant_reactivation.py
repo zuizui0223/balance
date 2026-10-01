@@ -189,6 +189,16 @@ def derive_v4_reactivation_conditions(
         u2_supported = u2_label == "SUPPORTED"
         u6_supported = u6_label == "SUPPORTED"
         contradictory = interaction_label == "PRACTICALLY_CONTRADICTORY"
+        expected_generality_supported = (
+            u2_supported and u6_supported and not contradictory
+        )
+        if (
+            decision.get("cross_universe_generality_supported")
+            is not expected_generality_supported
+        ):
+            raise ValueError(
+                "V4 temporal-generality decision fields are internally inconsistent"
+            )
 
     return {
         "u2_independent_coding_and_adjudication_complete": (
