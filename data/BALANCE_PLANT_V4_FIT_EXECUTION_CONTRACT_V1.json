@@ -75,7 +75,9 @@
     "record_chain_count_and_draw_count": true,
     "record_licensed_assembly_sha256": true,
     "record_analysis_input_receipt_sha256": true,
-    "record_source_human_workspace_receipt_sha256": true
+    "record_source_human_workspace_receipt_sha256": true,
+    "record_job_receipt_sha256": true,
+    "record_postfit_output_sha256": true
   },
   "prohibitions": [
     "do not change chain count, warmup, sampling iterations, seed, adapt_delta, or max_depth after seeing fitted effect signs",
@@ -89,7 +91,8 @@
     "do not fit temporal-generality inputs when the licensed assembly fails the frozen generality support gate",
     "do not reuse or overwrite a prior V4 fit output directory",
     "do not allow stale optional generality outputs from an earlier run to coexist with a later primary-only fit",
-    "do not fit an analysis-input bundle whose receipt hashes do not match the supplied files"
+    "do not fit an analysis-input bundle whose receipt hashes do not match the supplied files",
+    "do not treat a fit execution receipt as complete until post-fit outputs are hash-bound"
   ],
   "claim_ceiling": "fit_execution_and_diagnostics_contract_only_no_observed_result",
   "required_cmdstan_version": "2.40.0",
@@ -121,5 +124,12 @@
     "stale_optional_outputs_forbidden": true,
     "new_run_requires_new_output_directory": true
   },
-  "analysis_input_bundle_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
+  "analysis_input_bundle_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json",
+  "fit_output_integrity": {
+    "job_receipt_sha256_required": true,
+    "successful_postfit_output_sha256_required": true,
+    "diagnostic_failure_receipt_must_record_no_postfit_outputs": true,
+    "execution_status_required": true,
+    "complete_status_requires_postfit_outputs": true
+  }
 }
