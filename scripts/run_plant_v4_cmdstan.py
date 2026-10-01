@@ -39,6 +39,14 @@ DEFAULT_INPUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_fit"
 ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
 HUMAN_WORKSPACE_RECEIPT = "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+PRIMARY_HUMAN_BASENAMES = (
+    "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+)
 
 FIT_SPECS = {
     "PRIMARY": {
@@ -336,6 +344,26 @@ def _validate_input_bundle(input_dir: Path) -> dict:
     human_receipt_sha256 = sha256_file(human_receipt_path)
     if human_receipt_sha256 != provenance.get("source_human_workspace_receipt_sha256"):
         raise ValueError("V4 human workspace receipt SHA256 mismatch")
+    human_receipt = _load_json_object(human_receipt_path)
+    if human_receipt.get("schema_version") != "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1":
+        raise ValueError("copied V4 human workspace receipt schema mismatch")
+    if human_receipt.get("analysis") != "balance_plant_v4_human_input_workspace":
+        raise ValueError("copied V4 human workspace receipt analysis mismatch")
+    if human_receipt.get("primary_model_assembly_ready") is not True:
+        raise ValueError("copied V4 human workspace receipt is not assembly ready")
+    if any((human_receipt.get("primary_human_open_gates") or {}).values()):
+        raise ValueError("copied V4 human workspace receipt has primary human gates open")
+
+    source_file_hashes = provenance.get("source_human_workspace_file_sha256") or {}
+    human_files = human_receipt.get("files") or {}
+    if set(source_file_hashes) != set(PRIMARY_HUMAN_BASENAMES):
+        raise ValueError("V4 analysis-input receipt primary human file set drifted")
+    for basename, expected in source_file_hashes.items():
+        item = human_files.get(basename)
+        if not isinstance(item, dict) or item.get("composed_sha256") != expected:
+            raise ValueError(
+                f"V4 human-workspace/analysis-input receipt mismatch for {basename}"
+            )
 
     assembly_name = (provenance.get("outputs") or {}).get("licensed_assembly")
     if assembly_name != "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv":
