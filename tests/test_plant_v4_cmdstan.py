@@ -29,6 +29,9 @@ CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
 def test_fit_execution_contract_is_frozen_before_outcome():
     data = load_fit_execution_contract(CONTRACT)
     assert data["required_cmdstan_version"] == "2.40.0"
+    assert data["analysis_input_bundle_contract"] == (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
+    )
     assert data["sampling"] == {
         "chains": 4,
         "num_warmup": 1000,
