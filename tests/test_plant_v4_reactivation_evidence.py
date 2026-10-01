@@ -27,6 +27,7 @@ def _human_receipt():
     return {
         "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
         "analysis": "balance_plant_v4_human_input_workspace",
+        "primary_model_assembly_ready": True,
         "primary_human_open_gates": {
             "u2_independent_double_coding": False,
             "u2_post_coding_adjudication": False,
@@ -45,6 +46,7 @@ def _assembly_readout():
         "v4_estimability": {
             "temporal_cross_universe_common_support_ready": True,
             "temporal_cross_universe_outcome_support_ready": True,
+            "temporal_cross_universe_generality_ready": True,
         },
     }
 
@@ -62,6 +64,7 @@ def _fit_receipt(*, generality=True):
         "postfit_decision_allowed": True,
         "diagnostic_failures": [],
         "active_jobs": jobs,
+        "temporal_generality_expected_from_assembly": generality,
     }
 
 
