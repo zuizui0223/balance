@@ -92,6 +92,8 @@ def load_fit_execution_contract(path: Path) -> dict:
         "analysis_input_receipt_files_must_match_workspace": True,
         "record_analysis_input_receipt_sha256": True,
         "record_source_human_workspace_receipt_sha256": True,
+        "source_human_workspace_receipt_copy_required": True,
+        "copied_source_human_workspace_receipt_sha256_must_match": True,
     }
     if data.get("input_bundle_integrity") != required_input_integrity:
         raise ValueError("V4 fit input-bundle integrity contract drifted")
