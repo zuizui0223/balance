@@ -37,6 +37,8 @@ from balance_domain.plant_v4_estimands import (  # noqa: E402
 CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
 DEFAULT_INPUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_fit"
+ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+HUMAN_WORKSPACE_RECEIPT = "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
 
 FIT_SPECS = {
     "PRIMARY": {
@@ -315,10 +317,46 @@ def _load_json_object(path: Path) -> dict:
 
 
 def _validate_input_bundle(input_dir: Path) -> dict:
-    """Rebuild the frozen V4 wrappers from the licensed assembly and require identity."""
-    assembly_path = input_dir / "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
+    """Require one receipt-bound assembly/wrapper bundle from a validated human workspace."""
+    provenance_path = input_dir / ANALYSIS_INPUT_RECEIPT
+    provenance = _load_json_object(provenance_path)
+    if provenance.get("schema_version") != "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1":
+        raise ValueError("V4 analysis-input receipt schema mismatch")
+    if provenance.get("analysis") != "balance_plant_v4_analysis_inputs":
+        raise ValueError("V4 analysis-input receipt analysis mismatch")
+
+    human_receipt_name = provenance.get("source_human_workspace_receipt")
+    if human_receipt_name != HUMAN_WORKSPACE_RECEIPT:
+        raise ValueError("V4 analysis-input receipt human-workspace receipt name drifted")
+    human_receipt_path = input_dir / HUMAN_WORKSPACE_RECEIPT
+    if not human_receipt_path.is_file():
+        raise FileNotFoundError(
+            f"required V4 human workspace receipt copy is missing: {human_receipt_path}"
+        )
+    human_receipt_sha256 = sha256_file(human_receipt_path)
+    if human_receipt_sha256 != provenance.get("source_human_workspace_receipt_sha256"):
+        raise ValueError("V4 human workspace receipt SHA256 mismatch")
+
+    assembly_name = (provenance.get("outputs") or {}).get("licensed_assembly")
+    if assembly_name != "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv":
+        raise ValueError("V4 analysis-input receipt licensed assembly name drifted")
+    assembly_path = input_dir / assembly_name
     if not assembly_path.exists():
         raise FileNotFoundError(f"required V4 licensed assembly is missing: {assembly_path}")
+    assembly_sha256 = sha256_file(assembly_path)
+    expected_hashes = provenance.get("output_sha256") or {}
+    if assembly_sha256 != expected_hashes.get("licensed_assembly"):
+        raise ValueError("V4 licensed assembly SHA256 does not match analysis-input receipt")
+
+    readout_name = (provenance.get("outputs") or {}).get("assembly_readout")
+    if readout_name != "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json":
+        raise ValueError("V4 analysis-input receipt assembly readout name drifted")
+    readout_path = input_dir / readout_name
+    if not readout_path.is_file():
+        raise FileNotFoundError(f"required V4 assembly readout is missing: {readout_path}")
+    if sha256_file(readout_path) != expected_hashes.get("assembly_readout"):
+        raise ValueError("V4 assembly readout SHA256 does not match analysis-input receipt")
+
     assembly = load_model_assembly(assembly_path)
     expected = build_v4_analysis_inputs(assembly)
 
@@ -340,8 +378,13 @@ def _validate_input_bundle(input_dir: Path) -> dict:
             raise ValueError(
                 f"{job_id} input does not match deterministic rebuild from licensed assembly"
             )
+        observed = sha256_file(path)
+        if observed != expected_hashes.get(job_id):
+            raise ValueError(f"{job_id} SHA256 does not match analysis-input receipt")
+        if (provenance.get("outputs") or {}).get(job_id) != path.name:
+            raise ValueError(f"{job_id} filename does not match analysis-input receipt")
         active_jobs.append(job_id)
-        wrapper_sha256[job_id] = sha256_file(path)
+        wrapper_sha256[job_id] = observed
 
     generality_jobs = (
         "TEMPORAL_GENERALITY",
@@ -369,18 +412,33 @@ def _validate_input_bundle(input_dir: Path) -> dict:
                 raise ValueError(
                     f"{job_id} input does not match deterministic rebuild from licensed assembly"
                 )
+            observed = sha256_file(path)
+            if observed != expected_hashes.get(job_id):
+                raise ValueError(f"{job_id} SHA256 does not match analysis-input receipt")
+            if (provenance.get("outputs") or {}).get(job_id) != path.name:
+                raise ValueError(f"{job_id} filename does not match analysis-input receipt")
             active_jobs.append(job_id)
-            wrapper_sha256[job_id] = sha256_file(path)
+            wrapper_sha256[job_id] = observed
     elif any(present):
         raise ValueError(
             "temporal-generality inputs are present even though the licensed assembly "
             "does not pass the frozen generality support gate"
         )
 
+    if provenance.get("active_fit_jobs") != active_jobs:
+        raise ValueError("V4 analysis-input receipt active fit jobs disagree with assembly")
+    expected_status = "READY" if expected_generality else "NOT_READY"
+    if provenance.get("temporal_generality_status") != expected_status:
+        raise ValueError("V4 analysis-input receipt generality status disagrees with assembly")
+
     return {
         "assembly": assembly,
         "assembly_path": assembly_path,
-        "assembly_sha256": sha256_file(assembly_path),
+        "assembly_sha256": assembly_sha256,
+        "analysis_input_receipt_path": provenance_path,
+        "analysis_input_receipt_sha256": sha256_file(provenance_path),
+        "source_human_workspace_receipt_path": human_receipt_path,
+        "source_human_workspace_receipt_sha256": human_receipt_sha256,
         "active_jobs": active_jobs,
         "wrapper_sha256": wrapper_sha256,
         "temporal_generality_expected": expected_generality,
@@ -462,6 +520,16 @@ def run_all(
         "required_cmdstan_version": required_version,
         "preflight_cmdstan_version": cmdstan_version,
         "active_jobs": active_jobs,
+        "source_human_workspace_receipt": str(
+            input_bundle["source_human_workspace_receipt_path"]
+        ),
+        "source_human_workspace_receipt_sha256": input_bundle[
+            "source_human_workspace_receipt_sha256"
+        ],
+        "analysis_input_receipt": str(input_bundle["analysis_input_receipt_path"]),
+        "analysis_input_receipt_sha256": input_bundle[
+            "analysis_input_receipt_sha256"
+        ],
         "licensed_assembly": str(input_bundle["assembly_path"]),
         "licensed_assembly_sha256": input_bundle["assembly_sha256"],
         "input_wrapper_sha256": input_bundle["wrapper_sha256"],
