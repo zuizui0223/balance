@@ -39,6 +39,9 @@ DEFAULT_INPUT = ROOT / "release" / "generated" / "plant_v4_analysis_inputs"
 DEFAULT_OUT = ROOT / "release" / "generated" / "plant_v4_fit"
 ANALYSIS_INPUT_RECEIPT = "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
 HUMAN_WORKSPACE_RECEIPT = "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+ANALYSIS_INPUT_PROVENANCE_CONTRACT = (
+    ROOT / "data" / "BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+)
 PRIMARY_HUMAN_BASENAMES = (
     "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
     "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
@@ -332,6 +335,13 @@ def _validate_input_bundle(input_dir: Path) -> dict:
         raise ValueError("V4 analysis-input receipt schema mismatch")
     if provenance.get("analysis") != "balance_plant_v4_analysis_inputs":
         raise ValueError("V4 analysis-input receipt analysis mismatch")
+    if provenance.get("analysis_input_provenance_contract") != (
+        "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+    ):
+        raise ValueError("V4 analysis-input provenance contract path drifted")
+    contract_sha = sha256_file(ANALYSIS_INPUT_PROVENANCE_CONTRACT)
+    if provenance.get("analysis_input_provenance_contract_sha256") != contract_sha:
+        raise ValueError("V4 analysis-input provenance contract SHA256 mismatch")
 
     human_receipt_name = provenance.get("source_human_workspace_receipt")
     if human_receipt_name != HUMAN_WORKSPACE_RECEIPT:
@@ -465,6 +475,8 @@ def _validate_input_bundle(input_dir: Path) -> dict:
         "assembly_sha256": assembly_sha256,
         "analysis_input_receipt_path": provenance_path,
         "analysis_input_receipt_sha256": sha256_file(provenance_path),
+        "analysis_input_provenance_contract_path": ANALYSIS_INPUT_PROVENANCE_CONTRACT,
+        "analysis_input_provenance_contract_sha256": contract_sha,
         "source_human_workspace_receipt_path": human_receipt_path,
         "source_human_workspace_receipt_sha256": human_receipt_sha256,
         "active_jobs": active_jobs,
@@ -553,6 +565,12 @@ def run_all(
         ),
         "source_human_workspace_receipt_sha256": input_bundle[
             "source_human_workspace_receipt_sha256"
+        ],
+        "analysis_input_provenance_contract": str(
+            input_bundle["analysis_input_provenance_contract_path"]
+        ),
+        "analysis_input_provenance_contract_sha256": input_bundle[
+            "analysis_input_provenance_contract_sha256"
         ],
         "analysis_input_receipt": str(input_bundle["analysis_input_receipt_path"]),
         "analysis_input_receipt_sha256": input_bundle[
