@@ -105,6 +105,44 @@ For every fit, the runner:
 
 This prevents audit metadata from accidentally becoming a Stan data variable.
 
+## Fit-input provenance
+
+Before compiling or sampling, the runner reloads
+`BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv` and deterministically rebuilds the frozen V4
+pre-fit pipeline in memory.
+
+The supplied wrapper JSON files must exactly equal those rebuilt objects.
+
+This means:
+
+- the primary and primary-prior-sensitivity wrappers must both exist and match the licensed
+  assembly exactly;
+- if the licensed assembly passes the frozen temporal-generality support gate, both
+  generality wrappers must exist and match the deterministic rebuild;
+- if the licensed assembly does **not** pass that gate, neither generality wrapper may be
+  present;
+- wrappers copied from another intake/assembly workspace are rejected even if their Stan
+  dimensions happen to be valid;
+- the licensed assembly SHA256 and every wrapper SHA256 are written into the execution
+  receipt;
+- `BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json` is required and every file hash in
+  that receipt is verified before compilation;
+- the analysis-input receipt SHA256 and its upstream composed-human-workspace receipt SHA256
+  are propagated into the fit execution receipt.
+
+Posterior summaries therefore cannot be standardized over one assembly while being fitted
+to another.
+
+## Immutable fit workspace
+
+A V4 fit output directory is a one-run evidence workspace.
+
+- the requested `--out-dir` must not already exist;
+- rerunning the same or a corrected fit requires a new output directory;
+- previous chain CSVs, diagnostics, receipts, and optional generality summaries are never
+  silently overwritten;
+- a primary-only run cannot inherit stale generality outputs from an earlier fit.
+
 ## Chain and summary completeness
 
 Every registered fit must contain exactly four unique chain CSV files, matching the frozen
@@ -203,6 +241,9 @@ and only then writes the post-fit probability-contrast summaries.
 
 Every fit receipt records:
 
+- licensed assembly SHA256;
+- analysis-input bundle receipt SHA256;
+- upstream composed-human-workspace receipt SHA256;
 - source Stan model SHA256;
 - compiled executable SHA256;
 - audited input-wrapper SHA256;
