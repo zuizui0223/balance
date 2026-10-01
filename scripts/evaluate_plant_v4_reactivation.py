@@ -67,6 +67,8 @@ def evaluate_from_workspaces(*, input_dir: Path, fit_dir: Path) -> dict:
         != "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1"
     ):
         raise ValueError("V4 analysis-input receipt schema mismatch")
+    if analysis_receipt.get("primary_fit_ready") is not True:
+        raise ValueError("V4 analysis-input receipt is not primary-fit ready")
     _require_hash(
         label="analysis-input receipt",
         path=analysis_receipt_path,
@@ -113,6 +115,8 @@ def evaluate_from_workspaces(*, input_dir: Path, fit_dir: Path) -> dict:
 
     primary_path = fit_dir / PRIMARY_POSTFIT
     if "primary" in postfit_outputs:
+        if Path(str(postfit_outputs["primary"])).name != PRIMARY_POSTFIT:
+            raise ValueError("V4 primary postfit output basename drifted")
         _require_hash(
             label="primary postfit summary",
             path=primary_path,
@@ -123,6 +127,11 @@ def evaluate_from_workspaces(*, input_dir: Path, fit_dir: Path) -> dict:
 
     generality = None
     if "temporal_generality" in postfit_outputs:
+        if (
+            Path(str(postfit_outputs["temporal_generality"])).name
+            != GENERALITY_POSTFIT
+        ):
+            raise ValueError("V4 temporal-generality postfit output basename drifted")
         generality_path = fit_dir / GENERALITY_POSTFIT
         _require_hash(
             label="temporal-generality postfit summary",
