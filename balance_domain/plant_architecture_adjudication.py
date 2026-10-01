@@ -125,6 +125,18 @@ def _receipt_output_path(
     path = intake_dir / basename
     if not path.is_file():
         raise ValueError(f"intake output is missing for {lane}: {path}")
+    hashes = (receipt.get("output_sha256") or {}).get(family) or {}
+    expected = hashes.get(lane)
+    if not isinstance(expected, str) or not expected:
+        raise ValueError(
+            f"intake receipt lacks output SHA256 for {family}/{lane}"
+        )
+    observed = _sha256(path)
+    if observed != expected:
+        raise ValueError(
+            f"intake output SHA256 mismatch for {family}/{lane}: "
+            f"{observed} != {expected}"
+        )
     return path
 
 
@@ -394,6 +406,13 @@ def write_architecture_adjudication_workspace(
             if key != "rows"
         }
         receipt["outputs"] = outputs
+        receipt["output_sha256"] = {
+            family: {
+                lane: _sha256(tmp_dir / basename)
+                for lane, basename in mapping.items()
+            }
+            for family, mapping in outputs.items()
+        }
         receipt_name = (
             f"BALANCE_PLANT_{result['scope']}_ARCHITECTURE_ADJUDICATION_RECEIPT_V1.json"
         )

@@ -378,6 +378,13 @@ def write_human_return_intake(
             "predictor_reviewed_frames": predictor_frame_paths,
             "predictor_readouts": predictor_paths,
         }
+        receipt["output_sha256"] = {
+            family: {
+                lane: _sha256(tmp_dir / basename)
+                for lane, basename in mapping.items()
+            }
+            for family, mapping in receipt["outputs"].items()
+        }
         receipt_name = "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
         receipt_path = tmp_dir / receipt_name
         receipt_path.write_text(

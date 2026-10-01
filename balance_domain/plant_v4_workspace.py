@@ -50,6 +50,35 @@ def _workspace_file(workspace: Path, basename: str) -> Path:
     return path
 
 
+def _receipt_bound_workspace_file(
+    workspace: Path,
+    receipt: dict,
+    *,
+    family: str,
+    lane: str,
+) -> Path:
+    outputs = receipt.get("outputs") or {}
+    mapping = outputs.get(family) or {}
+    basename = mapping.get(lane)
+    if not isinstance(basename, str) or not basename:
+        raise ValueError(f"workspace receipt lacks {family} output for {lane}")
+    path = _workspace_file(workspace, basename)
+
+    hash_families = receipt.get("output_sha256") or {}
+    expected = (hash_families.get(family) or {}).get(lane)
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise ValueError(
+            f"workspace receipt lacks output SHA256 for {family}/{lane}"
+        )
+    observed = _sha256(path)
+    if observed != expected:
+        raise ValueError(
+            f"workspace output SHA256 mismatch for {family}/{lane}: "
+            f"{observed} != {expected}"
+        )
+    return path
+
+
 def _primary_sources(primary_dir: Path) -> tuple[dict, dict[str, Path]]:
     receipt_path = primary_dir / PRIMARY_RECEIPT
     receipt = _load_json(receipt_path)
@@ -65,10 +94,18 @@ def _primary_sources(primary_dir: Path) -> tuple[dict, dict[str, Path]]:
     if set(coding) != {"U2", "U6"} or set(adjudication) != {"U2", "U6"}:
         raise ValueError("primary adjudication receipt must contain U2/U6 outputs")
     paths = {
-        U2_CODING: _workspace_file(primary_dir, coding["U2"]),
-        U2_ADJUDICATION: _workspace_file(primary_dir, adjudication["U2"]),
-        U6_CODING: _workspace_file(primary_dir, coding["U6"]),
-        U6_ADJUDICATION: _workspace_file(primary_dir, adjudication["U6"]),
+        U2_CODING: _receipt_bound_workspace_file(
+            primary_dir, receipt, family="coding_ledgers", lane="U2"
+        ),
+        U2_ADJUDICATION: _receipt_bound_workspace_file(
+            primary_dir, receipt, family="adjudication_ledgers", lane="U2"
+        ),
+        U6_CODING: _receipt_bound_workspace_file(
+            primary_dir, receipt, family="coding_ledgers", lane="U6"
+        ),
+        U6_ADJUDICATION: _receipt_bound_workspace_file(
+            primary_dir, receipt, family="adjudication_ledgers", lane="U6"
+        ),
     }
     return receipt, paths
 
@@ -91,8 +128,12 @@ def _predictor_sources(
     if set(frames) != {"U2", "U6"}:
         raise ValueError("predictor intake receipt must contain reviewed U2/U6 frames")
     paths = {
-        U2_PREDICTOR: _workspace_file(predictor_dir, frames["U2"]),
-        U6_PREDICTOR: _workspace_file(predictor_dir, frames["U6"]),
+        U2_PREDICTOR: _receipt_bound_workspace_file(
+            predictor_dir, receipt, family="predictor_reviewed_frames", lane="U2"
+        ),
+        U6_PREDICTOR: _receipt_bound_workspace_file(
+            predictor_dir, receipt, family="predictor_reviewed_frames", lane="U6"
+        ),
     }
     frozen = root / "data"
     load_predictor_adjudication_return(
@@ -121,8 +162,12 @@ def _external_sources(external_dir: Path) -> tuple[dict, dict[str, Path]]:
     if set(coding) != {"U1"} or set(adjudication) != {"U1"}:
         raise ValueError("external adjudication receipt must contain U1 outputs")
     return receipt, {
-        U1_CODING: _workspace_file(external_dir, coding["U1"]),
-        U1_ADJUDICATION: _workspace_file(external_dir, adjudication["U1"]),
+        U1_CODING: _receipt_bound_workspace_file(
+            external_dir, receipt, family="coding_ledgers", lane="U1"
+        ),
+        U1_ADJUDICATION: _receipt_bound_workspace_file(
+            external_dir, receipt, family="adjudication_ledgers", lane="U1"
+        ),
     }
 
 

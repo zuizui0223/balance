@@ -34,6 +34,7 @@
     "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv"
   ],
   "validation": [
+    "verify every receipt-declared source file SHA256 against the source workspace receipt before copying",
     "copy only validated files named by source workspace receipts",
     "record source and composed SHA256 for every file",
     "rerun canonical V4 readiness against the composed workspace",
@@ -50,5 +51,20 @@
     "module": "balance_domain.plant_v4_workspace",
     "cli": "scripts/compose_plant_v4_human_workspace.py"
   },
-  "claim_ceiling": "validated_human_input_composition_only_no_model_effect"
+  "claim_ceiling": "validated_human_input_composition_only_no_model_effect",
+  "source_integrity": {
+    "receipt_hash_binding_required": true,
+    "primary_architecture_hash_family_keys": [
+      "coding_ledgers",
+      "adjudication_ledgers"
+    ],
+    "predictor_review_hash_family_keys": [
+      "predictor_reviewed_frames"
+    ],
+    "external_architecture_hash_family_keys": [
+      "coding_ledgers",
+      "adjudication_ledgers"
+    ],
+    "semantic_revalidation_does_not_replace_hash_validation": true
+  }
 }

@@ -261,7 +261,56 @@ def test_compositor_revalidates_predictor_frames_against_frozen_receipts(tmp_pat
     rows[0]["source_id"] = "tampered-source"
     _write_rows(path, fields, rows)
 
-    with pytest.raises(ValueError, match="cannot modify frozen source_id"):
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
+        compose_v4_human_input_workspace(
+            root=ROOT,
+            primary_adjudication_dir=primary,
+            predictor_intake_dir=predictor,
+            out_dir=tmp_path / "composed",
+        )
+
+
+
+def test_compositor_rejects_hash_drift_in_primary_adjudication_workspace(tmp_path):
+    primary = _build_primary_adjudication_workspace(tmp_path)
+    predictor = _build_predictor_workspace(tmp_path)
+
+    receipt = json.loads(
+        (primary / "BALANCE_PLANT_PRIMARY_ARCHITECTURE_ADJUDICATION_RECEIPT_V1.json")
+        .read_text(encoding="utf-8")
+    )
+    u2_name = receipt["outputs"]["coding_ledgers"]["U2"]
+    path = primary / u2_name
+    # Semantically inert CSV whitespace must still invalidate the immutable receipt binding.
+    path.write_bytes(path.read_bytes() + b"\n")
+
+    with pytest.raises(ValueError, match="output SHA256 mismatch for coding_ledgers/U2"):
+        compose_v4_human_input_workspace(
+            root=ROOT,
+            primary_adjudication_dir=primary,
+            predictor_intake_dir=predictor,
+            out_dir=tmp_path / "composed",
+        )
+
+
+def test_compositor_rejects_hash_drift_in_predictor_intake_workspace(tmp_path):
+    primary = _build_primary_adjudication_workspace(tmp_path)
+    predictor = _build_predictor_workspace(tmp_path)
+
+    receipt = json.loads(
+        (predictor / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json")
+        .read_text(encoding="utf-8")
+    )
+    u6_name = receipt["outputs"]["predictor_reviewed_frames"]["U6"]
+    path = predictor / u6_name
+    # A trailing blank line normally survives semantic CSV validation; the receipt hash
+    # must still make the staged workspace immutable.
+    path.write_bytes(path.read_bytes() + b"\n")
+
+    with pytest.raises(
+        ValueError,
+        match="output SHA256 mismatch for predictor_reviewed_frames/U6",
+    ):
         compose_v4_human_input_workspace(
             root=ROOT,
             primary_adjudication_dir=primary,
