@@ -182,5 +182,7 @@ def test_handoff_manifest_registers_architecture_adjudication_entrypoints():
     assert adjudication["primary_scope"]["blocks_primary_v4"] is True
     assert adjudication["external_scope"]["lanes"] == ["U1"]
     assert adjudication["external_scope"]["blocks_primary_v4"] is False
-    for key in ("contract", "protocol", "module", "packet_cli", "return_cli"):
+    for key in ("contract", "protocol", "packet_cli", "return_cli"):
         assert (ROOT / adjudication[key]).exists()
+    module_path = ROOT / (adjudication["module"].replace(".", "/") + ".py")
+    assert module_path.exists()
