@@ -46,7 +46,7 @@
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
     "downstream_input_option": "--input-dir"
   },
-  "next_step": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <workspace> --build",
+  "next_step": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <workspace> --out-dir <new-analysis-workspace> --build",
   "implementation": {
     "module": "balance_domain.plant_v4_workspace",
     "cli": "scripts/compose_plant_v4_human_workspace.py"
@@ -66,5 +66,6 @@
       "adjudication_ledgers"
     ],
     "semantic_revalidation_does_not_replace_hash_validation": true
-  }
+  },
+  "downstream_analysis_input_bundle_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json"
 }
