@@ -739,9 +739,18 @@ def _write_prefit_bundle(path, rows):
             for job_id, wrapper in wrapper_paths.items()
         },
     }
+    provenance_contract = (
+        ROOT / "data" / "BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+    )
     analysis_receipt = {
         "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
         "analysis": "balance_plant_v4_analysis_inputs",
+        "analysis_input_provenance_contract": (
+            "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+        ),
+        "analysis_input_provenance_contract_sha256": hashlib.sha256(
+            provenance_contract.read_bytes()
+        ).hexdigest(),
         "source_human_workspace_receipt": (
             "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
         ),
@@ -902,4 +911,22 @@ def test_runner_preflight_crosschecks_human_and_analysis_receipt_file_hashes(tmp
     )
 
     with pytest.raises(ValueError, match="human-workspace/analysis-input receipt mismatch"):
+        runner._validate_input_bundle(input_dir)
+
+
+
+def test_runner_preflight_rejects_analysis_input_provenance_contract_drift(tmp_path):
+    runner = _load_runner("run_plant_v4_cmdstan_bad_provenance_contract_hash")
+    input_dir = tmp_path / "inputs"
+    _write_prefit_bundle(input_dir, _generality_ready_assembly())
+
+    receipt_path = input_dir / "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["analysis_input_provenance_contract_sha256"] = "0" * 64
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="provenance contract SHA256 mismatch"):
         runner._validate_input_bundle(input_dir)
