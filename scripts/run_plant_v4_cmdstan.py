@@ -548,8 +548,19 @@ def run_all(
             job_id: str(fit["receipt_path"])
             for job_id, fit in fits.items()
         },
+        "job_receipt_sha256": {
+            job_id: sha256_file(fit["receipt_path"])
+            for job_id, fit in fits.items()
+        },
         "diagnostic_failures": diagnostic_failures,
         "postfit_decision_allowed": not diagnostic_failures,
+        "execution_status": (
+            "DIAGNOSTIC_FAIL"
+            if diagnostic_failures
+            else "DIAGNOSTICS_PASS_POSTFIT_PENDING"
+        ),
+        "postfit_outputs": {},
+        "postfit_output_sha256": {},
         "automatic_retuning_permitted": False,
         "claim_ceiling": "fit_execution_status_only_no_publication_decision",
     }
@@ -594,6 +605,24 @@ def run_all(
             encoding="utf-8",
         )
 
+    postfit_outputs = {
+        "primary": str(primary_path),
+    }
+    postfit_hashes = {
+        "primary": sha256_file(primary_path),
+    }
+    if generality_path is not None:
+        postfit_outputs["temporal_generality"] = str(generality_path)
+        postfit_hashes["temporal_generality"] = sha256_file(generality_path)
+
+    overall["execution_status"] = "COMPLETE"
+    overall["postfit_outputs"] = postfit_outputs
+    overall["postfit_output_sha256"] = postfit_hashes
+    overall_path.write_text(
+        json.dumps(overall, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
     return {
         "execution_receipt": str(overall_path),
         "primary_postfit_summary": str(primary_path),
@@ -601,6 +630,7 @@ def run_all(
             str(generality_path) if generality_path is not None else None
         ),
         "diagnostics": "PASS",
+        "execution_status": "COMPLETE",
         "claim_ceiling": "postfit_reporting_outputs_not_publication_decision",
     }
 
