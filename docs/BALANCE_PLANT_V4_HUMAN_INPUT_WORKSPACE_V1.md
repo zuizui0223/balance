@@ -93,12 +93,21 @@ sibling directory and atomically renamed only after all source and readiness che
 ```bash
 python scripts/build_plant_v4_analysis_inputs.py \
   --input-dir <COMPOSED_WORKSPACE> \
+  --out-dir <NEW_ANALYSIS_INPUT_WORKSPACE> \
   --build
 ```
 
 V4 estimability is evaluated only after the licensed assembly is built. A composed human
 workspace does not guarantee that the observed architecture classes make the final model
 estimable.
+
+The production builder verifies this workspace receipt and every composed-file hash before
+building. It then creates a new immutable analysis-input workspace and writes
+`BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json`, which cryptographically links the
+pre-fit bundle back to this human-input receipt.
+
+See:
+`data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json`.
 
 ## Claim ceiling
 
