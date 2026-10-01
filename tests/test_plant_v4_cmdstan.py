@@ -58,6 +58,8 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "analysis_input_receipt_files_must_match_workspace": True,
         "record_analysis_input_receipt_sha256": True,
         "record_source_human_workspace_receipt_sha256": True,
+        "source_human_workspace_receipt_copy_required": True,
+        "copied_source_human_workspace_receipt_sha256_must_match": True,
     }
     assert data["workspace_policy"] == {
         "existing_output_directory_overwrite_allowed": False,
@@ -686,11 +688,36 @@ def _write_prefit_bundle(path, rows):
         readout.name: readout,
         **{name: path / name for name in payloads},
     }
+    human_receipt = path / "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    human_receipt.write_text(
+        json.dumps(
+            {
+                "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
+                "analysis": "balance_plant_v4_human_input_workspace",
+                "primary_model_assembly_ready": True,
+                "primary_human_open_gates": {
+                    "u2_independent_double_coding": False,
+                    "u2_post_coding_adjudication": False,
+                    "u6_independent_double_coding": False,
+                    "u6_post_coding_adjudication": False,
+                    "u2_predictor_independent_adjudication": False,
+                    "u6_predictor_independent_adjudication": False,
+                },
+                "next_step": "BUILD_V4_ANALYSIS_INPUTS",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    human_receipt_sha = hashlib.sha256(human_receipt.read_bytes()).hexdigest()
     receipt = {
         "schema_version": "BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1",
         "analysis": "balance_plant_v4_analysis_input_bundle",
-        "source_human_workspace_receipt_sha256": "a" * 64,
-        "source_human_workspace_receipt": "/synthetic/human-workspace-receipt.json",
+        "source_human_workspace_receipt_sha256": human_receipt_sha,
+        "source_human_workspace_receipt": human_receipt.name,
+        "source_human_workspace_receipt_copied": True,
         "files_sha256": {
             name: hashlib.sha256(file.read_bytes()).hexdigest()
             for name, file in sorted(generated.items())
@@ -723,7 +750,10 @@ def test_runner_preflight_binds_all_wrappers_to_one_licensed_assembly(tmp_path):
     assert len(out["wrapper_sha256"]) == 4
     assert out["assembly_sha256"]
     assert out["analysis_input_receipt_sha256"]
-    assert out["source_human_workspace_receipt_sha256"] == "a" * 64
+    assert len(out["source_human_workspace_receipt_sha256"]) == 64
+    assert out["source_human_workspace_receipt_path"].name == (
+        "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json"
+    )
 
 
 def test_runner_preflight_rejects_wrapper_from_different_assembly(tmp_path):
@@ -736,7 +766,7 @@ def test_runner_preflight_rejects_wrapper_from_different_assembly(tmp_path):
     prior["stan_data"]["X"][0][0] = 1 - prior["stan_data"]["X"][0][0]
     prior_path.write_text(json.dumps(prior), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="does not match deterministic rebuild"):
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
         runner._validate_input_bundle(input_dir)
 
 
