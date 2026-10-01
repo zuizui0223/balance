@@ -322,6 +322,13 @@ def test_v4_fit_execution_contract_is_linked_across_active_surfaces():
     assert handoff["post_handoff_analysis"]["fit_runner"] == (
         "scripts/run_plant_v4_cmdstan.py"
     )
+    provenance_target = "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_PROVENANCE_V1.json"
+    fit_contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    assert fit_contract["analysis_input_provenance_contract"] == provenance_target
+    assert handoff["post_handoff_analysis"]["analysis_input_provenance_contract"] == (
+        provenance_target
+    )
+    assert (ROOT / provenance_target).exists()
 
 
 def test_runner_fit_specs_match_frozen_contract():
