@@ -56,9 +56,13 @@ Every successful production build writes:
 BALANCE_PLANT_V4_ANALYSIS_INPUTS_RECEIPT_V1.json
 ```
 
+The bundle copies the canonical source receipt itself as:
+
+`BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_RECEIPT_V1.json`.
+
 The receipt binds:
 
-- the SHA256 of the source composed-human-workspace receipt;
+- the copied source composed-human-workspace receipt name and SHA256;
 - licensed assembly SHA256;
 - assembly readout SHA256;
 - primary Stan wrapper SHA256;
@@ -84,6 +88,10 @@ human return
 -> analysis-input bundle receipt
 -> CmdStan fit execution receipt
 ```
+
+CmdStan preflight also requires the copied human-workspace receipt to exist inside the
+analysis-input directory, verifies its SHA256 against the analysis-input receipt, and
+rechecks that it is assembly-ready with no primary human gate open.
 
 Semantic revalidation never substitutes for receipt hash verification.
 
