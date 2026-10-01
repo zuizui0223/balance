@@ -225,3 +225,70 @@ def test_v4_composed_workspace_receipt_rejects_file_set_drift(tmp_path):
 
     with pytest.raises(ValueError, match="file set disagrees"):
         cli._validate_composed_input_workspace(workspace)
+
+
+
+def test_analysis_builder_copies_source_receipt_and_hash_binds_outputs(tmp_path, monkeypatch):
+    workspace = tmp_path / "composed"
+    human_receipt_path = _write_dummy_composed_workspace(workspace)
+    out_dir = tmp_path / "analysis_inputs"
+
+    monkeypatch.setattr(
+        cli,
+        "current_readiness",
+        lambda input_dir=None: {
+            "primary_model_assembly_ready": True,
+            "open_gate_names": [],
+        },
+    )
+    monkeypatch.setattr(cli, "load_double_coding", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_double_code_sample", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_plant_predictor_receipts", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_source_packet", lambda path: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_double_coding", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_cross_universe_dependence", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_frozen_source_packet", lambda *args, **kwargs: [])
+
+    assembly = [{
+        field: ("row-1" if field == "analysis_row_id" else "synthetic")
+        for field in cli.ASSEMBLY_FIELDS
+    }]
+    monkeypatch.setattr(cli, "build_v4_licensed_assembly", lambda **kwargs: assembly)
+    pipeline = {
+        "assembly_readout": {"ready_for_primary_fit": True},
+        "main_stan_input": {"stan_data": {"N": 1}, "metadata": {"kind": "main"}},
+        "prior_sensitivity_stan_input": {
+            "stan_data": {"N": 1},
+            "metadata": {"kind": "prior"},
+        },
+        "temporal_generality_stan_input": None,
+        "temporal_generality_prior_sensitivity_stan_input": None,
+        "temporal_generality_status": "NOT_READY",
+        "temporal_generality_blockers": ["shared_module_timing_common_support"],
+    }
+    monkeypatch.setattr(cli, "build_v4_analysis_inputs", lambda rows: pipeline)
+
+    result = cli.build_outputs(out_dir, input_dir=workspace)
+    copied = Path(result["source_human_workspace_receipt"])
+    assert copied.name == cli.COMPOSED_WORKSPACE_RECEIPT
+    assert copied.read_bytes() == human_receipt_path.read_bytes()
+
+    receipt_path = Path(result["analysis_inputs_receipt"])
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["source_human_workspace_receipt"] == cli.COMPOSED_WORKSPACE_RECEIPT
+    assert receipt["source_human_workspace_receipt_copied"] is True
+    assert receipt["source_human_workspace_receipt_sha256"] == hashlib.sha256(
+        copied.read_bytes()
+    ).hexdigest()
+    assert receipt["primary_fit_ready"] is True
+    assert receipt["temporal_generality_status"] == "NOT_READY"
+
+    for basename, expected_sha in receipt["files_sha256"].items():
+        path = out_dir / basename
+        assert path.is_file()
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == expected_sha
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        cli.build_outputs(out_dir, input_dir=workspace)
