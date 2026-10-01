@@ -188,3 +188,81 @@ def test_analysis_builder_rejects_unreceipted_workspace(tmp_path):
     workspace.mkdir()
     with pytest.raises(ValueError, match="human workspace receipt is missing"):
         cli._validated_human_workspace_receipt(workspace)
+
+
+
+def test_analysis_builder_writes_atomic_receipt_bound_output_workspace(tmp_path, monkeypatch):
+    workspace = tmp_path / "composed"
+    human_receipt_path = _write_minimal_composed_workspace(workspace)
+    out_dir = tmp_path / "analysis_inputs"
+
+    monkeypatch.setattr(
+        cli,
+        "current_readiness",
+        lambda input_dir=None: {
+            "primary_model_assembly_ready": True,
+            "open_gate_names": [],
+        },
+    )
+    monkeypatch.setattr(cli, "load_double_coding", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_double_code_sample", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_plant_predictor_receipts", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_source_packet", lambda path: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_double_coding", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_cross_universe_dependence", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_frozen_source_packet", lambda *args, **kwargs: [])
+
+    assembly = [{
+        field: (
+            "row-1" if field == "analysis_row_id"
+            else "synthetic"
+        )
+        for field in cli.ASSEMBLY_FIELDS
+    }]
+    monkeypatch.setattr(
+        cli,
+        "build_v4_licensed_assembly",
+        lambda **kwargs: assembly,
+    )
+    pipeline = {
+        "assembly_readout": {"ready_for_primary_fit": True},
+        "main_stan_input": {"stan_data": {"N": 1}, "metadata": {"kind": "main"}},
+        "prior_sensitivity_stan_input": {
+            "stan_data": {"N": 1},
+            "metadata": {"kind": "prior"},
+        },
+        "temporal_generality_stan_input": None,
+        "temporal_generality_prior_sensitivity_stan_input": None,
+        "temporal_generality_status": "NOT_READY",
+        "temporal_generality_blockers": ["shared_module_timing_common_support"],
+    }
+    monkeypatch.setattr(cli, "build_v4_analysis_inputs", lambda rows: pipeline)
+
+    result = cli.build_outputs(out_dir, input_dir=workspace)
+    assert Path(result["analysis_input_receipt"]).is_file()
+    assert Path(result["source_human_workspace_receipt"]).read_bytes() == (
+        human_receipt_path.read_bytes()
+    )
+
+    receipt = json.loads(
+        Path(result["analysis_input_receipt"]).read_text(encoding="utf-8")
+    )
+    assert receipt["active_fit_jobs"] == [
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+    ]
+    assert receipt["temporal_generality_status"] == "NOT_READY"
+    assert receipt["source_human_workspace_receipt_sha256"] == hashlib.sha256(
+        human_receipt_path.read_bytes()
+    ).hexdigest()
+    for key, basename in receipt["outputs"].items():
+        path = out_dir / basename
+        assert path.is_file()
+        assert receipt["output_sha256"][key] == hashlib.sha256(
+            path.read_bytes()
+        ).hexdigest()
+
+    with pytest.raises(ValueError, match="output directory already exists"):
+        cli.build_outputs(out_dir, input_dir=workspace)
