@@ -1,0 +1,113 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_EXECUTION_SEQUENCE_V1",
+  "status": "FROZEN_PRE_OUTCOME_END_TO_END_OPERATIONAL_SEQUENCE",
+  "principle": "each stage consumes only receipt-validated immutable workspaces from prior stages; no downstream stage may synthesize or repair missing human judgments",
+  "starting_state": {
+    "human_handoff_execution_receipt": "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json",
+    "architecture_packets_generated": true,
+    "predictor_review_packet_generated": true,
+    "human_returns_required": true
+  },
+  "stages": [
+    {
+      "id": "S1_HUMAN_RETURN_INTAKE",
+      "cli": "scripts/audit_plant_human_returns.py",
+      "command": "python scripts/audit_plant_human_returns.py --return-dir <RETURN_DIR> --out-dir <NEW_INTAKE_WORKSPACE>",
+      "inputs": "one or more complete independent return stages: PRIMARY architecture, EXTERNAL U1 architecture, PREDICTOR review",
+      "output_contract": "data/BALANCE_PLANT_HUMAN_RETURN_INTAKE_CONTRACT_V1.json",
+      "workspace_policy": "new immutable output directory for each intake state",
+      "primary_branch": {
+        "pending": "AWAIT_PRIMARY_ARCHITECTURE_RETURNS",
+        "reliability_fail": "CODEBOOK_REPAIR_AND_INDEPENDENT_RECODE_SAME_FROZEN_GROUPS",
+        "reliability_pass": "SOURCE_ADJUDICATION"
+      },
+      "predictor_branch": {
+        "pending": "AWAIT_PREDICTOR_ADJUDICATION_RETURNS",
+        "incomplete_or_rejected": "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS",
+        "complete": "PREDICTOR_STAGE_COMPLETE"
+      },
+      "external_u1_blocks_primary": false
+    },
+    {
+      "id": "S2_PRIMARY_ARCHITECTURE_ADJUDICATION_PACKET",
+      "prerequisite": "PRIMARY U2+U6 reliability pass from S1",
+      "cli": "scripts/build_plant_architecture_adjudication_packet.py",
+      "command": "python scripts/build_plant_architecture_adjudication_packet.py --scope PRIMARY --intake-dir <PRIMARY_INTAKE_WORKSPACE> --out-dir <NEW_PRIMARY_ADJUDICATION_PACKET_DIR>",
+      "human_action": "source-review disagreements only; coder consensus cannot be overridden"
+    },
+    {
+      "id": "S3_PRIMARY_ARCHITECTURE_ADJUDICATION_RETURN",
+      "prerequisite": "completed human adjudication return from S2 packet",
+      "cli": "scripts/validate_plant_architecture_adjudication.py",
+      "command": "python scripts/validate_plant_architecture_adjudication.py --scope PRIMARY --intake-dir <PRIMARY_INTAKE_WORKSPACE> --return-dir <PRIMARY_ADJUDICATION_RETURN_DIR> --out-dir <NEW_PRIMARY_ADJUDICATION_WORKSPACE>",
+      "output": "validated immutable PRIMARY architecture-adjudication workspace"
+    },
+    {
+      "id": "S4_OPTIONAL_U1_EXTERNAL_ADJUDICATION",
+      "required_for_primary_v4": false,
+      "prerequisite": "U1 reliability pass when external validation is available",
+      "packet_command": "python scripts/build_plant_architecture_adjudication_packet.py --scope EXTERNAL --intake-dir <U1_INTAKE_WORKSPACE> --out-dir <NEW_U1_ADJUDICATION_PACKET_DIR>",
+      "validation_command": "python scripts/validate_plant_architecture_adjudication.py --scope EXTERNAL --intake-dir <U1_INTAKE_WORKSPACE> --return-dir <U1_ADJUDICATION_RETURN_DIR> --out-dir <NEW_U1_ADJUDICATION_WORKSPACE>"
+    },
+    {
+      "id": "S5_COMPOSE_V4_HUMAN_INPUT_WORKSPACE",
+      "prerequisites": [
+        "validated PRIMARY architecture-adjudication workspace from S3",
+        "intake workspace with predictor_return_status=COMPLETE and predictor_primary_complete=true"
+      ],
+      "optional_input": "validated EXTERNAL U1 adjudication workspace",
+      "cli": "scripts/compose_plant_v4_human_workspace.py",
+      "command": "python scripts/compose_plant_v4_human_workspace.py --primary-adjudication-dir <PRIMARY_ADJUDICATION_WORKSPACE> --predictor-intake-dir <PREDICTOR_INTAKE_WORKSPACE> --out-dir <NEW_COMPOSED_V4_HUMAN_WORKSPACE>",
+      "command_with_external": "python scripts/compose_plant_v4_human_workspace.py --primary-adjudication-dir <PRIMARY_ADJUDICATION_WORKSPACE> --predictor-intake-dir <PREDICTOR_INTAKE_WORKSPACE> --external-adjudication-dir <U1_ADJUDICATION_WORKSPACE> --out-dir <NEW_COMPOSED_V4_HUMAN_WORKSPACE>",
+      "gate": "rerun canonical readiness; require zero primary human open gates and primary_model_assembly_ready=true"
+    },
+    {
+      "id": "S6_BUILD_V4_ANALYSIS_INPUT_BUNDLE",
+      "prerequisite": "validated composed V4 human-input workspace from S5",
+      "cli": "scripts/build_plant_v4_analysis_inputs.py",
+      "command": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <COMPOSED_V4_HUMAN_WORKSPACE> --out-dir <NEW_V4_ANALYSIS_INPUT_WORKSPACE> --build",
+      "output_contract": "data/BALANCE_PLANT_V4_ANALYSIS_INPUT_BUNDLE_CONTRACT_V1.json",
+      "gate": "licensed U2/U6 assembly plus V4 estimability; analysis bundle must copy and hash-bind the source human-workspace receipt"
+    },
+    {
+      "id": "S7_RUN_FROZEN_CMDSTAN",
+      "prerequisite": "receipt-bound V4 analysis-input bundle from S6",
+      "cli": "scripts/run_plant_v4_cmdstan.py",
+      "command": "python scripts/run_plant_v4_cmdstan.py --cmdstan-dir <CMDSTAN_2_40_0_DIR> --input-dir <V4_ANALYSIS_INPUT_WORKSPACE> --out-dir <NEW_V4_FIT_WORKSPACE>",
+      "execution_contract": "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json",
+      "required_cmdstan_version": "2.40.0",
+      "fail_closed_on_diagnostics": true,
+      "automatic_retuning_allowed": false
+    },
+    {
+      "id": "S8_POSTFIT_AND_REACTIVATION_REVIEW",
+      "prerequisite": "S7 execution_status=COMPLETE",
+      "automatic_outputs": [
+        "primary post-fit probability-contrast summary",
+        "temporal generality post-fit summary when the frozen generality gate is active"
+      ],
+      "estimand_contract": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json",
+      "decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
+      "reactivation_gate": "data/BALANCE_PLANT_V4_REACTIVATION_GATE_V1.json",
+      "publication_status_change_automatic": false,
+      "rule": "fit/postfit evidence may establish evidence eligibility only; publication reactivation still requires explicit human review"
+    }
+  ],
+  "stage_independence": {
+    "predictor_review_may_finish_before_architecture_returns": true,
+    "U1_external_may_finish_later_than_primary": true,
+    "same_intake_workspace_may_contain_multiple_complete_stages": true,
+    "partial_stage_never_allowed": true
+  },
+  "prohibitions": [
+    "do not adjudicate PRIMARY architecture before U2 and U6 reliability pass",
+    "do not replace low-reliability groups; recode the same frozen groups after versioned codebook repair",
+    "do not edit rejected predictor receipts into acceptance without a new versioned evidence decision",
+    "do not compose V4 human inputs from unreceipted files",
+    "do not build V4 analysis inputs from mutable files outside a validated composed workspace",
+    "do not run CmdStan on wrappers not bound to one licensed assembly and copied human-workspace receipt",
+    "do not overwrite immutable intake, adjudication, composition, analysis-input, or fit workspaces",
+    "do not automatically retune CmdStan or reactivate publication after seeing fitted results"
+  ],
+  "claim_ceiling": "operational_execution_order_only_no_human_judgment_or_biological_result"
+}

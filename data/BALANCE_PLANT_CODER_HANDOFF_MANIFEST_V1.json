@@ -216,5 +216,12 @@
     "validation_rule": "copy only receipt-declared validated files, preserve byte identity, rerun canonical V4 readiness, and require zero primary human open gates before atomic rename",
     "downstream_command": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <workspace> --build",
     "external_validation_blocks_primary": false
+  },
+  "end_to_end_execution": {
+    "contract": "data/BALANCE_PLANT_V4_EXECUTION_SEQUENCE_V1.json",
+    "runbook": "docs/BALANCE_PLANT_V4_EXECUTION_SEQUENCE_V1.md",
+    "starting_state": "PACKETS_GENERATED_AWAITING_INDEPENDENT_HUMAN_RETURNS",
+    "final_machine_stage": "completed receipt-bound CmdStan fit and registered post-fit summaries",
+    "automatic_publication_reactivation": false
   }
 }
