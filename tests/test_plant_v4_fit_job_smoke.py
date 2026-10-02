@@ -34,6 +34,7 @@ def test_fit_job_smoke_is_four_chain_short_engine_test():
         "output_sig_figs": 12,
         "refresh": 0,
     }
+    assert module.SMOKE_CONTRACT["required_cmdstan_version"] == "2.40.0"
     diagnostics = module.SMOKE_DIAGNOSTICS
     assert diagnostics["automatic_retuning_allowed"] is False
     assert diagnostics["min_ebfmi"] == 0.0
