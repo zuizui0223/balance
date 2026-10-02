@@ -39,7 +39,7 @@
     "architecture class difference without predictor-outcome independence"
   ],
   "standalone_reactivation_eligible": false,
-  "reason": "independent coding, adjudication, common-support, model estimability, fitted effects, and cross-universe replication are not yet available",
+  "reason": "independent coding/adjudication and primary fitting remain pending; additionally, the current frozen V4 predictor surface is an upper bound under filter-only receipt adjudication and already fails the strict common-support gate, so criterion 4 cannot become eligible without a new prospectively frozen evidence expansion",
   "claim_ceiling": "prospective_publication_gate_only_no_biological_result",
   "posterior_decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
   "posterior_decision_evaluator": "balance_domain.plant_v4_decision.temporal_generality_decision",
@@ -49,5 +49,26 @@
   "fit_diagnostic_requirement": "all registered PRIMARY / sensitivity fits must have PASS diagnostics before posterior decision inputs are admissible",
   "reactivation_evidence_bridge": "balance_domain.plant_reactivation.evaluate_v4_reactivation_evidence",
   "reactivation_evidence_cli": "scripts/evaluate_plant_v4_reactivation.py",
-  "evidence_bridge_rule": "derive required_conditions only from receipt-validated immutable V4 input/fit workspaces; never update publication status automatically"
+  "evidence_bridge_rule": "derive required_conditions only from receipt-validated immutable V4 input/fit workspaces; never update publication status automatically",
+  "current_frozen_v4_support_ceiling": {
+    "predictor_adjudication_policy": "FILTER_ONLY_ACCEPT_OR_REJECT_FROZEN_VALUES",
+    "source_screen_is_maximal_predictor_support": true,
+    "shared_module_strata": [
+      "SINGLE"
+    ],
+    "maximal_common_support_counts": {
+      "U2": {
+        "SINGLE_SIMULTANEOUS": 1,
+        "SINGLE_ORDERED_OR_ALTERNATING": 2
+      },
+      "U6": {
+        "SINGLE_SIMULTANEOUS": 18,
+        "SINGLE_ORDERED_OR_ALTERNATING": 3
+      }
+    },
+    "strict_temporal_generality_common_support_reachable_without_new_evidence": false,
+    "consequence": "CURRENT_V4_CRITERION_4_CANNOT_REACTIVATE_FROM_HUMAN_ADJUDICATION_ALONE",
+    "required_if_generality_is_pursued": "NEW_PROSPECTIVELY_FROZEN_PREDICTOR_UNIVERSE_EXPANSION_BEFORE_OUTCOME_INSPECTION",
+    "prohibited_response": "DO_NOT_LOWER_COMMON_SUPPORT_THRESHOLD_POST_HOC"
+  }
 }
