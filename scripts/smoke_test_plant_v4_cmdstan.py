@@ -18,7 +18,10 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import run_plant_v4_cmdstan as runner  # noqa: E402
-from balance_domain.plant_v4_cmdstan import cmdstan_sample_argv  # noqa: E402
+from balance_domain.plant_v4_cmdstan import (  # noqa: E402
+    cmdstan_sample_argv,
+    read_cmdstan_chain,
+)
 
 
 PRIMARY_MODEL = ROOT / "comparative" / "models" / "BALANCE_PLANT_V4_MULTINOMIAL.stan"
@@ -139,6 +142,20 @@ def _run_model(
     if gamma_present is not require_gamma:
         raise ValueError(f"{name} gamma parameter presence disagrees with model contract")
 
+    # Route the real CmdStan 2.40.0 CSV through the same parser used by the
+    # production runner. This catches engine/header/comment drift that a raw
+    # header-presence check cannot detect.
+    parsed = read_cmdstan_chain(output_path, require_gamma=require_gamma)
+    if parsed["n_draws"] != SMOKE_SAMPLING["num_samples"]:
+        raise ValueError(
+            f"{name} production parser recovered {parsed['n_draws']} draws; "
+            f"expected {SMOKE_SAMPLING['num_samples']}"
+        )
+    if parsed["stan_version"] != "2.40.0":
+        raise ValueError(
+            f"{name} production parser version drifted: {parsed['stan_version']!r}"
+        )
+
     return {
         "model": str(model.relative_to(ROOT)),
         "executable": str(executable),
@@ -146,6 +163,13 @@ def _run_model(
         "output": str(output_path),
         "n_columns": len(header),
         "gamma_present": gamma_present,
+        "production_parser": {
+            "n_draws": parsed["n_draws"],
+            "stan_version": parsed["stan_version"],
+            "divergences": parsed["divergences"],
+            "max_treedepth_observed": parsed["max_treedepth_observed"],
+            "ebfmi": parsed["ebfmi"],
+        },
     }
 
 
