@@ -251,6 +251,21 @@ def build_plant_v4_readiness(
             "temporal_common_support_module_strata": preoutcome_generality[
                 "temporal_common_support_module_strata"
             ],
+            "frozen_source_screen_is_maximal_predictor_support": (
+                preoutcome_generality[
+                    "frozen_source_screen_is_maximal_predictor_support"
+                ]
+            ),
+            "temporal_common_support_recoverable_without_prospective_expansion": (
+                preoutcome_generality[
+                    "temporal_common_support_recoverable_without_prospective_expansion"
+                ]
+            ),
+            "prospective_predictor_universe_expansion_required_for_strict_generality": (
+                preoutcome_generality[
+                    "prospective_predictor_universe_expansion_required_for_strict_generality"
+                ]
+            ),
         },
         "primary_model_assembly_ready": primary_preassembly_ready,
         "v4_estimability_ready_to_evaluate": primary_preassembly_ready,
