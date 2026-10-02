@@ -4,6 +4,7 @@ import pytest
 
 from balance_domain.metric_depth import (
     diagonal_metric_boundary_depth,
+    legacy_metric_boundary_label,
     metric_middle_world_depth,
 )
 
@@ -58,7 +59,7 @@ def test_unrepresentable_positive_metric_depth_fails_closed():
 
 
 def test_middle_world_depth_uses_nearest_metric_boundary():
-    sch, bita, depth, nearest = metric_middle_world_depth(
+    sch, architecture, depth, nearest = metric_middle_world_depth(
         conflict_margin=2.0,
         conflict_gradient=(1.0, 0.0),
         architecture_margin=3.0,
@@ -66,6 +67,21 @@ def test_middle_world_depth_uses_nearest_metric_boundary():
         metric_diag=(1.0, 4.0),
     )
     assert math.isclose(sch.depth, 2.0, rel_tol=1e-12)
-    assert math.isclose(bita.depth, 6.0, rel_tol=1e-12)
+    assert math.isclose(architecture.depth, 6.0, rel_tol=1e-12)
     assert math.isclose(depth, 2.0, rel_tol=1e-12)
     assert nearest == "SCH_BOUNDARY"
+
+
+
+def test_metric_depth_uses_canonical_architecture_boundary_label_with_legacy_alias():
+    _sch, architecture, depth, nearest = metric_middle_world_depth(
+        conflict_margin=5.0,
+        conflict_gradient=(1.0,),
+        architecture_margin=1.0,
+        architecture_gradient=(1.0,),
+        metric_diag=(1.0,),
+    )
+    assert architecture.depth == pytest.approx(1.0)
+    assert depth == pytest.approx(1.0)
+    assert nearest == "ARCHITECTURE_BOUNDARY"
+    assert legacy_metric_boundary_label(nearest) == "BITA_BOUNDARY"

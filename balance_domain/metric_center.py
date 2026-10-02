@@ -26,15 +26,33 @@ def _finite_exact_result(value: Fraction, name: str) -> float:
     return out
 
 
-def metric_middle_coordinate(sch_metric_depth: float, bita_metric_depth: float) -> float:
+def metric_middle_coordinate(
+    sch_metric_depth: float,
+    architecture_metric_depth: float | None = None,
+    *,
+    bita_metric_depth: float | None = None,
+) -> float:
+    """Return the metric middle coordinate with a legacy BITA keyword alias."""
     sch_metric_depth = _finite_numeric(sch_metric_depth, "sch_metric_depth")
-    bita_metric_depth = _finite_numeric(bita_metric_depth, "bita_metric_depth")
-    if sch_metric_depth <= 0 or bita_metric_depth <= 0:
+    if architecture_metric_depth is None:
+        if bita_metric_depth is None:
+            raise TypeError("architecture_metric_depth is required")
+        architecture_metric_depth = bita_metric_depth
+    elif bita_metric_depth is not None:
+        raise ValueError(
+            "provide architecture_metric_depth or legacy bita_metric_depth, not both"
+        )
+
+    architecture_metric_depth = _finite_numeric(
+        architecture_metric_depth,
+        "architecture_metric_depth",
+    )
+    if sch_metric_depth <= 0 or architecture_metric_depth <= 0:
         raise ValueError("metric depths must be positive inside BALANCE")
 
     sch_q = Fraction.from_float(sch_metric_depth)
-    bita_q = Fraction.from_float(bita_metric_depth)
-    coordinate_q = sch_q / (sch_q + bita_q)
+    architecture_q = Fraction.from_float(architecture_metric_depth)
+    coordinate_q = sch_q / (sch_q + architecture_q)
     coordinate = _finite_exact_result(coordinate_q, "metric middle coordinate")
     if not 0.0 < coordinate < 1.0:
         raise ValueError(

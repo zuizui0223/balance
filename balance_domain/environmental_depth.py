@@ -8,9 +8,14 @@ from .boundary import _finite_numeric
 @dataclass(frozen=True)
 class EnvironmentalDepth:
     sch_distance: float
-    bita_distance: float
+    architecture_distance: float
     depth: float
     position: float
+
+    @property
+    def bita_distance(self) -> float:
+        """Backward-compatible alias for the SLK-facing architecture distance."""
+        return self.architecture_distance
 
 
 def _distance_to_boundary(margin: float, gradient: Iterable[float]) -> float:
@@ -69,7 +74,7 @@ def environmental_depth(
 
     return EnvironmentalDepth(
         sch_distance=d0,
-        bita_distance=d2,
+        architecture_distance=d2,
         depth=min(d0, d2),
         position=position,
     )

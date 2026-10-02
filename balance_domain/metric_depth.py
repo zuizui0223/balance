@@ -108,11 +108,22 @@ def metric_middle_world_depth(
     metric_diag: Sequence[float],
 ) -> tuple[MetricBoundaryDepth, MetricBoundaryDepth, float, str]:
     sch = diagonal_metric_boundary_depth(conflict_margin, conflict_gradient, metric_diag)
-    bita = diagonal_metric_boundary_depth(architecture_margin, architecture_gradient, metric_diag)
-    if sch.depth < bita.depth:
+    architecture = diagonal_metric_boundary_depth(
+        architecture_margin,
+        architecture_gradient,
+        metric_diag,
+    )
+    if sch.depth < architecture.depth:
         nearest = "SCH_BOUNDARY"
-    elif bita.depth < sch.depth:
-        nearest = "BITA_BOUNDARY"
+    elif architecture.depth < sch.depth:
+        nearest = "ARCHITECTURE_BOUNDARY"
     else:
         nearest = "EQUAL_METRIC_DEPTH"
-    return sch, bita, min(sch.depth, bita.depth), nearest
+    return sch, architecture, min(sch.depth, architecture.depth), nearest
+
+
+def legacy_metric_boundary_label(label: str) -> str:
+    """Return the deprecated BITA-labelled metric-boundary state when needed."""
+    if label == "ARCHITECTURE_BOUNDARY":
+        return "BITA_BOUNDARY"
+    return label
