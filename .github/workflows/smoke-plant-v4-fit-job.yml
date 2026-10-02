@@ -1,0 +1,89 @@
+name: Smoke BALANCE plant V4 production fit-job boundary
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download frozen CmdStan 2.40.0 release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          curl -fL             https://github.com/stan-dev/cmdstan/releases/download/v2.40.0/cmdstan-2.40.0.tar.gz             -o cmdstan-2.40.0.tar.gz
+          tar -xzf cmdstan-2.40.0.tar.gz
+          test -d "$RUNNER_TEMP/cmdstan-2.40.0"
+
+      - name: Run real production fit-job smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/smoke_test_plant_v4_fit_job.py             --cmdstan-dir "$RUNNER_TEMP/cmdstan-2.40.0"             --work-dir "$RUNNER_TEMP/v4-fit-job-smoke"
+
+      - name: Verify smoke receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["RUNNER_TEMP"]) / "v4-fit-job-smoke"
+          receipt = json.loads((root / "FIT_JOB_SMOKE_RECEIPT.json").read_text())
+          assert receipt["analysis"] == "balance_plant_v4_cmdstan_fit_job_smoke"
+          assert receipt["cmdstan_version"] == "2.40.0"
+          assert receipt["sampling"]["chains"] == 4
+          assert receipt["sampling"]["num_samples"] == 25
+          assert receipt["primary"]["n_chains"] == 4
+          assert receipt["generality"]["n_chains"] == 4
+          assert receipt["primary"]["n_draws_total"] == 100
+          assert receipt["generality"]["n_draws_total"] == 100
+          assert receipt["primary"]["cmdstan_version"] == "2.40.0"
+          assert receipt["generality"]["cmdstan_version"] == "2.40.0"
+          assert receipt["primary"]["stansummary_sha256"]
+          assert receipt["generality"]["stansummary_sha256"]
+          assert receipt["claim_ceiling"] == (
+              "engine_stansummary_parser_smoke_only_not_production_fit_or_diagnostics"
+          )
+
+          for job in ("PRIMARY_SMOKE", "GENERALITY_SMOKE"):
+              job_dir = root / job
+              assert (job_dir / "FIT_RECEIPT.json").is_file()
+              assert (job_dir / "stansummary.csv").is_file()
+              assert (job_dir / "stansummary.log").is_file()
+              assert len(list(job_dir.glob("chain_*.csv"))) == 4
+          PY
+
+      - name: Collect smoke evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          out=release/generated/plant_v4_fit_job_smoke
+          mkdir -p "$out/PRIMARY_SMOKE" "$out/GENERALITY_SMOKE"
+          cp "$RUNNER_TEMP/v4-fit-job-smoke/FIT_JOB_SMOKE_RECEIPT.json" "$out/"
+          for job in PRIMARY_SMOKE GENERALITY_SMOKE; do
+            cp "$RUNNER_TEMP/v4-fit-job-smoke/$job/FIT_RECEIPT.json" "$out/$job/"
+            cp "$RUNNER_TEMP/v4-fit-job-smoke/$job/stansummary.csv" "$out/$job/"
+            cp "$RUNNER_TEMP/v4-fit-job-smoke/$job/stansummary.log" "$out/$job/"
+            cp "$RUNNER_TEMP/v4-fit-job-smoke/$job"/chain_*.csv "$out/$job/"
+            cp "$RUNNER_TEMP/v4-fit-job-smoke/$job"/chain_*.log "$out/$job/"
+          done
+
+      - name: Upload smoke evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-v4-cmdstan-fit-job-smoke
+          path: release/generated/plant_v4_fit_job_smoke/
+          if-no-files-found: error
