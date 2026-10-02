@@ -139,6 +139,14 @@ def build_preoutcome_generality_audit(
         ):
             common_support_strata.append(module)
 
+    # Predictor adjudication is deliberately filter-only: receipt IDs and
+    # reported predictor values are frozen, and human review can only
+    # ADJUDICATE or REJECT them. The complete source-screened U2-positive/U6
+    # surface is therefore an upper bound on any later licensed V4 predictor
+    # support. Adjudication can preserve or remove cells, never create new
+    # groups or increase a cell count.
+    support_recoverable_without_expansion = bool(common_support_strata)
+
     slope_matrix = []
     full_matrix = []
     for universe_name, rows in by_universe.items():
@@ -167,6 +175,17 @@ def build_preoutcome_generality_audit(
         "shared_module_levels": shared_module_levels,
         "temporal_common_support_module_strata": common_support_strata,
         "temporal_cross_universe_common_support_ready": bool(common_support_strata),
+        "predictor_adjudication_support_policy": (
+            "FILTER_ONLY_ACCEPT_OR_REJECT_FROZEN_VALUES"
+        ),
+        "frozen_source_screen_is_maximal_predictor_support": True,
+        "maximal_temporal_common_support_module_strata": common_support_strata,
+        "temporal_common_support_recoverable_without_prospective_expansion": (
+            support_recoverable_without_expansion
+        ),
+        "prospective_predictor_universe_expansion_required_for_strict_generality": (
+            not support_recoverable_without_expansion
+        ),
         "v4_preoutcome_slope_design_rank": slope_rank,
         "v4_preoutcome_slope_design_column_count": 3,
         "v4_preoutcome_slope_design_full_rank": slope_rank == 3,
@@ -184,7 +203,9 @@ def build_preoutcome_generality_audit(
         "generality_claim_rule": (
             "cross-universe timing generality requires both marginal timing replication "
             "and at least one shared module-opportunity stratum with >=2 independent "
-            "SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING blocks in each U2 and U6"
+            "SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING blocks in each U2 and U6; "
+            "if the frozen source-screen upper bound fails this gate, human adjudication "
+            "cannot repair it and a new prospectively frozen evidence expansion is required"
         ),
         "architecture_outcomes_used": False,
         "claim_ceiling": "preoutcome_generality_design_audit_only",
