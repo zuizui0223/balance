@@ -212,7 +212,11 @@
     "full_universe_stratified_design_columns": 5,
     "full_universe_stratified_design_full_rank": true,
     "strict_temporal_generality_common_support_ready": false,
-    "interpretation": "V4 main predictor design is prospectively identifiable, but the stronger cross-universe timing-generality sensitivity is not prospectively supported under the frozen shared-module >=2-per-level/per-universe rule."
+    "interpretation": "V4 main predictor design is prospectively identifiable and full rank. The stronger cross-universe timing-generality sensitivity is not merely pending: the complete source-screened predictor surface is the maximum attainable under filter-only adjudication and already fails the shared-module >=2-per-level/per-universe rule. Human adjudication can only preserve or reduce support. A strict generality test therefore requires a new prospectively frozen evidence expansion before outcomes are inspected; the threshold must not be relaxed post hoc.",
+    "frozen_source_screen_is_maximal_predictor_support": true,
+    "predictor_adjudication_support_policy": "FILTER_ONLY_ACCEPT_OR_REJECT_FROZEN_VALUES",
+    "strict_temporal_generality_recoverable_without_prospective_expansion": false,
+    "prospective_predictor_universe_expansion_required_for_strict_generality": true
   },
   "directional_hypotheses_registry": "data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json",
   "primary_directional_contrasts": {
