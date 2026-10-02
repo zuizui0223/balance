@@ -49,6 +49,7 @@ SMOKE_DIAGNOSTICS = {
 }
 
 SMOKE_CONTRACT = {
+    "required_cmdstan_version": "2.40.0",
     "sampling": SMOKE_SAMPLING,
     "diagnostics": SMOKE_DIAGNOSTICS,
 }
