@@ -39,6 +39,9 @@ def test_canonical_v4_readiness_report_matches_current_frozen_state():
         "temporal_marginal_replication_ready": True,
         "temporal_common_support_ready": False,
         "temporal_common_support_module_strata": [],
+        "frozen_source_screen_is_maximal_predictor_support": True,
+        "temporal_common_support_recoverable_without_prospective_expansion": False,
+        "prospective_predictor_universe_expansion_required_for_strict_generality": True,
     }
 
     gate = out["standalone_reactivation_gate"]
