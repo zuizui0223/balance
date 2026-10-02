@@ -60,3 +60,25 @@ def test_large_slopes_and_boundaries_do_not_overflow_weighted_center():
     assert result.environmental_center == pytest.approx(1.05e308)
     assert result.fitness_center == pytest.approx(1.05e308)
     assert result.displacement == pytest.approx(0.0, abs=1.0e292)
+
+
+
+def test_metric_middle_coordinate_supports_canonical_and_legacy_keywords():
+    canonical = metric_middle_coordinate(
+        sch_metric_depth=3.0,
+        architecture_metric_depth=7.0,
+    )
+    legacy = metric_middle_coordinate(
+        sch_metric_depth=3.0,
+        bita_metric_depth=7.0,
+    )
+    assert canonical == pytest.approx(legacy)
+
+
+def test_metric_middle_coordinate_rejects_both_architecture_keywords():
+    with pytest.raises(ValueError, match="not both"):
+        metric_middle_coordinate(
+            sch_metric_depth=3.0,
+            architecture_metric_depth=7.0,
+            bita_metric_depth=7.0,
+        )
