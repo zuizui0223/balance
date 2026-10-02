@@ -45,6 +45,33 @@ def load_v4_reactivation_gate(path: Path) -> dict:
 
     if data.get("standalone_reactivation_eligible") is not False:
         raise ValueError("prospective V4 gate cannot pre-declare standalone eligibility")
+
+    ceiling = data.get("current_frozen_v4_support_ceiling")
+    required_ceiling = {
+        "predictor_adjudication_policy": "FILTER_ONLY_ACCEPT_OR_REJECT_FROZEN_VALUES",
+        "source_screen_is_maximal_predictor_support": True,
+        "shared_module_strata": ["SINGLE"],
+        "maximal_common_support_counts": {
+            "U2": {
+                "SINGLE_SIMULTANEOUS": 1,
+                "SINGLE_ORDERED_OR_ALTERNATING": 2,
+            },
+            "U6": {
+                "SINGLE_SIMULTANEOUS": 18,
+                "SINGLE_ORDERED_OR_ALTERNATING": 3,
+            },
+        },
+        "strict_temporal_generality_common_support_reachable_without_new_evidence": False,
+        "consequence": (
+            "CURRENT_V4_CRITERION_4_CANNOT_REACTIVATE_FROM_HUMAN_ADJUDICATION_ALONE"
+        ),
+        "required_if_generality_is_pursued": (
+            "NEW_PROSPECTIVELY_FROZEN_PREDICTOR_UNIVERSE_EXPANSION_BEFORE_OUTCOME_INSPECTION"
+        ),
+        "prohibited_response": "DO_NOT_LOWER_COMMON_SUPPORT_THRESHOLD_POST_HOC",
+    }
+    if ceiling != required_ceiling:
+        raise ValueError("V4 frozen generality support ceiling drifted")
     return data
 
 
