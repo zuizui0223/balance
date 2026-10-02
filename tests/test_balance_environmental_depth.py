@@ -28,7 +28,7 @@ def test_environmental_depth_differs_from_fitness_midpoint_when_slopes_differ():
         conflict_gradient=[1.0],
         reserve_gradient=[-2.0],
     )
-    assert math.isclose(result.sch_distance, result.bita_distance)
+    assert math.isclose(result.sch_distance, result.architecture_distance)
     assert math.isclose(result.position, 0.5)
 
 
@@ -46,7 +46,7 @@ def test_separate_margin_rescalings_leave_environmental_depth_invariant():
         reserve_gradient=[-14.0, 7.0],
     )
     assert math.isclose(base.sch_distance, scaled.sch_distance, rel_tol=1e-12)
-    assert math.isclose(base.bita_distance, scaled.bita_distance, rel_tol=1e-12)
+    assert math.isclose(base.architecture_distance, scaled.architecture_distance, rel_tol=1e-12)
     assert math.isclose(base.position, scaled.position, rel_tol=1e-12)
 
 
@@ -58,7 +58,7 @@ def test_large_finite_gradients_do_not_collapse_depth_to_zero():
         reserve_gradient=[-1.7e308, 1.7e308],
     )
     assert result.sch_distance == pytest.approx(1.0 / math.sqrt(2.0))
-    assert result.bita_distance == pytest.approx(1.0 / math.sqrt(2.0))
+    assert result.architecture_distance == pytest.approx(1.0 / math.sqrt(2.0))
     assert result.depth == pytest.approx(1.0 / math.sqrt(2.0))
     assert result.position == pytest.approx(0.5)
 
@@ -71,7 +71,7 @@ def test_large_finite_depths_keep_midpoint_coordinate():
         reserve_gradient=[1.0],
     )
     assert result.sch_distance == 1.0e308
-    assert result.bita_distance == 1.0e308
+    assert result.architecture_distance == 1.0e308
     assert result.position == pytest.approx(0.5)
 
 
@@ -94,3 +94,14 @@ def test_invalid_margins_and_zero_gradients_fail_closed():
     for kwargs in bad_cases:
         with pytest.raises(ValueError):
             environmental_depth(**kwargs)
+
+
+
+def test_environmental_depth_legacy_bita_alias_matches_canonical_field():
+    result = environmental_depth(
+        conflict_margin=2.0,
+        reserve_margin=3.0,
+        conflict_gradient=[1.0],
+        reserve_gradient=[1.0],
+    )
+    assert result.bita_distance == result.architecture_distance
