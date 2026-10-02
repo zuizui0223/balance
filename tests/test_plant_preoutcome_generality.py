@@ -80,6 +80,21 @@ def test_cross_universe_timing_marginal_replication_lacks_common_module_support(
     assert out["shared_module_levels"] == ["SINGLE"]
     assert out["temporal_common_support_module_strata"] == []
     assert out["temporal_cross_universe_common_support_ready"] is False
+    assert out["predictor_adjudication_support_policy"] == (
+        "FILTER_ONLY_ACCEPT_OR_REJECT_FROZEN_VALUES"
+    )
+    assert out["frozen_source_screen_is_maximal_predictor_support"] is True
+    assert out["maximal_temporal_common_support_module_strata"] == []
+    assert (
+        out["temporal_common_support_recoverable_without_prospective_expansion"]
+        is False
+    )
+    assert (
+        out[
+            "prospective_predictor_universe_expansion_required_for_strict_generality"
+        ]
+        is True
+    )
 
 
 
