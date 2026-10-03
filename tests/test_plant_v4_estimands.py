@@ -271,3 +271,23 @@ def test_postfit_draws_reject_nonfinite_parameters():
         assert "finite number" in str(exc)
     else:
         raise AssertionError("non-finite posterior parameters must fail closed")
+
+
+
+def test_zero_contrast_draws_are_inconclusive_not_contradicted():
+    zero_draws = [_draw()] * 20
+    out = summarize_v4_primary_postfit(
+        _rows(),
+        primary_draws=zero_draws,
+        sensitivity_draws=zero_draws,
+    )
+    timing = out["H_T_ORDERED_NONSTRUCTURAL"]
+    module = out["H_M_MODULAR_STRUCTURAL"]
+
+    assert timing["primary_prior"]["p_positive"] == 0.0
+    assert timing["primary_prior"]["p_negative"] == 0.0
+    assert timing["directional_label"] == "INCONCLUSIVE"
+
+    assert module["sensitivity_prior"]["p_positive"] == 0.0
+    assert module["sensitivity_prior"]["p_negative"] == 0.0
+    assert module["directional_label"] == "INCONCLUSIVE"
