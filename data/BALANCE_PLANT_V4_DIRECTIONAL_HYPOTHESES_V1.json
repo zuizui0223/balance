@@ -66,5 +66,6 @@
     "null or reversed contrasts remain reportable results under the frozen design"
   ],
   "claim_ceiling": "prospective_directional_hypotheses_only_no_observed_effect",
-  "estimand_standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json"
+  "estimand_standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json",
+  "routing_discovery_confirmation_boundary": "data/BALANCE_PLANT_ROUTING_DISCOVERY_CONFIRMATION_BOUNDARY_V1.json"
 }
