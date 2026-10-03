@@ -322,7 +322,7 @@ def test_combine_chains_binds_ids_seed_and_sampling_metadata(tmp_path):
     )
     with pytest.raises(ValueError, match="chain IDs must be unique 1..N"):
         combine_cmdstan_chains(
-            [duplicate, *paths[1:]],
+            [paths[0], duplicate, paths[2], paths[3]],
             require_gamma=False,
             max_depth=15,
             expected_chains=4,
