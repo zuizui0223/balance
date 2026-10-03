@@ -262,6 +262,91 @@ def _write_json(path, obj):
     path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _chain_execution_metadata(chain_id):
+    return {
+        "method": "sample",
+        "algorithm": "hmc",
+        "engine": "nuts",
+        "num_chains": 1,
+        "chain_id": chain_id,
+        "seed": 20260930,
+        "num_samples": 2000,
+        "num_warmup": 1000,
+        "save_warmup": False,
+        "thin": 1,
+        "adapt_delta": 0.99,
+        "max_depth": 15,
+        "metric": "diag_e",
+        "output_sig_figs": 18,
+        "refresh": 100,
+    }
+
+
+def _write_fit_job_evidence(fit_dir, fit):
+    fit["input_wrapper_sha256"] = {}
+    fit["job_receipts"] = {}
+    fit["job_receipt_sha256"] = {}
+
+    for index, job_id in enumerate(fit["active_jobs"], start=1):
+        job_dir = fit_dir / job_id
+        job_dir.mkdir()
+
+        wrapper_sha = f"{index:x}" * 64
+        fit["input_wrapper_sha256"][job_id] = wrapper_sha
+
+        stan_data = job_dir / "stan_data.json"
+        stan_data.write_text(
+            json.dumps({"job": job_id}, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+        chain_hashes = {}
+        for chain_id in range(1, 5):
+            chain = job_dir / f"chain_{chain_id}.csv"
+            chain.write_text(
+                f"synthetic {job_id} chain {chain_id}\n",
+                encoding="utf-8",
+            )
+            chain_hashes[chain.name] = _sha(chain)
+
+        summary = job_dir / "stansummary.csv"
+        summary.write_text(f"synthetic {job_id} summary\n", encoding="utf-8")
+
+        receipt = {
+            "schema_version": "BALANCE_PLANT_V4_FIT_JOB_RECEIPT_V1",
+            "job_id": job_id,
+            "cmdstan_version": "2.40.0",
+            "n_chains": 4,
+            "draws_per_chain": [2000, 2000, 2000, 2000],
+            "n_draws_total": 8000,
+            "chain_ids": [1, 2, 3, 4],
+            "chain_execution_metadata": [
+                _chain_execution_metadata(chain_id)
+                for chain_id in range(1, 5)
+            ],
+            "input_wrapper_sha256": wrapper_sha,
+            "materialized_stan_data_sha256": _sha(stan_data),
+            "chain_csv_sha256": chain_hashes,
+            "stansummary_sha256": _sha(summary),
+            "diagnostics": {
+                "status": "PASS",
+                "checks": {
+                    "divergences": True,
+                    "treedepth": True,
+                    "ebfmi": True,
+                    "rhat": True,
+                    "ess_bulk": True,
+                    "ess_tail": True,
+                },
+                "automatic_retuning_permitted": False,
+            },
+        }
+        receipt_path = job_dir / "FIT_RECEIPT.json"
+        _write_json(receipt_path, receipt)
+        fit["job_receipts"][job_id] = str(receipt_path)
+        fit["job_receipt_sha256"][job_id] = _sha(receipt_path)
+
+
 def _build_evidence_workspaces(tmp_path):
     input_dir = tmp_path / "inputs"
     fit_dir = tmp_path / "fit"
@@ -311,6 +396,7 @@ def _build_evidence_workspaces(tmp_path):
             "temporal_generality": _sha(generality_path),
         },
     }
+    _write_fit_job_evidence(fit_dir, fit)
     _write_json(fit_path, fit)
     return input_dir, fit_dir
 
@@ -333,6 +419,63 @@ def test_receipt_bound_reactivation_cli_rejects_upstream_hash_drift(tmp_path):
     with pytest.raises(ValueError, match="human-workspace receipt SHA256 mismatch"):
         module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
 
+
+
+def test_receipt_bound_reactivation_cli_rejects_fit_job_chain_hash_drift(tmp_path):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    chain = fit_dir / "PRIMARY" / "chain_1.csv"
+    chain.write_bytes(chain.read_bytes() + b"drift\n")
+
+    with pytest.raises(ValueError, match="PRIMARY chain_1.csv SHA256 mismatch"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
+
+
+def test_receipt_bound_reactivation_cli_rejects_fit_job_stansummary_hash_drift(
+    tmp_path,
+):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    summary = fit_dir / "PRIMARY" / "stansummary.csv"
+    summary.write_bytes(summary.read_bytes() + b"drift\n")
+
+    with pytest.raises(ValueError, match="PRIMARY stansummary SHA256 mismatch"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
+
+
+def test_receipt_bound_reactivation_cli_rejects_master_job_diagnostic_drift(
+    tmp_path,
+):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    fit_path = fit_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
+    fit = json.loads(fit_path.read_text(encoding="utf-8"))
+    fit["diagnostic_failures"] = ["PRIMARY"]
+    fit["postfit_decision_allowed"] = False
+    _write_json(fit_path, fit)
+
+    with pytest.raises(ValueError, match="diagnostic failures disagree"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
+
+
+def test_receipt_bound_reactivation_cli_rejects_fit_job_chain_metadata_drift(
+    tmp_path,
+):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+
+    job_receipt_path = fit_dir / "PRIMARY" / "FIT_RECEIPT.json"
+    job = json.loads(job_receipt_path.read_text(encoding="utf-8"))
+    job["chain_execution_metadata"][0]["seed"] = 999
+    _write_json(job_receipt_path, job)
+
+    master_path = fit_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
+    master = json.loads(master_path.read_text(encoding="utf-8"))
+    master["job_receipt_sha256"]["PRIMARY"] = _sha(job_receipt_path)
+    _write_json(master_path, master)
+
+    with pytest.raises(ValueError, match="chain execution metadata drifted"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
 
 
 def test_reactivation_bridge_rejects_generality_job_assembly_mismatch():
