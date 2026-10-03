@@ -254,6 +254,7 @@ def _run_fit_job(
         expected_chains=int(contract["sampling"]["chains"]),
         expected_draws_per_chain=expected_draws_per_chain,
         required_version=contract["required_cmdstan_version"],
+        expected_sampling=contract["sampling"],
     )
     families = (
         ("alpha", "beta", "gamma_u6_ordered")
@@ -280,6 +281,8 @@ def _run_fit_job(
         "input_wrapper_sha256": input_provenance["wrapper_sha256"],
         "materialized_stan_data_sha256": input_provenance["stan_data_sha256"],
         "cmdstan_version": combined["stan_version"],
+        "chain_ids": combined["chain_ids"],
+        "chain_execution_metadata": combined["execution_metadata"],
         "n_chains": combined["n_chains"],
         "draws_per_chain": combined["draws_per_chain"],
         "n_draws_total": combined["n_draws_total"],
