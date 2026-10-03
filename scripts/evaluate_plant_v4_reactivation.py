@@ -119,10 +119,48 @@ def _validate_fit_job_evidence(*, fit_dir: Path, fit_receipt: dict) -> dict:
             * (int(sampling["num_samples"]) // int(sampling["thin"]))
         ):
             raise ValueError(f"{job_id} fit-job total draw count mismatch")
-        if receipt.get("chain_ids") != list(range(1, int(sampling["chains"]) + 1)):
+        expected_chain_ids = list(range(1, int(sampling["chains"]) + 1))
+        if receipt.get("chain_ids") != expected_chain_ids:
             raise ValueError(f"{job_id} fit-job chain IDs mismatch")
+
+        metadata = receipt.get("chain_execution_metadata")
+        if not isinstance(metadata, list) or len(metadata) != int(sampling["chains"]):
+            raise ValueError(f"{job_id} fit-job chain execution metadata is incomplete")
+        for chain_id, item in zip(expected_chain_ids, metadata):
+            if not isinstance(item, dict):
+                raise ValueError(f"{job_id} fit-job chain metadata must be objects")
+            expected = {
+                "method": "sample",
+                "algorithm": "hmc",
+                "engine": "nuts",
+                "num_chains": 1,
+                "chain_id": chain_id,
+                "seed": sampling["seed"],
+                "num_samples": sampling["num_samples"],
+                "num_warmup": sampling["num_warmup"],
+                "save_warmup": sampling["save_warmup"],
+                "thin": sampling["thin"],
+                "adapt_delta": sampling["adapt_delta"],
+                "max_depth": sampling["max_depth"],
+                "metric": sampling["metric"],
+                "output_sig_figs": sampling["output_sig_figs"],
+                "refresh": sampling["refresh"],
+            }
+            if item != expected:
+                raise ValueError(
+                    f"{job_id} fit-job chain execution metadata drifted for "
+                    f"chain {chain_id}"
+                )
+
         if receipt.get("input_wrapper_sha256") != wrapper_hashes[job_id]:
             raise ValueError(f"{job_id} fit-job wrapper SHA256 disagrees with master receipt")
+
+        stan_data_path = job_dir / "stan_data.json"
+        stan_data_sha = _require_hash(
+            label=f"{job_id} materialized Stan data",
+            path=stan_data_path,
+            expected=receipt.get("materialized_stan_data_sha256"),
+        )
 
         chain_hashes = receipt.get("chain_csv_sha256")
         if not isinstance(chain_hashes, dict) or set(chain_hashes) != expected_chain_names:
@@ -151,8 +189,10 @@ def _validate_fit_job_evidence(*, fit_dir: Path, fit_receipt: dict) -> dict:
 
         verified[job_id] = {
             "fit_job_receipt_sha256": receipt_sha,
+            "materialized_stan_data_sha256": stan_data_sha,
             "chain_csv_sha256": observed_chain_hashes,
             "stansummary_sha256": stansummary_sha,
+            "chain_ids": expected_chain_ids,
             "diagnostic_status": diagnostics["status"],
         }
 
