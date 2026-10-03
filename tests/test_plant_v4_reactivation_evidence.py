@@ -315,9 +315,19 @@ def _build_evidence_workspaces(tmp_path):
     return input_dir, fit_dir
 
 
-def test_receipt_bound_reactivation_cli_reconstructs_eligibility(tmp_path):
+def test_receipt_bound_reactivation_cli_reconstructs_eligibility(tmp_path, monkeypatch):
     module = _load_script()
     input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    monkeypatch.setattr(
+        module,
+        "_verify_fit_evidence_chain",
+        lambda **kwargs: {
+            "primary_summary": {"analysis": "synthetic-primary"},
+            "temporal_generality_summary": _generality_summary(),
+            "job_receipt_sha256": {},
+            "chain_csv_sha256": {},
+        },
+    )
     out = module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
     assert out["gate"]["standalone_reactivation_eligible"] is True
     assert out["publication_status_changed"] is False
@@ -356,4 +366,39 @@ def test_receipt_bound_reactivation_cli_rejects_noncanonical_postfit_name(tmp_pa
     _write_json(fit_path, fit)
 
     with pytest.raises(ValueError, match="primary postfit output basename drifted"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
+
+
+
+def test_receipt_bound_reactivation_cli_rejects_extra_postfit_map_entry(tmp_path):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    fit_path = fit_dir / "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
+    fit = json.loads(fit_path.read_text(encoding="utf-8"))
+    fit["postfit_outputs"]["extra"] = str(fit_dir / "extra.json")
+    fit["postfit_output_sha256"]["extra"] = "0" * 64
+    _write_json(fit_path, fit)
+
+    with pytest.raises(ValueError, match="postfit output maps contain stale or missing"):
+        module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)
+
+
+def test_receipt_bound_reactivation_cli_rejects_postfit_not_recomputed_from_chains(
+    tmp_path,
+    monkeypatch,
+):
+    module = _load_script()
+    input_dir, fit_dir = _build_evidence_workspaces(tmp_path)
+    monkeypatch.setattr(
+        module,
+        "_verify_fit_evidence_chain",
+        lambda **kwargs: {
+            "primary_summary": {"analysis": "different-primary"},
+            "temporal_generality_summary": _generality_summary(),
+            "job_receipt_sha256": {},
+            "chain_csv_sha256": {},
+        },
+    )
+
+    with pytest.raises(ValueError, match="primary postfit summary does not match"):
         module.evaluate_from_workspaces(input_dir=input_dir, fit_dir=fit_dir)

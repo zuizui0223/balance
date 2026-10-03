@@ -74,6 +74,19 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "execution_status_required": True,
         "complete_status_requires_postfit_outputs": True,
     }
+    assert data["reactivation_integrity"] == {
+        "reverify_current_contract_sha256": True,
+        "reverify_job_receipt_sha256": True,
+        "reverify_model_source_sha256": True,
+        "reverify_compiled_model_sha256": True,
+        "reverify_input_wrapper_sha256": True,
+        "reverify_materialized_stan_data_sha256": True,
+        "reverify_chain_csv_sha256": True,
+        "reparse_chain_execution_metadata": True,
+        "reverify_stansummary_sha256": True,
+        "recompute_diagnostics_from_chain_and_stansummary": True,
+        "recompute_postfit_summaries_from_chain_draws": True,
+    }
     assert data["chain_integrity"] == {
         "expected_chain_count": 4,
         "expected_postwarmup_draws_per_chain": 2000,
