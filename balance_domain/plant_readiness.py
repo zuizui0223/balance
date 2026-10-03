@@ -16,7 +16,10 @@ from .plant_u2 import (
     load_u2_blank_worksheet,
     load_u2_double_code_sample,
 )
-from .plant_u2_screen import build_u2_conflict_screen_readout
+from .plant_u2_screen import (
+    build_u2_conflict_screen_readout_from_rows,
+    load_u2_conflict_screen,
+)
 from .plant_preoutcome_generality import build_preoutcome_generality_audit
 
 
@@ -40,6 +43,60 @@ def _machine_gate_complete(
             "machine readiness is missing required gates: " + ", ".join(missing)
         )
     return all(machine_complete[gate] for gate in required_gates)
+
+
+def _u2_predictor_gate_status(
+    *,
+    source_positive_groups: list[str],
+    adjudication_rows: list[dict[str, str]],
+    adjudication_complete: bool,
+    receipt_coverage: dict,
+) -> dict:
+    """Bind the predictor gate to the groups that can actually enter final U2 assembly.
+
+    Before final architecture/conflict adjudication closes, the strict source-screen
+    positives are the prospective minimum required set. Once adjudication is complete,
+    the required set switches to the final adjudicated conflict-positive groups.
+    """
+    if adjudication_complete:
+        required = sorted(
+            row["cluster_id"]
+            for row in adjudication_rows
+            if row["adjudication_status"] == "ADJUDICATED"
+            and row["conflict_status"] == "POSITIVE"
+        )
+        basis = "FINAL_ADJUDICATED_CONFLICT_POSITIVE"
+    else:
+        required = sorted(source_positive_groups)
+        basis = "SOURCE_SCREEN_POSITIVE_PENDING_FINAL_ADJUDICATION"
+
+    complete_screened = sorted(
+        receipt_coverage["complete_outcome_independent_clusters"]
+    )
+    complete_adjudicated = sorted(
+        receipt_coverage["complete_adjudicated_clusters"]
+    )
+    required_set = set(required)
+
+    return {
+        "basis": basis,
+        "required_groups": required,
+        "n_required_groups": len(required),
+        "complete_outcome_independent_groups": complete_screened,
+        "complete_adjudicated_groups": complete_adjudicated,
+        "missing_screened_groups": sorted(
+            required_set - set(complete_screened)
+        ),
+        "missing_adjudicated_groups": sorted(
+            required_set - set(complete_adjudicated)
+        ),
+        "source_screen_machine_complete": required_set <= set(complete_screened)
+        if not adjudication_complete
+        else set(source_positive_groups) <= set(complete_screened),
+        "primary_predictor_gate_closed": (
+            required_set <= set(complete_adjudicated)
+        ),
+    }
 
 
 def _load_two_coder_stage(path: Path, blank_loader) -> tuple[str, list[dict[str, str]]]:
@@ -106,7 +163,13 @@ def build_plant_v4_readiness(
         u1_worksheet if u1_coding_stage == "COMPLETE" else None,
     )
 
-    u2 = build_u2_conflict_screen_readout(u2_conflict_path)
+    u2_conflict_rows = load_u2_conflict_screen(u2_conflict_path)
+    u2 = build_u2_conflict_screen_readout_from_rows(u2_conflict_rows)
+    u2_source_positive_groups = sorted(
+        row["dependency_group"]
+        for row in u2_conflict_rows
+        if row["conflict_status"] == "POSITIVE"
+    )
     u2_sample = load_u2_double_code_sample(u2_sample_path)
     u2_coding_stage, u2_worksheet = _load_two_coder_stage(
         u2_worksheet_path,
@@ -155,6 +218,12 @@ def build_plant_v4_readiness(
         row["adjudication_status"] == "ADJUDICATED"
         for row in u2_adjudication
     )
+    u2_predictor_gate = _u2_predictor_gate_status(
+        source_positive_groups=u2_source_positive_groups,
+        adjudication_rows=u2_adjudication,
+        adjudication_complete=u2_adjudication_complete,
+        receipt_coverage=u2_receipt_coverage,
+    )
 
     machine_complete = {
         "u1_full47_source_screen": (
@@ -166,7 +235,7 @@ def build_plant_v4_readiness(
             and u2["n_unresolved_candidate"] == 0
         ),
         "u2_positive_predictor_source_screen": (
-            u2_receipt_coverage["n_complete_outcome_independent_clusters"] == 8
+            u2_predictor_gate["source_screen_machine_complete"]
         ),
         "u6_pass1_conflict_first_freeze": (
             u6_manifest["pass1_contract"]["n_anchor_review_references"] == 157
@@ -186,7 +255,7 @@ def build_plant_v4_readiness(
         "u6_independent_double_coding": not u6_readiness["coding_complete"],
         "u6_post_coding_adjudication": not u6_readiness["adjudication_complete"],
         "u2_predictor_independent_adjudication": (
-            u2_receipt_coverage["n_complete_adjudicated_clusters"] < 8
+            not u2_predictor_gate["primary_predictor_gate_closed"]
         ),
         "u6_predictor_independent_adjudication": (
             u6_readiness[
@@ -229,6 +298,7 @@ def build_plant_v4_readiness(
         "all_machine_preparation_complete": all(machine_complete.values()),
         "primary_human_open_gates": primary_human_open,
         "external_validation_open_gates": external_validation_open,
+        "u2_predictor_gate_status": u2_predictor_gate,
         "open_gate_names": blockers,
         "preoutcome_design_status": {
             "v4_main_predictor_design_viable": preoutcome_generality[
