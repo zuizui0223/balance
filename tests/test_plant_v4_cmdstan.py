@@ -73,6 +73,9 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "diagnostic_failure_receipt_must_record_no_postfit_outputs": True,
         "execution_status_required": True,
         "complete_status_requires_postfit_outputs": True,
+        "reactivation_revalidates_job_receipt_sha256": True,
+        "reactivation_revalidates_chain_csv_sha256": True,
+        "reactivation_revalidates_stansummary_sha256": True,
     }
     assert data["chain_integrity"] == {
         "expected_chain_count": 4,
