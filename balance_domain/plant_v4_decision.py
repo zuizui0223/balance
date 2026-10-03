@@ -14,14 +14,38 @@ def directional_label(
     *,
     p_positive_primary: float,
     p_positive_sensitivity: float,
+    p_negative_primary: float | None = None,
+    p_negative_sensitivity: float | None = None,
 ) -> str:
-    """Classify a frozen directional contrast under both registered priors."""
-    for name, value in {
+    """Classify a frozen directional contrast under both registered priors.
+
+    The registered contradiction rule is P(Delta < 0), not 1 - P(Delta > 0).
+    Optional fallbacks preserve compatibility for callers that predate explicit
+    zero-mass accounting; production post-fit paths pass both probabilities.
+    """
+    if p_negative_primary is None:
+        p_negative_primary = 1.0 - p_positive_primary
+    if p_negative_sensitivity is None:
+        p_negative_sensitivity = 1.0 - p_positive_sensitivity
+
+    probabilities = {
         "p_positive_primary": p_positive_primary,
         "p_positive_sensitivity": p_positive_sensitivity,
-    }.items():
+        "p_negative_primary": p_negative_primary,
+        "p_negative_sensitivity": p_negative_sensitivity,
+    }
+    for name, value in probabilities.items():
         if not 0.0 <= value <= 1.0:
             raise ValueError(f"{name} must be in [0,1]")
+
+    for prior, positive, negative in (
+        ("primary", p_positive_primary, p_negative_primary),
+        ("sensitivity", p_positive_sensitivity, p_negative_sensitivity),
+    ):
+        if positive + negative > 1.0 + 1e-12:
+            raise ValueError(
+                f"{prior} positive/negative direction probabilities are inconsistent"
+            )
 
     if (
         p_positive_primary >= DIRECTION_THRESHOLD
@@ -29,8 +53,8 @@ def directional_label(
     ):
         return "SUPPORTED"
     if (
-        (1.0 - p_positive_primary) >= DIRECTION_THRESHOLD
-        and (1.0 - p_positive_sensitivity) >= DIRECTION_THRESHOLD
+        p_negative_primary >= DIRECTION_THRESHOLD
+        and p_negative_sensitivity >= DIRECTION_THRESHOLD
     ):
         return "CONTRADICTED"
     return "INCONCLUSIVE"
@@ -67,15 +91,23 @@ def temporal_generality_decision(
     u6_p_positive_sensitivity: float,
     p_gamma_below_negative_margin_primary: float,
     p_gamma_below_negative_margin_sensitivity: float,
+    u2_p_negative_primary: float | None = None,
+    u2_p_negative_sensitivity: float | None = None,
+    u6_p_negative_primary: float | None = None,
+    u6_p_negative_sensitivity: float | None = None,
 ) -> dict:
     """Apply the frozen V4 cross-universe timing-generality decision rules."""
     u2 = directional_label(
         p_positive_primary=u2_p_positive_primary,
         p_positive_sensitivity=u2_p_positive_sensitivity,
+        p_negative_primary=u2_p_negative_primary,
+        p_negative_sensitivity=u2_p_negative_sensitivity,
     )
     u6 = directional_label(
         p_positive_primary=u6_p_positive_primary,
         p_positive_sensitivity=u6_p_positive_sensitivity,
+        p_negative_primary=u6_p_negative_primary,
+        p_negative_sensitivity=u6_p_negative_sensitivity,
     )
     interaction = contradictory_interaction_label(
         p_gamma_below_negative_margin_primary=p_gamma_below_negative_margin_primary,
