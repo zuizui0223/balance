@@ -320,9 +320,48 @@ def test_combine_chains_binds_ids_seed_and_sampling_metadata(tmp_path):
         output_sig_figs=sampling["output_sig_figs"],
         refresh=sampling["refresh"],
     )
-    with pytest.raises(ValueError, match="chain IDs must be unique 1..N"):
+    with pytest.raises(ValueError, match="chain IDs must match chain-file order 1..N"):
         combine_cmdstan_chains(
             [paths[0], duplicate, paths[2], paths[3]],
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.40.0",
+            expected_sampling=sampling,
+        )
+
+    swapped_a = tmp_path / "swapped_a.csv"
+    swapped_b = tmp_path / "swapped_b.csv"
+    _chain_csv(
+        swapped_a,
+        gamma=False,
+        chain_id=2,
+        seed=sampling["seed"],
+        num_samples=sampling["num_samples"],
+        num_warmup=sampling["num_warmup"],
+        adapt_delta=sampling["adapt_delta"],
+        max_depth=sampling["max_depth"],
+        metric=sampling["metric"],
+        output_sig_figs=sampling["output_sig_figs"],
+        refresh=sampling["refresh"],
+    )
+    _chain_csv(
+        swapped_b,
+        gamma=False,
+        chain_id=1,
+        seed=sampling["seed"],
+        num_samples=sampling["num_samples"],
+        num_warmup=sampling["num_warmup"],
+        adapt_delta=sampling["adapt_delta"],
+        max_depth=sampling["max_depth"],
+        metric=sampling["metric"],
+        output_sig_figs=sampling["output_sig_figs"],
+        refresh=sampling["refresh"],
+    )
+    with pytest.raises(ValueError, match="chain IDs must match chain-file order 1..N"):
+        combine_cmdstan_chains(
+            [swapped_a, swapped_b, paths[2], paths[3]],
             require_gamma=False,
             max_depth=15,
             expected_chains=4,
