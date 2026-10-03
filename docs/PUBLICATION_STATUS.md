@@ -59,6 +59,8 @@ A standalone BALANCE manuscript can be reconsidered only if at least one of the 
 
 Criterion 4 is deliberately stricter than obtaining a nonzero pooled coefficient. A U2-only module association, a one-universe VARIABLE_CONTEXT effect, or the currently one-block distributed spatial contrast does not reactivate BALANCE as a standalone paper.
 
+Under the **currently frozen V4 predictor-receipt surface, criterion 4 is structurally unreachable**: the only shared module stratum is SINGLE, U2 contains only one complete SINGLE+SIMULTANEOUS block, and final U2 admission can only subset the eight groups with complete outcome-independent predictor receipts. Human architecture coding cannot increase that support. Criterion 4 may be reopened only by a separately versioned predictor-receipt expansion completed before independent architecture outcomes are opened; the common-support threshold itself is not weakened.
+
 Until then:
 
 ```text

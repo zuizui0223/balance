@@ -13,6 +13,7 @@ from .plant_confirmatory import (
 )
 from .plant_u2_screen import load_u2_conflict_screen
 from .plant_model_v4 import _matrix_rank
+from .plant_predictor_adjudication import IMMUTABLE_RECEIPT_FIELDS
 
 
 def _complete_screened(
@@ -63,10 +64,12 @@ def build_preoutcome_generality_audit(
         for row in u2_conflict
         if row["conflict_status"] == "POSITIVE"
     }
+    u2_receipts = load_plant_predictor_receipts(u2_receipt_path)
     u2 = _complete_screened(
-        load_plant_predictor_receipts(u2_receipt_path),
+        u2_receipts,
         u2_positive,
     )
+    u2_all_complete = _complete_screened(u2_receipts)
     u6 = _complete_screened(load_plant_predictor_receipts(u6_receipt_path))
 
     if {row["dependency_group"] for row in u2} != u2_positive:
@@ -127,6 +130,17 @@ def build_preoutcome_generality_audit(
             )
         }
 
+    u2_all_complete_groups = {
+        row["dependency_group"] for row in u2_all_complete
+    }
+    u2_complete_groups_equal_source_positive = (
+        u2_all_complete_groups == u2_positive
+    )
+    if "reported_value" not in IMMUTABLE_RECEIPT_FIELDS:
+        raise ValueError(
+            "U2 predictor receipt reported_value must remain immutable for reachability audit"
+        )
+
     shared_module_levels = sorted(
         levels["U2"]["module_opportunity2"] & levels["U6"]["module_opportunity2"]
     )
@@ -138,6 +152,28 @@ def build_preoutcome_generality_audit(
             for universe in ("U2", "U6")
         ):
             common_support_strata.append(module)
+
+    # With frozen reported predictor values, final U2 model rows can only
+    # retain a subset of groups that already have complete outcome-independent
+    # predictor receipts. Subsetting cannot increase any module x timing cell
+    # count, so a currently failed common-support threshold is unreachable
+    # unless the predictor receipt surface is prospectively versioned/expanded.
+    subset_only_u2_admission = u2_complete_groups_equal_source_positive
+    common_support_reachable_without_receipt_expansion = bool(
+        common_support_strata
+    )
+    reachability_shortfall = {}
+    for module in shared_module_levels:
+        reachability_shortfall[module] = {
+            universe: {
+                timing: max(
+                    0,
+                    2 - joint_module_timing[universe][f"{module}__{timing}"],
+                )
+                for timing in ("SIMULTANEOUS", "ORDERED_OR_ALTERNATING")
+            }
+            for universe in ("U2", "U6")
+        }
 
     slope_matrix = []
     full_matrix = []
@@ -167,6 +203,25 @@ def build_preoutcome_generality_audit(
         "shared_module_levels": shared_module_levels,
         "temporal_common_support_module_strata": common_support_strata,
         "temporal_cross_universe_common_support_ready": bool(common_support_strata),
+        "u2_complete_outcome_independent_predictor_groups": len(
+            u2_all_complete_groups
+        ),
+        "u2_complete_predictor_groups_equal_source_positive": (
+            u2_complete_groups_equal_source_positive
+        ),
+        "final_u2_licensed_rows_are_subset_only_under_frozen_receipts": (
+            subset_only_u2_admission
+        ),
+        "temporal_common_support_reachable_without_predictor_receipt_expansion": (
+            common_support_reachable_without_receipt_expansion
+        ),
+        "temporal_common_support_reachability_shortfall": reachability_shortfall,
+        "prospective_reopening_rule": (
+            "strict temporal generality can be reopened only by a versioned "
+            "outcome-independent predictor-receipt expansion completed before "
+            "independent architecture outcomes are opened; final adjudication alone "
+            "cannot increase frozen module-by-timing support"
+        ),
         "v4_preoutcome_slope_design_rank": slope_rank,
         "v4_preoutcome_slope_design_column_count": 3,
         "v4_preoutcome_slope_design_full_rank": slope_rank == 3,

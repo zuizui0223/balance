@@ -87,8 +87,17 @@ ORDERED_OR_ALTERNATING    2    3
 ```
 
 The U2 simultaneous side therefore fails the frozen >=2-block common-support threshold.
-The temporal contrast is a **prospective marginally replicated candidate**, not yet a
-strict common-support generality test.
+
+More importantly, this is not merely a gate that waits for architecture coding. The only
+U2 groups with complete outcome-independent predictor receipts are exactly the eight
+current source-screen conflict-positive groups. Final V4 admission can only retain a
+subset of those groups because predictor adjudication may accept/reject frozen values but
+cannot fill an `UNRESOLVED` receipt. Subsetting cannot increase the
+`SINGLE + SIMULTANEOUS` count above one.
+
+Therefore the temporal contrast is a **prospective marginally replicated candidate whose
+strict common-support generality route is unreachable under the frozen V4 receipt
+surface**.
 
 ### Spatial exposure
 
@@ -109,10 +118,15 @@ The eventual architecture analysis must distinguish three different claim levels
 **No contrast currently passes the strict common-support gate.**
 
 The temporal `SIMULTANEOUS vs ORDERED_OR_ALTERNATING` contrast is marginally represented
-in both universes, but U2 has only one `SINGLE + SIMULTANEOUS` block. It becomes eligible
-for Level G1 only if final independent adjudication supplies a shared module stratum with
-at least two blocks per timing level in each universe and the fitted directions are
-concordant.
+in both universes, but U2 has only one `SINGLE + SIMULTANEOUS` block. Under the current
+frozen V4 receipt surface, final independent coding/adjudication cannot increase that
+count: final U2 model rows are a subset of the eight groups with already-complete
+outcome-independent predictor receipts.
+
+Accordingly, Level G1 is **structurally unavailable in V4 as currently frozen**. It can be
+reopened only by a prospectively versioned outcome-independent predictor-receipt expansion
+completed before independent architecture outcomes are opened. The >=2 threshold itself is
+not weakened.
 
 ### Level G2 — within-universe supported
 
@@ -167,8 +181,9 @@ Therefore temporal conflict geometry remains the strongest **candidate** for a g
 routing principle, but the current evidence surface does not yet support a strict
 cross-universe generality test.
 
-That remains a hypothesis until common-support, independent architecture coding, and
-universe-specific effect checks all pass.
+That remains a hypothesis. Under frozen V4, the common-support step cannot pass; any future
+attempt to test strict cross-universe generality requires a separately versioned
+pre-outcome predictor expansion before architecture outcomes are opened.
 
 ## V4 main-design rank versus generality support
 
@@ -201,7 +216,7 @@ V4 main predictor design
   full-rank / viable
 
 strict cross-universe temporal generality sensitivity
-  not ready under frozen common-support rule
+  unreachable under frozen V4 predictor-receipt surface
 ```
 
 The first statement concerns identifiability of the registered U2/U6 model matrix. The

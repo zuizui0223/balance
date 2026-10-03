@@ -80,6 +80,30 @@ def test_cross_universe_timing_marginal_replication_lacks_common_module_support(
     assert out["shared_module_levels"] == ["SINGLE"]
     assert out["temporal_common_support_module_strata"] == []
     assert out["temporal_cross_universe_common_support_ready"] is False
+    assert out["u2_complete_outcome_independent_predictor_groups"] == 8
+    assert out["u2_complete_predictor_groups_equal_source_positive"] is True
+    assert (
+        out["final_u2_licensed_rows_are_subset_only_under_frozen_receipts"]
+        is True
+    )
+    assert (
+        out[
+            "temporal_common_support_reachable_without_predictor_receipt_expansion"
+        ]
+        is False
+    )
+    assert out["temporal_common_support_reachability_shortfall"] == {
+        "SINGLE": {
+            "U2": {
+                "SIMULTANEOUS": 1,
+                "ORDERED_OR_ALTERNATING": 0,
+            },
+            "U6": {
+                "SIMULTANEOUS": 0,
+                "ORDERED_OR_ALTERNATING": 0,
+            },
+        }
+    }
 
 
 
@@ -97,3 +121,20 @@ def test_v4_main_predictor_design_is_full_rank_even_though_generality_gate_is_no
     assert out["v4_preoutcome_full_design_full_rank"] is True
     assert out["v4_main_predictor_design_viable"] is True
     assert out["temporal_cross_universe_common_support_ready"] is False
+
+
+
+def test_strict_temporal_generality_cannot_be_repaired_by_final_u2_subsetting():
+    out = build_preoutcome_generality_audit(
+        U2_CONFLICT,
+        U2_RECEIPTS,
+        U6_RECEIPTS,
+    )
+    assert out["temporal_cross_universe_common_support_ready"] is False
+    assert (
+        out["temporal_common_support_reachable_without_predictor_receipt_expansion"]
+        is False
+    )
+    assert "final adjudication alone cannot increase" in (
+        out["prospective_reopening_rule"]
+    )
