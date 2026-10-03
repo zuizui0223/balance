@@ -94,6 +94,45 @@ Any reopening requires:
 
 If the same gate still fails, G1 remains unavailable. The threshold is not lowered.
 
+## Frozen implementation of the reopening route
+
+The prospective reopening route is implemented as a separate predictor-coding stage rather
+than by editing V1 receipts during adjudication.
+
+Frozen surfaces:
+
+```text
+coding template
+  data/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv
+
+source packet
+  data/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_SOURCE_PACKET_V2.csv
+
+coding protocol
+  docs/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PROTOCOL_V2.md
+
+packet builder
+  scripts/build_plant_u2_predictor_expansion_packet.py
+
+manual packet workflow
+  .github/workflows/build-plant-u2-predictor-expansion.yml
+
+post-return V2 freeze
+  scripts/freeze_plant_u2_predictor_receipts_v2.py
+```
+
+The coding worksheet contains exactly the 12 frozen unresolved groups and all 36 predictor
+slots. A valid return must review every slot and end each as `CODED` or
+`EVIDENCE_CEILING`. `CODED` requires a resolved source-side value with
+`outcome_independence=TRUE`; an evidence ceiling remains `UNRESOLVED`.
+
+After return validation, the V2 receipt freeze preserves the 24 already-resolved V1
+receipts exactly and overlays only the 36 prospective expansion slots. Every V2 row remains
+`SCREENED` until a separate predictor adjudicator reviews it.
+
+Thus predictor coding, predictor adjudication, and architecture/conflict adjudication remain
+three distinct stages.
+
 ## Claim ceiling
 
 This audit establishes only the reachability of a preregistered design gate. It does not

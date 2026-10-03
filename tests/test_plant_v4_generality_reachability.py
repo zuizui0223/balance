@@ -102,3 +102,31 @@ def test_active_v4_contracts_link_same_generality_reachability_ceiling():
         ]
         is False
     )
+
+
+
+def test_generality_reopening_contract_points_to_frozen_expansion_implementation():
+    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    implementation = contract["prospective_reopening_contract"]["implementation"]
+
+    expected_paths = {
+        "coding_template": "data/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv",
+        "source_packet": "data/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_SOURCE_PACKET_V2.csv",
+        "coding_protocol": "docs/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PROTOCOL_V2.md",
+        "packet_builder": "scripts/build_plant_u2_predictor_expansion_packet.py",
+        "packet_workflow": ".github/workflows/build-plant-u2-predictor-expansion.yml",
+        "v2_freeze_cli": "scripts/freeze_plant_u2_predictor_receipts_v2.py",
+    }
+    for key, rel in expected_paths.items():
+        assert implementation[key] == rel
+        assert (ROOT / rel).exists()
+
+    assert implementation["validator_module"] == (
+        "balance_domain.plant_predictor_expansion"
+    )
+    assert implementation["frozen_v2_output"] == (
+        "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv"
+    )
+    assert implementation["post_coding_status"] == (
+        "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION"
+    )
