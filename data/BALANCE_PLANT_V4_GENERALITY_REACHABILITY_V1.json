@@ -1,0 +1,76 @@
+{
+  "schema_version": "BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1",
+  "status": "FROZEN_PRE_OUTCOME_REACHABILITY_AUDIT",
+  "target": "strict_cross_universe_temporal_generality",
+  "frozen_v4_surface": {
+    "U2_source_screen_positive_groups": 8,
+    "U2_complete_outcome_independent_predictor_groups": 8,
+    "U2_complete_groups_equal_source_screen_positive": true,
+    "U6_complete_outcome_independent_predictor_groups": 21,
+    "shared_module_strata": [
+      "SINGLE"
+    ],
+    "common_support_counts": {
+      "SINGLE": {
+        "U2": {
+          "SIMULTANEOUS": 1,
+          "ORDERED_OR_ALTERNATING": 2
+        },
+        "U6": {
+          "SIMULTANEOUS": 18,
+          "ORDERED_OR_ALTERNATING": 3
+        }
+      }
+    },
+    "required_per_universe_per_timing_level": 2
+  },
+  "monotonicity_argument": {
+    "frozen_predictor_reported_value_immutable_during_adjudication": true,
+    "final_U2_model_rows_require_three_adjudicated_outcome_independent_predictor_receipts": true,
+    "final_U2_licensed_rows_are_subset_of_current_complete_predictor_groups": true,
+    "subset_can_increase_cell_count": false,
+    "conclusion": "strict common-support cannot become true under the frozen V4 receipt surface"
+  },
+  "current_reachability": {
+    "strict_temporal_generality_reachable_without_predictor_expansion": false,
+    "limiting_cell": "U2_SINGLE_SIMULTANEOUS",
+    "current_blocks": 1,
+    "required_blocks": 2,
+    "minimum_additional_qualifying_blocks_needed": 1,
+    "main_V4_fit_affected": false
+  },
+  "prospective_reopening_contract": {
+    "allowed_only_before_independent_architecture_outcomes_are_opened": true,
+    "requires_new_versioned_predictor_receipt_surface": true,
+    "selective_gap_filling_forbidden": true,
+    "expansion_population": "all 12 U2 groups in the frozen 20-group reliability frame whose three predictor receipts are currently UNRESOLVED",
+    "expansion_slots": 36,
+    "predictor_coding_must_be_outcome_independent": true,
+    "architecture_outputs_forbidden_during_expansion": true,
+    "independent_predictor_adjudication_required_after_expansion": true,
+    "common_support_threshold_unchanged": true,
+    "post_expansion_rule": "recompute the same frozen common-support audit; if no shared module stratum passes >=2 SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING blocks in each U2/U6 universe, strict G1 remains unavailable",
+    "expansion_group_ids": [
+      "Alpinia_kwangsiensis",
+      "Narcissus_assoanus",
+      "Narcissus_dubius",
+      "Narcissus_triandrus",
+      "Pontederia_cordata",
+      "Pseudowintera_colorata",
+      "Turnera_ulmifolia",
+      "Wachendorfia_brachyandra",
+      "Wachendorfia_paniculata",
+      "Wachendorfia_parviflora",
+      "Wachendorfia_thyrsiflora",
+      "Wahlenbergia_albomarginata"
+    ]
+  },
+  "prohibitions": [
+    "do not describe final architecture coding alone as capable of repairing the current common-support shortfall",
+    "do not lower the >=2-per-level-per-universe threshold after outcomes are opened",
+    "do not selectively code only U2 groups expected to fill SINGLE+SIMULTANEOUS",
+    "do not import U3 discovery outcomes into the V4 confirmation denominator",
+    "do not treat failure of G1 reachability as failure of the V4 main model"
+  ],
+  "claim_ceiling": "preoutcome_design_reachability_only_no_biological_result"
+}

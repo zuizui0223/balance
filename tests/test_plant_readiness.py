@@ -74,6 +74,19 @@ def test_current_plant_v4_readiness_separates_primary_and_external_human_gates()
         "temporal_marginal_replication_ready": True,
         "temporal_common_support_ready": False,
         "temporal_common_support_module_strata": [],
+        "temporal_common_support_reachable_without_predictor_receipt_expansion": False,
+        "temporal_common_support_reachability_shortfall": {
+            "SINGLE": {
+                "U2": {
+                    "SIMULTANEOUS": 1,
+                    "ORDERED_OR_ALTERNATING": 0,
+                },
+                "U6": {
+                    "SIMULTANEOUS": 0,
+                    "ORDERED_OR_ALTERNATING": 0,
+                },
+            }
+        },
     }
     assert out["primary_model_assembly_ready"] is False
     assert out["v4_estimability_ready_to_evaluate"] is False

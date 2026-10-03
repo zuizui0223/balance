@@ -251,6 +251,16 @@ def build_plant_v4_readiness(
             "temporal_common_support_module_strata": preoutcome_generality[
                 "temporal_common_support_module_strata"
             ],
+            "temporal_common_support_reachable_without_predictor_receipt_expansion": (
+                preoutcome_generality[
+                    "temporal_common_support_reachable_without_predictor_receipt_expansion"
+                ]
+            ),
+            "temporal_common_support_reachability_shortfall": (
+                preoutcome_generality[
+                    "temporal_common_support_reachability_shortfall"
+                ]
+            ),
         },
         "primary_model_assembly_ready": primary_preassembly_ready,
         "v4_estimability_ready_to_evaluate": primary_preassembly_ready,

@@ -147,11 +147,13 @@
   "claim_hierarchy": {
     "cross_universe_replicated": {
       "contrast": "temporal SIMULTANEOUS vs ORDERED_OR_ALTERNATING",
-      "status": "MARGINALLY_REPLICATED_BUT_COMMON_MODULE_SUPPORT_NOT_READY",
+      "status": "MARGINALLY_REPLICATED_STRICT_GATE_UNREACHABLE_UNDER_FROZEN_V4_RECEIPTS",
       "marginal_support": "both timing levels occur in both U2 and U6",
       "common_support_requirement": "at least one module_opportunity2 stratum shared by U2 and U6 must contain >=2 SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING independent dependence blocks in each universe",
-      "current_common_support": "shared module stratum is SINGLE; U2 has SINGLE SIMULTANEOUS=1 and SINGLE ORDERED_OR_ALTERNATING=2, so the strict generality gate is not yet met",
-      "outcome_support_requirement": "after independent architecture adjudication, each U2 and U6 requires >=2 NONSTRUCTURAL_SEPARATION and >=2 other-architecture dependence blocks before any cross-universe timing generality claim"
+      "current_common_support": "shared module stratum is SINGLE; U2 has SINGLE SIMULTANEOUS=1 and SINGLE ORDERED_OR_ALTERNATING=2. All complete outcome-independent U2 predictor receipts are exactly the eight source-screen conflict-positive groups, and final V4 admission can only subset those groups. Therefore the >=2 SIMULTANEOUS threshold cannot be reached under the frozen V4 receipt surface.",
+      "outcome_support_requirement": "after independent architecture adjudication, each U2 and U6 requires >=2 NONSTRUCTURAL_SEPARATION and >=2 other-architecture dependence blocks before any cross-universe timing generality claim",
+      "reachability": "UNREACHABLE_WITHOUT_PROSPECTIVE_VERSIONED_PREDICTOR_RECEIPT_EXPANSION",
+      "reopening_rule": "Any attempt to reopen strict cross-universe timing generality requires a versioned outcome-independent predictor-receipt expansion completed before independent architecture outcomes are opened; final coding/adjudication alone cannot repair the frozen common-support shortfall."
     },
     "U2_anchored": {
       "contrasts": [
@@ -195,14 +197,15 @@
     ],
     "practical_interaction_margin_log_odds": 1,
     "claim_rule": "do not call timing universal solely because the common-slope V4 main model is nonzero",
-    "current_preoutcome_status": "NOT_READY_COMMON_MODULE_SUPPORT",
+    "current_preoutcome_status": "UNREACHABLE_UNDER_FROZEN_V4_RECEIPT_SURFACE",
     "postoutcome_support_requirement": {
       "per_universe": {
         "NONSTRUCTURAL_SEPARATION_min_blocks": 2,
         "OTHER_ARCHITECTURE_min_blocks": 2
       },
       "rationale": "prevents a universe-specific generality contrast from being effectively prior-driven when the target routing outcome is absent or nearly absent"
-    }
+    },
+    "reachability_without_predictor_receipt_expansion": false
   },
   "preoutcome_design_audit": {
     "common_slope_design_rank": 3,
@@ -212,7 +215,8 @@
     "full_universe_stratified_design_columns": 5,
     "full_universe_stratified_design_full_rank": true,
     "strict_temporal_generality_common_support_ready": false,
-    "interpretation": "V4 main predictor design is prospectively identifiable, but the stronger cross-universe timing-generality sensitivity is not prospectively supported under the frozen shared-module >=2-per-level/per-universe rule."
+    "interpretation": "V4 main predictor design is prospectively identifiable. The stronger cross-universe timing-generality sensitivity is structurally unavailable under the frozen V4 predictor-receipt surface because U2 SINGLE+SIMULTANEOUS has one complete block and final U2 admission can only remove, not add, complete predictor groups.",
+    "strict_temporal_generality_common_support_reachable_without_predictor_receipt_expansion": false
   },
   "directional_hypotheses_registry": "data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json",
   "primary_directional_contrasts": {
@@ -230,5 +234,6 @@
   "estimand_standardization_registry": "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json",
   "fit_execution_contract": "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json",
   "fit_execution_runner": "scripts/run_plant_v4_cmdstan.py",
-  "routing_discovery_confirmation_boundary": "data/BALANCE_PLANT_ROUTING_DISCOVERY_CONFIRMATION_BOUNDARY_V1.json"
+  "routing_discovery_confirmation_boundary": "data/BALANCE_PLANT_ROUTING_DISCOVERY_CONFIRMATION_BOUNDARY_V1.json",
+  "generality_reachability_contract": "data/BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json"
 }
