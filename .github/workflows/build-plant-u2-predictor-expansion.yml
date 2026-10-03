@@ -1,0 +1,66 @@
+name: Build BALANCE U2 predictor expansion packet
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation tooling
+        run: |
+          python -m pip install --upgrade pip pytest
+
+      - name: Validate prospective expansion contract
+        run: |
+          python -m pytest -q \
+            tests/test_plant_u2_predictor_expansion.py \
+            tests/test_plant_u2_predictor_expansion_packet.py \
+            tests/test_plant_v4_generality_reachability.py \
+            tests/test_workflow_test_paths.py
+
+      - name: Build deterministic predictor expansion packet
+        run: |
+          python scripts/build_plant_u2_predictor_expansion_packet.py
+
+      - name: Verify packet
+        run: |
+          test -s release/generated/plant_u2_predictor_expansion/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PACKET_V2.zip
+          test -s release/generated/plant_u2_predictor_expansion/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PACKET_V2.json
+          python - <<'PY'
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root = Path("release/generated/plant_u2_predictor_expansion")
+          zip_path = root / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PACKET_V2.zip"
+          receipt_path = root / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PACKET_V2.json"
+          receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+          assert receipt["role"] == "INDEPENDENT_U2_PREDICTOR_EXPANSION_CODING"
+          assert receipt["n_groups"] == 12
+          assert receipt["n_predictor_slots"] == 36
+          assert receipt["selective_gap_filling_forbidden"] is True
+          assert receipt["architecture_outputs_included"] is False
+          assert receipt["conflict_screen_outputs_included"] is False
+          with zipfile.ZipFile(zip_path) as archive:
+              assert archive.testzip() is None
+              assert json.loads(archive.read("PACKET_RECEIPT.json")) == receipt
+          PY
+
+      - name: Upload U2 predictor expansion packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-plant-u2-predictor-expansion-v2
+          path: |
+            release/generated/plant_u2_predictor_expansion/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PACKET_V2.zip
+            release/generated/plant_u2_predictor_expansion/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PACKET_V2.json
+          if-no-files-found: error

@@ -63,7 +63,18 @@
       "Wachendorfia_parviflora",
       "Wachendorfia_thyrsiflora",
       "Wahlenbergia_albomarginata"
-    ]
+    ],
+    "implementation": {
+      "coding_template": "data/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv",
+      "source_packet": "data/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_SOURCE_PACKET_V2.csv",
+      "coding_protocol": "docs/BALANCE_PLANT_U2_PREDICTOR_EXPANSION_PROTOCOL_V2.md",
+      "validator_module": "balance_domain.plant_predictor_expansion",
+      "packet_builder": "scripts/build_plant_u2_predictor_expansion_packet.py",
+      "packet_workflow": ".github/workflows/build-plant-u2-predictor-expansion.yml",
+      "v2_freeze_cli": "scripts/freeze_plant_u2_predictor_receipts_v2.py",
+      "frozen_v2_output": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv",
+      "post_coding_status": "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION"
+    }
   },
   "prohibitions": [
     "do not describe final architecture coding alone as capable of repairing the current common-support shortfall",
