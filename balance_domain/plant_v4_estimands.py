@@ -385,6 +385,8 @@ def summarize_v4_primary_postfit(
             "directional_label": directional_label(
                 p_positive_primary=h_t_primary["p_positive"],
                 p_positive_sensitivity=h_t_sensitivity["p_positive"],
+                p_negative_primary=h_t_primary["p_negative"],
+                p_negative_sensitivity=h_t_sensitivity["p_negative"],
             ),
         },
         "H_M_MODULAR_STRUCTURAL": {
@@ -393,6 +395,8 @@ def summarize_v4_primary_postfit(
             "directional_label": directional_label(
                 p_positive_primary=h_m_primary["p_positive"],
                 p_positive_sensitivity=h_m_sensitivity["p_positive"],
+                p_negative_primary=h_m_primary["p_negative"],
+                p_negative_sensitivity=h_m_sensitivity["p_negative"],
             ),
         },
         "claim_ceiling": "postfit_primary_reporting_not_causal_or_publication_decision",
@@ -418,7 +422,7 @@ def summarize_v4_temporal_generality_postfit(
     surface = grid["H_T_cross_universe"]
 
     summaries: dict[str, dict[str, dict]] = {}
-    p_positive: dict[str, tuple[float, float]] = {}
+    direction_probabilities: dict[str, dict[str, tuple[float, float]]] = {}
     for universe in PRIMARY_UNIVERSES:
         primary = posterior_contrast_summary(
             contrast_draws(
@@ -448,22 +452,45 @@ def summarize_v4_temporal_generality_postfit(
             "primary_prior": primary,
             "sensitivity_prior": sensitivity,
         }
-        p_positive[universe] = (
-            primary["p_positive"],
-            sensitivity["p_positive"],
-        )
+        direction_probabilities[universe] = {
+            "primary": (primary["p_positive"], primary["p_negative"]),
+            "sensitivity": (
+                sensitivity["p_positive"],
+                sensitivity["p_negative"],
+            ),
+        }
 
     gamma_primary = gamma_negative_margin_probability(primary_draws)
     gamma_sensitivity = gamma_negative_margin_probability(sensitivity_draws)
     decision = temporal_generality_decision(
         preoutcome_common_support_ready=True,
         per_universe_outcome_support_ready=True,
-        u2_p_positive_primary=p_positive["U2_BARRETT_2002"][0],
-        u2_p_positive_sensitivity=p_positive["U2_BARRETT_2002"][1],
-        u6_p_positive_primary=p_positive["U6_POLLEN_THEFT_HARGREAVES_2009"][0],
-        u6_p_positive_sensitivity=p_positive["U6_POLLEN_THEFT_HARGREAVES_2009"][1],
+        u2_p_positive_primary=direction_probabilities[
+            "U2_BARRETT_2002"
+        ]["primary"][0],
+        u2_p_positive_sensitivity=direction_probabilities[
+            "U2_BARRETT_2002"
+        ]["sensitivity"][0],
+        u6_p_positive_primary=direction_probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ]["primary"][0],
+        u6_p_positive_sensitivity=direction_probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ]["sensitivity"][0],
         p_gamma_below_negative_margin_primary=gamma_primary,
         p_gamma_below_negative_margin_sensitivity=gamma_sensitivity,
+        u2_p_negative_primary=direction_probabilities[
+            "U2_BARRETT_2002"
+        ]["primary"][1],
+        u2_p_negative_sensitivity=direction_probabilities[
+            "U2_BARRETT_2002"
+        ]["sensitivity"][1],
+        u6_p_negative_primary=direction_probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ]["primary"][1],
+        u6_p_negative_sensitivity=direction_probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ]["sensitivity"][1],
     )
 
     return {
