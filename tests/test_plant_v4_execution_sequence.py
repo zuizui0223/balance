@@ -27,6 +27,13 @@ def test_v4_execution_sequence_is_frozen_and_ordered():
     assert data["stages"][7]["evidence_bridge"] == (
         "balance_domain.plant_reactivation.evaluate_v4_reactivation_evidence"
     )
+    assert data["stages"][7]["fit_execution_contract"] == (
+        "data/BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
+    )
+    assert "every chain CSV" in data["stages"][7]["receipt_chain_rule"]
+    assert "postfit summaries recomputed from chain draws" in (
+        data["stages"][7]["receipt_chain_rule"]
+    )
     assert data["stage_independence"]["predictor_review_may_finish_before_architecture_returns"] is True
     assert data["stage_independence"]["U1_external_may_finish_later_than_primary"] is True
 

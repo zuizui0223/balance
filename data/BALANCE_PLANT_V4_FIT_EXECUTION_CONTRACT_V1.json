@@ -136,5 +136,18 @@
     "diagnostic_failure_receipt_must_record_no_postfit_outputs": true,
     "execution_status_required": true,
     "complete_status_requires_postfit_outputs": true
+  },
+  "reactivation_integrity": {
+    "reverify_current_contract_sha256": true,
+    "reverify_job_receipt_sha256": true,
+    "reverify_model_source_sha256": true,
+    "reverify_compiled_model_sha256": true,
+    "reverify_input_wrapper_sha256": true,
+    "reverify_materialized_stan_data_sha256": true,
+    "reverify_chain_csv_sha256": true,
+    "reparse_chain_execution_metadata": true,
+    "reverify_stansummary_sha256": true,
+    "recompute_diagnostics_from_chain_and_stansummary": true,
+    "recompute_postfit_summaries_from_chain_draws": true
   }
 }

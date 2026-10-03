@@ -119,6 +119,22 @@ def load_fit_execution_contract(path: Path) -> dict:
     }
     if data.get("fit_output_integrity") != required_output_integrity:
         raise ValueError("V4 fit output-integrity contract drifted")
+
+    required_reactivation_integrity = {
+        "reverify_current_contract_sha256": True,
+        "reverify_job_receipt_sha256": True,
+        "reverify_model_source_sha256": True,
+        "reverify_compiled_model_sha256": True,
+        "reverify_input_wrapper_sha256": True,
+        "reverify_materialized_stan_data_sha256": True,
+        "reverify_chain_csv_sha256": True,
+        "reparse_chain_execution_metadata": True,
+        "reverify_stansummary_sha256": True,
+        "recompute_diagnostics_from_chain_and_stansummary": True,
+        "recompute_postfit_summaries_from_chain_draws": True,
+    }
+    if data.get("reactivation_integrity") != required_reactivation_integrity:
+        raise ValueError("V4 fit reactivation-integrity contract drifted")
     return data
 
 

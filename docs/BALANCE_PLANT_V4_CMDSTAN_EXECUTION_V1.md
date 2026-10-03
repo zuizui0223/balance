@@ -278,6 +278,41 @@ COMPLETE
 A diagnostic failure receipt contains no post-fit outputs. `COMPLETE` is written only after
 all registered post-fit outputs are present and hash-bound.
 
+## Reactivation-time evidence revalidation
+
+A complete fit receipt is not treated as a trusted assertion at the publication gate.
+Before evidence eligibility is evaluated, the reactivation CLI reconstructs the fit from
+the immutable workspace:
+
+1. re-hash the current frozen fit-execution contract;
+2. re-hash every active job receipt;
+3. re-hash the registered Stan source, the copied build source, and compiled executable;
+4. re-hash each input wrapper and require an exact deterministic rebuild from the licensed
+   assembly;
+5. require materialized `stan_data.json` to equal the wrapper's `stan_data`;
+6. re-hash and re-parse every chain CSV, including CmdStan version, chain IDs, seed, and
+   all frozen sampling metadata;
+7. re-hash and re-parse `stansummary.csv`;
+8. recompute all registered convergence diagnostics from the chain/stansummary evidence;
+9. recompute primary and temporal-generality probability summaries from the chain draws;
+10. require those recomputed summaries to equal the stored post-fit JSON exactly.
+
+Inactive registered job directories and stale optional generality outputs are forbidden.
+
+This closes the evidence path as:
+
+```text
+licensed assembly
+-> deterministic Stan wrappers
+-> materialized Stan data
+-> registered Stan model / compiled executable
+-> chain CSVs
+-> stansummary / diagnostics
+-> post-fit probability summaries
+-> frozen posterior decision rules
+-> evidence-eligibility gate
+```
+
 ## Claim ceiling
 
 This contract fixes execution, diagnostics, and the bridge to the already-registered
