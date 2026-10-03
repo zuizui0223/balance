@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 from balance_domain.plant_reactivation import (  # noqa: E402
     evaluate_v4_reactivation_evidence,
 )
+from balance_domain.plant_v4_cmdstan import load_fit_execution_contract  # noqa: E402
 
 
 FIT_RECEIPT = "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1.json"
@@ -25,6 +26,14 @@ ASSEMBLY = "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv"
 ASSEMBLY_READOUT = "BALANCE_PLANT_V4_ASSEMBLY_READOUT.json"
 PRIMARY_POSTFIT = "BALANCE_PLANT_V4_PRIMARY_POSTFIT_SUMMARY.json"
 GENERALITY_POSTFIT = "BALANCE_PLANT_V4_TEMPORAL_GENERALITY_POSTFIT_SUMMARY.json"
+FIT_CONTRACT = ROOT / "data" / "BALANCE_PLANT_V4_FIT_EXECUTION_CONTRACT_V1.json"
+FIT_JOB_RECEIPT = "FIT_RECEIPT.json"
+FIT_JOB_IDS = {
+    "PRIMARY",
+    "PRIMARY_PRIOR_SENSITIVITY",
+    "TEMPORAL_GENERALITY",
+    "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+}
 
 
 def _sha256(path: Path) -> str:
@@ -50,6 +59,119 @@ def _require_hash(*, label: str, path: Path, expected: object) -> str:
     return observed
 
 
+def _validate_fit_job_evidence(*, fit_dir: Path, fit_receipt: dict) -> dict:
+    contract = load_fit_execution_contract(FIT_CONTRACT)
+    required_version = contract["required_cmdstan_version"]
+    sampling = contract["sampling"]
+
+    active_jobs = fit_receipt.get("active_jobs")
+    if not isinstance(active_jobs, list) or not active_jobs:
+        raise ValueError("V4 fit execution receipt lacks active jobs")
+    if len(active_jobs) != len(set(active_jobs)):
+        raise ValueError("V4 fit execution receipt repeats active jobs")
+    unknown = sorted(set(active_jobs) - FIT_JOB_IDS)
+    if unknown:
+        raise ValueError("V4 fit execution receipt has unknown jobs: " + ", ".join(unknown))
+
+    job_paths = fit_receipt.get("job_receipts")
+    job_hashes = fit_receipt.get("job_receipt_sha256")
+    wrapper_hashes = fit_receipt.get("input_wrapper_sha256")
+    if not isinstance(job_paths, dict) or set(job_paths) != set(active_jobs):
+        raise ValueError("V4 fit execution receipt job receipt map disagrees with active jobs")
+    if not isinstance(job_hashes, dict) or set(job_hashes) != set(active_jobs):
+        raise ValueError("V4 fit execution receipt job receipt hashes disagree with active jobs")
+    if not isinstance(wrapper_hashes, dict) or set(wrapper_hashes) != set(active_jobs):
+        raise ValueError("V4 fit execution receipt wrapper hashes disagree with active jobs")
+
+    expected_chain_names = {
+        f"chain_{chain_id}.csv"
+        for chain_id in range(1, int(sampling["chains"]) + 1)
+    }
+    failures = []
+    verified = {}
+    for job_id in active_jobs:
+        declared_path = Path(str(job_paths[job_id]))
+        if declared_path.name != FIT_JOB_RECEIPT or declared_path.parent.name != job_id:
+            raise ValueError(f"V4 fit job receipt path drifted for {job_id}")
+
+        job_dir = fit_dir / job_id
+        receipt_path = job_dir / FIT_JOB_RECEIPT
+        receipt_sha = _require_hash(
+            label=f"{job_id} fit-job receipt",
+            path=receipt_path,
+            expected=job_hashes[job_id],
+        )
+        receipt = _load_json(receipt_path)
+        if receipt.get("schema_version") != "BALANCE_PLANT_V4_FIT_JOB_RECEIPT_V1":
+            raise ValueError(f"{job_id} fit-job receipt schema mismatch")
+        if receipt.get("job_id") != job_id:
+            raise ValueError(f"{job_id} fit-job receipt job ID mismatch")
+        if receipt.get("cmdstan_version") != required_version:
+            raise ValueError(f"{job_id} fit-job CmdStan version mismatch")
+        if receipt.get("n_chains") != int(sampling["chains"]):
+            raise ValueError(f"{job_id} fit-job chain count mismatch")
+        if receipt.get("draws_per_chain") != [
+            int(sampling["num_samples"]) // int(sampling["thin"])
+        ] * int(sampling["chains"]):
+            raise ValueError(f"{job_id} fit-job draw count mismatch")
+        if receipt.get("n_draws_total") != (
+            int(sampling["chains"])
+            * (int(sampling["num_samples"]) // int(sampling["thin"]))
+        ):
+            raise ValueError(f"{job_id} fit-job total draw count mismatch")
+        if receipt.get("chain_ids") != list(range(1, int(sampling["chains"]) + 1)):
+            raise ValueError(f"{job_id} fit-job chain IDs mismatch")
+        if receipt.get("input_wrapper_sha256") != wrapper_hashes[job_id]:
+            raise ValueError(f"{job_id} fit-job wrapper SHA256 disagrees with master receipt")
+
+        chain_hashes = receipt.get("chain_csv_sha256")
+        if not isinstance(chain_hashes, dict) or set(chain_hashes) != expected_chain_names:
+            raise ValueError(f"{job_id} fit-job chain hash set mismatch")
+        observed_chain_hashes = {}
+        for name in sorted(expected_chain_names):
+            path = job_dir / name
+            observed_chain_hashes[name] = _require_hash(
+                label=f"{job_id} {name}",
+                path=path,
+                expected=chain_hashes[name],
+            )
+
+        stansummary_path = job_dir / "stansummary.csv"
+        stansummary_sha = _require_hash(
+            label=f"{job_id} stansummary",
+            path=stansummary_path,
+            expected=receipt.get("stansummary_sha256"),
+        )
+
+        diagnostics = receipt.get("diagnostics")
+        if not isinstance(diagnostics, dict) or diagnostics.get("status") not in {"PASS", "FAIL"}:
+            raise ValueError(f"{job_id} fit-job diagnostics status is invalid")
+        if diagnostics["status"] == "FAIL":
+            failures.append(job_id)
+
+        verified[job_id] = {
+            "fit_job_receipt_sha256": receipt_sha,
+            "chain_csv_sha256": observed_chain_hashes,
+            "stansummary_sha256": stansummary_sha,
+            "diagnostic_status": diagnostics["status"],
+        }
+
+    declared_failures = fit_receipt.get("diagnostic_failures")
+    if declared_failures != failures:
+        raise ValueError(
+            "V4 master fit receipt diagnostic failures disagree with job receipts"
+        )
+    if fit_receipt.get("postfit_decision_allowed") is not (not failures):
+        raise ValueError(
+            "V4 master fit receipt postfit decision flag disagrees with job diagnostics"
+        )
+
+    return {
+        "fit_execution_contract_sha256": _sha256(FIT_CONTRACT),
+        "jobs": verified,
+    }
+
+
 def evaluate_from_workspaces(*, input_dir: Path, fit_dir: Path) -> dict:
     """Verify the immutable evidence chain and evaluate reactivation eligibility."""
     fit_receipt_path = fit_dir / FIT_RECEIPT
@@ -59,6 +181,11 @@ def evaluate_from_workspaces(*, input_dir: Path, fit_dir: Path) -> dict:
         != "BALANCE_PLANT_V4_FIT_EXECUTION_RECEIPT_V1"
     ):
         raise ValueError("V4 fit execution receipt schema mismatch")
+
+    fit_job_evidence = _validate_fit_job_evidence(
+        fit_dir=fit_dir,
+        fit_receipt=fit_receipt,
+    )
 
     analysis_receipt_path = input_dir / ANALYSIS_RECEIPT
     analysis_receipt = _load_json(analysis_receipt_path)
@@ -154,6 +281,7 @@ def evaluate_from_workspaces(*, input_dir: Path, fit_dir: Path) -> dict:
         **evidence,
         "evidence_provenance": {
             "fit_execution_receipt_sha256": _sha256(fit_receipt_path),
+            "fit_job_evidence": fit_job_evidence,
             "analysis_input_receipt_sha256": _sha256(analysis_receipt_path),
             "human_workspace_receipt_sha256": _sha256(human_receipt_path),
             "licensed_assembly_sha256": _sha256(assembly_path),
