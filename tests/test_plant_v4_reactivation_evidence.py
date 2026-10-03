@@ -9,6 +9,7 @@ from balance_domain.plant_reactivation import (
     derive_v4_reactivation_conditions,
     evaluate_v4_reactivation_evidence,
 )
+from balance_domain.plant_v4_decision import temporal_generality_decision
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +48,9 @@ def _assembly_readout(*, generality=True):
             "temporal_cross_universe_common_support_ready": generality,
             "temporal_cross_universe_outcome_support_ready": generality,
             "temporal_cross_universe_generality_ready": generality,
+            "temporal_common_support_module_strata": (
+                ["SINGLE"] if generality else []
+            ),
         },
     }
 
@@ -74,19 +78,60 @@ def _generality_summary(
     u6="SUPPORTED",
     interaction="NO_PRACTICALLY_LARGE_CONTRADICTION",
 ):
-    supported = (
-        u2 == "SUPPORTED"
-        and u6 == "SUPPORTED"
-        and interaction == "NO_PRACTICALLY_LARGE_CONTRADICTION"
+    p_positive = {
+        "SUPPORTED": 0.99,
+        "CONTRADICTED": 0.01,
+        "INCONCLUSIVE": 0.50,
+    }
+    u2_p = p_positive[u2]
+    u6_p = p_positive[u6]
+    gamma_tail = (
+        0.99 if interaction == "PRACTICALLY_CONTRADICTORY" else 0.01
     )
+    decision = temporal_generality_decision(
+        preoutcome_common_support_ready=True,
+        per_universe_outcome_support_ready=True,
+        u2_p_positive_primary=u2_p,
+        u2_p_positive_sensitivity=u2_p,
+        u6_p_positive_primary=u6_p,
+        u6_p_positive_sensitivity=u6_p,
+        p_gamma_below_negative_margin_primary=gamma_tail,
+        p_gamma_below_negative_margin_sensitivity=gamma_tail,
+    )
+    assert decision["u2_directional_label"] == u2
+    assert decision["u6_directional_label"] == u6
+    assert decision["interaction_label"] == interaction
     return {
         "analysis": "balance_plant_v4_temporal_generality_postfit_summary",
-        "decision": {
-            "u2_directional_label": u2,
-            "u6_directional_label": u6,
-            "interaction_label": interaction,
-            "cross_universe_generality_supported": supported,
+        "standardization_module_strata": ["SINGLE"],
+        "universe_contrasts": {
+            "U2_BARRETT_2002": {
+                "primary_prior": {
+                    "p_positive": u2_p,
+                    "p_negative": 1.0 - u2_p,
+                },
+                "sensitivity_prior": {
+                    "p_positive": u2_p,
+                    "p_negative": 1.0 - u2_p,
+                },
+            },
+            "U6_POLLEN_THEFT_HARGREAVES_2009": {
+                "primary_prior": {
+                    "p_positive": u6_p,
+                    "p_negative": 1.0 - u6_p,
+                },
+                "sensitivity_prior": {
+                    "p_positive": u6_p,
+                    "p_negative": 1.0 - u6_p,
+                },
+            },
         },
+        "interaction_negative_margin_probability": {
+            "primary_prior": gamma_tail,
+            "sensitivity_prior": gamma_tail,
+            "margin_log_odds": -1.0,
+        },
+        "decision": decision,
     }
 
 
@@ -155,7 +200,51 @@ def test_reactivation_bridge_without_generality_fit_stays_dormant():
 def test_reactivation_bridge_rejects_internally_inconsistent_generality_decision():
     summary = _generality_summary()
     summary["decision"]["cross_universe_generality_supported"] = False
-    with pytest.raises(ValueError, match="internally inconsistent"):
+    with pytest.raises(ValueError, match="does not match posterior probabilities"):
+        derive_v4_reactivation_conditions(
+            human_workspace_receipt=_human_receipt(),
+            assembly_readout=_assembly_readout(),
+            fit_execution_receipt=_fit_receipt(),
+            temporal_generality_postfit_summary=summary,
+        )
+
+
+def test_reactivation_bridge_rejects_label_probability_mismatch():
+    summary = _generality_summary()
+    summary["universe_contrasts"]["U2_BARRETT_2002"]["primary_prior"][
+        "p_positive"
+    ] = 0.60
+    summary["universe_contrasts"]["U2_BARRETT_2002"]["primary_prior"][
+        "p_negative"
+    ] = 0.40
+
+    with pytest.raises(ValueError, match="does not match posterior probabilities"):
+        derive_v4_reactivation_conditions(
+            human_workspace_receipt=_human_receipt(),
+            assembly_readout=_assembly_readout(),
+            fit_execution_receipt=_fit_receipt(),
+            temporal_generality_postfit_summary=summary,
+        )
+
+
+def test_reactivation_bridge_rejects_interaction_tail_label_mismatch():
+    summary = _generality_summary()
+    summary["interaction_negative_margin_probability"]["primary_prior"] = 0.99
+
+    with pytest.raises(ValueError, match="does not match posterior probabilities"):
+        derive_v4_reactivation_conditions(
+            human_workspace_receipt=_human_receipt(),
+            assembly_readout=_assembly_readout(),
+            fit_execution_receipt=_fit_receipt(),
+            temporal_generality_postfit_summary=summary,
+        )
+
+
+def test_reactivation_bridge_rejects_standardization_strata_drift():
+    summary = _generality_summary()
+    summary["standardization_module_strata"] = ["MODULAR"]
+
+    with pytest.raises(ValueError, match="standardization strata disagree"):
         derive_v4_reactivation_conditions(
             human_workspace_receipt=_human_receipt(),
             assembly_readout=_assembly_readout(),
