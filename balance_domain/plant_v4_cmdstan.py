@@ -116,6 +116,9 @@ def load_fit_execution_contract(path: Path) -> dict:
         "diagnostic_failure_receipt_must_record_no_postfit_outputs": True,
         "execution_status_required": True,
         "complete_status_requires_postfit_outputs": True,
+        "reactivation_revalidates_job_receipt_sha256": True,
+        "reactivation_revalidates_chain_csv_sha256": True,
+        "reactivation_revalidates_stansummary_sha256": True,
     }
     if data.get("fit_output_integrity") != required_output_integrity:
         raise ValueError("V4 fit output-integrity contract drifted")
