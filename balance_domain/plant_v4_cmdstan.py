@@ -508,10 +508,10 @@ def combine_cmdstan_chains(
             )
         chain_ids = [int(item["chain_id"]) for item in metadata]
         expected_ids = list(range(1, len(chains) + 1))
-        if sorted(chain_ids) != expected_ids:
+        if chain_ids != expected_ids:
             raise ValueError(
-                "CmdStan chain IDs must be unique 1..N under the frozen fit contract: "
-                f"{chain_ids!r}"
+                "CmdStan chain IDs must match chain-file order 1..N under the "
+                f"frozen fit contract: {chain_ids!r}"
             )
 
     return {
