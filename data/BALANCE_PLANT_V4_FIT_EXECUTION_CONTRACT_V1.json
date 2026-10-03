@@ -135,6 +135,9 @@
     "successful_postfit_output_sha256_required": true,
     "diagnostic_failure_receipt_must_record_no_postfit_outputs": true,
     "execution_status_required": true,
-    "complete_status_requires_postfit_outputs": true
+    "complete_status_requires_postfit_outputs": true,
+    "reactivation_revalidates_job_receipt_sha256": true,
+    "reactivation_revalidates_chain_csv_sha256": true,
+    "reactivation_revalidates_stansummary_sha256": true
   }
 }
