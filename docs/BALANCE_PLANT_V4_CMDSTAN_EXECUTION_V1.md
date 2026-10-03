@@ -178,6 +178,14 @@ Missing, duplicated, or unexpected registered parameters fail closed before diag
 thresholds are evaluated. A truncated chain cannot be compensated by pooling the remaining
 chains.
 
+Before publication-reactivation evidence is evaluated, the downstream evidence bridge
+re-validates the fit workspace rather than trusting the master fit receipt alone. For every
+active fit job it re-hashes the job receipt, all four chain CSVs, and `stansummary.csv`;
+checks the frozen chain IDs, CmdStan version, draw counts, saved chain-execution metadata,
+and materialized Stan-data hash; and requires the job-level diagnostic status to agree with
+the master receipt's diagnostic-failure list and post-fit decision flag. Thus the
+reactivation step retains a continuous receipt chain down to the raw sampled-output files.
+
 ## Diagnostics
 
 Posterior reporting is blocked unless every registered fit passes:
