@@ -103,7 +103,10 @@
     "chain_cmdstan_version_must_equal_required": true,
     "stansummary_complete_parameter_set_required": true,
     "primary_parameter_count": 15,
-    "generality_parameter_count": 18
+    "generality_parameter_count": 18,
+    "chain_id_metadata_must_be_unique_1_to_n": true,
+    "chain_seed_must_equal_required": true,
+    "chain_sampling_metadata_must_equal_required": true
   },
   "input_bundle_integrity": {
     "licensed_assembly_required": true,

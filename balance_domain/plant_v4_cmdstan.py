@@ -76,6 +76,9 @@ def load_fit_execution_contract(path: Path) -> dict:
         "stansummary_complete_parameter_set_required": True,
         "primary_parameter_count": 15,
         "generality_parameter_count": 18,
+        "chain_id_metadata_must_be_unique_1_to_n": True,
+        "chain_seed_must_equal_required": True,
+        "chain_sampling_metadata_must_equal_required": True,
     }
     if data.get("chain_integrity") != required_integrity:
         raise ValueError("V4 fit chain-integrity contract drifted")
@@ -222,6 +225,113 @@ def _required_draw_columns(require_gamma: bool) -> list[str]:
     return columns
 
 
+def _comment_scalar(comments: dict[str, str], key: str) -> str:
+    if key not in comments:
+        raise ValueError(f"CmdStan CSV missing execution metadata: {key}")
+    value = comments[key].strip()
+    if value.endswith("(Default)"):
+        value = value[: -len("(Default)")].strip()
+    return value
+
+
+def _comment_int(comments: dict[str, str], key: str) -> int:
+    value = _comment_scalar(comments, key)
+    try:
+        parsed = int(value)
+    except ValueError as exc:
+        raise ValueError(f"CmdStan CSV metadata {key} must be an integer") from exc
+    return parsed
+
+
+def _comment_float(comments: dict[str, str], key: str) -> float:
+    value = _comment_scalar(comments, key)
+    try:
+        parsed = float(value)
+    except ValueError as exc:
+        raise ValueError(f"CmdStan CSV metadata {key} must be numeric") from exc
+    if not math.isfinite(parsed):
+        raise ValueError(f"CmdStan CSV metadata {key} must be finite")
+    return parsed
+
+
+def _comment_bool(comments: dict[str, str], key: str) -> bool:
+    value = _comment_scalar(comments, key).casefold()
+    if value in {"true", "1"}:
+        return True
+    if value in {"false", "0"}:
+        return False
+    raise ValueError(f"CmdStan CSV metadata {key} must be boolean")
+
+
+def _read_chain_execution_metadata(comments: dict[str, str]) -> dict:
+    return {
+        "method": _comment_scalar(comments, "method").split()[0],
+        "algorithm": _comment_scalar(comments, "algorithm").split()[0],
+        "engine": _comment_scalar(comments, "engine").split()[0],
+        "num_chains": _comment_int(comments, "num_chains"),
+        "chain_id": _comment_int(comments, "id"),
+        "seed": _comment_int(comments, "seed"),
+        "num_samples": _comment_int(comments, "num_samples"),
+        "num_warmup": _comment_int(comments, "num_warmup"),
+        "save_warmup": _comment_bool(comments, "save_warmup"),
+        "thin": _comment_int(comments, "thin"),
+        "adapt_delta": _comment_float(comments, "delta"),
+        "max_depth": _comment_int(comments, "max_depth"),
+        "metric": _comment_scalar(comments, "metric").split()[0],
+        "output_sig_figs": _comment_int(comments, "sig_figs"),
+        "refresh": _comment_int(comments, "refresh"),
+    }
+
+
+def _validate_chain_execution_metadata(
+    metadata: dict,
+    *,
+    expected_sampling: dict,
+) -> None:
+    fixed = {
+        "method": "sample",
+        "algorithm": "hmc",
+        "engine": "nuts",
+        "num_chains": 1,
+    }
+    for key, expected in fixed.items():
+        if metadata.get(key) != expected:
+            raise ValueError(
+                f"CmdStan chain metadata {key} drifted: "
+                f"{metadata.get(key)!r} != {expected!r}"
+            )
+
+    keys = (
+        "seed",
+        "num_samples",
+        "num_warmup",
+        "save_warmup",
+        "thin",
+        "adapt_delta",
+        "max_depth",
+        "metric",
+        "output_sig_figs",
+        "refresh",
+    )
+    for key in keys:
+        expected = expected_sampling[key]
+        observed = metadata.get(key)
+        if isinstance(expected, float):
+            matches = math.isclose(
+                float(observed),
+                expected,
+                rel_tol=0.0,
+                abs_tol=1e-12,
+            )
+        else:
+            matches = observed == expected
+        if not matches:
+            raise ValueError(
+                f"CmdStan chain metadata {key} drifted: "
+                f"{observed!r} != {expected!r}"
+            )
+
+
 def read_cmdstan_chain(path: Path, *, require_gamma: bool) -> dict:
     """Parse one post-warmup CmdStan chain into evaluator-shaped draws."""
     comments, fields, rows = _csv_parts(path)
@@ -301,12 +411,34 @@ def read_cmdstan_chain(path: Path, *, require_gamma: bool) -> dict:
             )
         )
 
+    execution_metadata = None
+    execution_keys = {
+        "method",
+        "algorithm",
+        "engine",
+        "num_chains",
+        "id",
+        "seed",
+        "num_samples",
+        "num_warmup",
+        "save_warmup",
+        "thin",
+        "delta",
+        "max_depth",
+        "metric",
+        "sig_figs",
+        "refresh",
+    }
+    if execution_keys & set(comments):
+        execution_metadata = _read_chain_execution_metadata(comments)
+
     return {
         "path": str(path),
         "sha256": sha256_file(path),
         "n_draws": len(draws),
         "draws": draws,
         "stan_version": version,
+        "execution_metadata": execution_metadata,
         "divergences": divergences,
         "max_treedepth_observed": max(treedepths),
         "treedepths": treedepths,
@@ -322,6 +454,7 @@ def combine_cmdstan_chains(
     expected_chains: int | None = None,
     expected_draws_per_chain: int | None = None,
     required_version: str | None = None,
+    expected_sampling: dict | None = None,
 ) -> dict:
     paths = [Path(path) for path in paths]
     if not paths:
@@ -361,6 +494,26 @@ def combine_cmdstan_chains(
             f"CmdStan chain version must be {required_version}, found {version}"
         )
 
+    chain_ids = None
+    if expected_sampling is not None:
+        metadata = [chain["execution_metadata"] for chain in chains]
+        if any(item is None for item in metadata):
+            raise ValueError(
+                "CmdStan chain execution metadata is required by the frozen fit contract"
+            )
+        for item in metadata:
+            _validate_chain_execution_metadata(
+                item,
+                expected_sampling=expected_sampling,
+            )
+        chain_ids = [int(item["chain_id"]) for item in metadata]
+        expected_ids = list(range(1, len(chains) + 1))
+        if chain_ids != expected_ids:
+            raise ValueError(
+                "CmdStan chain IDs must match chain-file order 1..N under the "
+                f"frozen fit contract: {chain_ids!r}"
+            )
+
     return {
         "chains": chains,
         "n_chains": len(chains),
@@ -368,6 +521,12 @@ def combine_cmdstan_chains(
         "n_draws_total": sum(chain["n_draws"] for chain in chains),
         "draws": [draw for chain in chains for draw in chain["draws"]],
         "stan_version": version,
+        "chain_ids": chain_ids,
+        "execution_metadata": (
+            [chain["execution_metadata"] for chain in chains]
+            if expected_sampling is not None
+            else None
+        ),
         "divergences": sum(chain["divergences"] for chain in chains),
         "treedepth_hits": sum(
             sum(depth >= max_depth for depth in chain["treedepths"])
