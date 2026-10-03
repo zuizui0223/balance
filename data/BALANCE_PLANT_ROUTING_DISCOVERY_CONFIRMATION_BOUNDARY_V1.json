@@ -1,0 +1,83 @@
+{
+  "schema_version": "BALANCE_PLANT_ROUTING_DISCOVERY_CONFIRMATION_BOUNDARY_V1",
+  "status": "FROZEN_BEFORE_INDEPENDENT_U2_U6_ARCHITECTURE_RETURNS",
+  "question": "given a demonstrated functional conflict, what predicts the organizational route by which competing functions are separated or retained in shared architecture?",
+  "discovery_lane": {
+    "id": "U3_HETERANTHERY_MATCHED",
+    "role": "HYPOTHESIS_GENERATING_AND_IDENTIFICATION_DIAGNOSTIC",
+    "primary_confirmatory_denominator": false,
+    "frozen_results": [
+      "binary pollen-fate conflict presence is not a deterministic separator of heteranthery in the matched lane",
+      "heteranthery morphology and functional routing are non-identifying proxies in both directions",
+      "at least two routing states are already identified among positive nonheterantherous controls in two frozen dependence blocks"
+    ],
+    "canonical_evidence": [
+      "docs/BALANCE_PLANT_U3_BINARY_CONFLICT_IDENTIFICATION_V1.md",
+      "docs/BALANCE_PLANT_U3_BINARY_CONFLICT_PARTIAL_IDENTIFICATION_V1.md",
+      "docs/BALANCE_PLANT_U3_MORPHOLOGY_ROUTING_NONIDENTIFIABILITY_V1.md",
+      "docs/BALANCE_PLANT_U3_ROUTING_DIVERSITY_IDENTIFICATION_V1.md"
+    ],
+    "allowed_use": [
+      "motivate the conditional routing question",
+      "motivate module opportunity as a candidate routing mechanism",
+      "supply matched counterexamples showing why morphology and binary conflict presence cannot be substituted for routing"
+    ],
+    "prohibited_use": [
+      "do not add U3 rows to the V4 primary response denominator",
+      "do not use U3 architecture outcomes to code U2 or U6 predictors",
+      "do not tune V4 response classes, priors, support gates, or directional thresholds to reproduce U3 patterns",
+      "do not treat S. covesii targeted resolution as an independent V4 replication"
+    ]
+  },
+  "confirmatory_lane": {
+    "primary_universes": [
+      "U2_BARRETT_2002",
+      "U6_POLLEN_THEFT_HARGREAVES_2009"
+    ],
+    "external_validation_universe": "U1_HAAS_LORTIE_2020",
+    "frozen_response": "architecture_class4",
+    "frozen_predictors": [
+      "module_opportunity2",
+      "temporal_exposure3"
+    ],
+    "frozen_directional_hypotheses": [
+      {
+        "id": "H_T_ORDERED_NONSTRUCTURAL",
+        "scope": "PRIMARY_AND_CROSS_UNIVERSE_CANDIDATE",
+        "interpretation": "ordered or alternating conflict exposure predicts greater probability of nonstructural separation than simultaneous exposure"
+      },
+      {
+        "id": "H_M_MODULAR_STRUCTURAL",
+        "scope": "U2_ANCHORED_NOT_CROSS_UNIVERSE",
+        "interpretation": "pre-existing module opportunity predicts greater probability of structural module division than single/continuous substrate"
+      }
+    ],
+    "independence_guards": [
+      "U2 and U6 architecture outcomes are independently double-coded before adjudication",
+      "confirmatory predictor receipts are source-side and outcome-independent",
+      "U3 matched architecture outcomes are not imported into U2/U6 predictor receipts",
+      "U1 remains external specificity validation and cannot block the U2+U6 primary fit",
+      "cross-universe timing generality requires the frozen common-support and per-universe outcome-support gates"
+    ],
+    "canonical_contracts": [
+      "data/BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4.json",
+      "data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json",
+      "data/BALANCE_PLANT_V4_ESTIMAND_STANDARDIZATION_V1.json",
+      "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json"
+    ]
+  },
+  "inference_sequence": [
+    "U3 establishes that conflict presence and visible morphology do not uniquely identify routing",
+    "the explanatory target is therefore conditional routing given conflict rather than binary conflict presence",
+    "module opportunity and temporal exposure are frozen as pre-outcome candidate routing predictors",
+    "U2 and U6 provide the confirmatory response data without reusing U3 matched outcomes",
+    "U3 may be used after the V4 fit to interpret mechanism and boundary cases but not to rescue, recode, or select the confirmatory result"
+  ],
+  "falsification_and_downgrade": [
+    "if H_M is null or reversed, the U3 two-control substrate pattern remains a discovery observation rather than a general routing rule",
+    "if H_T is not supported in both U2 and U6 under the frozen generality gate, timing is not described as cross-universe routing generality",
+    "if V4 is non-estimable after independent coding, U3 evidence is not used to relax the V4 estimability contract",
+    "if targeted U3 measurements contradict the frozen S. covesii prediction, the contradiction is retained and does not alter V4 coding"
+  ],
+  "claim_ceiling": "discovery_confirmation_boundary_only_no_new_biological_effect_or_cross_universe_result"
+}
