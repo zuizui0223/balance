@@ -118,7 +118,7 @@ def _validated_generality_decision(
     if not isinstance(contrasts, dict):
         raise ValueError("V4 temporal-generality summary lacks universe contrasts")
 
-    probabilities: dict[str, tuple[float, float]] = {}
+    probabilities: dict[str, dict[str, tuple[float, float]]] = {}
     for universe in (
         "U2_BARRETT_2002",
         "U6_POLLEN_THEFT_HARGREAVES_2009",
@@ -128,7 +128,7 @@ def _validated_generality_decision(
             raise ValueError(
                 f"V4 temporal-generality summary lacks {universe} contrast"
             )
-        prior_values = []
+        prior_values: dict[str, tuple[float, float]] = {}
         for prior_key in ("primary_prior", "sensitivity_prior"):
             prior = block.get(prior_key)
             if not isinstance(prior, dict):
@@ -148,8 +148,8 @@ def _validated_generality_decision(
                     f"V4 temporal-generality {universe} {prior_key} "
                     "direction probabilities are inconsistent"
                 )
-            prior_values.append(p_positive)
-        probabilities[universe] = tuple(prior_values)
+            prior_values[prior_key] = (p_positive, p_negative)
+        probabilities[universe] = prior_values
 
     interaction = summary.get("interaction_negative_margin_probability")
     if not isinstance(interaction, dict):
@@ -178,16 +178,32 @@ def _validated_generality_decision(
             estimability.get("temporal_cross_universe_outcome_support_ready")
             is True
         ),
-        u2_p_positive_primary=probabilities["U2_BARRETT_2002"][0],
-        u2_p_positive_sensitivity=probabilities["U2_BARRETT_2002"][1],
+        u2_p_positive_primary=probabilities[
+            "U2_BARRETT_2002"
+        ]["primary_prior"][0],
+        u2_p_positive_sensitivity=probabilities[
+            "U2_BARRETT_2002"
+        ]["sensitivity_prior"][0],
         u6_p_positive_primary=probabilities[
             "U6_POLLEN_THEFT_HARGREAVES_2009"
-        ][0],
+        ]["primary_prior"][0],
         u6_p_positive_sensitivity=probabilities[
             "U6_POLLEN_THEFT_HARGREAVES_2009"
-        ][1],
+        ]["sensitivity_prior"][0],
         p_gamma_below_negative_margin_primary=gamma_primary,
         p_gamma_below_negative_margin_sensitivity=gamma_sensitivity,
+        u2_p_negative_primary=probabilities[
+            "U2_BARRETT_2002"
+        ]["primary_prior"][1],
+        u2_p_negative_sensitivity=probabilities[
+            "U2_BARRETT_2002"
+        ]["sensitivity_prior"][1],
+        u6_p_negative_primary=probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ]["primary_prior"][1],
+        u6_p_negative_sensitivity=probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ]["sensitivity_prior"][1],
     )
     observed = summary.get("decision")
     if observed != expected:

@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from balance_domain.plant_reactivation import (
+    _validated_generality_decision,
     evaluate_v4_reactivation_conditions,
     evaluate_v4_reactivation_gate,
     load_v4_reactivation_gate,
@@ -92,3 +93,55 @@ def test_v4_reactivation_gate_can_become_evidence_eligible_without_auto_activati
     assert out["standalone_reactivation_eligible"] is True
     assert out["publication_status_if_current"] == "DORMANT_PAPER_BRANCH"
     assert out["activation_action"] == "HUMAN_REVIEW_REQUIRED_BEFORE_PUBLICATION_STATUS_CHANGE"
+
+
+
+def test_reactivation_semantic_check_does_not_count_zero_mass_as_negative():
+    summary = {
+        "standardization_module_strata": ["SINGLE"],
+        "universe_contrasts": {
+            universe: {
+                prior: {
+                    "p_positive": 0.03,
+                    "p_negative": 0.90,
+                }
+                for prior in ("primary_prior", "sensitivity_prior")
+            }
+            for universe in (
+                "U2_BARRETT_2002",
+                "U6_POLLEN_THEFT_HARGREAVES_2009",
+            )
+        },
+        "interaction_negative_margin_probability": {
+            "primary_prior": 0.01,
+            "sensitivity_prior": 0.01,
+            "margin_log_odds": -1.0,
+        },
+    }
+    estimability = {
+        "temporal_common_support_module_strata": ["SINGLE"],
+        "temporal_cross_universe_common_support_ready": True,
+        "temporal_cross_universe_outcome_support_ready": True,
+    }
+    expected = _validated_generality_decision(
+        summary={
+            **summary,
+            "decision": {
+                "analysis": "balance_plant_v4_temporal_generality_decision",
+                "u2_directional_label": "INCONCLUSIVE",
+                "u6_directional_label": "INCONCLUSIVE",
+                "interaction_label": "NO_PRACTICALLY_LARGE_CONTRADICTION",
+                "cross_universe_generality_supported": False,
+                "blockers": [
+                    "U2_direction_inconclusive",
+                    "U6_direction_inconclusive",
+                ],
+                "posterior_direction_threshold": 0.95,
+                "practical_negative_interaction_margin_log_odds": -1.0,
+                "claim_ceiling": "posterior_reporting_label_not_publication_decision",
+            },
+        },
+        estimability=estimability,
+    )
+    assert expected["u2_directional_label"] == "INCONCLUSIVE"
+    assert expected["u6_directional_label"] == "INCONCLUSIVE"
