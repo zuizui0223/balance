@@ -82,6 +82,9 @@ def test_fit_execution_contract_is_frozen_before_outcome():
         "stansummary_complete_parameter_set_required": True,
         "primary_parameter_count": 15,
         "generality_parameter_count": 18,
+        "chain_id_metadata_must_be_unique_1_to_n": True,
+        "chain_seed_must_equal_required": True,
+        "chain_sampling_metadata_must_equal_required": True,
     }
 
 
@@ -135,7 +138,25 @@ def test_materialize_stan_data_strips_audit_metadata(tmp_path):
     assert "stan_data_sha256" in out
 
 
-def _chain_csv(path: Path, *, gamma=False, version="2.40.0", divergent=0, depth=7):
+def _chain_csv(
+    path: Path,
+    *,
+    gamma=False,
+    version="2.40.0",
+    divergent=0,
+    depth=7,
+    chain_id=1,
+    seed=20260930,
+    num_samples=4,
+    num_warmup=0,
+    save_warmup=False,
+    thin=1,
+    adapt_delta=0.99,
+    max_depth=15,
+    metric="diag_e",
+    output_sig_figs=18,
+    refresh=100,
+):
     fields = [
         "lp__",
         "accept_stat__",
@@ -155,6 +176,21 @@ def _chain_csv(path: Path, *, gamma=False, version="2.40.0", divergent=0, depth=
         f"# stan_version_major = {major}",
         f"# stan_version_minor = {minor}",
         f"# stan_version_patch = {patch}",
+        "# method = sample (Default)",
+        f"# num_samples = {num_samples}",
+        f"# num_warmup = {num_warmup}",
+        f"# save_warmup = {'true' if save_warmup else 'false'} (Default)",
+        f"# thin = {thin} (Default)",
+        f"# delta = {adapt_delta} (Default)",
+        "# algorithm = hmc (Default)",
+        "# engine = nuts (Default)",
+        f"# max_depth = {max_depth} (Default)",
+        f"# metric = {metric} (Default)",
+        "# num_chains = 1 (Default)",
+        f"# id = {chain_id} (Default)",
+        f"# seed = {seed}",
+        f"# refresh = {refresh}",
+        f"# sig_figs = {output_sig_figs}",
         ",".join(fields),
     ]
     energies = [1.0, 2.0, 1.2, 2.1]
@@ -220,6 +256,130 @@ def test_combine_chains_counts_divergences_and_depth_hits(tmp_path):
     assert out["divergences"] == 1
     assert out["treedepth_hits"] == 4
     assert len(out["draws"]) == 16
+
+
+def test_combine_chains_binds_ids_seed_and_sampling_metadata(tmp_path):
+    sampling = {
+        "chains": 4,
+        "num_warmup": 1000,
+        "num_samples": 2000,
+        "save_warmup": False,
+        "thin": 1,
+        "adapt_delta": 0.99,
+        "max_depth": 15,
+        "metric": "diag_e",
+        "seed": 20260930,
+        "output_sig_figs": 18,
+        "refresh": 100,
+    }
+    paths = []
+    for chain_id in range(1, 5):
+        path = tmp_path / f"chain_{chain_id}.csv"
+        _chain_csv(
+            path,
+            gamma=False,
+            chain_id=chain_id,
+            seed=sampling["seed"],
+            num_samples=sampling["num_samples"],
+            num_warmup=sampling["num_warmup"],
+            save_warmup=sampling["save_warmup"],
+            thin=sampling["thin"],
+            adapt_delta=sampling["adapt_delta"],
+            max_depth=sampling["max_depth"],
+            metric=sampling["metric"],
+            output_sig_figs=sampling["output_sig_figs"],
+            refresh=sampling["refresh"],
+        )
+        # The fixture contains four rows regardless of the production num_samples
+        # metadata, so draw-count validation remains a separate contract check.
+        paths.append(path)
+
+    out = combine_cmdstan_chains(
+        paths,
+        require_gamma=False,
+        max_depth=15,
+        expected_chains=4,
+        expected_draws_per_chain=4,
+        required_version="2.40.0",
+        expected_sampling=sampling,
+    )
+    assert out["chain_ids"] == [1, 2, 3, 4]
+    assert [row["seed"] for row in out["execution_metadata"]] == [20260930] * 4
+
+    duplicate = tmp_path / "duplicate_chain_id.csv"
+    _chain_csv(
+        duplicate,
+        gamma=False,
+        chain_id=1,
+        seed=sampling["seed"],
+        num_samples=sampling["num_samples"],
+        num_warmup=sampling["num_warmup"],
+        adapt_delta=sampling["adapt_delta"],
+        max_depth=sampling["max_depth"],
+        metric=sampling["metric"],
+        output_sig_figs=sampling["output_sig_figs"],
+        refresh=sampling["refresh"],
+    )
+    with pytest.raises(ValueError, match="chain IDs must be unique 1..N"):
+        combine_cmdstan_chains(
+            [duplicate, *paths[1:]],
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.40.0",
+            expected_sampling=sampling,
+        )
+
+    bad_seed = tmp_path / "bad_seed.csv"
+    _chain_csv(
+        bad_seed,
+        gamma=False,
+        chain_id=1,
+        seed=999,
+        num_samples=sampling["num_samples"],
+        num_warmup=sampling["num_warmup"],
+        adapt_delta=sampling["adapt_delta"],
+        max_depth=sampling["max_depth"],
+        metric=sampling["metric"],
+        output_sig_figs=sampling["output_sig_figs"],
+        refresh=sampling["refresh"],
+    )
+    with pytest.raises(ValueError, match="metadata seed drifted"):
+        combine_cmdstan_chains(
+            [bad_seed, *paths[1:]],
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.40.0",
+            expected_sampling=sampling,
+        )
+
+    bad_delta = tmp_path / "bad_delta.csv"
+    _chain_csv(
+        bad_delta,
+        gamma=False,
+        chain_id=1,
+        seed=sampling["seed"],
+        num_samples=sampling["num_samples"],
+        num_warmup=sampling["num_warmup"],
+        adapt_delta=0.8,
+        max_depth=sampling["max_depth"],
+        metric=sampling["metric"],
+        output_sig_figs=sampling["output_sig_figs"],
+        refresh=sampling["refresh"],
+    )
+    with pytest.raises(ValueError, match="metadata adapt_delta drifted"):
+        combine_cmdstan_chains(
+            [bad_delta, *paths[1:]],
+            require_gamma=False,
+            max_depth=15,
+            expected_chains=4,
+            expected_draws_per_chain=4,
+            required_version="2.40.0",
+            expected_sampling=sampling,
+        )
 
 
 def _stansummary(path: Path, *, rhat=1.0, ess_bulk=1000, ess_tail=900):
