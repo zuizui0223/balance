@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from .plant_v4_decision import temporal_generality_decision
+
 
 SCHEMA = "BALANCE_PLANT_V4_REACTIVATION_GATE_V1"
 BOOLEAN_REQUIREMENTS = (
@@ -85,6 +87,115 @@ def evaluate_v4_reactivation_gate(path: Path) -> dict:
     data = load_v4_reactivation_gate(path)
     return evaluate_v4_reactivation_conditions(data["required_conditions"])
 
+
+
+def _posterior_probability(value: object, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} must be a probability")
+    probability = float(value)
+    if not 0.0 <= probability <= 1.0:
+        raise ValueError(f"{label} must be in [0,1]")
+    return probability
+
+
+def _validated_generality_decision(
+    *,
+    summary: dict,
+    estimability: dict,
+) -> dict:
+    strata = summary.get("standardization_module_strata")
+    expected_strata = estimability.get("temporal_common_support_module_strata")
+    if not isinstance(strata, list) or not isinstance(expected_strata, list):
+        raise ValueError(
+            "V4 temporal-generality summary/assembly lacks common-support strata"
+        )
+    if strata != expected_strata:
+        raise ValueError(
+            "V4 temporal-generality standardization strata disagree with assembly"
+        )
+
+    contrasts = summary.get("universe_contrasts")
+    if not isinstance(contrasts, dict):
+        raise ValueError("V4 temporal-generality summary lacks universe contrasts")
+
+    probabilities: dict[str, tuple[float, float]] = {}
+    for universe in (
+        "U2_BARRETT_2002",
+        "U6_POLLEN_THEFT_HARGREAVES_2009",
+    ):
+        block = contrasts.get(universe)
+        if not isinstance(block, dict):
+            raise ValueError(
+                f"V4 temporal-generality summary lacks {universe} contrast"
+            )
+        prior_values = []
+        for prior_key in ("primary_prior", "sensitivity_prior"):
+            prior = block.get(prior_key)
+            if not isinstance(prior, dict):
+                raise ValueError(
+                    f"V4 temporal-generality {universe} lacks {prior_key}"
+                )
+            p_positive = _posterior_probability(
+                prior.get("p_positive"),
+                f"{universe} {prior_key} p_positive",
+            )
+            p_negative = _posterior_probability(
+                prior.get("p_negative"),
+                f"{universe} {prior_key} p_negative",
+            )
+            if p_positive + p_negative > 1.0 + 1e-12:
+                raise ValueError(
+                    f"V4 temporal-generality {universe} {prior_key} "
+                    "direction probabilities are inconsistent"
+                )
+            prior_values.append(p_positive)
+        probabilities[universe] = tuple(prior_values)
+
+    interaction = summary.get("interaction_negative_margin_probability")
+    if not isinstance(interaction, dict):
+        raise ValueError(
+            "V4 temporal-generality summary lacks interaction tail probability"
+        )
+    if interaction.get("margin_log_odds") != -1.0:
+        raise ValueError(
+            "V4 temporal-generality interaction margin drifted from -1.0"
+        )
+    gamma_primary = _posterior_probability(
+        interaction.get("primary_prior"),
+        "interaction primary_prior probability",
+    )
+    gamma_sensitivity = _posterior_probability(
+        interaction.get("sensitivity_prior"),
+        "interaction sensitivity_prior probability",
+    )
+
+    expected = temporal_generality_decision(
+        preoutcome_common_support_ready=(
+            estimability.get("temporal_cross_universe_common_support_ready")
+            is True
+        ),
+        per_universe_outcome_support_ready=(
+            estimability.get("temporal_cross_universe_outcome_support_ready")
+            is True
+        ),
+        u2_p_positive_primary=probabilities["U2_BARRETT_2002"][0],
+        u2_p_positive_sensitivity=probabilities["U2_BARRETT_2002"][1],
+        u6_p_positive_primary=probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ][0],
+        u6_p_positive_sensitivity=probabilities[
+            "U6_POLLEN_THEFT_HARGREAVES_2009"
+        ][1],
+        p_gamma_below_negative_margin_primary=gamma_primary,
+        p_gamma_below_negative_margin_sensitivity=gamma_sensitivity,
+    )
+    observed = summary.get("decision")
+    if observed != expected:
+        raise ValueError(
+            "V4 temporal-generality decision does not match posterior probabilities "
+            "under the frozen decision rule"
+        )
+    return expected
 
 
 def derive_v4_reactivation_conditions(
@@ -195,34 +306,15 @@ def derive_v4_reactivation_conditions(
             != "balance_plant_v4_temporal_generality_postfit_summary"
         ):
             raise ValueError("V4 temporal-generality postfit summary analysis mismatch")
-        decision = temporal_generality_postfit_summary.get("decision")
-        if not isinstance(decision, dict):
-            raise ValueError("V4 temporal-generality summary lacks decision")
-        u2_label = decision.get("u2_directional_label")
-        u6_label = decision.get("u6_directional_label")
-        interaction_label = decision.get("interaction_label")
-        if u2_label not in {"SUPPORTED", "CONTRADICTED", "INCONCLUSIVE"}:
-            raise ValueError("invalid U2 temporal-generality directional label")
-        if u6_label not in {"SUPPORTED", "CONTRADICTED", "INCONCLUSIVE"}:
-            raise ValueError("invalid U6 temporal-generality directional label")
-        if interaction_label not in {
-            "PRACTICALLY_CONTRADICTORY",
-            "NO_PRACTICALLY_LARGE_CONTRADICTION",
-        }:
-            raise ValueError("invalid temporal-generality interaction label")
-        u2_supported = u2_label == "SUPPORTED"
-        u6_supported = u6_label == "SUPPORTED"
-        contradictory = interaction_label == "PRACTICALLY_CONTRADICTORY"
-        expected_generality_supported = (
-            u2_supported and u6_supported and not contradictory
+        decision = _validated_generality_decision(
+            summary=temporal_generality_postfit_summary,
+            estimability=estimability,
         )
-        if (
-            decision.get("cross_universe_generality_supported")
-            is not expected_generality_supported
-        ):
-            raise ValueError(
-                "V4 temporal-generality decision fields are internally inconsistent"
-            )
+        u2_supported = decision["u2_directional_label"] == "SUPPORTED"
+        u6_supported = decision["u6_directional_label"] == "SUPPORTED"
+        contradictory = (
+            decision["interaction_label"] == "PRACTICALLY_CONTRADICTORY"
+        )
 
     return {
         "u2_independent_coding_and_adjudication_complete": (
