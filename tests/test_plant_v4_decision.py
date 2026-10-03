@@ -15,6 +15,8 @@ def test_directional_label_requires_same_direction_under_both_registered_priors(
     assert directional_label(
         p_positive_primary=0.03,
         p_positive_sensitivity=0.04,
+        p_negative_primary=0.96,
+        p_negative_sensitivity=0.95,
     ) == "CONTRADICTED"
     assert directional_label(
         p_positive_primary=0.98,
@@ -88,4 +90,24 @@ def test_posterior_probability_inputs_must_be_valid(value):
         directional_label(
             p_positive_primary=value,
             p_positive_sensitivity=0.95,
+        )
+
+
+
+def test_directional_label_does_not_count_zero_mass_as_negative():
+    assert directional_label(
+        p_positive_primary=0.03,
+        p_positive_sensitivity=0.03,
+        p_negative_primary=0.90,
+        p_negative_sensitivity=0.90,
+    ) == "INCONCLUSIVE"
+
+
+def test_directional_label_rejects_inconsistent_positive_negative_mass():
+    with pytest.raises(ValueError, match="probabilities are inconsistent"):
+        directional_label(
+            p_positive_primary=0.60,
+            p_positive_sensitivity=0.50,
+            p_negative_primary=0.50,
+            p_negative_sensitivity=0.40,
         )
