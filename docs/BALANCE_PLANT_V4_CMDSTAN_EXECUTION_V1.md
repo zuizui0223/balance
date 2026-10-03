@@ -152,6 +152,13 @@ Every registered fit must contain exactly four unique chain CSV files, matching 
 chain count. Each chain must contain exactly 2,000 post-warmup draws under the registered
 `thin=1` contract, and every chain must report CmdStan version `2.40.0`.
 
+The chain CSV metadata must also self-identify the frozen execution contract. The four
+outputs must report unique chain IDs `1,2,3,4`, the registered seed, and the registered
+sampling settings (`num_samples`, `num_warmup`, `save_warmup`, `thin`,
+`adapt_delta`, `max_depth`, metric, output significant figures, and refresh). Each CSV
+must describe a one-chain `sample / hmc / nuts` process. A command receipt is not accepted
+as a substitute for contradictory or missing metadata in the chain output itself.
+
 The convergence summary must contain the complete registered parameter set:
 
 ```text
