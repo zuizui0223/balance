@@ -105,7 +105,30 @@
       "U2",
       "U6"
     ],
-    "sequence_rule": "separate from architecture coding; receipts must be adjudicated outcome-independent before V4 assembly"
+    "sequence_rule": "separate from architecture coding; receipts must be adjudicated outcome-independent before V4 assembly",
+    "u2_receipt_versions": {
+      "V1": {
+        "source": "tracked data/BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+        "builder_command": "python scripts/build_plant_predictor_adjudication_packet.py",
+        "protocol": "docs/BALANCE_PLANT_PREDICTOR_RECEIPT_ADJUDICATION_PROTOCOL_V1.md"
+      },
+      "V2": {
+        "source": "immutable post-expansion V2 freeze workspace",
+        "required_files": [
+          "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv",
+          "BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json"
+        ],
+        "builder_command": "python scripts/build_plant_predictor_adjudication_packet.py --u2-v2-freeze-dir <V2_FREEZE_WORKSPACE>",
+        "packet_filename": "BALANCE_PLANT_PREDICTOR_ADJUDICATION_PACKET_U2V2_V1.zip",
+        "protocol": "docs/BALANCE_PLANT_PREDICTOR_RECEIPT_ADJUDICATION_PROTOCOL_V2.md"
+      }
+    },
+    "version_rule": "U6 remains V1; predictor reviewer receives exactly one frozen U2 version; V1 packet preserves its executed byte identity and V2 uses a distinct protocol/freeze receipt so generations are never silently rewritten",
+    "workflow_scope": "manual GitHub workflow builds tracked U2 V1; U2 V2 is built from an authorized immutable freeze workspace via the same CLI",
+    "protocols": {
+      "V1": "docs/BALANCE_PLANT_PREDICTOR_RECEIPT_ADJUDICATION_PROTOCOL_V1.md",
+      "V2": "docs/BALANCE_PLANT_PREDICTOR_RECEIPT_ADJUDICATION_PROTOCOL_V2.md"
+    }
   },
   "post_handoff_analysis": {
     "readiness_cli": "scripts/build_plant_v4_analysis_inputs.py",
