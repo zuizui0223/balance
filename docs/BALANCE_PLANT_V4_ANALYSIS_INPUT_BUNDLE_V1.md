@@ -34,10 +34,16 @@ The builder verifies:
 - exact receipt-declared mutable file set;
 - every mutable file SHA256 against `composed_sha256`;
 - `source_sha256 == composed_sha256`;
-- frozen predictor receipt constraints and V4 readiness gates.
+- frozen predictor receipt constraints and V4 readiness gates;
+- the U2 predictor version declared by the composed workspace receipt;
+- V1 reviewed U2 receipts against tracked V1, or V2 reviewed U2 receipts against the
+  receipt-bound copied frozen V2 baseline;
+- the V2 freeze-receipt provenance when V2 is active.
 
 The lighter `current_readiness(input_dir=...)` diagnostic remains able to inspect partial
-workspaces and does not require a composition receipt.
+workspaces and does not require a composition receipt. When a canonical composed receipt is
+present, however, readiness follows its declared U2 predictor version rather than guessing
+from filenames.
 
 ## Immutable output
 
@@ -68,7 +74,10 @@ The receipt binds:
 - primary Stan wrapper SHA256;
 - primary prior-sensitivity wrapper SHA256;
 - both temporal-generality wrapper SHA256 values when that gate is open;
-- the frozen generality status.
+- the frozen generality status;
+- active U2 predictor receipt version;
+- reviewed and frozen U2 predictor basenames and SHA256 values;
+- V2 freeze-receipt basename and SHA256 when V2 is active.
 
 The optional generality pair must either both exist or both be absent.
 
@@ -82,9 +91,9 @@ Thus a valid fit provenance chain is:
 
 ```text
 human return
--> intake receipt
+-> intake receipt (declares U2 predictor V1 or V2)
 -> architecture adjudication / predictor review receipts
--> composed human-input workspace receipt
+-> composed human-input workspace receipt (preserves reviewed/frozen U2 version provenance)
 -> analysis-input bundle receipt
 -> CmdStan fit execution receipt
 ```

@@ -7,7 +7,16 @@
     "require_primary_model_assembly_ready": true,
     "verify_exact_receipt_declared_mutable_file_set": true,
     "verify_composed_sha256_before_any_production_build": true,
-    "copy_receipt_into_analysis_bundle": true
+    "copy_receipt_into_analysis_bundle": true,
+    "u2_predictor_version_rule": {
+      "allowed": [
+        "V1",
+        "V2"
+      ],
+      "V1": "reviewed V1 is validated against tracked V1",
+      "V2": "reviewed V2 is validated against the composed frozen V2 baseline and the V2 freeze receipt carried by the human-input workspace",
+      "basename_coercion_forbidden": true
+    }
   },
   "required_outputs": [
     "BALANCE_PLANT_V4_LICENSED_ASSEMBLY.csv",
@@ -27,7 +36,10 @@
     "record_source_human_workspace_receipt_sha256": true,
     "record_every_generated_file_sha256": true,
     "claim_ceiling": "prefit_input_provenance_only_no_fitted_effect",
-    "source_human_workspace_receipt_copy_required": true
+    "source_human_workspace_receipt_copy_required": true,
+    "record_u2_predictor_version": true,
+    "record_u2_reviewed_and_frozen_sha256": true,
+    "record_u2_v2_freeze_receipt_sha256_when_applicable": true
   },
   "workspace_policy": {
     "existing_output_directory_overwrite_allowed": false,
@@ -48,6 +60,9 @@
   "prohibitions": [
     "do not build production analysis inputs from mutable files lacking the canonical composed human-workspace receipt",
     "do not overwrite an existing analysis-input workspace",
-    "do not fit a bundle whose licensed assembly, readout, Stan wrappers, or copied source human-workspace receipt fail receipt-bound SHA256 verification"
+    "do not fit a bundle whose licensed assembly, readout, Stan wrappers, or copied source human-workspace receipt fail receipt-bound SHA256 verification",
+    "do not validate reviewed U2 V2 receipts against tracked V1",
+    "do not silently rename V2 predictor evidence to the V1 basename",
+    "do not drop U2 V2 frozen-baseline or freeze-receipt provenance when building analysis inputs"
   ]
 }
