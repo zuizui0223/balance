@@ -25,6 +25,16 @@ INTAKE_RECEIPT = "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
 U2_CODING = "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv"
 U2_ADJUDICATION = "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv"
 U2_PREDICTOR = "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+U2_PREDICTOR_V2 = "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv"
+U2_PREDICTOR_V2_FROZEN = (
+    "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2_FROZEN.csv"
+)
+U2_PREDICTOR_V2_FREEZE_RECEIPT = (
+    "BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json"
+)
+U2_PREDICTOR_EXPANSION_TEMPLATE = (
+    "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv"
+)
 U6_CODING = "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv"
 U6_ADJUDICATION = "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv"
 U6_PREDICTOR = "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
@@ -105,10 +115,34 @@ def _primary_sources(primary_dir: Path) -> tuple[dict, dict[str, Path]]:
     return receipt, paths
 
 
+def _validate_u2_v2_freeze_receipt(
+    *,
+    root: Path,
+    frozen_frame: Path,
+    freeze_receipt_path: Path,
+) -> dict:
+    freeze = _load_json(freeze_receipt_path)
+    if freeze.get("schema_version") != "BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2":
+        raise ValueError("U2 V2 freeze receipt schema mismatch")
+    if freeze.get("status") != "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION":
+        raise ValueError("U2 V2 freeze receipt status mismatch")
+    if freeze.get("v2_receipt_frame_sha256") != _sha256(frozen_frame):
+        raise ValueError("U2 V2 frozen baseline SHA256 disagrees with freeze receipt")
+
+    data = root / "data"
+    if freeze.get("v1_receipts_sha256") != _sha256(data / U2_PREDICTOR):
+        raise ValueError("U2 V2 freeze receipt is not bound to current V1 receipts")
+    if freeze.get("expansion_template_sha256") != _sha256(
+        data / U2_PREDICTOR_EXPANSION_TEMPLATE
+    ):
+        raise ValueError("U2 V2 freeze receipt is not bound to current expansion template")
+    return freeze
+
+
 def _predictor_sources(
     root: Path,
     predictor_dir: Path,
-) -> tuple[dict, dict[str, Path]]:
+) -> tuple[dict, dict[str, Path], dict]:
     receipt_path = predictor_dir / INTAKE_RECEIPT
     receipt = _load_json(receipt_path)
     if receipt.get("analysis") != "balance_plant_human_return_intake":
@@ -119,27 +153,96 @@ def _predictor_sources(
         raise ValueError("predictor review is not COMPLETE")
     if receipt.get("predictor_primary_complete") is not True:
         raise ValueError("predictor review does not close all primary receipt gates")
-    frames = (receipt.get("outputs") or {}).get("predictor_reviewed_frames") or {}
+
+    version = receipt.get("u2_predictor_receipt_version")
+    if version not in {"V1", "V2"}:
+        raise ValueError("predictor intake receipt must declare U2 predictor version V1 or V2")
+
+    outputs = receipt.get("outputs") or {}
+    frames = outputs.get("predictor_reviewed_frames") or {}
     if set(frames) != {"U2", "U6"}:
         raise ValueError("predictor intake receipt must contain reviewed U2/U6 frames")
-    paths = {
-        U2_PREDICTOR: _receipt_bound_workspace_file(
-            predictor_dir, receipt, family="predictor_reviewed_frames", lane="U2", basename=frames["U2"]
-        ),
-        U6_PREDICTOR: _receipt_bound_workspace_file(
-            predictor_dir, receipt, family="predictor_reviewed_frames", lane="U6", basename=frames["U6"]
-        ),
+
+    expected_u2 = U2_PREDICTOR if version == "V1" else U2_PREDICTOR_V2
+    if frames.get("U2") != expected_u2:
+        raise ValueError(
+            f"predictor intake U2 reviewed basename does not match declared {version}"
+        )
+    if frames.get("U6") != U6_PREDICTOR:
+        raise ValueError("predictor intake U6 reviewed basename drifted")
+
+    reviewed_u2 = _receipt_bound_workspace_file(
+        predictor_dir,
+        receipt,
+        family="predictor_reviewed_frames",
+        lane="U2",
+        basename=frames["U2"],
+    )
+    reviewed_u6 = _receipt_bound_workspace_file(
+        predictor_dir,
+        receipt,
+        family="predictor_reviewed_frames",
+        lane="U6",
+        basename=frames["U6"],
+    )
+
+    paths: dict[str, Path] = {
+        expected_u2: reviewed_u2,
+        U6_PREDICTOR: reviewed_u6,
     }
-    frozen = root / "data"
-    load_predictor_adjudication_return(
-        paths[U2_PREDICTOR],
-        frozen / U2_PREDICTOR,
-    )
-    load_predictor_adjudication_return(
-        paths[U6_PREDICTOR],
-        frozen / U6_PREDICTOR,
-    )
-    return receipt, paths
+    metadata = {
+        "u2_predictor_receipt_version": version,
+        "u2_predictor_reviewed_basename": expected_u2,
+        "u2_predictor_frozen_baseline_basename": U2_PREDICTOR,
+        "u2_predictor_freeze_receipt_basename": None,
+    }
+
+    data = root / "data"
+    if version == "V1":
+        frozen_u2 = data / U2_PREDICTOR
+        frozen_frames = outputs.get("predictor_frozen_frames") or {}
+        freeze_receipts = outputs.get("predictor_freeze_receipts") or {}
+        if frozen_frames or freeze_receipts:
+            raise ValueError("U2 V1 intake must not carry V2 frozen-baseline outputs")
+    else:
+        frozen_frames = outputs.get("predictor_frozen_frames") or {}
+        freeze_receipts = outputs.get("predictor_freeze_receipts") or {}
+        if frozen_frames != {"U2": U2_PREDICTOR_V2_FROZEN}:
+            raise ValueError("U2 V2 intake must contain exactly one frozen U2 V2 baseline")
+        if freeze_receipts != {"U2": U2_PREDICTOR_V2_FREEZE_RECEIPT}:
+            raise ValueError("U2 V2 intake must contain exactly one U2 V2 freeze receipt")
+
+        frozen_u2 = _receipt_bound_workspace_file(
+            predictor_dir,
+            receipt,
+            family="predictor_frozen_frames",
+            lane="U2",
+            basename=U2_PREDICTOR_V2_FROZEN,
+        )
+        freeze_receipt_path = _receipt_bound_workspace_file(
+            predictor_dir,
+            receipt,
+            family="predictor_freeze_receipts",
+            lane="U2",
+            basename=U2_PREDICTOR_V2_FREEZE_RECEIPT,
+        )
+        _validate_u2_v2_freeze_receipt(
+            root=root,
+            frozen_frame=frozen_u2,
+            freeze_receipt_path=freeze_receipt_path,
+        )
+        paths[U2_PREDICTOR_V2_FROZEN] = frozen_u2
+        paths[U2_PREDICTOR_V2_FREEZE_RECEIPT] = freeze_receipt_path
+        metadata["u2_predictor_frozen_baseline_basename"] = (
+            U2_PREDICTOR_V2_FROZEN
+        )
+        metadata["u2_predictor_freeze_receipt_basename"] = (
+            U2_PREDICTOR_V2_FREEZE_RECEIPT
+        )
+
+    load_predictor_adjudication_return(reviewed_u2, frozen_u2)
+    load_predictor_adjudication_return(reviewed_u6, data / U6_PREDICTOR)
+    return receipt, paths, metadata
 
 
 def _external_sources(external_dir: Path) -> tuple[dict, dict[str, Path]]:
@@ -166,7 +269,12 @@ def _external_sources(external_dir: Path) -> tuple[dict, dict[str, Path]]:
     }
 
 
-def _readiness(root: Path, workspace: Path) -> dict:
+def _readiness(
+    root: Path,
+    workspace: Path,
+    *,
+    u2_predictor_basename: str,
+) -> dict:
     data = root / "data"
     return build_plant_v4_readiness(
         u1_first20_conflict_path=data / "BALANCE_PLANT_U1_BLIND_CONFLICT_SCREEN_V1.csv",
@@ -186,7 +294,7 @@ def _readiness(root: Path, workspace: Path) -> dict:
         u2_sample_path=data / "BALANCE_PLANT_U2_DOUBLE_CODE_SAMPLE_V1.csv",
         u2_worksheet_path=workspace / U2_CODING,
         u2_adjudication_path=workspace / U2_ADJUDICATION,
-        u2_predictor_receipts_path=workspace / U2_PREDICTOR,
+        u2_predictor_receipts_path=workspace / u2_predictor_basename,
         u6_freeze_path=data / "BALANCE_PLANT_U6_PASS1_FREEZE_V1.json",
         u6_worksheet_path=workspace / U6_CODING,
         u6_adjudication_path=workspace / U6_ADJUDICATION,
@@ -205,7 +313,10 @@ def compose_v4_human_input_workspace(
 ) -> dict:
     """Compose validated human outputs and re-run the frozen V4 readiness gate."""
     primary_receipt, primary = _primary_sources(primary_adjudication_dir)
-    predictor_receipt, predictor = _predictor_sources(root, predictor_intake_dir)
+    predictor_receipt, predictor, predictor_meta = _predictor_sources(
+        root,
+        predictor_intake_dir,
+    )
 
     sources = {**primary, **predictor}
     external_receipt = None
@@ -233,7 +344,13 @@ def compose_v4_human_input_workspace(
                 "composed_sha256": _sha256(target),
             }
 
-        readiness = _readiness(root, tmp_dir)
+        readiness = _readiness(
+            root,
+            tmp_dir,
+            u2_predictor_basename=predictor_meta[
+                "u2_predictor_reviewed_basename"
+            ],
+        )
         if readiness["open_gate_names"]:
             raise ValueError(
                 "composed workspace still has primary human gates open: "
@@ -259,6 +376,18 @@ def compose_v4_human_input_workspace(
                 else None
             ),
             "external_validation_included": external_receipt is not None,
+            "u2_predictor_receipt_version": predictor_meta[
+                "u2_predictor_receipt_version"
+            ],
+            "u2_predictor_reviewed_basename": predictor_meta[
+                "u2_predictor_reviewed_basename"
+            ],
+            "u2_predictor_frozen_baseline_basename": predictor_meta[
+                "u2_predictor_frozen_baseline_basename"
+            ],
+            "u2_predictor_freeze_receipt_basename": predictor_meta[
+                "u2_predictor_freeze_receipt_basename"
+            ],
             "files": file_receipts,
             "primary_human_open_gates": readiness["primary_human_open_gates"],
             "primary_model_assembly_ready": readiness["primary_model_assembly_ready"],

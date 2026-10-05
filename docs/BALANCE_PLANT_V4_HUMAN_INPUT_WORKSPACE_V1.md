@@ -29,6 +29,15 @@ predictor_primary_complete = true
 
 and the validated reviewed U2/U6 predictor-receipt CSV frames.
 
+For U2, the intake receipt must explicitly declare `V1` or `V2`.
+
+- V1 composition carries the reviewed V1 frame and validates it against the tracked V1
+  frozen surface.
+- V2 composition carries the reviewed V2 frame **without renaming it**, plus the copied
+  frozen V2 baseline and `BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json`.
+  The compositor rechecks the V2 frame hash and also verifies that the freeze receipt is
+  still bound to the current tracked V1 surface and frozen expansion template.
+
 ### Optional external U1 workspace
 
 A validated EXTERNAL architecture-adjudication workspace may be added. Its absence never
@@ -36,17 +45,34 @@ blocks the U2+U6 primary workspace.
 
 ## Output
 
-The primary composed workspace contains exactly the six human-mutable primary surfaces:
+The primary composed workspace always contains the five common primary surfaces:
 
 ```text
 U2 merged coding
 U2 final architecture adjudication
-U2 reviewed predictor receipts
 
 U6 merged coding
 U6 final architecture adjudication
 U6 reviewed predictor receipts
 ```
+
+and one versioned U2 predictor surface.
+
+For V1:
+
+```text
+BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv
+```
+
+For V2:
+
+```text
+BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv
+BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2_FROZEN.csv
+BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json
+```
+
+The latter two V2 files are provenance surfaces, not additional model inputs.
 
 If external U1 is supplied, the U1 merged coding and adjudication files are added.
 
@@ -62,11 +88,16 @@ This applies to:
 - U2/U6 merged coding ledgers;
 - U2/U6 final architecture-adjudication ledgers;
 - U2/U6 reviewed predictor-receipt frames;
+- when U2 V2 is active, its copied frozen V2 baseline and V2 freeze receipt;
 - optional U1 merged coding/adjudication ledgers.
 
 Semantic CSV validation is not a substitute for this check. Even a change that leaves parsed
 rows unchanged, such as trailing whitespace or a blank line, invalidates the immutable
 workspace receipt and the compositor fails closed.
+
+The workspace receipt records the active U2 predictor version and the exact reviewed/frozen
+basenames. Downstream code must use those receipt-declared names; V2 is never silently
+coerced back to V1.
 
 ## Final validation
 

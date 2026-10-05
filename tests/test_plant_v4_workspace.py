@@ -1,5 +1,6 @@
 import csv
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -12,9 +13,16 @@ from balance_domain.plant_architecture_adjudication import (
 from balance_domain.plant_human_return_intake import (
     CODER_RETURN_BASENAMES,
     PREDICTOR_RETURN_BASENAMES,
+    U2_PREDICTOR_V2_BASENAME,
+    U2_PREDICTOR_V2_FREEZE_RECEIPT,
+    U2_PREDICTOR_V2_FROZEN_BASENAME,
     write_human_return_intake,
 )
 from balance_domain.plant_macro_agreement import FIELDS
+from balance_domain.plant_predictor_expansion import (
+    FIELDS as EXPANSION_FIELDS,
+    load_expansion_coding,
+)
 from balance_domain.plant_u6 import PASS2_FIELDS
 from balance_domain.plant_v4_workspace import compose_v4_human_input_workspace
 
@@ -133,6 +141,86 @@ def _predictor_returns(path, *, reject_one_u2=False):
             else:
                 row["adjudication_status"] = "REJECTED"
         _write_rows(path / PREDICTOR_RETURN_BASENAMES[lane], fields, rows)
+
+
+def _load_freeze_v2_script():
+    path = ROOT / "scripts" / "freeze_plant_u2_predictor_receipts_v2.py"
+    spec = importlib.util.spec_from_file_location(
+        "freeze_plant_u2_predictor_receipts_v2_workspace_test",
+        path,
+    )
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def _build_u2_v2_freeze_workspace(tmp_path):
+    template = ROOT / "data" / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv"
+    rows = load_expansion_coding(template)
+    target_group = rows[0]["cluster_id"]
+    values = {
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+    }
+    for row in rows:
+        if row["cluster_id"] == target_group:
+            row.update({
+                "coding_status": "CODED",
+                "reported_value": values[row["predictor"]],
+                "evidence_type": "INTEGRATED_STATE_DESCRIPTION",
+                "outcome_independence": "TRUE",
+                "notes": "synthetic source-side expansion evidence",
+            })
+        else:
+            row.update({
+                "coding_status": "EVIDENCE_CEILING",
+                "notes": "synthetic source-side evidence ceiling",
+            })
+
+    returned = tmp_path / "u2_expansion_return.csv"
+    _write_rows(returned, EXPANSION_FIELDS, rows)
+    freeze_dir = tmp_path / "u2_v2_freeze"
+    module = _load_freeze_v2_script()
+    module.freeze_v2(coding_return=returned, out_dir=freeze_dir)
+    return freeze_dir
+
+
+def _build_predictor_workspace_v2(tmp_path):
+    freeze_dir = _build_u2_v2_freeze_workspace(tmp_path)
+    returns = tmp_path / "predictor_returns_v2"
+
+    u2_source = freeze_dir / U2_PREDICTOR_V2_BASENAME
+    fields, rows = _read_rows(u2_source)
+    for row in rows:
+        row["adjudication_status"] = (
+            "ADJUDICATED"
+            if row["reported_value"] != "UNRESOLVED"
+            and row["outcome_independence"] == "TRUE"
+            else "REJECTED"
+        )
+    _write_rows(returns / U2_PREDICTOR_V2_BASENAME, fields, rows)
+
+    u6_source = ROOT / "data" / PREDICTOR_RETURN_BASENAMES["U6"]
+    fields, rows = _read_rows(u6_source)
+    for row in rows:
+        row["adjudication_status"] = (
+            "ADJUDICATED"
+            if row["reported_value"] != "UNRESOLVED"
+            and row["outcome_independence"] == "TRUE"
+            else "REJECTED"
+        )
+    _write_rows(returns / PREDICTOR_RETURN_BASENAMES["U6"], fields, rows)
+
+    intake = tmp_path / "predictor_intake_v2"
+    write_human_return_intake(
+        root=ROOT,
+        return_dir=returns,
+        out_dir=intake,
+        u2_v2_freeze_dir=freeze_dir,
+    )
+    return intake
 
 
 def _build_primary_adjudication_workspace(tmp_path):
@@ -315,4 +403,73 @@ def test_compositor_revalidates_predictor_semantics_even_if_receipt_hash_is_forg
             primary_adjudication_dir=primary,
             predictor_intake_dir=predictor,
             out_dir=tmp_path / "composed",
+        )
+
+
+
+def test_compositor_preserves_v2_predictor_version_and_frozen_baseline(tmp_path):
+    primary = _build_primary_adjudication_workspace(tmp_path)
+    predictor = _build_predictor_workspace_v2(tmp_path)
+    composed = tmp_path / "composed_v2"
+
+    result = compose_v4_human_input_workspace(
+        root=ROOT,
+        primary_adjudication_dir=primary,
+        predictor_intake_dir=predictor,
+        out_dir=composed,
+    )
+    assert result["primary_model_assembly_ready"] is True
+
+    receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
+    assert receipt["u2_predictor_receipt_version"] == "V2"
+    assert receipt["u2_predictor_reviewed_basename"] == U2_PREDICTOR_V2_BASENAME
+    assert (
+        receipt["u2_predictor_frozen_baseline_basename"]
+        == U2_PREDICTOR_V2_FROZEN_BASENAME
+    )
+    assert (
+        receipt["u2_predictor_freeze_receipt_basename"]
+        == U2_PREDICTOR_V2_FREEZE_RECEIPT
+    )
+
+    expected = {
+        U2_PREDICTOR_V2_BASENAME,
+        U2_PREDICTOR_V2_FROZEN_BASENAME,
+        U2_PREDICTOR_V2_FREEZE_RECEIPT,
+        PREDICTOR_RETURN_BASENAMES["U6"],
+    }
+    assert expected <= set(receipt["files"])
+    for basename in expected:
+        path = composed / basename
+        assert path.exists()
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == (
+            receipt["files"][basename]["composed_sha256"]
+        )
+
+
+def test_compositor_rejects_tampered_v2_frozen_baseline_even_with_intake_hash_forged(
+    tmp_path,
+):
+    primary = _build_primary_adjudication_workspace(tmp_path)
+    predictor = _build_predictor_workspace_v2(tmp_path)
+
+    intake_receipt_path = predictor / "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json"
+    intake_receipt = json.loads(intake_receipt_path.read_text(encoding="utf-8"))
+    frozen_name = intake_receipt["outputs"]["predictor_frozen_frames"]["U2"]
+    frozen = predictor / frozen_name
+    frozen.write_bytes(frozen.read_bytes() + b"\n")
+    intake_receipt["output_sha256"]["predictor_frozen_frames"]["U2"] = (
+        hashlib.sha256(frozen.read_bytes()).hexdigest()
+    )
+    intake_receipt_path.write_text(
+        json.dumps(intake_receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="frozen baseline SHA256 disagrees"):
+        compose_v4_human_input_workspace(
+            root=ROOT,
+            primary_adjudication_dir=primary,
+            predictor_intake_dir=predictor,
+            out_dir=tmp_path / "composed_bad_v2",
         )
