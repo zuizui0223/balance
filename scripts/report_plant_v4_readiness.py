@@ -25,6 +25,7 @@ def _human_handoff_execution_status() -> dict:
         raise ValueError("plant human-handoff execution status drifted")
     architecture = data["architecture_coding"]
     predictor = data["predictor_receipt_adjudication"]
+    expansion = data["u2_predictor_expansion"]
     return {
         "status": data["status"],
         "architecture_coder_packets_generated": (
@@ -33,12 +34,24 @@ def _human_handoff_execution_status() -> dict:
         "predictor_adjudication_packet_generated": bool(
             predictor["artifact_id"]
         ),
+        "u2_predictor_expansion_packet_generated": bool(
+            expansion["artifact_id"]
+        ),
+        "u2_predictor_expansion_blocks_primary_v4_fit": (
+            expansion["blocks_primary_v4_fit"]
+        ),
         "independent_human_returns_received": False,
+        "u2_predictor_expansion_return_received": False,
         "next_action": "COLLECT_INDEPENDENT_HUMAN_RETURNS",
+        "parallel_next_actions": [
+            "COLLECT_PRIMARY_ARCHITECTURE_AND_PREDICTOR_RETURNS",
+            "COLLECT_U2_PREDICTOR_EXPANSION_RETURN_FOR_GENERALITY",
+        ],
         "artifact_expiry": {
             "CODER_A": architecture["packets"]["CODER_A"]["artifact_expires_at"],
             "CODER_B": architecture["packets"]["CODER_B"]["artifact_expires_at"],
             "PREDICTOR_REVIEW": predictor["artifact_expires_at"],
+            "U2_PREDICTOR_EXPANSION": expansion["artifact_expires_at"],
         },
         "claim_ceiling": "operational_handoff_status_only_no_biological_result",
     }
