@@ -1,5 +1,6 @@
 import csv
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -8,10 +9,17 @@ import pytest
 from balance_domain.plant_human_return_intake import (
     CODER_RETURN_BASENAMES,
     PREDICTOR_RETURN_BASENAMES,
+    U2_PREDICTOR_V2_BASENAME,
+    U2_PREDICTOR_V2_FREEZE_RECEIPT,
+    U2_PREDICTOR_V2_FROZEN_BASENAME,
     required_return_paths,
     write_human_return_intake,
 )
 from balance_domain.plant_macro_agreement import FIELDS
+from balance_domain.plant_predictor_expansion import (
+    FIELDS as EXPANSION_FIELDS,
+    load_expansion_coding,
+)
 from balance_domain.plant_u6 import PASS2_FIELDS
 
 
@@ -124,6 +132,74 @@ def _build_predictor_returns(return_dir, *, reject_one_u2=False):
         )
 
 
+def _load_freeze_v2_script():
+    path = ROOT / "scripts" / "freeze_plant_u2_predictor_receipts_v2.py"
+    spec = importlib.util.spec_from_file_location(
+        "freeze_plant_u2_predictor_receipts_v2",
+        path,
+    )
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+def _build_v2_freeze_workspace(tmp_path, *, resolve_one_extra_group=False):
+    template = ROOT / "data" / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv"
+    rows = load_expansion_coding(template)
+    for row in rows:
+        row["coding_status"] = "EVIDENCE_CEILING"
+        row["notes"] = "synthetic evidence ceiling for intake integration test"
+
+    if resolve_one_extra_group:
+        group = rows[0]["cluster_id"]
+        values = {
+            "module_substrate": "SINGLE_OR_CONTINUOUS",
+            "conflict_timing_geometry": "SIMULTANEOUS",
+            "conflict_spatial_geometry": "SAME_UNIT",
+        }
+        for row in rows:
+            if row["cluster_id"] == group:
+                row.update({
+                    "coding_status": "CODED",
+                    "reported_value": values[row["predictor"]],
+                    "evidence_type": "INTEGRATED_STATE_DESCRIPTION",
+                    "outcome_independence": "TRUE",
+                    "notes": "synthetic source-side predictor evidence",
+                })
+
+    returned = tmp_path / "u2_expansion_return.csv"
+    _write_rows(returned, EXPANSION_FIELDS, rows)
+    freeze_dir = tmp_path / "u2_v2_freeze"
+    module = _load_freeze_v2_script()
+    module.freeze_v2(coding_return=returned, out_dir=freeze_dir)
+    return freeze_dir
+
+
+def _build_predictor_returns_v2(return_dir, freeze_dir):
+    v2_source = freeze_dir / U2_PREDICTOR_V2_BASENAME
+    fields, rows = _read_rows(v2_source)
+    for row in rows:
+        row["adjudication_status"] = (
+            "ADJUDICATED"
+            if row["reported_value"] != "UNRESOLVED"
+            and row["outcome_independence"] == "TRUE"
+            else "REJECTED"
+        )
+    _write_rows(return_dir / U2_PREDICTOR_V2_BASENAME, fields, rows)
+
+    u6_source = ROOT / "data" / PREDICTOR_RETURN_BASENAMES["U6"]
+    fields, rows = _read_rows(u6_source)
+    for row in rows:
+        row["adjudication_status"] = (
+            "ADJUDICATED"
+            if row["reported_value"] != "UNRESOLVED"
+            and row["outcome_independence"] == "TRUE"
+            else "REJECTED"
+        )
+    _write_rows(return_dir / PREDICTOR_RETURN_BASENAMES["U6"], fields, rows)
+
+
 def _complete_bundle(return_dir, **kwargs):
     _build_coder_return_bundle(
         return_dir,
@@ -145,9 +221,10 @@ def test_canonical_return_paths_cover_three_independent_stages(tmp_path):
         "U6_CODER_A",
         "U6_CODER_B",
         "U2_PREDICTOR",
+        "U2_PREDICTOR_V2",
         "U6_PREDICTOR",
     }
-    assert len({path.name for path in paths.values()}) == 8
+    assert len({path.name for path in paths.values()}) == 9
 
 
 def test_complete_return_bundle_builds_one_intake_workspace(tmp_path):
@@ -361,7 +438,8 @@ def test_machine_readable_intake_contract_matches_canonical_basenames():
         "U6_CODER_A": CODER_RETURN_BASENAMES[("U6", "CODER_A")],
         "U6_CODER_B": CODER_RETURN_BASENAMES[("U6", "CODER_B")],
     }
-    assert predictor["U2_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U2"]
+    assert predictor["U2_PREDICTOR_V1"] == PREDICTOR_RETURN_BASENAMES["U2"]
+    assert predictor["U2_PREDICTOR_V2"] == U2_PREDICTOR_V2_BASENAME
     assert predictor["U6_PREDICTOR"] == PREDICTOR_RETURN_BASENAMES["U6"]
     stages = contract["intake_stages"]
     assert stages["PRIMARY_ARCHITECTURE"]["blocks_primary_v4"] is True
@@ -454,5 +532,105 @@ def test_no_complete_return_stage_fails_closed(tmp_path):
             root=ROOT,
             return_dir=returns,
             out_dir=out_dir,
+        )
+    assert not out_dir.exists()
+
+
+
+def test_u2_v2_predictor_review_accepts_more_than_eight_complete_groups(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    freeze_dir = _build_v2_freeze_workspace(
+        tmp_path,
+        resolve_one_extra_group=True,
+    )
+    _build_predictor_returns_v2(returns, freeze_dir)
+
+    result = write_human_return_intake(
+        root=ROOT,
+        return_dir=returns,
+        out_dir=out_dir,
+        u2_v2_freeze_dir=freeze_dir,
+    )
+    receipt = json.loads(Path(result["receipt"]).read_text(encoding="utf-8"))
+
+    assert result["predictor_returns_received"] is True
+    assert result["u2_predictor_receipt_version"] == "V2"
+    assert result["predictor_primary_complete"] is True
+    assert result["predictor_return_status"] == "COMPLETE"
+    assert receipt["predictor_adjudication"]["U2"][
+        "n_clusters_with_three_adjudicated_receipts"
+    ] == 9
+    assert receipt["u2_missing_source_positive_predictor_groups"] == []
+
+    reviewed_name = receipt["outputs"]["predictor_reviewed_frames"]["U2"]
+    assert reviewed_name == U2_PREDICTOR_V2_BASENAME
+    frozen_name = receipt["outputs"]["predictor_frozen_frames"]["U2"]
+    assert frozen_name == U2_PREDICTOR_V2_FROZEN_BASENAME
+    freeze_receipt_name = receipt["outputs"]["predictor_freeze_receipts"]["U2"]
+    assert freeze_receipt_name == U2_PREDICTOR_V2_FREEZE_RECEIPT
+
+    assert (out_dir / reviewed_name).exists()
+    assert (out_dir / frozen_name).exists()
+    assert (out_dir / freeze_receipt_name).exists()
+    assert receipt["output_sha256"]["predictor_frozen_frames"]["U2"] == (
+        hashlib.sha256((out_dir / frozen_name).read_bytes()).hexdigest()
+    )
+
+
+def test_u2_v2_predictor_review_requires_explicit_freeze_workspace(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    freeze_dir = _build_v2_freeze_workspace(tmp_path)
+    _build_predictor_returns_v2(returns, freeze_dir)
+
+    with pytest.raises(ValueError, match="requires --u2-v2-freeze-dir"):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+        )
+    assert not out_dir.exists()
+
+
+def test_u2_predictor_review_rejects_ambiguous_v1_and_v2_returns(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    freeze_dir = _build_v2_freeze_workspace(tmp_path)
+    _build_predictor_returns_v2(returns, freeze_dir)
+
+    fields, rows = _read_rows(ROOT / "data" / PREDICTOR_RETURN_BASENAMES["U2"])
+    for row in rows:
+        row["adjudication_status"] = "REJECTED"
+    _write_rows(returns / PREDICTOR_RETURN_BASENAMES["U2"], fields, rows)
+
+    with pytest.raises(ValueError, match="supply exactly one U2 receipt version"):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+            u2_v2_freeze_dir=freeze_dir,
+        )
+    assert not out_dir.exists()
+
+
+def test_u2_v2_predictor_review_rejects_tampered_frozen_baseline(tmp_path):
+    returns = tmp_path / "returns"
+    out_dir = tmp_path / "intake"
+    freeze_dir = _build_v2_freeze_workspace(tmp_path)
+    _build_predictor_returns_v2(returns, freeze_dir)
+
+    frozen = freeze_dir / U2_PREDICTOR_V2_BASENAME
+    frozen.write_text(
+        frozen.read_text(encoding="utf-8") + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="frozen receipt frame SHA256 mismatch"):
+        write_human_return_intake(
+            root=ROOT,
+            return_dir=returns,
+            out_dir=out_dir,
+            u2_v2_freeze_dir=freeze_dir,
         )
     assert not out_dir.exists()

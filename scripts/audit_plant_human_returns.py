@@ -35,6 +35,16 @@ def main() -> None:
     )
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument(
+        "--u2-v2-freeze-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Required only when the predictor return uses the U2 V2 receipt frame. "
+            "Directory containing the frozen V2 receipt frame and "
+            "BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json."
+        ),
+    )
+    parser.add_argument(
         "--list-required",
         action="store_true",
         help="Print the canonical required return basenames and exit.",
@@ -61,6 +71,7 @@ def main() -> None:
             root=ROOT,
             return_dir=args.return_dir,
             out_dir=args.out_dir,
+            u2_v2_freeze_dir=args.u2_v2_freeze_dir,
         ),
         indent=2,
         sort_keys=True,
