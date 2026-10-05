@@ -95,6 +95,44 @@ U6 source packet
 Thus the independent reviewers can inspect the same frozen evidence while remaining blind
 to each other's judgments.
 
+## U2 predictor-expansion packet for strict generality
+
+The frozen V1 predictor surface cannot satisfy the strict cross-universe temporal
+common-support gate: U2 has only one complete `SINGLE + SIMULTANEOUS` dependence block,
+while two are required.
+
+Because independent architecture outcomes remain unopened, a prospective V2 expansion was
+frozen over **all 12** U2 reliability-frame groups whose three V1 predictor receipts were
+unresolved. Selective gap filling is forbidden.
+
+The expansion packet has now been generated:
+
+```text
+groups = 12
+predictor slots = 36
+packet SHA256 =
+c161898bef0d3d4603bafcb55f8b0c9bb830ffee64f71260a2155422bf8d9717
+```
+
+Artifact audit:
+
+- the 12 groups exactly equal the full V1 population with all three predictors unresolved;
+- omitted groups = 0;
+- extra groups = 0;
+- all 36 slots remain `UNSTARTED / UNRESOLVED / UNCERTAIN`;
+- architecture outputs are absent;
+- conflict-screen outputs are absent;
+- focal architecture/conflict labels occur zero times in the coding/source surfaces;
+- the only coder instruction is to code predictors from the primary source without viewing
+  architecture outputs or conflict-screen decisions.
+
+This expansion is **not required for the V4 main fit**. Its role is only to make the frozen
+strict temporal-generality gate potentially reachable without lowering that gate.
+
+After the expansion coder returns all 36 slots, the repository must validate the complete
+return, freeze a deterministic V2 receipt frame preserving all already-resolved V1 receipts
+exactly, and send V2 receipts to a separate independent predictor adjudicator.
+
 ## Next gate
 
 The remaining primary blockers are genuinely human:
