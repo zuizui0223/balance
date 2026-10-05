@@ -73,7 +73,8 @@
       "packet_workflow": ".github/workflows/build-plant-u2-predictor-expansion.yml",
       "v2_freeze_cli": "scripts/freeze_plant_u2_predictor_receipts_v2.py",
       "frozen_v2_output": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv",
-      "post_coding_status": "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION"
+      "post_coding_status": "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION",
+      "execution_receipt": "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json"
     }
   },
   "prohibitions": [
