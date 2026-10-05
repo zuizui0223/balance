@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import importlib.util
 import json
@@ -32,6 +33,10 @@ def test_handoff_execution_receipt_rebuilds_deterministic_packets(tmp_path):
         "build_plant_predictor_adjudication_packet",
         ROOT / "scripts" / "build_plant_predictor_adjudication_packet.py",
     )
+    expansion = _load_script(
+        "build_plant_u2_predictor_expansion_packet",
+        ROOT / "scripts" / "build_plant_u2_predictor_expansion_packet.py",
+    )
 
     coder_out = coder.build_all(tmp_path / "coders")
     for coder_id in ("CODER_A", "CODER_B"):
@@ -44,6 +49,15 @@ def test_handoff_execution_receipt_rebuilds_deterministic_packets(tmp_path):
     frozen_predictor = data["predictor_receipt_adjudication"]
     assert _sha256(predictor_zip) == frozen_predictor["packet_sha256"]
     assert _sha256(predictor_receipt) == frozen_predictor["receipt_sha256"]
+
+    expansion_zip, expansion_receipt = expansion.build_packet(tmp_path / "u2_expansion")
+    frozen_expansion = data["u2_predictor_expansion"]
+    assert _sha256(expansion_zip) == frozen_expansion["packet_sha256"]
+    assert _sha256(expansion_receipt) == frozen_expansion["receipt_sha256"]
+    assert frozen_expansion["blocks_primary_v4_fit"] is False
+    assert frozen_expansion["n_groups"] == 12
+    assert frozen_expansion["n_predictor_slots"] == 36
+    assert frozen_expansion["audit"]["exact_match_to_all3_unresolved_V1_groups"] is True
 
 
 def test_handoff_execution_receipt_freezes_cross_role_evidence_identity():
@@ -69,4 +83,46 @@ def test_handoff_execution_receipt_freezes_cross_role_evidence_identity():
     assert (
         predictor["audit"]["focal_architecture_label_hits_in_receipt_value_source_or_notes"]
         == 0
+    )
+
+
+
+def test_u2_expansion_execution_receipt_preserves_prospective_population():
+    data = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    expansion = data["u2_predictor_expansion"]
+
+    assert expansion["selective_gap_filling_forbidden"] is True
+    assert expansion["architecture_outputs_included"] is False
+    assert expansion["conflict_screen_outputs_included"] is False
+    assert expansion["audit"]["omitted_groups"] == []
+    assert expansion["audit"]["extra_groups"] == []
+    assert expansion["audit"]["coding_status"] == ["UNSTARTED"]
+    assert expansion["audit"]["reported_value"] == ["UNRESOLVED"]
+    assert expansion["audit"]["outcome_independence"] == ["UNCERTAIN"]
+    assert expansion["audit"]["focal_architecture_or_conflict_label_hits"] == 0
+
+
+
+def test_u2_expansion_execution_population_matches_reachability_registry():
+    execution = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    reachability = json.loads(
+        (ROOT / "data" / "BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    with (
+        ROOT / "data" / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv"
+    ).open(encoding="utf-8", newline="") as handle:
+        coding_groups = sorted({row["cluster_id"] for row in csv.DictReader(handle)})
+
+    registered_groups = sorted(
+        reachability["prospective_reopening_contract"]["expansion_group_ids"]
+    )
+    assert coding_groups == registered_groups
+    assert execution["u2_predictor_expansion"]["n_groups"] == len(registered_groups)
+    assert (
+        reachability["prospective_reopening_contract"]["implementation"][
+            "execution_receipt"
+        ]
+        == "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json"
     )

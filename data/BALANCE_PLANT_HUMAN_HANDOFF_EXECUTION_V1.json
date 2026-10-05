@@ -98,7 +98,51 @@
     "if any raw agreement <0.80, repair codebook and independently recode the same frozen groups",
     "after reliability pass, adjudicate architecture disagreements",
     "validate predictor receipt adjudication",
-    "build licensed U2/U6 assembly and run V4 estimability gate"
+    "build licensed U2/U6 assembly and run V4 estimability gate",
+    "in parallel with primary-return collection, complete the frozen 12-group U2 predictor expansion for strict temporal-generality reachability",
+    "freeze the complete expansion return into V2 predictor receipts without altering resolved V1 receipts",
+    "independently adjudicate V2 predictor receipts before any strict temporal-generality use"
   ],
-  "claim_ceiling": "handoff_execution_and_artifact_provenance_only_no_biological_result"
+  "claim_ceiling": "handoff_execution_and_artifact_provenance_only_no_biological_result",
+  "u2_predictor_expansion": {
+    "role": "STRICT_TEMPORAL_GENERALITY_REACHABILITY_EXTENSION",
+    "blocks_primary_v4_fit": false,
+    "github_actions_run_id": 37251706107,
+    "workflow_head_sha": "faca3ae3494aaacf26ed4cd2cfed37220ba91e3d",
+    "source_main_sha": "e3c5d632fbcccd3a8c6f02029c4ad752be0e83af",
+    "validation_tests": "13 passed",
+    "artifact_id": 11321445768,
+    "artifact_name": "balance-plant-u2-predictor-expansion-v2",
+    "artifact_size_bytes": 7386,
+    "artifact_created_at": "2026-10-05T01:34:32Z",
+    "artifact_expires_at": "2027-01-03T01:30:40Z",
+    "github_artifact_zip_sha256": "32e42e416d046e027dfac0756c64cf55f5e19eae67aa149f53a0b96e57f8246c",
+    "packet_sha256": "c161898bef0d3d4603bafcb55f8b0c9bb830ffee64f71260a2155422bf8d9717",
+    "receipt_sha256": "dd02671bbbab48e096952df04ef1d36ce879f9b245cb78a902c447fe536256d8",
+    "population_rule": "all_12_frozen_U2_groups_with_three_UNRESOLVED_V1_predictor_receipts",
+    "n_groups": 12,
+    "n_predictor_slots": 36,
+    "selective_gap_filling_forbidden": true,
+    "architecture_outputs_included": false,
+    "conflict_screen_outputs_included": false,
+    "audit": {
+      "exact_match_to_all3_unresolved_V1_groups": true,
+      "omitted_groups": [],
+      "extra_groups": [],
+      "coding_status": [
+        "UNSTARTED"
+      ],
+      "reported_value": [
+        "UNRESOLVED"
+      ],
+      "outcome_independence": [
+        "UNCERTAIN"
+      ],
+      "focal_architecture_or_conflict_label_hits": 0,
+      "coder_instruction": "CODE_PREDICTORS_FROM_PRIMARY_SOURCE_ONLY_DO_NOT_VIEW_ARCHITECTURE_OUTPUTS_OR_CONFLICT_SCREEN_DECISIONS",
+      "codebook_sha256": "0429c7aa1dc362cba05deb0fa7072b274853f0413f068df9b7ca9a8072a08ace"
+    },
+    "next_step": "independent expansion coder completes all 36 slots; validate full return; freeze deterministic V2 receipt frame; then send V2 receipts to a separate independent predictor adjudicator",
+    "claim_ceiling": "prospective_generality_reachability_handoff_only_no_biological_result"
+  }
 }
