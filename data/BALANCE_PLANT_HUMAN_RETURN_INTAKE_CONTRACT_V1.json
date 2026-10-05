@@ -21,11 +21,13 @@
       "blocks_primary_v4": false
     },
     "PREDICTOR_REVIEW": {
-      "files": [
+      "U2_return_alternatives": [
         "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
-        "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+        "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv"
       ],
-      "rule": "both may be absent while pending; if either is supplied both are required",
+      "U6_return": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "rule": "U6 V1 plus exactly one U2 version may be absent while pending; if predictor review is supplied the pair is required",
+      "V2_freeze_workspace_requirement": "U2 V2 return additionally requires an explicit immutable freeze workspace containing BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv and BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json",
       "blocks_primary_v4": true
     }
   },
@@ -56,7 +58,8 @@
     "status_when_external_stage_absent": "PENDING"
   },
   "predictor_completion_rule": {
-    "U2_required_clusters_with_three_adjudicated_receipts": 8,
+    "U2_rule": "all current strict U2 source-screen conflict-positive groups must be a subset of clusters with three adjudicated outcome-independent receipts; extra prospectively resolved/adjudicated groups are allowed",
+    "current_U2_source_positive_group_count": 8,
     "U6_required_clusters_with_three_adjudicated_receipts": 21,
     "status_when_predictor_stage_absent": "PENDING",
     "rejection_or_incomplete_action": "RESOLVE_REJECTED_OR_INCOMPLETE_PRIMARY_PREDICTOR_RECEIPTS"
@@ -72,7 +75,9 @@
     "do not set ready_for_v4_assembly=true at intake stage",
     "do not overwrite an existing intake workspace",
     "do not discard validated reviewed predictor receipt frames after intake",
-    "do not trust a persistent intake output whose SHA256 no longer matches the intake receipt"
+    "do not trust a persistent intake output whose SHA256 no longer matches the intake receipt",
+    "do not validate a reviewed U2 V2 frame against the V1 frozen receipt surface",
+    "do not treat more than eight complete U2 predictor groups as a predictor-stage failure"
   ],
   "implementation": {
     "module": "balance_domain.plant_human_return_intake",
@@ -88,9 +93,10 @@
     "U6_CODER_B": "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_CODER_B_V1.csv"
   },
   "predictor_return_pair": {
-    "U2_PREDICTOR": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "U2_PREDICTOR_V1": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+    "U2_PREDICTOR_V2": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv",
     "U6_PREDICTOR": "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
-    "rule": "both may be absent while pending; if either is supplied both are required"
+    "rule": "U6 V1 plus exactly one U2 version is required for a predictor-review stage; V2 requires its frozen V2 baseline workspace"
   },
   "workspace_policy": {
     "persistent_output_written_only_after_all_supplied_stages_validate": true,
@@ -98,6 +104,7 @@
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
     "output_references": "workspace_relative_basenames",
     "copy_validated_predictor_review_frames": true,
-    "receipt_binds_output_sha256": true
+    "receipt_binds_output_sha256": true,
+    "copy_validated_u2_v2_frozen_baseline_and_freeze_receipt": true
   }
 }

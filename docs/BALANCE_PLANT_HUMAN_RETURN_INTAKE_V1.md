@@ -54,15 +54,35 @@ required.
 
 ### 3. Predictor-review stage
 
-Requires the reviewed U2/U6 pair:
+Requires U6 V1 plus **exactly one** U2 receipt version:
 
 ```text
+U2 V1:
 BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv
+
+or
+
+U2 V2:
+BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv
+
+and always
+
+U6:
 BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv
 ```
 
-Both may be absent while predictor review is pending. If either is supplied, both are
-required.
+Supplying both U2 versions is ambiguous and fails closed.
+
+A U2 V2 review additionally requires:
+
+```bash
+--u2-v2-freeze-dir <V2_FREEZE_WORKSPACE>
+```
+
+The freeze workspace must contain the frozen V2 receipt frame and
+`BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json`. Its hashes are revalidated against
+the current V1 receipt frame and prospective expansion template before the reviewed V2
+frame is accepted.
 
 **Architecture-return latency does not block predictor-review validation, and predictor
 latency does not block architecture reliability reporting.**
@@ -83,9 +103,11 @@ Architecture stages:
 
 Predictor stage:
 
-1. reviewed receipt IDs exactly match the frozen U2/U6 frames;
-2. reviewed receipts cannot rewrite frozen predictor values, source IDs, or notes;
-3. ADJUDICATED receipts must remain source-side and outcome-independent.
+1. reviewed receipt IDs exactly match the frozen frame of the declared version;
+2. U2 V1 is validated against tracked V1; U2 V2 is validated only against its explicit
+   hash-bound V2 freeze workspace;
+3. reviewed receipts cannot rewrite frozen predictor values, source IDs, or notes;
+4. ADJUDICATED receipts must remain source-side and outcome-independent.
 
 A partial stage fails before creating the output directory. Tracked blank worksheets are
 never substituted for a missing file inside a supplied stage.
@@ -143,9 +165,18 @@ A delayed or failed U1 stage never changes the U2/U6 primary reliability result.
 Primary predictor completion requires:
 
 ```text
-U2: 8 clusters x 3 ADJUDICATED outcome-independent receipts
-U6: 21 clusters x 3 ADJUDICATED outcome-independent receipts
+U2:
+every current strict source-screen conflict-positive group
+must be a subset of groups with 3 ADJUDICATED outcome-independent receipts
+
+U6:
+21 groups x 3 ADJUDICATED outcome-independent receipts
 ```
+
+The current U2 source-positive set contains eight groups, but V2 may legitimately contain
+more than eight complete groups. Extra prospectively resolved/adjudicated U2 groups do not
+cause intake failure. Final V4 readiness later switches to the actual final adjudicated
+conflict-positive U2 set.
 
 If the predictor stage has not returned:
 
@@ -183,6 +214,8 @@ Successful intake writes only outputs for stages actually supplied:
 - canonical merged double-coding ledgers for supplied architecture lanes;
 - agreement reports and exact-disagreement CSVs for supplied architecture lanes;
 - validated U2/U6 reviewed predictor-receipt CSV frames when predictor review is supplied;
+- for U2 V2, a copied frozen V2 baseline plus its freeze receipt, each SHA-bound in the
+  intake receipt;
 - U2/U6 predictor-adjudication readouts when predictor review is supplied;
 - one intake receipt with SHA256 values for every supplied human-return file and explicit
   PENDING / RELIABILITY_PASS / RELIABILITY_FAIL / COMPLETE / INCOMPLETE stage status.
