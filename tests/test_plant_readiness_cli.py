@@ -25,8 +25,15 @@ def test_canonical_v4_readiness_report_matches_current_frozen_state():
     assert handoff["status"] == "PACKETS_GENERATED_AWAITING_INDEPENDENT_HUMAN_RETURNS"
     assert handoff["architecture_coder_packets_generated"] is True
     assert handoff["predictor_adjudication_packet_generated"] is True
+    assert handoff["u2_predictor_expansion_packet_generated"] is True
+    assert handoff["u2_predictor_expansion_blocks_primary_v4_fit"] is False
     assert handoff["independent_human_returns_received"] is False
+    assert handoff["u2_predictor_expansion_return_received"] is False
     assert handoff["next_action"] == "COLLECT_INDEPENDENT_HUMAN_RETURNS"
+    assert handoff["parallel_next_actions"] == [
+        "COLLECT_PRIMARY_ARCHITECTURE_AND_PREDICTOR_RETURNS",
+        "COLLECT_U2_PREDICTOR_EXPANSION_RETURN_FOR_GENERALITY",
+    ]
     assert out["analysis"] == "balance_plant_v4_readiness_snapshot"
     assert readiness["model_specification"] == "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4"
     assert readiness["all_machine_preparation_complete"] is True
