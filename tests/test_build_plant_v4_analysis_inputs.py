@@ -12,6 +12,9 @@ from balance_domain.plant_v4_workspace import (
     U2_ADJUDICATION,
     U2_CODING,
     U2_PREDICTOR,
+    U2_PREDICTOR_V2,
+    U2_PREDICTOR_V2_FROZEN,
+    U2_PREDICTOR_V2_FREEZE_RECEIPT,
     U6_ADJUDICATION,
     U6_CODING,
     U6_PREDICTOR,
@@ -153,9 +156,21 @@ def test_handoff_manifest_post_handoff_paths_exist_in_production_layer():
 
 
 
-def _write_dummy_composed_workspace(path, *, include_external=False):
+def _write_dummy_composed_workspace(
+    path,
+    *,
+    include_external=False,
+    u2_version="V1",
+):
     path.mkdir()
-    basenames = set(cli.PRIMARY_MUTABLE_BASENAMES)
+    if u2_version == "V1":
+        basenames = set(cli.PRIMARY_MUTABLE_BASENAMES)
+    elif u2_version == "V2":
+        basenames = set(cli.PRIMARY_COMMON_BASENAMES) | set(
+            cli.U2_V2_PROVENANCE_BASENAMES
+        )
+    else:
+        raise ValueError(u2_version)
     if include_external:
         basenames |= cli.EXTERNAL_MUTABLE_BASENAMES
 
@@ -174,6 +189,18 @@ def _write_dummy_composed_workspace(path, *, include_external=False):
         "schema_version": "BALANCE_PLANT_V4_HUMAN_INPUT_WORKSPACE_V1",
         "analysis": "balance_plant_v4_human_input_workspace",
         "external_validation_included": include_external,
+        "u2_predictor_receipt_version": u2_version,
+        "u2_predictor_reviewed_basename": (
+            U2_PREDICTOR if u2_version == "V1" else U2_PREDICTOR_V2
+        ),
+        "u2_predictor_frozen_baseline_basename": (
+            U2_PREDICTOR
+            if u2_version == "V1"
+            else U2_PREDICTOR_V2_FROZEN
+        ),
+        "u2_predictor_freeze_receipt_basename": (
+            None if u2_version == "V1" else U2_PREDICTOR_V2_FREEZE_RECEIPT
+        ),
         "files": files,
         "primary_human_open_gates": {
             "u2_independent_double_coding": False,
@@ -253,6 +280,11 @@ def test_analysis_builder_copies_source_receipt_and_hash_binds_outputs(tmp_path,
     monkeypatch.setattr(cli, "load_u2_double_code_sample", lambda path: [])
     monkeypatch.setattr(cli, "load_u2_adjudication", lambda *args, **kwargs: [])
     monkeypatch.setattr(cli, "load_plant_predictor_receipts", lambda path: [])
+    monkeypatch.setattr(
+        cli,
+        "load_predictor_adjudication_return",
+        lambda reviewed, frozen: [],
+    )
     monkeypatch.setattr(cli, "load_u2_source_packet", lambda path: [])
     monkeypatch.setattr(cli, "load_u6_pass2_double_coding", lambda *args, **kwargs: [])
     monkeypatch.setattr(cli, "load_u6_pass2_adjudication", lambda *args, **kwargs: [])
@@ -312,3 +344,118 @@ def test_v4_analysis_builder_primary_basenames_match_compositor_contract():
         U6_ADJUDICATION,
         U6_PREDICTOR,
     }
+
+
+
+def test_v4_composed_workspace_v2_selects_reviewed_and_frozen_v2_paths(tmp_path):
+    workspace = tmp_path / "handoff_v2"
+    _write_dummy_composed_workspace(workspace, u2_version="V2")
+
+    validated = cli._validate_composed_input_workspace(workspace)
+    assert validated["u2_predictor_receipt_version"] == "V2"
+    assert validated["u2_predictor_reviewed_basename"] == U2_PREDICTOR_V2
+    assert (
+        validated["u2_predictor_frozen_baseline_basename"]
+        == U2_PREDICTOR_V2_FROZEN
+    )
+    assert (
+        validated["u2_predictor_freeze_receipt_basename"]
+        == U2_PREDICTOR_V2_FREEZE_RECEIPT
+    )
+
+    paths = cli._paths(
+        workspace,
+        composed_receipt=validated["receipt"],
+    )
+    assert paths["u2_receipts"] == workspace / U2_PREDICTOR_V2
+    assert paths["u2_receipts_frozen"] == workspace / U2_PREDICTOR_V2_FROZEN
+    assert paths["u2_v2_freeze_receipt"] == (
+        workspace / U2_PREDICTOR_V2_FREEZE_RECEIPT
+    )
+
+
+def test_v4_composed_workspace_rejects_v2_file_set_without_version_metadata(tmp_path):
+    workspace = tmp_path / "handoff_v2_bad"
+    receipt_path = _write_dummy_composed_workspace(workspace, u2_version="V2")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["u2_predictor_receipt_version"] = "V1"
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="V1 U2 predictor basename drifted"):
+        cli._validate_composed_input_workspace(workspace)
+
+
+def test_analysis_builder_propagates_v2_predictor_provenance(tmp_path, monkeypatch):
+    workspace = tmp_path / "composed_v2"
+    human_receipt_path = _write_dummy_composed_workspace(
+        workspace,
+        u2_version="V2",
+    )
+    out_dir = tmp_path / "analysis_inputs_v2"
+
+    monkeypatch.setattr(
+        cli,
+        "current_readiness",
+        lambda input_dir=None: {
+            "primary_model_assembly_ready": True,
+            "open_gate_names": [],
+        },
+    )
+    monkeypatch.setattr(
+        cli,
+        "load_predictor_adjudication_return",
+        lambda reviewed, frozen: [],
+    )
+    monkeypatch.setattr(cli, "load_double_coding", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_double_code_sample", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_plant_predictor_receipts", lambda path: [])
+    monkeypatch.setattr(cli, "load_u2_source_packet", lambda path: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_double_coding", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_pass2_adjudication", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_cross_universe_dependence", lambda *args, **kwargs: [])
+    monkeypatch.setattr(cli, "load_u6_frozen_source_packet", lambda *args, **kwargs: [])
+
+    assembly = [{
+        field: ("row-1" if field == "analysis_row_id" else "synthetic")
+        for field in cli.ASSEMBLY_FIELDS
+    }]
+    monkeypatch.setattr(cli, "build_v4_licensed_assembly", lambda **kwargs: assembly)
+    pipeline = {
+        "assembly_readout": {"ready_for_primary_fit": True},
+        "main_stan_input": {"stan_data": {"N": 1}, "metadata": {"kind": "main"}},
+        "prior_sensitivity_stan_input": {
+            "stan_data": {"N": 1},
+            "metadata": {"kind": "prior"},
+        },
+        "temporal_generality_stan_input": None,
+        "temporal_generality_prior_sensitivity_stan_input": None,
+        "temporal_generality_status": "NOT_READY",
+        "temporal_generality_blockers": ["shared_module_timing_common_support"],
+    }
+    monkeypatch.setattr(cli, "build_v4_analysis_inputs", lambda rows: pipeline)
+
+    result = cli.build_outputs(out_dir, input_dir=workspace)
+    receipt = json.loads(
+        Path(result["analysis_inputs_receipt"]).read_text(encoding="utf-8")
+    )
+    assert receipt["u2_predictor_receipt_version"] == "V2"
+    assert receipt["u2_predictor_reviewed_basename"] == U2_PREDICTOR_V2
+    assert receipt["u2_predictor_frozen_baseline_basename"] == (
+        U2_PREDICTOR_V2_FROZEN
+    )
+    assert receipt["u2_predictor_freeze_receipt_basename"] == (
+        U2_PREDICTOR_V2_FREEZE_RECEIPT
+    )
+    assert receipt["u2_predictor_reviewed_sha256"] == hashlib.sha256(
+        (workspace / U2_PREDICTOR_V2).read_bytes()
+    ).hexdigest()
+    assert receipt["u2_predictor_frozen_baseline_sha256"] == hashlib.sha256(
+        (workspace / U2_PREDICTOR_V2_FROZEN).read_bytes()
+    ).hexdigest()
+    assert Path(result["source_human_workspace_receipt"]).read_bytes() == (
+        human_receipt_path.read_bytes()
+    )

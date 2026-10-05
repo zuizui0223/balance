@@ -30,6 +30,12 @@ from balance_domain.plant_u2 import (  # noqa: E402
     load_u2_double_code_sample,
     load_u2_source_packet,
 )
+from balance_domain.plant_v4_workspace import (  # noqa: E402
+    U2_PREDICTOR,
+    U2_PREDICTOR_V2,
+    U2_PREDICTOR_V2_FROZEN,
+    U2_PREDICTOR_V2_FREEZE_RECEIPT,
+)
 from balance_domain.plant_u6 import (  # noqa: E402
     load_u6_cross_universe_dependence,
     load_u6_frozen_source_packet,
@@ -54,6 +60,17 @@ EXTERNAL_MUTABLE_BASENAMES = {
     "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
 }
 
+# Primary human-input files shared by both U2 predictor-receipt generations.
+PRIMARY_COMMON_BASENAMES = PRIMARY_MUTABLE_BASENAMES - {U2_PREDICTOR}
+
+# V2 never masquerades under the V1 basename: reviewed evidence, its immutable
+# frozen baseline, and the freeze receipt travel together as one provenance unit.
+U2_V2_PROVENANCE_BASENAMES = {
+    U2_PREDICTOR_V2,
+    U2_PREDICTOR_V2_FROZEN,
+    U2_PREDICTOR_V2_FREEZE_RECEIPT,
+}
+
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -76,7 +93,35 @@ def _validate_composed_input_workspace(input_dir: Path) -> dict:
     if receipt.get("next_step") != "BUILD_V4_ANALYSIS_INPUTS":
         raise ValueError("V4 composed human-input workspace next-step contract drifted")
 
-    expected = set(PRIMARY_MUTABLE_BASENAMES)
+    version = receipt.get("u2_predictor_receipt_version", "V1")
+    if version not in {"V1", "V2"}:
+        raise ValueError("V4 composed workspace declares invalid U2 predictor version")
+    if version == "V1":
+        if receipt.get("u2_predictor_reviewed_basename", U2_PREDICTOR) != U2_PREDICTOR:
+            raise ValueError("V4 composed V1 U2 predictor basename drifted")
+        if receipt.get(
+            "u2_predictor_frozen_baseline_basename",
+            U2_PREDICTOR,
+        ) != U2_PREDICTOR:
+            raise ValueError("V4 composed V1 frozen U2 predictor basename drifted")
+        if receipt.get("u2_predictor_freeze_receipt_basename") not in {None, ""}:
+            raise ValueError("V4 composed V1 workspace must not declare a V2 freeze receipt")
+        expected = set(PRIMARY_MUTABLE_BASENAMES)
+    else:
+        if receipt.get("u2_predictor_reviewed_basename") != U2_PREDICTOR_V2:
+            raise ValueError("V4 composed V2 reviewed U2 predictor basename drifted")
+        if (
+            receipt.get("u2_predictor_frozen_baseline_basename")
+            != U2_PREDICTOR_V2_FROZEN
+        ):
+            raise ValueError("V4 composed V2 frozen U2 predictor basename drifted")
+        if (
+            receipt.get("u2_predictor_freeze_receipt_basename")
+            != U2_PREDICTOR_V2_FREEZE_RECEIPT
+        ):
+            raise ValueError("V4 composed V2 freeze receipt basename drifted")
+        expected = set(PRIMARY_COMMON_BASENAMES) | set(U2_V2_PROVENANCE_BASENAMES)
+
     if receipt.get("external_validation_included") is True:
         expected |= EXTERNAL_MUTABLE_BASENAMES
 
@@ -112,6 +157,18 @@ def _validate_composed_input_workspace(input_dir: Path) -> dict:
         "receipt_path": receipt_path,
         "receipt_sha256": _sha256(receipt_path),
         "receipt": receipt,
+        "u2_predictor_receipt_version": version,
+        "u2_predictor_reviewed_basename": receipt.get(
+            "u2_predictor_reviewed_basename",
+            U2_PREDICTOR,
+        ),
+        "u2_predictor_frozen_baseline_basename": receipt.get(
+            "u2_predictor_frozen_baseline_basename",
+            U2_PREDICTOR,
+        ),
+        "u2_predictor_freeze_receipt_basename": receipt.get(
+            "u2_predictor_freeze_receipt_basename"
+        ),
     }
 
 
@@ -123,7 +180,11 @@ def _override(default: Path, input_dir: Path | None) -> Path:
     return candidate if candidate.exists() else default
 
 
-def _paths(input_dir: Path | None = None) -> dict[str, Path]:
+def _paths(
+    input_dir: Path | None = None,
+    *,
+    composed_receipt: dict | None = None,
+) -> dict[str, Path]:
     data = ROOT / "data"
     defaults = {
         "u1_first20_conflict": data / "BALANCE_PLANT_U1_BLIND_CONFLICT_SCREEN_V1.csv",
@@ -157,10 +218,28 @@ def _paths(input_dir: Path | None = None) -> dict[str, Path]:
         "u6_adjudication",
         "u6_receipts",
     }
-    return {
+    paths = {
         key: _override(path, input_dir) if key in mutable_keys else path
         for key, path in defaults.items()
     }
+
+    if input_dir is not None and composed_receipt is not None:
+        version = composed_receipt.get("u2_predictor_receipt_version", "V1")
+        if version == "V2":
+            paths["u2_receipts"] = input_dir / U2_PREDICTOR_V2
+            paths["u2_receipts_frozen"] = input_dir / U2_PREDICTOR_V2_FROZEN
+            paths["u2_v2_freeze_receipt"] = (
+                input_dir / U2_PREDICTOR_V2_FREEZE_RECEIPT
+            )
+        elif version == "V1":
+            paths["u2_receipts"] = input_dir / U2_PREDICTOR
+            paths["u2_receipts_frozen"] = data / U2_PREDICTOR
+            paths["u2_v2_freeze_receipt"] = None
+        else:
+            raise ValueError("unsupported U2 predictor receipt version")
+    else:
+        paths["u2_v2_freeze_receipt"] = None
+    return paths
 
 
 def _validate_predictor_receipt_overrides(paths: dict[str, Path]) -> None:
@@ -173,7 +252,13 @@ def _validate_predictor_receipt_overrides(paths: dict[str, Path]) -> None:
 
 
 def current_readiness(input_dir: Path | None = None) -> dict:
-    p = _paths(input_dir)
+    composed = None
+    if input_dir is not None and (input_dir / COMPOSED_WORKSPACE_RECEIPT).is_file():
+        composed = _validate_composed_input_workspace(input_dir)
+    p = _paths(
+        input_dir,
+        composed_receipt=(composed["receipt"] if composed is not None else None),
+    )
     _validate_predictor_receipt_overrides(p)
     return build_plant_v4_readiness(
         u1_first20_conflict_path=p["u1_first20_conflict"],
@@ -222,7 +307,15 @@ def build_outputs(
             + ", ".join(readiness["open_gate_names"])
         )
 
-    p = _paths(input_dir)
+    p = _paths(
+        input_dir,
+        composed_receipt=(
+            human_workspace["receipt"]
+            if human_workspace is not None
+            else None
+        ),
+    )
+    _validate_predictor_receipt_overrides(p)
     u2_coding = load_double_coding(p["u2_worksheet"])
     u2_sample = load_u2_double_code_sample(p["u2_sample"])
     u2_adjudication = load_u2_adjudication(
@@ -345,6 +438,29 @@ def build_outputs(
                 else None
             ),
             "source_human_workspace_receipt_copied": human_workspace is not None,
+            "u2_predictor_receipt_version": (
+                human_workspace["u2_predictor_receipt_version"]
+                if human_workspace is not None
+                else "V1"
+            ),
+            "u2_predictor_reviewed_basename": p["u2_receipts"].name,
+            "u2_predictor_frozen_baseline_basename": p[
+                "u2_receipts_frozen"
+            ].name,
+            "u2_predictor_reviewed_sha256": _sha256(p["u2_receipts"]),
+            "u2_predictor_frozen_baseline_sha256": _sha256(
+                p["u2_receipts_frozen"]
+            ),
+            "u2_predictor_freeze_receipt_basename": (
+                p["u2_v2_freeze_receipt"].name
+                if p["u2_v2_freeze_receipt"] is not None
+                else None
+            ),
+            "u2_predictor_freeze_receipt_sha256": (
+                _sha256(p["u2_v2_freeze_receipt"])
+                if p["u2_v2_freeze_receipt"] is not None
+                else None
+            ),
             "files_sha256": {
                 name: _sha256(path)
                 for name, path in sorted(generated.items())
