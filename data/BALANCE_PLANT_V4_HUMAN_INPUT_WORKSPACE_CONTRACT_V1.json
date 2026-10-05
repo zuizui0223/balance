@@ -11,7 +11,12 @@
     "predictor_review_intake": {
       "receipt": "BALANCE_PLANT_HUMAN_RETURN_INTAKE_RECEIPT_V1.json",
       "required_predictor_return_status": "COMPLETE",
-      "required_predictor_primary_complete": true
+      "required_predictor_primary_complete": true,
+      "allowed_u2_predictor_versions": [
+        "V1",
+        "V2"
+      ],
+      "V2_rule": "V2 intake must SHA-bind a reviewed V2 frame, copied frozen V2 baseline, and BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json"
     }
   },
   "optional_source": {
@@ -21,14 +26,6 @@
       "blocks_primary_v4": false
     }
   },
-  "composed_primary_files": [
-    "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
-    "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
-    "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
-    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
-    "BALANCE_PLANT_U6_PASS2_ADJUDICATION_TEMPLATE_V1.csv",
-    "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
-  ],
   "optional_external_files": [
     "BALANCE_PLANT_U1_DOUBLE_CODE_WORKSHEET_V1.csv",
     "BALANCE_PLANT_U1_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv"
@@ -37,6 +34,8 @@
     "copy only validated files named by source workspace receipts",
     "verify every source workspace file against the SHA256 bound in its source receipt",
     "record source and composed SHA256 for every file",
+    "revalidate reviewed U2 predictor receipts against the frozen baseline of the declared V1/V2 version",
+    "for V2, revalidate freeze-receipt hashes against current tracked V1 and the frozen expansion template",
     "rerun canonical V4 readiness against the composed workspace",
     "require zero primary human open gates",
     "require primary_model_assembly_ready=true before atomic rename"
@@ -45,12 +44,41 @@
     "existing_output_directory_overwrite_allowed": false,
     "write_mode": "temporary_sibling_workspace_then_atomic_rename",
     "downstream_input_option": "--input-dir",
-    "source_receipt_output_sha256_required": true
+    "source_receipt_output_sha256_required": true,
+    "preserve_u2_predictor_version_and_frozen_baseline": true
   },
   "next_step": "python scripts/build_plant_v4_analysis_inputs.py --input-dir <workspace> --build",
   "implementation": {
     "module": "balance_domain.plant_v4_workspace",
     "cli": "scripts/compose_plant_v4_human_workspace.py"
   },
-  "claim_ceiling": "validated_human_input_composition_only_no_model_effect"
+  "claim_ceiling": "validated_human_input_composition_only_no_model_effect",
+  "composed_primary_files_common": [
+    "BALANCE_PLANT_U2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_WORKSHEET_V1.csv",
+    "BALANCE_PLANT_U6_PASS2_DOUBLE_CODE_ADJUDICATION_TEMPLATE_V1.csv",
+    "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
+  ],
+  "u2_predictor_composed_surface": {
+    "V1": {
+      "reviewed": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "frozen_baseline": "tracked data/BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv",
+      "extra_workspace_files": []
+    },
+    "V2": {
+      "reviewed": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv",
+      "frozen_baseline": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2_FROZEN.csv",
+      "freeze_receipt": "BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json",
+      "extra_workspace_files": [
+        "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2_FROZEN.csv",
+        "BALANCE_PLANT_U2_PREDICTOR_RECEIPT_FREEZE_V2.json"
+      ]
+    }
+  },
+  "prohibitions": [
+    "do not rename a reviewed U2 V2 receipt frame to the V1 basename",
+    "do not validate U2 V2 reviewed receipts against the V1 frozen surface",
+    "do not drop the V2 frozen baseline or freeze receipt during composition"
+  ]
 }
