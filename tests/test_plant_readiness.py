@@ -7,6 +7,7 @@ from balance_domain.plant_readiness import (
     PRIMARY_MACHINE_GATES,
     _load_two_coder_stage,
     _machine_gate_complete,
+    _u2_predictor_gate_status,
     build_plant_v4_readiness,
 )
 from balance_domain.plant_u1_double_code import load_u1_blank_worksheet
@@ -149,3 +150,69 @@ def test_primary_machine_readiness_fails_closed_on_missing_required_gate():
 
     with pytest.raises(ValueError, match="missing required gates"):
         _machine_gate_complete(machine_complete, PRIMARY_MACHINE_GATES)
+
+
+
+def test_u2_predictor_machine_gate_allows_extra_complete_v2_groups():
+    coverage = {
+        "complete_outcome_independent_clusters": ["a", "b", "extra"],
+        "complete_adjudicated_clusters": ["a", "b"],
+    }
+    out = _u2_predictor_gate_status(
+        source_positive_groups=["a", "b"],
+        adjudication_rows=[],
+        adjudication_complete=False,
+        receipt_coverage=coverage,
+    )
+
+    assert out["basis"] == "SOURCE_SCREEN_POSITIVE_PENDING_FINAL_ADJUDICATION"
+    assert out["source_screen_machine_complete"] is True
+    assert out["primary_predictor_gate_closed"] is True
+    assert out["missing_screened_groups"] == []
+    assert out["complete_outcome_independent_groups"] == ["a", "b", "extra"]
+
+
+def test_u2_predictor_gate_switches_to_final_adjudicated_positive_group_set():
+    adjudication = [
+        {
+            "cluster_id": "a",
+            "adjudication_status": "ADJUDICATED",
+            "conflict_status": "POSITIVE",
+        },
+        {
+            "cluster_id": "b",
+            "adjudication_status": "ADJUDICATED",
+            "conflict_status": "NO_DEMONSTRATED_CONFLICT",
+        },
+        {
+            "cluster_id": "c",
+            "adjudication_status": "ADJUDICATED",
+            "conflict_status": "POSITIVE",
+        },
+    ]
+    coverage = {
+        "complete_outcome_independent_clusters": ["a", "b", "c"],
+        "complete_adjudicated_clusters": ["a", "b"],
+    }
+    out = _u2_predictor_gate_status(
+        source_positive_groups=["a", "b"],
+        adjudication_rows=adjudication,
+        adjudication_complete=True,
+        receipt_coverage=coverage,
+    )
+
+    assert out["basis"] == "FINAL_ADJUDICATED_CONFLICT_POSITIVE"
+    assert out["required_groups"] == ["a", "c"]
+    assert out["source_screen_machine_complete"] is True
+    assert out["primary_predictor_gate_closed"] is False
+    assert out["missing_adjudicated_groups"] == ["c"]
+
+    coverage["complete_adjudicated_clusters"] = ["a", "b", "c"]
+    closed = _u2_predictor_gate_status(
+        source_positive_groups=["a", "b"],
+        adjudication_rows=adjudication,
+        adjudication_complete=True,
+        receipt_coverage=coverage,
+    )
+    assert closed["primary_predictor_gate_closed"] is True
+    assert closed["missing_adjudicated_groups"] == []
