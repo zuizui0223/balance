@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import importlib.util
 import json
@@ -99,3 +100,29 @@ def test_u2_expansion_execution_receipt_preserves_prospective_population():
     assert expansion["audit"]["reported_value"] == ["UNRESOLVED"]
     assert expansion["audit"]["outcome_independence"] == ["UNCERTAIN"]
     assert expansion["audit"]["focal_architecture_or_conflict_label_hits"] == 0
+
+
+
+def test_u2_expansion_execution_population_matches_reachability_registry():
+    execution = json.loads(RECEIPT.read_text(encoding="utf-8"))
+    reachability = json.loads(
+        (ROOT / "data" / "BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    with (
+        ROOT / "data" / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv"
+    ).open(encoding="utf-8", newline="") as handle:
+        coding_groups = sorted({row["cluster_id"] for row in csv.DictReader(handle)})
+
+    registered_groups = sorted(
+        reachability["prospective_reopening_contract"]["expansion_group_ids"]
+    )
+    assert coding_groups == registered_groups
+    assert execution["u2_predictor_expansion"]["n_groups"] == len(registered_groups)
+    assert (
+        reachability["prospective_reopening_contract"]["implementation"][
+            "execution_receipt"
+        ]
+        == "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json"
+    )
