@@ -6,7 +6,9 @@
     "doi": "10.1111/1365-2745.70130",
     "repository_provenance": "migrated from the validated BITA critical-definition sensitivity analysis",
     "egg_load_source": "main-text section 3.3",
-    "selection_source": "Table 3 and female-gain results"
+    "selection_source": "Table 3 and female-gain results",
+    "published_summary_receipt": "empirical/peucedanum/PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1.json",
+    "direct_source_crosscheck": "CURRENT_CORRECTED_PUBLISHER_TABLE_AND_TEXT_VERIFIED"
   },
   "proxy_axis": {
     "name": "mean_predator_eggs_per_umbel",
@@ -22,12 +24,12 @@
       "left_mean": -0.029,
       "left_se": 0.011,
       "right_mean": 0.034,
-      "right_se": 0.010,
+      "right_se": 0.01,
       "zero_semantics": "no direct standardized selection gradient on perfect-flower production for final fruit-set rate"
     },
     "final_fruit_selection_differential_S": {
       "left_mean": -0.051,
-      "left_se": 0.010,
+      "left_se": 0.01,
       "right_mean": 0.036,
       "right_se": 0.008,
       "zero_semantics": "no univariate standardized selection differential on perfect-flower production for final fruit-set rate"
