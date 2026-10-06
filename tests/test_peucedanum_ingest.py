@@ -1,5 +1,7 @@
 import csv
+import io
 import json
+import zipfile
 
 import pytest
 
@@ -239,3 +241,84 @@ def test_registered_expected_source_basename_is_enforced():
     source["expected_file"] = "Kudo&Shibata_Ecol&Evol_DataSet.xlsx"
     with pytest.raises(ValueError, match="not registered"):
         normalize_from_mapping(_tables(), mapping)
+
+
+
+def test_zip_inventory_binds_outer_and_member_hashes_and_exposes_tabular_member(tmp_path):
+    archive = tmp_path / "jec70130-sup-0001-supinfo.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr(
+            "data/raw.csv",
+            "Year,Plot,Plant,DOY,Perfect,Male\n2021,HL,P1,210,20,30\n",
+        )
+        zf.writestr("code/reproduce.R", "print('source code')\n")
+
+    receipt = build_source_inventory_receipt([archive])
+    file_info = receipt["files"][archive.name]
+    assert file_info["format"] == "zip"
+    assert file_info["member_count"] == 2
+    assert [member["member"] for member in file_info["members"]] == [
+        "code/reproduce.R",
+        "data/raw.csv",
+    ]
+    assert receipt["tables"] == [
+        {
+            "source_file": f"{archive.name}::data/raw.csv",
+            "source_sheet": "__CSV__",
+            "row_count": 2,
+            "column_count": 6,
+            "nonempty_row_count": 2,
+        }
+    ]
+
+
+def test_zip_tabular_member_can_be_mapped_explicitly(tmp_path):
+    archive = tmp_path / "source.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr(
+            "tables/raw.csv",
+            "Year,Plot,Plant,DOY,Perfect,Male\n2021,HL,P1,210,20,30\n",
+        )
+
+    from balance_domain.peucedanum_ingest import load_sources
+
+    _, tables = load_sources([archive])
+    mapping = {
+        "schema_version": "BALANCE_PEUCEDANUM_RAW_SEMANTIC_MAPPING_V1",
+        "status": "SOURCE_VERIFIED_MAPPING",
+        "registered_sources": [
+            {
+                "source_doi": "10.14943/hu95572",
+                "expected_file": "source.zip",
+                "sheet_mappings": [
+                    {
+                        "dataset_id": "zip_demo",
+                        "source_file": "source.zip::tables/raw.csv",
+                        "source_sheet": "__CSV__",
+                        "header_row": 1,
+                        "columns": {
+                            "year": "Year",
+                            "population_id": "Plot",
+                            "plant_id": "Plant",
+                            "flowering_day": "DOY",
+                            "perfect_flower_count": "Perfect",
+                            "male_flower_count": "Male",
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    rows = normalize_from_mapping(tables, mapping)
+    assert rows[0]["source_file"] == "source.zip::tables/raw.csv"
+    assert rows[0]["male_fraction"] == "0.6"
+
+
+@pytest.mark.parametrize("member", ["../raw.csv", "/raw.csv", "..\\raw.csv"])
+def test_zip_unsafe_member_paths_fail_closed(tmp_path, member):
+    archive = tmp_path / "source.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr(member, "x,y\n1,2\n")
+
+    with pytest.raises(ValueError, match="unsafe member path"):
+        build_source_inventory_receipt([archive])
