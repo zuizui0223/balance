@@ -37,7 +37,14 @@
     "current_blocks": 1,
     "required_blocks": 2,
     "minimum_additional_qualifying_blocks_needed": 1,
-    "main_V4_fit_affected": false
+    "main_V4_fit_affected": false,
+    "v2_expansion_handoff_executed": true,
+    "v2_mechanical_reachability_proven": true,
+    "v2_real_human_return_received": false,
+    "v2_frozen_receipt_frame_available": false,
+    "v2_real_generality_support_status": "UNOPENED_PENDING_COMPLETE_EXPANSION_RETURN_FREEZE_ADJUDICATION_AND_FINAL_ARCHITECTURE_ADMISSION",
+    "common_support_threshold_changed": false,
+    "current_summary": "V1 strict G1 is unreachable; the prospectively frozen/executed V2 expansion route is mechanically reachable under the unchanged gate; real G1 evidence remains unopened."
   },
   "prospective_reopening_contract": {
     "allowed_only_before_independent_architecture_outcomes_are_opened": true,
