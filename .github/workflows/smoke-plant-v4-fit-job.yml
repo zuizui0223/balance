@@ -2,6 +2,9 @@ name: Smoke BALANCE plant V4 production fit-job boundary
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ops/v4-production-wrapper-smoke-20261006
 
 permissions:
   contents: read
