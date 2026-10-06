@@ -130,3 +130,59 @@ def test_generality_reopening_contract_points_to_frozen_expansion_implementation
     assert implementation["post_coding_status"] == (
         "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION"
     )
+
+
+
+def test_v2_route_is_executed_and_mechanically_reachable_but_real_support_unopened():
+    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    model = json.loads(MODEL_SPEC.read_text(encoding="utf-8"))
+    gate = json.loads(REACTIVATION.read_text(encoding="utf-8"))
+
+    witness = contract["prospective_reopening_contract"][
+        "constructive_mechanical_witness"
+    ]
+    assert witness["test"] == (
+        "tests/test_plant_v4_end_to_end_prefit.py::"
+        "test_u2_v2_expansion_has_constructive_strict_generality_witness"
+    )
+
+    v2 = model["claim_hierarchy"]["cross_universe_replicated"]["v2_route"]
+    assert v2["handoff_executed"] is True
+    assert v2["mechanical_reachability_proven"] is True
+    assert v2["human_expansion_return_received"] is False
+    assert v2["frozen_v2_receipt_frame_available"] is False
+    assert v2["threshold_changed"] is False
+
+    generality = model["temporal_generality_sensitivity"]
+    assert generality["reachability_without_predictor_receipt_expansion"] is False
+    assert generality["v2_expansion_route_mechanically_reachable"] is True
+    assert generality["v2_real_support_status"] == (
+        "AWAITING_COMPLETE_INDEPENDENT_EXPANSION_RETURN_FREEZE_"
+        "ADJUDICATION_AND_FINAL_ARCHITECTURE_ADMISSION"
+    )
+
+    current = gate["current_v4_generality_reachability"]
+    assert current[
+        "strict_temporal_generality_reachable_without_predictor_receipt_expansion"
+    ] is False
+    assert current["v2_expansion_handoff_executed"] is True
+    assert current["v2_route_mechanically_reachable_under_unchanged_gate"] is True
+    assert current["v2_real_human_return_received"] is False
+    assert current["v2_frozen_receipt_frame_available"] is False
+    assert current["common_support_threshold_changed"] is False
+
+
+def test_v2_reachability_does_not_predeclare_reactivation_or_real_common_support():
+    model = json.loads(MODEL_SPEC.read_text(encoding="utf-8"))
+    gate = json.loads(REACTIVATION.read_text(encoding="utf-8"))
+
+    assert gate["standalone_reactivation_eligible"] is False
+    assert gate["required_conditions"]["temporal_common_support_module_stratum_ready"] is False
+    assert gate["required_conditions"]["temporal_generality_outcome_support_ready"] is False
+    assert model["preoutcome_design_audit"]["v2_expansion_real_support_opened"] is False
+    assert (
+        model["preoutcome_design_audit"][
+            "strict_temporal_generality_mechanically_reachable_via_v2_expansion"
+        ]
+        is True
+    )
