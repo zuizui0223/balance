@@ -221,7 +221,7 @@ def analyze_peucedanum_proxy_criticality(config: dict) -> dict:
             "The operational definitions do not give identical point estimates under the local-linear proxy model. "
             "A non-null common_conditional_95_interval means one latent numeric proxy-critical context remains compatible "
             "with the coefficient-uncertainty model. This is a Chapter-2 observational critical-region check, not a "
-            "causal SCH/BALANCE/BITA architecture threshold."
+            "causal shared-versus-differentiated architecture-value threshold."
         ),
         "claim_ceiling": (
             "conditional_proxy_interpolation_only; egg_load_not_calibrated_functional_weight; "
