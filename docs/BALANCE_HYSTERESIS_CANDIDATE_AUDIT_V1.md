@@ -166,6 +166,35 @@ Future screening should prioritize systems where:
 
 The strongest remaining target class is therefore an experimentally reversible modularity/specialization system rather than another generic hysteresis paper.
 
+## Current search ceiling
+
+The expanded targeted search is now frozen as a **current search ceiling**, not as proof of
+absence.
+
+Machine-readable status:
+
+`data/BALANCE_HYSTERESIS_SEARCH_CEILING_V1.json`.
+
+The screened literature now contains the major near-miss directions separately:
+
+- strong empirical hysteresis without multifunctional architecture;
+- architecture-like specialization with model-only hysteresis;
+- real generalist-versus-specialist performance comparisons without reversible same-unit
+  switching;
+- empirical context-dependent division of labour without matched forward/reverse thresholds;
+- evolutionary specialist/generalist reversals that occur across generations rather than
+  along one within-unit control sweep.
+
+The empirical hysteresis route is therefore moved to:
+
+```text
+MONITOR_ONLY_DO_NOT_BLOCK_V4_PRIMARY_PROGRAMME
+```
+
+It should be reopened only when a source or public dataset can identify both forward and
+reverse thresholds for the same multifunctional architecture under one graded control axis,
+with uncertainty, without redefining the architecture state after observing the result.
+
 ## Claim ceiling
 
 Negative-screen audit only. The cited systems demonstrate biological hysteresis or path dependence at other organizational levels; none is claimed to instantiate BALANCE architecture hysteresis.
