@@ -472,3 +472,137 @@ def test_synthetic_u2_v2_human_returns_reach_real_v4_analysis_bundle(tmp_path):
     assert receipt["u2_predictor_freeze_receipt_sha256"] == hashlib.sha256(
         (composed / U2_PREDICTOR_V2_FREEZE_RECEIPT).read_bytes()
     ).hexdigest()
+
+
+
+def _promote_one_u2_expansion_group_for_generality_witness(
+    return_dir,
+    frozen_values,
+):
+    """Create one synthetic admissible completion that fills the frozen U2 support gap."""
+    _fields, expansion_rows = _read(
+        ROOT / "data" / "BALANCE_PLANT_U2_PREDICTOR_EXPANSION_CODING_V2.csv"
+    )
+    expansion_groups = sorted({row["cluster_id"] for row in expansion_rows})
+    assert len(expansion_groups) == 12
+
+    source_positive = {
+        group for group, status in _u2_conflict_status().items()
+        if status == "POSITIVE"
+    }
+    candidates = [group for group in expansion_groups if group not in source_positive]
+    assert len(candidates) == 12
+    witness_group = candidates[0]
+
+    for coder in ("CODER_A", "CODER_B"):
+        path = return_dir / CODER_RETURN_BASENAMES[("U2", coder)]
+        fields, rows = _read(path)
+        matched = 0
+        for row in rows:
+            if row["cluster_id"] != witness_group:
+                continue
+            matched += 1
+            row["conflict_status"] = "POSITIVE"
+            row["architecture_mode"] = "SHARED_INTEGRATED"
+            row["module_substrate"] = "SINGLE_OR_CONTINUOUS"
+            row["conflict_timing_geometry"] = "SIMULTANEOUS"
+            row["conflict_spatial_geometry"] = "SAME_UNIT"
+            row["notes"] = "synthetic frozen-gate reachability witness"
+        assert matched == 1
+        _write(path, fields, rows)
+
+    frozen_values["U2"][witness_group] = {
+        "conflict_status": "POSITIVE",
+        "architecture_mode": "SHARED_INTEGRATED",
+        "module_substrate": "SINGLE_OR_CONTINUOUS",
+        "conflict_timing_geometry": "SIMULTANEOUS",
+        "conflict_spatial_geometry": "SAME_UNIT",
+    }
+    return witness_group
+
+
+def test_u2_v2_expansion_has_constructive_strict_generality_witness(tmp_path):
+    """Prove the prospective V2 expansion route can open the unchanged G1 support gate."""
+    returns = tmp_path / "returns_v2_generality_witness"
+    frozen_values = _write_primary_architecture_returns(returns)
+    witness_group = _promote_one_u2_expansion_group_for_generality_witness(
+        returns,
+        frozen_values,
+    )
+
+    freeze_dir = _build_full_u2_v2_freeze(tmp_path)
+    _write_predictor_returns_v2(returns, freeze_dir)
+
+    intake = tmp_path / "intake_v2_generality_witness"
+    intake_result = write_human_return_intake(
+        root=ROOT,
+        return_dir=returns,
+        out_dir=intake,
+        u2_v2_freeze_dir=freeze_dir,
+    )
+    assert intake_result["primary_return_status"] == "RELIABILITY_PASS"
+    assert intake_result["predictor_return_status"] == "COMPLETE"
+
+    adjudication_returns = tmp_path / "architecture_adjudication_generality_witness"
+    _write_primary_adjudication_returns(adjudication_returns, frozen_values)
+
+    adjudicated = tmp_path / "primary_adjudication_generality_witness"
+    write_architecture_adjudication_workspace(
+        root=ROOT,
+        intake_dir=intake,
+        return_dir=adjudication_returns,
+        scope="PRIMARY",
+        out_dir=adjudicated,
+    )
+
+    composed = tmp_path / "composed_v2_generality_witness"
+    composed_result = compose_v4_human_input_workspace(
+        root=ROOT,
+        primary_adjudication_dir=adjudicated,
+        predictor_intake_dir=intake,
+        out_dir=composed,
+    )
+    assert composed_result["primary_model_assembly_ready"] is True
+
+    analysis = tmp_path / "analysis_v2_generality_witness"
+    result = analysis_cli.build_outputs(analysis, input_dir=composed)
+
+    _fields, assembly = _read(Path(result["assembly"]))
+    assert len(assembly) == 30
+    witness_rows = [
+        row for row in assembly
+        if row["universe_id"] == "U2_BARRETT_2002"
+        and row["dependency_group"] == witness_group
+    ]
+    assert len(witness_rows) == 1
+    assert witness_rows[0]["module_substrate"] == "SINGLE_OR_CONTINUOUS"
+    assert witness_rows[0]["conflict_timing_geometry"] == "SIMULTANEOUS"
+
+    readout = json.loads(
+        Path(result["assembly_readout"]).read_text(encoding="utf-8")
+    )
+    estimability = readout["v4_estimability"]
+    assert estimability["temporal_common_support_module_strata"] == ["SINGLE"]
+    assert estimability["temporal_cross_universe_common_support_ready"] is True
+    assert estimability["temporal_cross_universe_outcome_support_ready"] is True
+    assert estimability["temporal_cross_universe_generality_ready"] is True
+
+    assert result["temporal_generality_status"] == "READY"
+    assert result["temporal_generality_blockers"] == []
+    assert result["temporal_generality_input"] is not None
+    assert result["temporal_generality_prior_sensitivity_input"] is not None
+
+    primary_generality = json.loads(
+        Path(result["temporal_generality_input"]).read_text(encoding="utf-8")
+    )
+    sensitivity_generality = json.loads(
+        Path(result["temporal_generality_prior_sensitivity_input"]).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert primary_generality["stan_data"]["slope_prior_sd"] == 0.75
+    assert sensitivity_generality["stan_data"]["slope_prior_sd"] == 1.5
+    assert primary_generality["stan_data"]["interaction_prior_sd"] == 0.75
+    assert sensitivity_generality["stan_data"]["interaction_prior_sd"] == 0.75
+    assert primary_generality["stan_data"]["X"] == sensitivity_generality["stan_data"]["X"]
+    assert primary_generality["stan_data"]["y"] == sensitivity_generality["stan_data"]["y"]
