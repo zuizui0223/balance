@@ -54,5 +54,33 @@
     ]
   },
   "mapping_rule": "Populate source_file/source_sheet/source_column only after inspecting the source workbook notes or README. Do not infer source columns from this template.",
-  "missing_value_rule": "Preserve source missingness; no silent imputation."
+  "missing_value_rule": "Preserve source missingness; no silent imputation.",
+  "ingest": {
+    "cli": "scripts/ingest_peucedanum_raw.py",
+    "inventory_command": "python scripts/ingest_peucedanum_raw.py inventory <source files...> --out-dir <new directory>",
+    "normalize_command": "python scripts/ingest_peucedanum_raw.py normalize <source files...> --mapping empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json --out-dir <new directory>",
+    "workbook_extra": "python -m pip install -e '.[peucedanum]'"
+  },
+  "mapping_entry_schema": {
+    "required": [
+      "dataset_id",
+      "source_file",
+      "source_sheet",
+      "header_row",
+      "columns"
+    ],
+    "optional": [
+      "constants"
+    ],
+    "header_row_semantics": "one-based row containing exact source column names",
+    "columns_semantics": "explicit normalized_field -> exact source column; no substring/fuzzy/position guessing",
+    "constants_semantics": "explicit sheet-level normalized values such as year or population_id only after source verification",
+    "prohibited": [
+      "mapping derived fields directly",
+      "mapping provenance fields from source columns",
+      "using a column absent from the exact source header",
+      "normalizing while status is TEMPLATE_NOT_SOURCE_VERIFIED"
+    ]
+  },
+  "promotion_rule": "Change status to SOURCE_VERIFIED_MAPPING only after source bytes and workbook notes/README have been inspected and every used source_file/source_sheet/header_row/source column has been verified."
 }
