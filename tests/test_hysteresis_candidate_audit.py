@@ -1,9 +1,11 @@
 import csv
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT = ROOT / "data" / "BALANCE_HYSTERESIS_CANDIDATE_AUDIT_V1.csv"
+CEILING = ROOT / "data" / "BALANCE_HYSTERESIS_SEARCH_CEILING_V1.json"
 
 
 def _rows():
@@ -13,7 +15,7 @@ def _rows():
 
 def test_named_hysteresis_audit_does_not_promote_surrogates():
     rows = _rows()
-    assert len(rows) == 6
+    assert len(rows) == 9
     assert all(row["promotion_status"] == "REJECTED" for row in rows)
     assert not any(
         row["shared_vs_differentiated_architecture"] == "yes"
@@ -34,3 +36,44 @@ def test_hysteresis_audit_preserves_distinct_failure_modes():
     assert rows["HYS_BACILLUS_CELLTYPE_2025"]["state_boundary_empirical"] == (
         "empirical_colony_state_transitions_but_not_matched_forward_reverse_thresholds"
     )
+    assert "epithelial versus mesenchymal" in rows["HYS_EMT_TGFB_2018"]["exclusion_reason"]
+    assert "genetically enforced" in rows["HYS_PSEUDOMONAS_SIDEROPHORE_2022"]["exclusion_reason"]
+    assert "forward and backward" in rows["HYS_OOCERAEA_DEFENCE_2025"]["exclusion_reason"]
+
+
+def test_expanded_hysteresis_audit_spans_orthogonal_near_miss_directions():
+    rows = {row["candidate_id"]: row for row in _rows()}
+
+    # Strong empirical hysteresis, but not division-of-labour architecture.
+    emt = rows["HYS_EMT_TGFB_2018"]
+    assert emt["state_boundary_empirical"] == "empirical_bimodal_state_transition_and_reversion_protocol"
+    assert emt["shared_vs_differentiated_architecture"] == "no"
+
+    # Real generalist-versus-specialist architecture/payoff contrast, but no reversible same-unit sweep.
+    pseudo = rows["HYS_PSEUDOMONAS_SIDEROPHORE_2022"]
+    assert pseudo["shared_vs_differentiated_architecture"] == "yes_enforced_specialist_mix_vs_generalist_wildtype"
+    assert pseudo["same_biological_unit"] == "fixed_engineered_genotypes"
+    assert pseudo["forward_reverse_history"] == "no_forward_reverse_history"
+
+    # Real context-dependent division of labour in one colony, but no threshold hysteresis experiment.
+    ant = rows["HYS_OOCERAEA_DEFENCE_2025"]
+    assert ant["shared_vs_differentiated_architecture"] == "partial_colony_task_specialization"
+    assert ant["state_boundary_empirical"] == "empirical_context_dependent_division_of_labour"
+    assert ant["forward_reverse_history"] == "no_forward_reverse_graded_sweep"
+
+
+
+def test_hysteresis_search_ceiling_is_monitor_only_and_not_proof_of_absence():
+    data = json.loads(CEILING.read_text(encoding="utf-8"))
+    assert data["status"] == "CURRENT_SEARCH_CEILING_REACHED_NO_PROMOTION"
+    assert data["named_candidates_screened"] == 9
+    assert data["promoted_clusters"] == 0
+    assert data["priority"] == "MONITOR_ONLY_DO_NOT_BLOCK_V4_PRIMARY_PROGRAMME"
+    assert "proof_of_absence" in data["claim_ceiling"]
+    assert set(data["orthogonal_near_miss_classes"]) == {
+        "empirical_hysteresis_without_multifunctional_architecture",
+        "architecture_like_specialization_with_model_only_hysteresis",
+        "real_generalist_specialist_payoff_without_reversible_same_unit_switch",
+        "empirical_division_of_labour_without_forward_reverse_threshold_pair",
+        "switching_or_hysteresis_analogue_outside_registered_unit",
+    }

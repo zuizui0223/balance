@@ -6,7 +6,7 @@ Issue #24 requires a real within-unit architecture hysteresis receipt, not gener
 
 A candidate is promotable only if the same biological unit can occupy alternative shared/generalist versus differentiated/specialized architecture states along one registered control axis, with forward and reverse histories reaching comparable control values and with a defensible threshold separation plus uncertainty.
 
-This audit records six superficially attractive hysteresis systems and keeps all six below the BALANCE promotion threshold.
+This audit records nine superficially attractive systems spanning empirical hysteresis, real division of labour, and context-dependent specialization. All nine remain below the BALANCE promotion threshold.
 
 Machine-readable ledger:
 
@@ -78,14 +78,80 @@ architecture-like cell-type specialization
 != empirical architecture hysteresis receipt
 ```
 
+## Candidate 7 — hysteretic epithelial–mesenchymal transition
+
+Celià-Terrassa et al. (2018), *Nature Communications*, DOI
+`10.1038/s41467-018-07538-7`.
+
+This is one of the strongest empirical hysteresis controls in the expanded audit. Mammary
+epithelial cells show a history-dependent TGF-β response, bimodal E-cadherin states,
+persistence after transient induction, and experimental reversion protocols.
+
+It is still not a BALANCE architecture receipt. The alternative states are epithelial and
+mesenchymal cell fates of one cell population. They are not a shared multifunctional
+generalist architecture versus a differentiated division-of-labour architecture, and the
+study does not report the registered matched forward/reverse architecture-threshold pair
+with threshold-separation uncertainty.
+
+Thus:
+
+```text
+strong empirical cellular hysteresis
+!= multifunctional architecture hysteresis
+```
+
+## Candidate 8 — Pseudomonas siderophore specialization
+
+Mridha et al. (2022), *Journal of Evolutionary Biology*, DOI
+`10.1111/jeb.14001`.
+
+This experiment is useful for the opposite reason. It directly compares a generalist
+*Pseudomonas aeruginosa* wild type that produces two siderophores with mixtures of engineered
+specialists that produce only pyochelin or pyoverdine, across iron-limitation conditions.
+
+So the system has a real generalist-versus-specialist functional architecture comparison and
+a measurable whole-population performance consequence. But the specialist architecture is
+genetically enforced across different strains. The same biological unit is not driven
+reversibly between generalist and specialist architectures, and no forward/reverse control
+sweep is performed.
+
+Therefore:
+
+```text
+real division-of-labour payoff comparison
++ environmental gradient
+!= reversible architecture hysteresis
+```
+
+## Candidate 9 — clonal-raider-ant defence division of labour
+
+Li et al. (2025), *Philosophical Transactions of the Royal Society B*, DOI
+`10.1098/rstb.2023.0270`.
+
+This is a strong empirical division-of-labour control because near-identical workers in
+*Ooceraea biroi* colonies differentiate behaviourally in colony defence, and the strength of
+division of labour changes with colony size and brood context.
+
+It is not promoted because the experiment does not traverse one graded control axis forward
+and backward through the same colony architecture. There is no matched pair of
+generalist-to-specialist and specialist-to-generalist thresholds, and no threshold-separation
+uncertainty.
+
+This closes another loophole:
+
+```text
+empirical context-dependent division of labour
+!= empirical hysteresis of division-of-labour architecture
+```
+
 ## Result
 
 ```text
-screened named candidates     6
+screened named candidates     9
 promoted BALANCE hysteresis   0
 ```
 
-The empirical hysteresis ledger therefore remains at zero.
+The empirical hysteresis ledger therefore remains at zero. The expanded audit now contains all three useful near-miss directions separately: strong empirical hysteresis without division-of-labour architecture, real generalist-versus-specialist division of labour without reversible within-unit switching, and empirical context-dependent division of labour without a forward/reverse threshold pair.
 
 ## Search implication
 
@@ -99,6 +165,35 @@ Future screening should prioritize systems where:
 6. the phenomenon is not merely population coexistence, collective aggregation, or gene-expression memory.
 
 The strongest remaining target class is therefore an experimentally reversible modularity/specialization system rather than another generic hysteresis paper.
+
+## Current search ceiling
+
+The expanded targeted search is now frozen as a **current search ceiling**, not as proof of
+absence.
+
+Machine-readable status:
+
+`data/BALANCE_HYSTERESIS_SEARCH_CEILING_V1.json`.
+
+The screened literature now contains the major near-miss directions separately:
+
+- strong empirical hysteresis without multifunctional architecture;
+- architecture-like specialization with model-only hysteresis;
+- real generalist-versus-specialist performance comparisons without reversible same-unit
+  switching;
+- empirical context-dependent division of labour without matched forward/reverse thresholds;
+- evolutionary specialist/generalist reversals that occur across generations rather than
+  along one within-unit control sweep.
+
+The empirical hysteresis route is therefore moved to:
+
+```text
+MONITOR_ONLY_DO_NOT_BLOCK_V4_PRIMARY_PROGRAMME
+```
+
+It should be reopened only when a source or public dataset can identify both forward and
+reverse thresholds for the same multifunctional architecture under one graded control axis,
+with uncertainty, without redefining the architecture state after observing the result.
 
 ## Claim ceiling
 
