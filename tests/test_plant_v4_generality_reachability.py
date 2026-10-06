@@ -15,6 +15,7 @@ U2_RECEIPTS = ROOT / "data" / "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_F
 U6_RECEIPTS = ROOT / "data" / "BALANCE_PLANT_U6_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V1.csv"
 MODEL_SPEC = ROOT / "data" / "BALANCE_PLANT_CONFIRMATORY_MODEL_SPEC_V4.json"
 REACTIVATION = ROOT / "data" / "BALANCE_PLANT_V4_REACTIVATION_GATE_V1.json"
+PUBLICATION_STATUS = ROOT / "docs" / "PUBLICATION_STATUS.md"
 
 
 def _rows(path):
@@ -193,3 +194,13 @@ def test_v2_reachability_does_not_predeclare_reactivation_or_real_common_support
         ]
         is True
     )
+
+
+
+def test_publication_status_distinguishes_v1_ceiling_v2_reachability_and_real_evidence():
+    text = PUBLICATION_STATUS.read_text(encoding="utf-8")
+    assert "original frozen **U2 V1 predictor-receipt surface**" in text
+    assert "V1 strict G1 route       = structurally unreachable" in text
+    assert "V2 registered route      = prospectively executed / mechanically reachable" in text
+    assert "real cross-universe G1   = unopened pending independent human returns" in text
+    assert "The common-support threshold has not been weakened." in text
