@@ -1,23 +1,42 @@
-name: Extract Gymnadenia Caruso Q1B source
+name: Probe Caruso Dryad nonduplicated workbook
 
 on:
-  pull_request:
-    paths:
-      - "scripts/extract_gymnadenia_from_caruso_dryad.py"
-      - ".github/workflows/extract-gymnadenia-caruso-q1b.yml"
-  workflow_dispatch:
+  push:
+    branches:
+      - ops/caruso-dryad-file-stream-probe-20261006
 
 permissions:
   contents: read
 
 jobs:
-  provenance:
+  probe:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Confirm superseded access path is documented
+
+      - name: Download current public Dryad file stream
         run: |
-          test -f docs/BALANCE_GYMNADENIA_Q1B_EXTRACTION_BLOCKER_V1.md
-          test -f data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json
-          grep -q "EFFECT_SIZE_READY_REPORTED_FACTORIAL_RECONSTRUCTION" data/BALANCE_GYMNADENIA_Q1B_RECEIPT_V1.json
-          echo "Caruso/Dryad byte-download route is provenance-only; direct Ecological Archives Table A2 recovery is canonical."
+          set -euo pipefail
+          mkdir -p release/generated/caruso_probe
+          curl --fail --location --retry 2 --retry-all-errors \
+            --user-agent "Mozilla/5.0 balance-caruso-probe/1" \
+            --header "Referer: https://datadryad.org/dataset/doi:10.5061/dryad.2v8c5g0" \
+            --output release/generated/caruso_probe/Exp_stud_NOTdup_Dryad.xls \
+            https://datadryad.org/downloads/file_stream/21862
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p = Path("release/generated/caruso_probe/Exp_stud_NOTdup_Dryad.xls")
+          b = p.read_bytes()
+          assert len(b) > 400_000, len(b)
+          assert b.startswith(bytes.fromhex("d0cf11e0a1b11ae1")), b[:16].hex()
+          print("bytes", len(b))
+          print("sha256", hashlib.sha256(b).hexdigest())
+          PY
+
+      - name: Upload exact nonduplicated workbook
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-caruso-nonduplicated-dryad-xls
+          path: release/generated/caruso_probe/Exp_stud_NOTdup_Dryad.xls
+          if-no-files-found: error
