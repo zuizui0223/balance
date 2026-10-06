@@ -59,7 +59,15 @@
     "cli": "scripts/ingest_peucedanum_raw.py",
     "inventory_command": "python scripts/ingest_peucedanum_raw.py inventory <source files...> --out-dir <new directory>",
     "normalize_command": "python scripts/ingest_peucedanum_raw.py normalize <source files...> --mapping empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json --out-dir <new directory>",
-    "workbook_extra": "python -m pip install -e '.[peucedanum]'"
+    "workbook_extra": "python -m pip install -e '.[peucedanum]'",
+    "accepted_inputs": [
+      "csv",
+      "tsv",
+      "xlsx",
+      "xls",
+      "zip"
+    ],
+    "zip_member_source_key": "<archive basename>::<safe POSIX member path>"
   },
   "mapping_entry_schema": {
     "required": [
@@ -79,8 +87,10 @@
       "mapping derived fields directly",
       "mapping provenance fields from source columns",
       "using a column absent from the exact source header",
-      "normalizing while status is TEMPLATE_NOT_SOURCE_VERIFIED"
-    ]
+      "normalizing while status is TEMPLATE_NOT_SOURCE_VERIFIED",
+      "ZIP members with absolute paths, parent traversal, backslash separators, or duplicate member names"
+    ],
+    "source_file_semantics": "standalone basename, or '<archive basename>::<member path>' for a tabular file inside an inventoried ZIP"
   },
   "promotion_rule": "Change status to SOURCE_VERIFIED_MAPPING only after source bytes and workbook notes/README have been inspected and every used source_file/source_sheet/header_row/source column has been verified."
 }
