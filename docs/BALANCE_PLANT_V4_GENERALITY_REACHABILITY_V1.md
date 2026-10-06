@@ -133,6 +133,37 @@ receipts exactly and overlays only the 36 prospective expansion slots. Every V2 
 Thus predictor coding, predictor adjudication, and architecture/conflict adjudication remain
 three distinct stages.
 
+## Current reopening status
+
+The V2 reopening route has now moved beyond a design sketch:
+
+- the 12-group / 36-slot expansion population is frozen;
+- the blinded expansion packet has been generated and its artifact provenance recorded;
+- no expansion return has yet been received;
+- no V2 predictor receipt has yet been independently adjudicated.
+
+A constructive end-to-end regression supplies a **mechanical reachability witness**. It
+uses one synthetic admissible completion in which a frozen expansion group is independently
+coded as `SINGLE + SIMULTANEOUS` and is later final-adjudicated conflict positive. Under
+that configuration, the unchanged common-support and per-universe outcome-support gates
+pass and both registered temporal-generality fit wrappers are emitted.
+
+The witness proves only that the registered V2 reopening route is nonempty. It does not
+predict the coding of any real group, does not promote a source-screen negative group, and
+does not make the real strict-generality gate ready.
+
+Current state:
+
+```text
+V1 receipt surface                    unreachable for strict G1
+V2 expansion route                    registered and packet generated
+V2 mechanical reachability            demonstrated
+real V2 expansion return              pending
+real V2 independent adjudication      pending
+real strict G1 eligibility            unresolved / closed
+V4 primary fit                        not blocked by the V2 expansion
+```
+
 ## Claim ceiling
 
 This audit establishes only the reachability of a preregistered design gate. It does not
