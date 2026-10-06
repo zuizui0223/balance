@@ -1,0 +1,51 @@
+{
+  "schema_version": "BALANCE_PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1",
+  "status": "DIRECT_PRIMARY_SOURCE_VERIFIED",
+  "system": "Peucedanum multivittatum",
+  "source": {
+    "citation": "Kudo & Shibata 2025, Journal of Ecology 113:2832-2845",
+    "doi": "10.1111/1365-2745.70130",
+    "table": "Table 3",
+    "female_gain_source": "main-text female-gain paragraph / Figure S4",
+    "source_verification_date": "2026-10-06",
+    "correction_note": "publisher page records a correction added 2025-09-02 to a significance label; numerical values below are transcribed from the current corrected article surface"
+  },
+  "ordered_contexts": ["HA", "HL", "HC", "KD", "HD"],
+  "final_fruit_set_rate": {
+    "linear_selection_differential_S": {
+      "HA": {"estimate": -0.027, "se": 0.010},
+      "HL": {"estimate": -0.051, "se": 0.010},
+      "HC": {"estimate": 0.036, "se": 0.008},
+      "KD": {"estimate": 0.021, "se": 0.009},
+      "HD": {"estimate": 0.024, "se": 0.009}
+    },
+    "linear_selection_gradient_beta": {
+      "HA": {"estimate": -0.035, "se": 0.012},
+      "HL": {"estimate": -0.029, "se": 0.011},
+      "HC": {"estimate": 0.034, "se": 0.010},
+      "KD": {"estimate": 0.008, "se": 0.009},
+      "HD": {"estimate": 0.026, "se": 0.011}
+    }
+  },
+  "female_gain_exponent_b": {
+    "HA": {"estimate": 0.63, "se": 0.27, "reported_p": 0.022},
+    "HL": {"estimate": 0.45, "se": 0.21, "reported_p": 0.031},
+    "HC": {"estimate": 1.15, "se": 0.22, "reported_p_upper_bound": 0.0001},
+    "KD": {"estimate": 1.26, "se": 0.16, "reported_p_upper_bound": 0.0001},
+    "HD": {"estimate": 1.55, "se": 0.20, "reported_p_upper_bound": 0.0001}
+  },
+  "verified_regime_pattern": {
+    "HA_HL_final_fruit_direction": "NEGATIVE",
+    "HC_KD_HD_final_fruit_direction": "NONNEGATIVE_TO_POSITIVE",
+    "HA_HL_female_gain_b": "BELOW_ONE",
+    "HC_KD_HD_female_gain_b": "ABOVE_ONE",
+    "coarse_transition_bracket": ["HL", "HC"]
+  },
+  "existing_balance_fixture_crosscheck": {
+    "final_fruit_selection_differential_all_five_estimates_match": true,
+    "final_fruit_selection_gradient_all_five_estimates_match": true,
+    "female_gain_exponent_all_five_estimates_match": true,
+    "no_numeric_fixture_correction_required": true
+  },
+  "claim_ceiling": "published_summary_source_verification_only_not_raw_reanalysis_or_direct_BALANCE_worldline"
+}
