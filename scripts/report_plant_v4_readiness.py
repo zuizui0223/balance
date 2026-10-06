@@ -15,6 +15,9 @@ from balance_domain.plant_readiness import build_plant_v4_readiness  # noqa: E40
 
 
 HANDOFF_EXECUTION = ROOT / "data" / "BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json"
+GENERALITY_REACHABILITY = (
+    ROOT / "data" / "BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json"
+)
 
 
 def _human_handoff_execution_status() -> dict:
@@ -57,6 +60,57 @@ def _human_handoff_execution_status() -> dict:
     }
 
 
+
+def _generality_reopening_status() -> dict:
+    reachability = json.loads(
+        GENERALITY_REACHABILITY.read_text(encoding="utf-8")
+    )
+    handoff = json.loads(HANDOFF_EXECUTION.read_text(encoding="utf-8"))
+
+    if (
+        reachability.get("schema_version")
+        != "BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1"
+    ):
+        raise ValueError("plant V4 generality reachability schema mismatch")
+
+    reopening = reachability.get("prospective_reopening_contract")
+    if not isinstance(reopening, dict):
+        raise ValueError("plant V4 generality reopening contract is missing")
+    witness = reopening.get("constructive_mechanical_witness")
+    if not isinstance(witness, dict):
+        raise ValueError("plant V4 generality reopening witness is missing")
+
+    expansion = handoff.get("u2_predictor_expansion")
+    if not isinstance(expansion, dict):
+        raise ValueError("U2 predictor expansion execution receipt is missing")
+
+    return {
+        "v1_frozen_surface_reachable_without_expansion": (
+            reachability["current_reachability"][
+                "strict_temporal_generality_reachable_without_predictor_expansion"
+            ]
+        ),
+        "v2_expansion_route_registered": True,
+        "v2_expansion_packet_generated": bool(expansion["artifact_id"]),
+        "v2_expansion_return_received": False,
+        "constructive_mechanical_witness_registered": True,
+        "reopening_route_mechanically_nonempty": True,
+        "real_strict_generality_gate_ready": False,
+        "current_state": (
+            "V1_UNREACHABLE_V2_ROUTE_EXECUTED_AWAITING_REAL_RETURN"
+        ),
+        "main_v4_fit_blocked_by_expansion": bool(
+            expansion["blocks_primary_v4_fit"]
+        ),
+        "next_action": (
+            "COLLECT_U2_PREDICTOR_EXPANSION_RETURN_AND_INDEPENDENTLY_ADJUDICATE_V2"
+        ),
+        "claim_ceiling": (
+            "operational_reachability_status_only_no_real_generality_result"
+        ),
+    }
+
+
 def build_report() -> dict:
     readiness = build_plant_v4_readiness(
         u1_first20_conflict_path=ROOT / "data" / "BALANCE_PLANT_U1_BLIND_CONFLICT_SCREEN_V1.csv",
@@ -82,6 +136,7 @@ def build_report() -> dict:
         "analysis": "balance_plant_v4_readiness_snapshot",
         "programme_readiness": readiness,
         "human_handoff_execution": _human_handoff_execution_status(),
+        "generality_reopening_status": _generality_reopening_status(),
         "standalone_reactivation_gate": reactivation,
     }
 

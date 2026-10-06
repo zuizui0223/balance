@@ -22,6 +22,24 @@ def test_canonical_v4_readiness_report_matches_current_frozen_state():
 
     readiness = out["programme_readiness"]
     handoff = out["human_handoff_execution"]
+    reopening = out["generality_reopening_status"]
+    assert reopening == {
+        "v1_frozen_surface_reachable_without_expansion": False,
+        "v2_expansion_route_registered": True,
+        "v2_expansion_packet_generated": True,
+        "v2_expansion_return_received": False,
+        "constructive_mechanical_witness_registered": True,
+        "reopening_route_mechanically_nonempty": True,
+        "real_strict_generality_gate_ready": False,
+        "current_state": "V1_UNREACHABLE_V2_ROUTE_EXECUTED_AWAITING_REAL_RETURN",
+        "main_v4_fit_blocked_by_expansion": False,
+        "next_action": (
+            "COLLECT_U2_PREDICTOR_EXPANSION_RETURN_AND_INDEPENDENTLY_ADJUDICATE_V2"
+        ),
+        "claim_ceiling": (
+            "operational_reachability_status_only_no_real_generality_result"
+        ),
+    }
     assert handoff["status"] == "PACKETS_GENERATED_AWAITING_INDEPENDENT_HUMAN_RETURNS"
     assert handoff["architecture_coder_packets_generated"] is True
     assert handoff["predictor_adjudication_packet_generated"] is True

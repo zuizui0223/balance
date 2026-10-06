@@ -37,6 +37,22 @@ def test_current_v4_reactivation_gate_stays_dormant():
         "scripts/evaluate_plant_v4_reactivation.py"
     )
     assert "PASS diagnostics" in data["fit_diagnostic_requirement"]
+    reachability = data["current_v4_generality_reachability"]
+    assert (
+        reachability[
+            "strict_temporal_generality_reachable_without_predictor_receipt_expansion"
+        ]
+        is False
+    )
+    assert reachability["v2_expansion_route_registered"] is True
+    assert reachability["v2_expansion_packet_generated"] is True
+    assert reachability["v2_expansion_return_received"] is False
+    assert reachability["constructive_mechanical_witness_registered"] is True
+    assert reachability["reopening_route_mechanically_nonempty"] is True
+    assert reachability["real_strict_generality_gate_ready"] is False
+    assert reachability["current_state"] == (
+        "V1_UNREACHABLE_V2_ROUTE_EXECUTED_AWAITING_REAL_RETURN"
+    )
     assert out["standalone_reactivation_eligible"] is False
     assert out["activation_action"] == "KEEP_DORMANT"
     assert "u2_independent_coding_and_adjudication_complete" in out["blockers"]

@@ -39,7 +39,7 @@
     "architecture class difference without predictor-outcome independence"
   ],
   "standalone_reactivation_eligible": false,
-  "reason": "independent coding and adjudication remain pending, and the strict cross-universe temporal common-support condition is structurally unreachable under the current frozen V4 predictor receipt surface",
+  "reason": "independent coding and adjudication remain pending; the V1 predictor-receipt surface alone cannot satisfy strict temporal common support, while the prospectively frozen V2 predictor-expansion route has been executed and is mechanically nonempty but still awaits a real expansion return and independent V2 predictor adjudication",
   "claim_ceiling": "prospective_publication_gate_only_no_biological_result",
   "posterior_decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
   "posterior_decision_evaluator": "balance_domain.plant_v4_decision.temporal_generality_decision",
@@ -55,7 +55,15 @@
     "limiting_cell": "U2_SINGLE_SIMULTANEOUS",
     "frozen_complete_blocks": 1,
     "required_blocks": 2,
-    "rule": "The standalone cross-universe reactivation route cannot close under the current frozen V4 predictor receipt surface. Reopening requires a prospectively versioned outcome-independent predictor expansion before architecture outcomes are opened; the frozen gate is not weakened."
+    "rule": "The V1 frozen predictor-receipt surface cannot close the standalone cross-universe reactivation route. A prospectively versioned V2 expansion packet has been generated before architecture outcomes are opened, and a constructive admissible completion proves the unchanged support gate is mechanically reachable. Real eligibility remains unresolved until the actual V2 expansion return is frozen, independently adjudicated, and combined with final U2/U6 architecture outcomes.",
+    "v2_expansion_route_registered": true,
+    "v2_expansion_packet_generated": true,
+    "v2_expansion_return_received": false,
+    "constructive_mechanical_witness_registered": true,
+    "reopening_route_mechanically_nonempty": true,
+    "real_strict_generality_gate_ready": false,
+    "current_state": "V1_UNREACHABLE_V2_ROUTE_EXECUTED_AWAITING_REAL_RETURN",
+    "execution_receipt": "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json"
   },
   "generality_reachability_contract": "data/BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json"
 }
