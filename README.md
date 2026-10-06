@@ -255,7 +255,7 @@ Registered result:
 SAME_COARSE_CRITICAL_BRACKET = HL--HC.
 ```
 
-This does **not** establish `L`, `W_S*`, `W_D*`, or the common architecture boundary. It shows only that multiple definitions independently locate one observational transition region.
+This does **not** establish `L`, `W_S*`, `W_D*`, or the common architecture boundary. It shows only that multiple operational definitions concordantly locate one observational transition region; because they come from the same Peucedanum observational programme, they are not independent biological replications.
 
 See `docs/PEUCEDANUM_CRITICAL_REGION_ANCHOR_V1.md` and `empirical/peucedanum/PEUCEDANUM_CRITICAL_DEFINITIONS_V1.json`.
 

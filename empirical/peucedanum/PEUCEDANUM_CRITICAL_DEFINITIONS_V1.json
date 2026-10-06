@@ -4,9 +4,17 @@
   "source_provenance": {
     "primary_source": "Kudo & Shibata 2025",
     "repository_provenance": "zuizui0223/bita docs/CRITICAL_DEFINITION_CONCORDANCE_V1.md",
-    "claim_ceiling": "multiple operational definitions locate one concordant observational transition region; common SCH/BITA architecture boundary not identified"
+    "claim_ceiling": "multiple operational definitions locate one concordant observational transition region; common shared-versus-differentiated architecture-value boundary not identified",
+    "direct_primary_source_receipt": "empirical/peucedanum/PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1.json",
+    "primary_source_verification": "DIRECT_CURRENT_PUBLISHER_TABLE_AND_TEXT"
   },
-  "ordered_contexts": ["HA", "HL", "HC", "KD", "HD"],
+  "ordered_contexts": [
+    "HA",
+    "HL",
+    "HC",
+    "KD",
+    "HD"
+  ],
   "definitions": {
     "final_fruit_selection_gradient_beta": {
       "HA": -0.035,

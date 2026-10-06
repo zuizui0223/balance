@@ -2,7 +2,7 @@
 
 ## Role in Chapter 2
 
-`Peucedanum multivittatum` is an observational anchor for the existence of a context-dependent critical region. It is **not** yet a direct SCH→BALANCE→BITA architecture-worldline receipt.
+`Peucedanum multivittatum` is an observational anchor for the existence of a context-dependent critical region. It is **not** yet a direct shared-versus-differentiated architecture-worldline receipt.
 
 The ordered contexts are:
 
@@ -25,7 +25,23 @@ SAME_COARSE_CRITICAL_BRACKET
 common bracket = HL--HC.
 ```
 
-This supports the statement that multiple independent definitions point to one observational transition region.
+This supports the statement that multiple operational definitions concordantly point to one observational transition region. The definitions are derived from the same observational programme and are not counted as independent biological replications.
+
+## Direct primary-source verification
+
+The 2025 published-summary values used below have now been rechecked directly against the
+current corrected publisher surface rather than relying only on the earlier cross-repository
+migration.
+
+Canonical receipt:
+
+```text
+empirical/peucedanum/PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1.json
+```
+
+All five published final-fruit selection differentials, all five final-fruit selection
+gradients, and all five female-gain exponents match the existing BALANCE fixtures. No
+numeric correction to the registered HL--HC bracket is required.
 
 ## Conditional numeric proxy
 
@@ -61,7 +77,7 @@ L > 0 on the SCH fitness scale;
 W_S* or W_D*;
 BALANCE middle-world occupancy;
 Phi = sL-K;
-a common SCH/BITA architecture crossing;
+a common shared-versus-differentiated architecture-value crossing;
 predator eggs per umbel = theoretical functional weight;
 historical trait splitting.
 ```
@@ -80,4 +96,4 @@ Analyzer:
 balance_domain.definition_concordance
 ```
 
-The BITA repository retains its earlier critical-definition analysis as provenance. BALANCE is the programme location for continuing this question because it concerns the location and robustness of the middle/critical region rather than the mechanism of differentiated architecture.
+The BITA repository retains its earlier critical-definition analysis as historical provenance. BALANCE is the programme location for continuing this observational critical-region question; SLK owns the cross-repository architecture-value boundary classification.

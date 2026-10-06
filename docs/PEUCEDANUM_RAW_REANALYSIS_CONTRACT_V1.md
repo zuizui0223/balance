@@ -41,6 +41,23 @@ Wiley supplement: jec70130-sup-0001-supinfo.zip
 
 The Hokkaido repository is the preferred source for the 2025 raw data + reproducible code. Transport failure is tracked separately in issue #5.
 
+## Published-summary verification baseline
+
+Before raw-data recovery, the current publisher article surface was independently
+rechecked and frozen in:
+
+```text
+empirical/peucedanum/PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1.json
+```
+
+This receipt contains the five-plot estimates and standard errors for final-fruit
+selection differential and gradient, plus the five female-gain exponents and their
+reported uncertainties. It matches the pre-existing BALANCE point-estimate fixtures.
+
+The receipt is the R1 numeric target surface. It is **not** a substitute for the raw-data
+reanalysis; year/individual dependence, source-model reproduction, and robustness still
+require the public archive bytes.
+
 ## Stage R0 — source inventory and semantic mapping
 
 Do not infer spreadsheet columns from names alone. For every source file/sheet, record:
