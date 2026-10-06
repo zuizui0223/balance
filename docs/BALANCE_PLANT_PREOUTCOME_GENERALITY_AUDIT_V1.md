@@ -7,6 +7,34 @@ model fit.
 
 This audit uses predictor support only. No architecture outcome is used.
 
+### 2026-10-06 prospective V2 reachability addendum
+
+The support counts below remain the canonical **U2 V1 pre-outcome audit** and are not
+rewritten. Under that frozen V1 receipt surface, strict temporal generality is structurally
+unreachable.
+
+Before independent architecture outcomes were opened, the programme subsequently froze and
+executed a prospective all-12-group U2 V2 predictor-expansion handoff covering every V1
+group whose three predictor receipts were unresolved. The common-support threshold was not
+changed. A constructive synthetic end-to-end witness now proves that the registered V2 route
+has at least one admissible completion that can pass the unchanged common-support and
+per-universe outcome-support gates.
+
+This does **not** mean real G1 support exists. The independent expansion return is still
+pending, so no real V2 receipt frame has yet been frozen/adjudicated and no final expanded
+U2 architecture denominator is open.
+
+Current interpretation:
+
+```text
+V1 support audit          -> strict G1 unreachable
+V2 expansion route        -> frozen/executed before outcomes, mechanically reachable
+real V2/G1 evidence       -> unopened pending independent human returns
+```
+
+Canonical current reachability:
+`data/BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json`.
+
 Executable surface:
 
 - `balance_domain/plant_preoutcome_generality.py`
@@ -95,9 +123,9 @@ subset of those groups because predictor adjudication may accept/reject frozen v
 cannot fill an `UNRESOLVED` receipt. Subsetting cannot increase the
 `SINGLE + SIMULTANEOUS` count above one.
 
-Therefore the temporal contrast is a **prospective marginally replicated candidate whose
-strict common-support generality route is unreachable under the frozen V4 receipt
-surface**.
+Therefore, on the original V1 surface, the temporal contrast is a **prospective marginally
+replicated candidate whose strict common-support generality route is unreachable**. The
+later V2 expansion route changes prospective reachability, not these frozen V1 counts.
 
 ### Spatial exposure
 
@@ -123,10 +151,10 @@ frozen V4 receipt surface, final independent coding/adjudication cannot increase
 count: final U2 model rows are a subset of the eight groups with already-complete
 outcome-independent predictor receipts.
 
-Accordingly, Level G1 is **structurally unavailable in V4 as currently frozen**. It can be
-reopened only by a prospectively versioned outcome-independent predictor-receipt expansion
-completed before independent architecture outcomes are opened. The >=2 threshold itself is
-not weakened.
+Accordingly, Level G1 is **structurally unavailable on the original V1 predictor surface**.
+The required prospectively versioned expansion was subsequently frozen and executed before
+independent architecture outcomes were opened. The >=2 threshold itself was not weakened.
+Whether real V2 returns actually reopen G1 remains an empirical question.
 
 ### Level G2 — within-universe supported
 
@@ -181,9 +209,10 @@ Therefore temporal conflict geometry remains the strongest **candidate** for a g
 routing principle, but the current evidence surface does not yet support a strict
 cross-universe generality test.
 
-That remains a hypothesis. Under frozen V4, the common-support step cannot pass; any future
-attempt to test strict cross-universe generality requires a separately versioned
-pre-outcome predictor expansion before architecture outcomes are opened.
+That remains a hypothesis. The V1 common-support step cannot pass. The separately versioned
+pre-outcome V2 expansion has now been frozen/executed, but strict cross-universe generality
+still requires its complete independent return, immutable V2 freeze, independent predictor
+adjudication, final architecture admission, and the unchanged support gates.
 
 ## V4 main-design rank versus generality support
 
@@ -216,7 +245,7 @@ V4 main predictor design
   full-rank / viable
 
 strict cross-universe temporal generality sensitivity
-  unreachable under frozen V4 predictor-receipt surface
+  V1 unreachable; V2 mechanically reachable; real support unopened
 ```
 
 The first statement concerns identifiability of the registered U2/U6 model matrix. The
