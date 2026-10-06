@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import importlib
 import importlib.util
 import json
