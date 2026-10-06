@@ -213,3 +213,20 @@ def test_large_finite_mapped_flower_counts_do_not_overflow_derived_fields():
     rows = normalize_from_mapping(tables, mapping)
     assert float(rows[0]["male_fraction"]) == pytest.approx(0.5)
     assert rows[0]["total_flower_count"].lower().startswith("2e+308")
+
+
+
+def test_mapping_constants_cannot_override_source_provenance():
+    mapping = _mapping()
+    mapping["registered_sources"][0]["sheet_mappings"][0]["constants"] = {
+        "source_doi": "10.0000/fake"
+    }
+    with pytest.raises(ValueError, match="provenance normalized fields"):
+        normalize_from_mapping(_tables(), mapping)
+
+
+def test_unsupported_source_format_fails_closed(tmp_path):
+    source = tmp_path / "raw.json"
+    source.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="accepts only"):
+        read_tabular_source(source)
