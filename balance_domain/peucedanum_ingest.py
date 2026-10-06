@@ -15,7 +15,8 @@ import math
 import os
 import shutil
 import tempfile
-from pathlib import Path
+import zipfile
+from pathlib import Path, PurePosixPath
 from typing import Iterable, Mapping
 
 from .peucedanum_raw import REQUIRED_NORMALIZED_FIELDS, validate_normalized_rows
@@ -65,6 +66,8 @@ DERIVED_FIELDS = {
     "male_fraction",
     "final_fruit_set_rate",
 }
+
+TABULAR_SUFFIXES = {".csv", ".tsv", ".xlsx", ".xls"}
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -209,29 +212,63 @@ def _read_xls(raw: bytes) -> dict[str, list[list[object]]]:
     return sheets
 
 
+def _read_tabular_bytes(
+    source_name: str,
+    raw: bytes,
+) -> dict[str, list[list[object]]]:
+    suffix = Path(source_name).suffix.lower()
+    if suffix == ".csv":
+        return {"__CSV__": _read_delimited(raw, delimiter=",")}
+    if suffix == ".tsv":
+        return {"__TSV__": _read_delimited(raw, delimiter="\t")}
+    if suffix == ".xlsx":
+        return _read_xlsx(raw)
+    if suffix == ".xls":
+        return _read_xls(raw)
+    raise ValueError(
+        "Peucedanum tabular ingest accepts only .csv, .tsv, .xlsx or .xls files"
+    )
+
+
 def read_tabular_source(
     path: Path,
 ) -> tuple[bytes, dict[str, list[list[object]]]]:
-    """Read one source file without assigning biological semantics."""
+    """Read one standalone tabular source without assigning biological semantics."""
     raw = path.read_bytes()
-    suffix = path.suffix.lower()
-    if suffix == ".csv":
-        return raw, {"__CSV__": _read_delimited(raw, delimiter=",")}
-    if suffix == ".tsv":
-        return raw, {"__TSV__": _read_delimited(raw, delimiter="\t")}
-    if suffix == ".xlsx":
-        return raw, _read_xlsx(raw)
-    if suffix == ".xls":
-        return raw, _read_xls(raw)
-    raise ValueError(
-        "Peucedanum source ingest accepts only .csv, .tsv, .xlsx or .xls files"
-    )
+    if path.suffix.lower() not in TABULAR_SUFFIXES:
+        raise ValueError(
+            "Peucedanum source ingest accepts only .csv, .tsv, .xlsx or .xls files"
+        )
+    return raw, _read_tabular_bytes(path.name, raw)
+
+
+def _safe_zip_members(raw: bytes) -> list[tuple[str, bytes]]:
+    members: list[tuple[str, bytes]] = []
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        names = [info.filename for info in archive.infolist() if not info.is_dir()]
+        if len(names) != len(set(names)):
+            raise ValueError("Peucedanum ZIP contains duplicate member names")
+        for info in archive.infolist():
+            if info.is_dir():
+                continue
+            member = PurePosixPath(info.filename)
+            if (
+                member.is_absolute()
+                or ".." in member.parts
+                or not member.name
+            ):
+                raise ValueError(
+                    f"Peucedanum ZIP contains unsafe member path {info.filename!r}"
+                )
+            data = archive.read(info)
+            members.append((member.as_posix(), data))
+    return sorted(members, key=lambda item: item[0])
 
 
 def load_sources(
     source_paths: Iterable[Path],
 ) -> tuple[dict[str, dict], dict[tuple[str, str], list[list[object]]]]:
-    """Load exact source bytes and return provenance plus decoded tables."""
+    """Load exact source/archive bytes and return provenance plus decoded tables."""
     paths = list(source_paths)
     if not paths:
         raise ValueError("at least one Peucedanum source file is required")
@@ -242,7 +279,35 @@ def load_sources(
     files: dict[str, dict] = {}
     tables: dict[tuple[str, str], list[list[object]]] = {}
     for path in paths:
-        raw, decoded = read_tabular_source(path)
+        raw = path.read_bytes()
+        if path.suffix.lower() == ".zip":
+            members = _safe_zip_members(raw)
+            member_inventory = [
+                {
+                    "member": member,
+                    "bytes": len(member_raw),
+                    "sha256": _sha256_bytes(member_raw),
+                    "format": Path(member).suffix.lower().lstrip("."),
+                }
+                for member, member_raw in members
+            ]
+            files[path.name] = {
+                "source_bytes": len(raw),
+                "source_sha256": _sha256_bytes(raw),
+                "format": "zip",
+                "member_count": len(members),
+                "members": member_inventory,
+            }
+            for member, member_raw in members:
+                if Path(member).suffix.lower() not in TABULAR_SUFFIXES:
+                    continue
+                source_key = f"{path.name}::{member}"
+                decoded = _read_tabular_bytes(member, member_raw)
+                for sheet, rows in decoded.items():
+                    tables[(source_key, sheet)] = rows
+            continue
+
+        decoded = _read_tabular_bytes(path.name, raw)
         files[path.name] = {
             "source_bytes": len(raw),
             "source_sha256": _sha256_bytes(raw),
@@ -313,11 +378,19 @@ def _mapping_entries(mapping: Mapping[str, object]) -> list[dict]:
                 raise ValueError("sheet mapping must be an object")
             entry = dict(raw_entry)
             source_file = str(entry.get("source_file") or "").strip()
-            if expected_files is not None and source_file not in expected_files:
-                raise ValueError(
-                    f"sheet mapping source_file {source_file!r} is not registered "
-                    f"for source {doi!r}"
+            if expected_files is not None:
+                exact_or_member = (
+                    source_file in expected_files
+                    or any(
+                        source_file.startswith(f"{expected}::")
+                        for expected in expected_files
+                    )
                 )
+                if not exact_or_member:
+                    raise ValueError(
+                        f"sheet mapping source_file {source_file!r} is not registered "
+                        f"for source {doi!r}"
+                    )
             entry["source_doi"] = doi
             entries.append(entry)
     if not entries:
