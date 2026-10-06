@@ -7,6 +7,7 @@ from an explicitly source-verified mapping contract.
 from __future__ import annotations
 
 import csv
+from decimal import Decimal, InvalidOperation
 import hashlib
 import io
 import json
@@ -311,15 +312,15 @@ def _header_index(header: list[str]) -> dict[str, int]:
 
 
 def _derive_registered_fields(row: dict[str, str]) -> None:
-    def number(field: str) -> float | None:
+    def number(field: str) -> Decimal | None:
         value = row.get(field, "")
         if value == "":
             return None
         try:
-            out = float(value)
-        except ValueError as exc:
+            out = Decimal(value)
+        except (InvalidOperation, ValueError) as exc:
             raise ValueError(f"mapped {field} is not numeric") from exc
-        if not math.isfinite(out):
+        if not out.is_finite():
             raise ValueError(f"mapped {field} is not finite")
         return out
 
@@ -327,9 +328,9 @@ def _derive_registered_fields(row: dict[str, str]) -> None:
     male = number("male_flower_count")
     if perfect is not None and male is not None:
         total = perfect + male
-        if not math.isfinite(total) or total <= 0:
+        if not total.is_finite() or total <= 0:
             raise ValueError("mapped flower counts produce invalid total")
-        row["total_flower_count"] = format(total, ".15g")
+        row["total_flower_count"] = str(total.normalize())
         row["male_fraction"] = format(male / total, ".15g")
 
     intact = number("intact_fruit_count")
