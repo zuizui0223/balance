@@ -13,7 +13,7 @@ def _rows():
 
 def test_named_hysteresis_audit_does_not_promote_surrogates():
     rows = _rows()
-    assert len(rows) == 5
+    assert len(rows) == 6
     assert all(row["promotion_status"] == "REJECTED" for row in rows)
     assert not any(
         row["shared_vs_differentiated_architecture"] == "yes"
@@ -30,3 +30,7 @@ def test_hysteresis_audit_preserves_distinct_failure_modes():
     assert "numerical model" in rows["HYS_LOCUST_DENSITY_2012"]["exclusion_reason"]
     assert "hydraulic" in rows["HYS_TREE_HYDRAULIC_2026"]["exclusion_reason"]
     assert "physiological memory" in rows["HYS_PRUNUS_WATER_1999"]["exclusion_reason"]
+    assert "closest architecture-level candidate" in rows["HYS_BACILLUS_CELLTYPE_2025"]["exclusion_reason"]
+    assert rows["HYS_BACILLUS_CELLTYPE_2025"]["state_boundary_empirical"] == (
+        "empirical_colony_state_transitions_but_not_matched_forward_reverse_thresholds"
+    )
