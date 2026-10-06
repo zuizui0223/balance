@@ -1,9 +1,11 @@
 import csv
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT = ROOT / "data" / "BALANCE_HYSTERESIS_CANDIDATE_AUDIT_V1.csv"
+CEILING = ROOT / "data" / "BALANCE_HYSTERESIS_SEARCH_CEILING_V1.json"
 
 
 def _rows():
@@ -58,3 +60,20 @@ def test_expanded_hysteresis_audit_spans_orthogonal_near_miss_directions():
     assert ant["shared_vs_differentiated_architecture"] == "partial_colony_task_specialization"
     assert ant["state_boundary_empirical"] == "empirical_context_dependent_division_of_labour"
     assert ant["forward_reverse_history"] == "no_forward_reverse_graded_sweep"
+
+
+
+def test_hysteresis_search_ceiling_is_monitor_only_and_not_proof_of_absence():
+    data = json.loads(CEILING.read_text(encoding="utf-8"))
+    assert data["status"] == "CURRENT_SEARCH_CEILING_REACHED_NO_PROMOTION"
+    assert data["named_candidates_screened"] == 9
+    assert data["promoted_clusters"] == 0
+    assert data["priority"] == "MONITOR_ONLY_DO_NOT_BLOCK_V4_PRIMARY_PROGRAMME"
+    assert "proof_of_absence" in data["claim_ceiling"]
+    assert set(data["orthogonal_near_miss_classes"]) == {
+        "empirical_hysteresis_without_multifunctional_architecture",
+        "architecture_like_specialization_with_model_only_hysteresis",
+        "real_generalist_specialist_payoff_without_reversible_same_unit_switch",
+        "empirical_division_of_labour_without_forward_reverse_threshold_pair",
+        "switching_or_hysteresis_analogue_outside_registered_unit",
+    }
