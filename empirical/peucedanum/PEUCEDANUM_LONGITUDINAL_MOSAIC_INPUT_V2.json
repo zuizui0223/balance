@@ -9,7 +9,7 @@
       "n_populations": 9,
       "flowering_time_to_predation": {
         "estimate": -0.803,
-        "se": 0.110,
+        "se": 0.11,
         "z": -7.29,
         "p_upper_bound": 0.0001
       },
@@ -35,14 +35,21 @@
     "2025_selection_mosaic": {
       "citation": "Kudo & Shibata 2025, Journal of Ecology 113:2832-2845",
       "doi": "10.1111/1365-2745.70130",
-      "ordered_contexts": ["HA", "HL", "HC", "KD", "HD"],
+      "ordered_contexts": [
+        "HA",
+        "HL",
+        "HC",
+        "KD",
+        "HD"
+      ],
       "final_fruit_selection_gradient_beta": {
         "HA": -0.035,
         "HL": -0.029,
         "HC": 0.034,
         "KD": 0.008,
         "HD": 0.026
-      }
+      },
+      "published_summary_receipt": "empirical/peucedanum/PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1.json"
     }
   },
   "claim_ceiling": "longitudinal observational concordance within one biological system; source layers may overlap in authors, locations, or years and are not counted as independent studies"
