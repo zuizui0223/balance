@@ -138,6 +138,13 @@ def test_v2_route_is_executed_and_mechanically_reachable_but_real_support_unopen
     model = json.loads(MODEL_SPEC.read_text(encoding="utf-8"))
     gate = json.loads(REACTIVATION.read_text(encoding="utf-8"))
 
+    current_contract = contract["current_reachability"]
+    assert current_contract["v2_expansion_handoff_executed"] is True
+    assert current_contract["v2_mechanical_reachability_proven"] is True
+    assert current_contract["v2_real_human_return_received"] is False
+    assert current_contract["v2_frozen_receipt_frame_available"] is False
+    assert current_contract["common_support_threshold_changed"] is False
+
     witness = contract["prospective_reopening_contract"][
         "constructive_mechanical_witness"
     ]
