@@ -330,7 +330,7 @@ def _derive_registered_fields(row: dict[str, str]) -> None:
         total = perfect + male
         if not total.is_finite() or total <= 0:
             raise ValueError("mapped flower counts produce invalid total")
-        row["total_flower_count"] = str(total.normalize())
+        row["total_flower_count"] = format(total, "g")
         row["male_fraction"] = format(male / total, ".15g")
 
     intact = number("intact_fruit_count")
