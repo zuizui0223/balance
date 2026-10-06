@@ -63,6 +63,17 @@ experiment / population identifiers
 
 If file bytes are acquired manually rather than programmatically, the same inventory fields apply. The scientific result must not depend on the download route.
 
+The canonical local-ingest entrypoint is:
+
+```bash
+python -m pip install -e '.[caruso]'
+python scripts/ingest_caruso_nondedup.py Exp_stud_NOTdup_Dryad.xls <NEW_OUTPUT_DIR>
+```
+
+See `docs/BALANCE_CARUSO_LOCAL_INGEST_V1.md`. The ingest freezes the source SHA256,
+detects the unique 755-record data sheet before biological screening, and exports the
+original row numbers plus the companion column dictionary.
+
 `Exp_stud_dup_Dryad.xlsx` is tagged `DEPENDENCE_AUDIT_ONLY`.
 
 ## Canonical source registry
@@ -264,7 +275,9 @@ Only object 4 can change `effect_size_ready_clusters` in `BALANCE_QUANTITATIVE_S
 ```text
 Caruso metadata / database scope            VERIFIED
 non-duplicated workbook identity             VERIFIED BY DRYAD LANDING PAGE
-local/programmatic file ingest               PENDING
+Dryad non-duplicated file_stream              VERIFIED = 21862
+local/programmatic file bytes                PENDING (current environment receives HTTP 403)
+fail-closed local .xls ingest                 IMPLEMENTED
 canonical source registry                    REGISTERED
 canonical source-level screening seed         REGISTERED
 Q1 effect-size-ready clusters                0

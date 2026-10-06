@@ -17,6 +17,12 @@ def test_caruso_nonduplicated_database_is_primary_search_universe():
     assert caruso["data_doi"] == "10.5061/dryad.2v8c5g0"
     assert "755_beta_plus_SE_records" in caruso["public_scope"]
     assert caruso["screening_role"] == "PRIMARY_FLORAL_SELECTION_SEARCH_UNIVERSE"
+    assert caruso["current_status"] == (
+        "PUBLIC_FILE_ID_VERIFIED_LOCAL_INGEST_READY_BYTES_PENDING"
+    )
+    assert caruso["next_action"] == (
+        "acquire_exact_Exp_stud_NOTdup_Dryad_xls_then_run_fail_closed_local_ingest"
+    )
 
 
 def test_duplicated_caruso_workbook_is_never_independent_inventory():
