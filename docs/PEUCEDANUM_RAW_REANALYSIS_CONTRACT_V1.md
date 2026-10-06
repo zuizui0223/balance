@@ -123,6 +123,17 @@ python -m pip install -e '.[peucedanum]'
 The inventory records exact source byte count/SHA256 plus file, sheet, row, and column
 dimensions. It does **not** infer a header or a biological variable from a column name.
 
+ZIP archives are accepted as provenance containers. The outer ZIP SHA256 and every member
+SHA256 are frozen. Safe tabular members are exposed to the mapping contract as:
+
+```text
+<archive basename>::<member/path.csv>
+```
+
+Only CSV/TSV/XLS/XLSX members are decoded as tables; code/README members remain in the
+archive inventory. Absolute paths, parent traversal, backslash path separators, and
+duplicate member names fail closed.
+
 After visually checking the source workbook notes/README, populate
 `empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json` with explicit
 `source_file`, `source_sheet`, one-based `header_row`, and exact
