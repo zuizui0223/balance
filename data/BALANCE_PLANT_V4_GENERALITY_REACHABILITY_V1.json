@@ -75,6 +75,11 @@
       "frozen_v2_output": "BALANCE_PLANT_U2_CONFIRMATORY_PREDICTOR_RECEIPT_FRAME_V2.csv",
       "post_coding_status": "FROZEN_SCREENED_AWAITING_INDEPENDENT_ADJUDICATION",
       "execution_receipt": "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json"
+    },
+    "constructive_mechanical_witness": {
+      "test": "tests/test_plant_v4_end_to_end_prefit.py::test_u2_v2_expansion_has_constructive_strict_generality_witness",
+      "statement": "A synthetic admissible completion in which one frozen expansion group becomes final conflict-positive with independently coded SINGLE + SIMULTANEOUS predictors opens the unchanged common-support and outcome-support gates and emits both temporal-generality wrappers.",
+      "interpretation": "This proves the registered reopening route is mechanically nonempty; it does not predict that any real expansion group will have those values or become conflict-positive."
     }
   },
   "prohibitions": [
