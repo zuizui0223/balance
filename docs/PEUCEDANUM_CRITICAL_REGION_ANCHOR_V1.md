@@ -27,6 +27,22 @@ common bracket = HL--HC.
 
 This supports the statement that multiple independent definitions point to one observational transition region.
 
+## Direct primary-source verification
+
+The 2025 published-summary values used below have now been rechecked directly against the
+current corrected publisher surface rather than relying only on the earlier cross-repository
+migration.
+
+Canonical receipt:
+
+```text
+empirical/peucedanum/PEUCEDANUM_2025_PUBLISHED_SUMMARY_RECEIPT_V1.json
+```
+
+All five published final-fruit selection differentials, all five final-fruit selection
+gradients, and all five female-gain exponents match the existing BALANCE fixtures. No
+numeric correction to the registered HL--HC bracket is required.
+
 ## Conditional numeric proxy
 
 Published mean predator eggs per umbel are:
