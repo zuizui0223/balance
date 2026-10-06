@@ -52,6 +52,14 @@ NORMALIZED_FIELDS = (
     "final_fruit_set_rate",
 )
 
+PROVENANCE_FIELDS = {
+    "dataset_id",
+    "source_doi",
+    "source_file",
+    "source_sheet",
+    "source_row_number",
+}
+
 DERIVED_FIELDS = {
     "total_flower_count",
     "male_fraction",
@@ -384,13 +392,7 @@ def normalize_from_mapping(
                 raise ValueError(
                     f"unsupported normalized field {normalized_field!r}"
                 )
-            if normalized_field in {
-                "dataset_id",
-                "source_doi",
-                "source_file",
-                "source_sheet",
-                "source_row_number",
-            } | DERIVED_FIELDS:
+            if normalized_field in PROVENANCE_FIELDS | DERIVED_FIELDS:
                 raise ValueError(
                     f"field {normalized_field!r} is provenance/derived and cannot be mapped"
                 )
@@ -406,6 +408,8 @@ def normalize_from_mapping(
         }
         if any(field not in NORMALIZED_FIELDS for field in constant_values):
             raise ValueError("sheet mapping contains unsupported constant field")
+        if any(field in PROVENANCE_FIELDS for field in constant_values):
+            raise ValueError("provenance normalized fields cannot be supplied as constants")
         if any(field in DERIVED_FIELDS for field in constant_values):
             raise ValueError("derived normalized fields cannot be supplied as constants")
         overlap = set(field_sources) & set(constant_values)
