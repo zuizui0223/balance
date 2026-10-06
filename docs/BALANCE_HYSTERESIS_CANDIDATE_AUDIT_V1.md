@@ -6,7 +6,7 @@ Issue #24 requires a real within-unit architecture hysteresis receipt, not gener
 
 A candidate is promotable only if the same biological unit can occupy alternative shared/generalist versus differentiated/specialized architecture states along one registered control axis, with forward and reverse histories reaching comparable control values and with a defensible threshold separation plus uncertainty.
 
-This audit records five superficially attractive hysteresis systems and keeps all five below the BALANCE promotion threshold.
+This audit records six superficially attractive hysteresis systems and keeps all six below the BALANCE promotion threshold.
 
 Machine-readable ledger:
 
@@ -61,10 +61,27 @@ Soil matric potential is traversed through drying and rewetting and water-status
 
 Again, this is a useful physiological-history control, not a shared/differentiated architecture transition.
 
+## Candidate 6 — Bacillus subtilis cell-type switching
+
+Tasaki et al. (2025), *Necessary and sufficient condition for hysteresis in the mathematical model of the cell type regulation of Bacillus subtilis*, DOI `10.1007/s00285-025-02316-8`, together with the experimental companion on cyclic colony migration and environmental pH (bioRxiv `10.1101/2020.09.11.292474`).
+
+This is the closest architecture-level candidate in the current audit. Migrating colonies are dominated by motile cells, whereas non-migrating states are dominated by matrix producers, so the system contains a real cell-type division-of-labour axis rather than only a physiological scalar.
+
+It is still **not** promoted. The forward/reverse hysteresis threshold pair is derived for the cell-type regulation model as autoinducing signal varies. The corresponding culture experiments quantify cyclic migration and pH-dependent colony-state transitions, including loss of periodic colony formation at low pH, but do not provide a matched empirical increase/decrease sweep with two architecture thresholds and threshold-separation uncertainty.
+
+So this candidate closes an important loophole:
+
+```text
+architecture-like cell-type specialization
++ empirical environmental switching
++ model hysteresis
+!= empirical architecture hysteresis receipt
+```
+
 ## Result
 
 ```text
-screened named candidates     5
+screened named candidates     6
 promoted BALANCE hysteresis   0
 ```
 
