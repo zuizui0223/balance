@@ -171,8 +171,45 @@ def test_csv_reader_preserves_exact_file_identity_and_tables(tmp_path):
     assert receipt["semantic_mapping_applied"] is False
 
 
-def test_boolean_core_measurement_from_source_fails_downstream_validation():
+def test_boolean_core_measurement_from_source_fails_closed():
     tables = _tables()
     tables[("raw.csv", "__CSV__")][1][4] = True
-    with pytest.raises(ValueError, match="not boolean"):
+    with pytest.raises(ValueError, match="not numeric"):
         normalize_from_mapping(tables, _mapping())
+
+
+def test_large_finite_mapped_flower_counts_do_not_overflow_derived_fields():
+    tables = {
+        ("raw.csv", "__CSV__"): [
+            ["Year", "Plot", "Plant", "DOY", "Perfect", "Male"],
+            [2021, "HL", "P1", 210, "1e308", "1e308"],
+        ]
+    }
+    mapping = {
+        "schema_version": "BALANCE_PEUCEDANUM_RAW_SEMANTIC_MAPPING_V1",
+        "status": "SOURCE_VERIFIED_MAPPING",
+        "registered_sources": [
+            {
+                "source_doi": "10.14943/hu95572",
+                "sheet_mappings": [
+                    {
+                        "dataset_id": "large_counts",
+                        "source_file": "raw.csv",
+                        "source_sheet": "__CSV__",
+                        "header_row": 1,
+                        "columns": {
+                            "year": "Year",
+                            "population_id": "Plot",
+                            "plant_id": "Plant",
+                            "flowering_day": "DOY",
+                            "perfect_flower_count": "Perfect",
+                            "male_flower_count": "Male",
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    rows = normalize_from_mapping(tables, mapping)
+    assert float(rows[0]["male_fraction"]) == pytest.approx(0.5)
+    assert rows[0]["total_flower_count"].lower().startswith("2e+308")
