@@ -1,0 +1,50 @@
+{
+  "schema_version": "BALANCE_HYSTERESIS_SEARCH_CEILING_V1",
+  "status": "CURRENT_SEARCH_CEILING_REACHED_NO_PROMOTION",
+  "frozen_as_of": "2026-10-06",
+  "promotion_contract": "GitHub issue #24",
+  "audit_ledger": "data/BALANCE_HYSTERESIS_CANDIDATE_AUDIT_V1.csv",
+  "named_candidates_screened": 9,
+  "promoted_clusters": 0,
+  "orthogonal_near_miss_classes": {
+    "empirical_hysteresis_without_multifunctional_architecture": [
+      "HYS_HL60_DMSO_2006",
+      "HYS_TREE_HYDRAULIC_2026",
+      "HYS_PRUNUS_WATER_1999",
+      "HYS_EMT_TGFB_2018"
+    ],
+    "architecture_like_specialization_with_model_only_hysteresis": [
+      "HYS_BACILLUS_CELLTYPE_2025"
+    ],
+    "real_generalist_specialist_payoff_without_reversible_same_unit_switch": [
+      "HYS_PSEUDOMONAS_SIDEROPHORE_2022"
+    ],
+    "empirical_division_of_labour_without_forward_reverse_threshold_pair": [
+      "HYS_OOCERAEA_DEFENCE_2025"
+    ],
+    "switching_or_hysteresis_analogue_outside_registered_unit": [
+      "HYS_YEAST_PHO_2007",
+      "HYS_LOCUST_DENSITY_2012"
+    ]
+  },
+  "additional_search_classes_checked": [
+    "social_insect_task_specialization_and_colony_size",
+    "social_insect_disturbance_and_task_reallocation",
+    "microbial_division_of_labour_and_cell_differentiation",
+    "experimental_evolution_of_generalists_and_specialists",
+    "epithelial_mesenchymal_hysteresis",
+    "biofilm_cell_type_hysteresis"
+  ],
+  "current_interpretation": "The literature contains each component separately—empirical hysteresis, real division of labour, reversible task allocation, and generalist-specialist performance contrasts—but the strict within-unit shared/generalist versus differentiated/specialized architecture hysteresis object with matched forward/reverse thresholds and uncertainty has not been recovered in the screened public literature.",
+  "priority": "MONITOR_ONLY_DO_NOT_BLOCK_V4_PRIMARY_PROGRAMME",
+  "reopen_search_when": [
+    "a new source explicitly reports forward and reverse thresholds for the same multifunctional architecture under one graded control axis",
+    "a public dataset permits recovery of both thresholds with uncertainty without redefining the architecture state post hoc",
+    "a targeted experiment is available that prospectively manipulates one architecture-control axis in both directions"
+  ],
+  "prohibited_inference": [
+    "do not infer universal absence of empirical architecture hysteresis from this finite search",
+    "do not promote model hysteresis, generic memory, population coexistence, or evolutionary reversal as a within-unit architecture receipt"
+  ],
+  "claim_ceiling": "current_public_literature_search_ceiling_only_not_proof_of_absence"
+}
