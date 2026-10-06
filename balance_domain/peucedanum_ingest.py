@@ -255,6 +255,7 @@ def _safe_zip_members(raw: bytes) -> list[tuple[str, bytes]]:
             if (
                 member.is_absolute()
                 or ".." in member.parts
+                or "\\" in info.filename
                 or not member.name
             ):
                 raise ValueError(
