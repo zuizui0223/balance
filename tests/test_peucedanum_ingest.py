@@ -230,3 +230,12 @@ def test_unsupported_source_format_fails_closed(tmp_path):
     source.write_text("{}", encoding="utf-8")
     with pytest.raises(ValueError, match="accepts only"):
         read_tabular_source(source)
+
+
+
+def test_registered_expected_source_basename_is_enforced():
+    mapping = _mapping()
+    source = mapping["registered_sources"][0]
+    source["expected_file"] = "Kudo&Shibata_Ecol&Evol_DataSet.xlsx"
+    with pytest.raises(ValueError, match="not registered"):
+        normalize_from_mapping(_tables(), mapping)
