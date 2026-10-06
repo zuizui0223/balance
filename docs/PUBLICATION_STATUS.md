@@ -59,7 +59,11 @@ A standalone BALANCE manuscript can be reconsidered only if at least one of the 
 
 Criterion 4 is deliberately stricter than obtaining a nonzero pooled coefficient. A U2-only module association, a one-universe VARIABLE_CONTEXT effect, or the currently one-block distributed spatial contrast does not reactivate BALANCE as a standalone paper.
 
-Under the **currently frozen V4 predictor-receipt surface, criterion 4 is structurally unreachable**: the only shared module stratum is SINGLE, U2 contains only one complete SINGLE+SIMULTANEOUS block, and final U2 admission can only subset the eight groups with complete outcome-independent predictor receipts. Human architecture coding cannot increase that support. Criterion 4 may be reopened only by a separately versioned predictor-receipt expansion completed before independent architecture outcomes are opened; the common-support threshold itself is not weakened.
+Under the **V1 frozen predictor-receipt surface alone, criterion 4 is structurally unreachable**: the only shared module stratum is SINGLE, U2 contains only one complete SINGLE+SIMULTANEOUS block, and final U2 admission can only subset the eight groups with complete outcome-independent predictor receipts. Human architecture coding cannot increase that V1 support.
+
+A separately versioned U2 V2 predictor-expansion route was therefore frozen before architecture outcomes were opened. Its 12-group / 36-slot packet has been generated, and a constructive admissible end-to-end witness shows that the unchanged common-support and outcome-support gates are mechanically nonempty: one additional final U2 conflict-positive block with independently supported SINGLE + SIMULTANEOUS predictors would suffice in the registered witness configuration. This is **not** evidence that any real expansion group has those values or will become conflict positive.
+
+Accordingly, criterion 4 is no longer blocked by a design impossibility, but it is still **empirically closed**. The actual V2 expansion return and independent V2 predictor adjudication remain pending, and the same frozen support thresholds must be recomputed on real final U2/U6 admissions before any strict cross-universe generality claim.
 
 Until then:
 
