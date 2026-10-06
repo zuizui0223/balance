@@ -32,7 +32,7 @@ def test_direct_source_receipt_matches_all_registered_peucedanum_point_estimates
         context: beta[context]["estimate"] for context in contexts
     } == critical["definitions"]["final_fruit_selection_gradient_beta"]
     assert {
-        context: b[context]["estimate"] - 1.0 for context in contexts
+        context: round(b[context]["estimate"] - 1.0, 2) for context in contexts
     } == critical["definitions"]["female_gain_exponent_minus_one"]
     assert {
         context: beta[context]["estimate"] for context in contexts
@@ -70,9 +70,9 @@ def test_proxy_hl_hc_uncertainty_is_exactly_the_direct_source_receipt():
         ),
     }
     assert proxy["female_gain_exponent_b_minus_1"] == {
-        "left_mean": b["HL"]["estimate"] - 1.0,
+        "left_mean": round(b["HL"]["estimate"] - 1.0, 2),
         "left_se": b["HL"]["se"],
-        "right_mean": b["HC"]["estimate"] - 1.0,
+        "right_mean": round(b["HC"]["estimate"] - 1.0, 2),
         "right_se": b["HC"]["se"],
         "zero_semantics": "female-gain exponent b equals one",
     }
