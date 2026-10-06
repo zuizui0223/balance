@@ -147,13 +147,23 @@
   "claim_hierarchy": {
     "cross_universe_replicated": {
       "contrast": "temporal SIMULTANEOUS vs ORDERED_OR_ALTERNATING",
-      "status": "MARGINALLY_REPLICATED_STRICT_GATE_UNREACHABLE_UNDER_FROZEN_V4_RECEIPTS",
+      "status": "MARGINALLY_REPLICATED_V1_STRICT_GATE_UNREACHABLE_V2_EXPANSION_ROUTE_EXECUTED_REAL_SUPPORT_UNOPENED",
       "marginal_support": "both timing levels occur in both U2 and U6",
       "common_support_requirement": "at least one module_opportunity2 stratum shared by U2 and U6 must contain >=2 SIMULTANEOUS and >=2 ORDERED_OR_ALTERNATING independent dependence blocks in each universe",
-      "current_common_support": "shared module stratum is SINGLE; U2 has SINGLE SIMULTANEOUS=1 and SINGLE ORDERED_OR_ALTERNATING=2. All complete outcome-independent U2 predictor receipts are exactly the eight source-screen conflict-positive groups, and final V4 admission can only subset those groups. Therefore the >=2 SIMULTANEOUS threshold cannot be reached under the frozen V4 receipt surface.",
+      "current_common_support": "On the frozen V1 receipt surface, the shared module stratum is SINGLE and U2 has SINGLE SIMULTANEOUS=1 versus ORDERED_OR_ALTERNATING=2, so V1 cannot meet the >=2-per-level common-support gate. A prospective all-12-group U2 V2 predictor-expansion handoff was frozen and executed before architecture outcomes were opened; real V2 predictor values and final admitted architecture rows remain unopened pending independent human returns.",
       "outcome_support_requirement": "after independent architecture adjudication, each U2 and U6 requires >=2 NONSTRUCTURAL_SEPARATION and >=2 other-architecture dependence blocks before any cross-universe timing generality claim",
-      "reachability": "UNREACHABLE_WITHOUT_PROSPECTIVE_VERSIONED_PREDICTOR_RECEIPT_EXPANSION",
-      "reopening_rule": "Any attempt to reopen strict cross-universe timing generality requires a versioned outcome-independent predictor-receipt expansion completed before independent architecture outcomes are opened; final coding/adjudication alone cannot repair the frozen common-support shortfall."
+      "reachability": "V1_UNREACHABLE_V2_ROUTE_MECHANICALLY_REACHABLE_REAL_SUPPORT_PENDING",
+      "reopening_rule": "The versioned U2 V2 expansion population and handoff were frozen/executed prospectively before independent architecture outcomes. The >=2 common-support threshold is unchanged. Strict G1 becomes available only if complete independent V2 predictor coding/adjudication plus final architecture admission actually satisfy the frozen support gates.",
+      "v2_route": {
+        "handoff_executed": true,
+        "human_expansion_return_received": false,
+        "frozen_v2_receipt_frame_available": false,
+        "mechanical_reachability_proven": true,
+        "execution_receipt": "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json",
+        "reachability_contract": "data/BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json",
+        "constructive_witness": "tests/test_plant_v4_end_to_end_prefit.py::test_u2_v2_expansion_has_constructive_strict_generality_witness",
+        "threshold_changed": false
+      }
     },
     "U2_anchored": {
       "contrasts": [
@@ -197,7 +207,7 @@
     ],
     "practical_interaction_margin_log_odds": 1,
     "claim_rule": "do not call timing universal solely because the common-slope V4 main model is nonzero",
-    "current_preoutcome_status": "UNREACHABLE_UNDER_FROZEN_V4_RECEIPT_SURFACE",
+    "current_preoutcome_status": "V1_UNREACHABLE_V2_EXPANSION_ROUTE_EXECUTED_REAL_SUPPORT_UNOPENED",
     "postoutcome_support_requirement": {
       "per_universe": {
         "NONSTRUCTURAL_SEPARATION_min_blocks": 2,
@@ -205,7 +215,9 @@
       },
       "rationale": "prevents a universe-specific generality contrast from being effectively prior-driven when the target routing outcome is absent or nearly absent"
     },
-    "reachability_without_predictor_receipt_expansion": false
+    "reachability_without_predictor_receipt_expansion": false,
+    "v2_expansion_route_mechanically_reachable": true,
+    "v2_real_support_status": "AWAITING_COMPLETE_INDEPENDENT_EXPANSION_RETURN_FREEZE_ADJUDICATION_AND_FINAL_ARCHITECTURE_ADMISSION"
   },
   "preoutcome_design_audit": {
     "common_slope_design_rank": 3,
@@ -215,8 +227,10 @@
     "full_universe_stratified_design_columns": 5,
     "full_universe_stratified_design_full_rank": true,
     "strict_temporal_generality_common_support_ready": false,
-    "interpretation": "V4 main predictor design is prospectively identifiable. The stronger cross-universe timing-generality sensitivity is structurally unavailable under the frozen V4 predictor-receipt surface because U2 SINGLE+SIMULTANEOUS has one complete block and final U2 admission can only remove, not add, complete predictor groups.",
-    "strict_temporal_generality_common_support_reachable_without_predictor_receipt_expansion": false
+    "interpretation": "The V4 main predictor design is prospectively identifiable. Strict cross-universe timing generality is impossible on the frozen V1 predictor-receipt surface, but a prospectively frozen/executed all-12-group U2 V2 expansion route now exists and has a constructive synthetic reachability witness. Real common support remains unknown until independent V2 predictor returns are frozen/adjudicated and final architecture-positive rows are admitted.",
+    "strict_temporal_generality_common_support_reachable_without_predictor_receipt_expansion": false,
+    "strict_temporal_generality_mechanically_reachable_via_v2_expansion": true,
+    "v2_expansion_real_support_opened": false
   },
   "directional_hypotheses_registry": "data/BALANCE_PLANT_V4_DIRECTIONAL_HYPOTHESES_V1.json",
   "primary_directional_contrasts": {
