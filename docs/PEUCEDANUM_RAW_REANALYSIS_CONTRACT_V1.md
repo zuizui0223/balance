@@ -103,6 +103,70 @@ Optional male-function / paternity variables are retained when present but are n
 
 Missing source values remain missing. Do not impute values merely to complete a plot-year cell.
 
+### Deterministic local R0 ingest
+
+Once any registered public source bytes are available locally, inventory them before
+assigning biological semantics:
+
+```bash
+python scripts/ingest_peucedanum_raw.py inventory \
+  <source-file-1> [<source-file-2> ...] \
+  --out-dir release/generated/peucedanum_source_inventory_v1
+```
+
+For Excel workbooks install the optional readers:
+
+```bash
+python -m pip install -e '.[peucedanum]'
+```
+
+The inventory records exact source byte count/SHA256 plus file, sheet, row, and column
+dimensions. It does **not** infer a header or a biological variable from a column name.
+
+After visually checking the source workbook notes/README, populate
+`empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json` with explicit
+`source_file`, `source_sheet`, one-based `header_row`, and exact
+`normalized_field -> source column` mappings. Only then change its status from
+
+```text
+TEMPLATE_NOT_SOURCE_VERIFIED
+```
+
+to
+
+```text
+SOURCE_VERIFIED_MAPPING
+```
+
+and run:
+
+```bash
+python scripts/ingest_peucedanum_raw.py normalize \
+  <source-file-1> [<source-file-2> ...] \
+  --mapping empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json \
+  --out-dir release/generated/peucedanum_normalized_v1
+```
+
+Normalization fails closed if the verified source table, header, or exact mapped column is
+absent; if a required normalized semantic is unspecified; or if a derived field is supplied
+rather than recomputed. Sheet-level constants such as year/population are allowed only when
+they are explicitly frozen in the reviewed mapping.
+
+Outputs:
+
+```text
+inventory:
+  BALANCE_PEUCEDANUM_RAW_SOURCE_INVENTORY_V1.json
+
+normalization:
+  BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv
+  BALANCE_PEUCEDANUM_NORMALIZATION_RECEIPT_V1.json
+```
+
+The normalized rows are passed through the same fail-closed semantic validator used by the
+downstream reanalysis contract. R0 therefore cannot silently promote guessed spreadsheet
+semantics into R1.
+
 ## Stage R1 — reproduce before extending
 
 No raw-data criticality result may be promoted until the reanalysis reproduces the published qualitative and quantitative targets sufficiently closely.
