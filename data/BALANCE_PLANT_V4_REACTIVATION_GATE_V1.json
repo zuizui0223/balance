@@ -39,7 +39,7 @@
     "architecture class difference without predictor-outcome independence"
   ],
   "standalone_reactivation_eligible": false,
-  "reason": "independent coding and adjudication remain pending, and the strict cross-universe temporal common-support condition is structurally unreachable under the current frozen V4 predictor receipt surface",
+  "reason": "independent architecture coding/adjudication and predictor review remain pending. Strict temporal generality is impossible on the frozen U2 V1 receipt surface, but the prospectively frozen/executed U2 V2 expansion route is mechanically capable of reopening the unchanged common-support gate; real V2 support remains unopened pending human returns.",
   "claim_ceiling": "prospective_publication_gate_only_no_biological_result",
   "posterior_decision_rules": "data/BALANCE_PLANT_V4_POSTERIOR_DECISION_RULES_V1.json",
   "posterior_decision_evaluator": "balance_domain.plant_v4_decision.temporal_generality_decision",
@@ -52,10 +52,19 @@
   "evidence_bridge_rule": "derive required_conditions only from receipt-validated immutable V4 input/fit workspaces; never update publication status automatically",
   "current_v4_generality_reachability": {
     "strict_temporal_generality_reachable_without_predictor_receipt_expansion": false,
-    "limiting_cell": "U2_SINGLE_SIMULTANEOUS",
-    "frozen_complete_blocks": 1,
+    "v1_limiting_cell": "U2_SINGLE_SIMULTANEOUS",
+    "v1_frozen_complete_blocks": 1,
     "required_blocks": 2,
-    "rule": "The standalone cross-universe reactivation route cannot close under the current frozen V4 predictor receipt surface. Reopening requires a prospectively versioned outcome-independent predictor expansion before architecture outcomes are opened; the frozen gate is not weakened."
+    "v2_expansion_handoff_executed": true,
+    "v2_expansion_population_groups": 12,
+    "v2_expansion_predictor_slots": 36,
+    "v2_real_human_return_received": false,
+    "v2_frozen_receipt_frame_available": false,
+    "v2_route_mechanically_reachable_under_unchanged_gate": true,
+    "common_support_threshold_changed": false,
+    "execution_receipt": "data/BALANCE_PLANT_HUMAN_HANDOFF_EXECUTION_V1.json",
+    "constructive_witness": "tests/test_plant_v4_end_to_end_prefit.py::test_u2_v2_expansion_has_constructive_strict_generality_witness",
+    "rule": "V1 remains structurally unable to close strict G1. The prospectively frozen/executed V2 expansion route may close the same gate, but only complete independent V2 coding, freeze, adjudication, and final architecture admission can establish real common support."
   },
   "generality_reachability_contract": "data/BALANCE_PLANT_V4_GENERALITY_REACHABILITY_V1.json"
 }
