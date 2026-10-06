@@ -46,19 +46,36 @@ jobs:
           assert receipt["cmdstan_version"] == "2.40.0"
           assert receipt["sampling"]["chains"] == 4
           assert receipt["sampling"]["num_samples"] == 25
-          assert receipt["primary"]["n_chains"] == 4
-          assert receipt["generality"]["n_chains"] == 4
-          assert receipt["primary"]["n_draws_total"] == 100
-          assert receipt["generality"]["n_draws_total"] == 100
-          assert receipt["primary"]["cmdstan_version"] == "2.40.0"
-          assert receipt["generality"]["cmdstan_version"] == "2.40.0"
-          assert receipt["primary"]["stansummary_sha256"]
-          assert receipt["generality"]["stansummary_sha256"]
+          assert receipt["input_surface"] == (
+              "production_build_v4_analysis_inputs_from_synthetic_licensed_assembly"
+          )
+          assert receipt["synthetic_analysis_rows"] == 12
+          assert receipt["active_job_shape"] == [
+              "PRIMARY",
+              "PRIMARY_PRIOR_SENSITIVITY",
+              "TEMPORAL_GENERALITY",
+              "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+          ]
+          for key in (
+              "primary",
+              "primary_prior_sensitivity",
+              "generality",
+              "generality_prior_sensitivity",
+          ):
+              assert receipt[key]["n_chains"] == 4
+              assert receipt[key]["n_draws_total"] == 100
+              assert receipt[key]["cmdstan_version"] == "2.40.0"
+              assert receipt[key]["stansummary_sha256"]
           assert receipt["claim_ceiling"] == (
-              "engine_stansummary_parser_smoke_only_not_production_fit_or_diagnostics"
+              "production_wrapper_engine_parser_smoke_only_not_production_fit_or_diagnostics"
           )
 
-          for job in ("PRIMARY_SMOKE", "GENERALITY_SMOKE"):
+          for job in (
+              "PRIMARY_SMOKE",
+              "PRIMARY_PRIOR_SENSITIVITY_SMOKE",
+              "GENERALITY_SMOKE",
+              "GENERALITY_PRIOR_SENSITIVITY_SMOKE",
+          ):
               job_dir = root / job
               assert (job_dir / "FIT_RECEIPT.json").is_file()
               assert (job_dir / "stansummary.csv").is_file()
@@ -71,9 +88,18 @@ jobs:
         run: |
           set -euo pipefail
           out=release/generated/plant_v4_fit_job_smoke
-          mkdir -p "$out/PRIMARY_SMOKE" "$out/GENERALITY_SMOKE"
+          mkdir -p \
+            "$out/PRIMARY_SMOKE" \
+            "$out/PRIMARY_PRIOR_SENSITIVITY_SMOKE" \
+            "$out/GENERALITY_SMOKE" \
+            "$out/GENERALITY_PRIOR_SENSITIVITY_SMOKE"
           cp "$RUNNER_TEMP/v4-fit-job-smoke/FIT_JOB_SMOKE_RECEIPT.json" "$out/"
-          for job in PRIMARY_SMOKE GENERALITY_SMOKE; do
+          for job in \
+            PRIMARY_SMOKE \
+            PRIMARY_PRIOR_SENSITIVITY_SMOKE \
+            GENERALITY_SMOKE \
+            GENERALITY_PRIOR_SENSITIVITY_SMOKE
+          do
             cp "$RUNNER_TEMP/v4-fit-job-smoke/$job/FIT_RECEIPT.json" "$out/$job/"
             cp "$RUNNER_TEMP/v4-fit-job-smoke/$job/stansummary.csv" "$out/$job/"
             cp "$RUNNER_TEMP/v4-fit-job-smoke/$job/stansummary.log" "$out/$job/"

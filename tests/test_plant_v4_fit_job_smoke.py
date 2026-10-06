@@ -43,7 +43,7 @@ def test_fit_job_smoke_is_four_chain_short_engine_test():
     assert diagnostics["min_parameter_ess_tail"] == 0.0
 
 
-def test_fit_job_smoke_orchestrates_production_job_for_both_models(
+def test_fit_job_smoke_orchestrates_all_four_production_wrappers(
     tmp_path,
     monkeypatch,
 ):
@@ -113,24 +113,57 @@ def test_fit_job_smoke_orchestrates_production_job_for_both_models(
 
     assert [call["job_id"] for call in calls] == [
         "PRIMARY_SMOKE",
+        "PRIMARY_PRIOR_SENSITIVITY_SMOKE",
         "GENERALITY_SMOKE",
+        "GENERALITY_PRIOR_SENSITIVITY_SMOKE",
     ]
-    assert calls[0]["spec"]["require_gamma"] is False
-    assert calls[1]["spec"]["require_gamma"] is True
-    assert calls[0]["contract"] == module.SMOKE_CONTRACT
-    assert calls[1]["contract"] == module.SMOKE_CONTRACT
+    assert [call["spec"]["require_gamma"] for call in calls] == [
+        False,
+        False,
+        True,
+        True,
+    ]
+    assert all(call["contract"] == module.SMOKE_CONTRACT for call in calls)
 
-    for call in calls:
-        wrapper = json.loads(call["wrapper_path"].read_text(encoding="utf-8"))
-        assert set(wrapper) == {"stan_data", "metadata"}
-        assert wrapper["metadata"]["claim_ceiling"] == (
-            "engine_parser_smoke_only_not_production_fit"
-        )
+    wrappers = [
+        json.loads(call["wrapper_path"].read_text(encoding="utf-8"))
+        for call in calls
+    ]
+    assert all(set(wrapper) == {"stan_data", "metadata"} for wrapper in wrappers)
+    assert wrappers[0]["metadata"]["analysis"] == (
+        "balance_plant_confirmatory_model_v4"
+    )
+    assert wrappers[1]["metadata"]["analysis"] == (
+        "balance_plant_confirmatory_model_v4_prior_sensitivity"
+    )
+    assert wrappers[2]["metadata"]["analysis"] == (
+        "balance_plant_confirmatory_model_v4_temporal_generality"
+    )
+    assert wrappers[3]["metadata"]["analysis"] == (
+        "balance_plant_confirmatory_model_v4_temporal_generality_prior_sensitivity"
+    )
+    assert wrappers[0]["stan_data"]["slope_prior_sd"] == 0.75
+    assert wrappers[1]["stan_data"]["slope_prior_sd"] == 1.5
+    assert wrappers[2]["stan_data"]["slope_prior_sd"] == 0.75
+    assert wrappers[3]["stan_data"]["slope_prior_sd"] == 1.5
+    assert wrappers[2]["stan_data"]["interaction_prior_sd"] == 0.75
+    assert wrappers[3]["stan_data"]["interaction_prior_sd"] == 0.75
 
+    assert out["active_job_shape"] == [
+        "PRIMARY",
+        "PRIMARY_PRIOR_SENSITIVITY",
+        "TEMPORAL_GENERALITY",
+        "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+    ]
+    assert out["synthetic_analysis_rows"] == 12
     assert out["primary"]["n_draws_total"] == 100
+    assert out["primary_prior_sensitivity"]["n_draws_total"] == 100
     assert out["generality"]["n_draws_total"] == 100
+    assert out["generality_prior_sensitivity"]["n_draws_total"] == 100
     assert out["primary"]["stansummary_sha256"] == "a" * 64
+    assert out["primary_prior_sensitivity"]["stansummary_sha256"] == "a" * 64
     assert out["generality"]["stansummary_sha256"] == "b" * 64
+    assert out["generality_prior_sensitivity"]["stansummary_sha256"] == "b" * 64
     assert out["claim_ceiling"] == (
-        "engine_stansummary_parser_smoke_only_not_production_fit_or_diagnostics"
+        "production_wrapper_engine_parser_smoke_only_not_production_fit_or_diagnostics"
     )

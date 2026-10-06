@@ -17,10 +17,63 @@ if str(SCRIPTS) not in sys.path:
 
 import run_plant_v4_cmdstan as runner  # noqa: E402
 import smoke_test_plant_v4_cmdstan as model_smoke  # noqa: E402
+from balance_domain.plant_analysis_pipeline import build_v4_analysis_inputs  # noqa: E402
 
 
 PRIMARY_MODEL = model_smoke.PRIMARY_MODEL
 GENERALITY_MODEL = model_smoke.GENERALITY_MODEL
+
+
+def _row(
+    row_id: str,
+    universe: str,
+    mode: str,
+    module: str,
+    timing: str,
+    spatial: str = "SAME_UNIT",
+) -> dict[str, str]:
+    return {
+        "analysis_row_id": row_id,
+        "universe_id": universe,
+        "dependency_group": row_id,
+        "dependence_block": f"block::{row_id}",
+        "system_taxon": row_id,
+        "conflict_family": (
+            "SEXUAL_INTERFERENCE"
+            if universe == "U2_BARRETT_2002"
+            else "POLLEN_REWARD_GAMETE"
+        ),
+        "conflict_receipt_status": "ADJUDICATED_POSITIVE",
+        "architecture_mode": mode,
+        "module_substrate": module,
+        "conflict_timing_geometry": timing,
+        "conflict_spatial_geometry": spatial,
+        "architecture_adjudication_status": "ADJUDICATED",
+        "predictor_receipt_status": "THREE_ADJUDICATED_OUTCOME_INDEPENDENT",
+        "source_basis": "synthetic_engine_smoke",
+        "claim_ceiling": "synthetic_engine_smoke_only",
+    }
+
+
+def production_wrapper_smoke_rows() -> list[dict[str, str]]:
+    """Return a synthetic licensed assembly that opens all four frozen V4 fit jobs."""
+    u2 = "U2_BARRETT_2002"
+    u6 = "U6_POLLEN_THEFT_HARGREAVES_2009"
+    return [
+        _row("u2_s1", u2, "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _row("u2_s2", u2, "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _row("u2_n1", u2, "TEMPORAL_SEPARATION", "SERIAL_WITHIN_FLOWER", "SEASONALLY_ALTERNATING"),
+        _row("u2_n2", u2, "SPATIAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _row("u2_n3", u2, "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _row("u2_d1", u2, "WITHIN_FLOWER_DIVISION_OF_LABOUR", "REPEATED_FLOWERS", "CONTEXT_DEPENDENT"),
+        _row("u2_m1", u2, "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "MIXED", "BETWEEN_MODULES"),
+        _row("u6_s1", u6, "SHARED_INTEGRATED", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _row("u6_n1", u6, "TEMPORAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SEQUENTIAL_WITHIN_UNIT"),
+        _row("u6_n2", u6, "SPATIAL_SEPARATION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _row("u6_d1", u6, "AMONG_FLOWER_MODULE_DIVISION", "SINGLE_OR_CONTINUOUS", "SIMULTANEOUS"),
+        _row("u6_m1", u6, "POLYMORPHIC_OR_MOSAIC", "SINGLE_OR_CONTINUOUS", "SEASONALLY_ALTERNATING"),
+    ]
+
 
 SMOKE_SAMPLING = {
     "chains": 4,
@@ -55,23 +108,13 @@ SMOKE_CONTRACT = {
 }
 
 
-def _write_wrapper(path: Path, *, stan_data: dict, analysis: str) -> None:
+def _write_wrapper(path: Path, *, wrapper_payload: dict) -> None:
+    """Write an unmodified wrapper produced by the production V4 pre-fit pipeline."""
+    if set(wrapper_payload) != {"stan_data", "metadata"}:
+        raise ValueError("production V4 wrapper must contain stan_data and metadata")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps(
-            {
-                "stan_data": stan_data,
-                "metadata": {
-                    "analysis": analysis,
-                    "claim_ceiling": (
-                        "engine_parser_smoke_only_not_production_fit"
-                    ),
-                },
-            },
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
+        json.dumps(wrapper_payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
 
@@ -80,7 +123,7 @@ def _run_job(
     *,
     job_id: str,
     model: Path,
-    stan_data: dict,
+    wrapper_payload: dict,
     require_gamma: bool,
     executable: Path,
     cmdstan_dir: Path,
@@ -88,11 +131,7 @@ def _run_job(
     work_dir: Path,
 ) -> dict:
     wrapper = work_dir / "inputs" / f"{job_id}.json"
-    _write_wrapper(
-        wrapper,
-        stan_data=stan_data,
-        analysis=f"balance_plant_v4_{job_id.casefold()}_fit_job_smoke",
-    )
+    _write_wrapper(wrapper, wrapper_payload=wrapper_payload)
     fit = runner._run_fit_job(
         job_id=job_id,
         spec={
@@ -160,10 +199,24 @@ def run_smoke(
         log_dir=build_dir,
     )
 
+    pipeline = build_v4_analysis_inputs(production_wrapper_smoke_rows())
+    if pipeline["temporal_generality_status"] != "READY":
+        raise RuntimeError("synthetic production-wrapper smoke must open all four V4 jobs")
+
     primary = _run_job(
         job_id="PRIMARY_SMOKE",
         model=PRIMARY_MODEL,
-        stan_data=model_smoke.smoke_data(generality=False),
+        wrapper_payload=pipeline["main_stan_input"],
+        require_gamma=False,
+        executable=primary_executable,
+        cmdstan_dir=cmdstan_dir,
+        stansummary=stansummary,
+        work_dir=work_dir,
+    )
+    primary_prior = _run_job(
+        job_id="PRIMARY_PRIOR_SENSITIVITY_SMOKE",
+        model=PRIMARY_MODEL,
+        wrapper_payload=pipeline["prior_sensitivity_stan_input"],
         require_gamma=False,
         executable=primary_executable,
         cmdstan_dir=cmdstan_dir,
@@ -173,7 +226,17 @@ def run_smoke(
     generality = _run_job(
         job_id="GENERALITY_SMOKE",
         model=GENERALITY_MODEL,
-        stan_data=model_smoke.smoke_data(generality=True),
+        wrapper_payload=pipeline["temporal_generality_stan_input"],
+        require_gamma=True,
+        executable=generality_executable,
+        cmdstan_dir=cmdstan_dir,
+        stansummary=stansummary,
+        work_dir=work_dir,
+    )
+    generality_prior = _run_job(
+        job_id="GENERALITY_PRIOR_SENSITIVITY_SMOKE",
+        model=GENERALITY_MODEL,
+        wrapper_payload=pipeline["temporal_generality_prior_sensitivity_stan_input"],
         require_gamma=True,
         executable=generality_executable,
         cmdstan_dir=cmdstan_dir,
@@ -185,13 +248,23 @@ def run_smoke(
         "analysis": "balance_plant_v4_cmdstan_fit_job_smoke",
         "cmdstan_version": version,
         "sampling": SMOKE_SAMPLING,
+        "input_surface": "production_build_v4_analysis_inputs_from_synthetic_licensed_assembly",
+        "synthetic_analysis_rows": len(production_wrapper_smoke_rows()),
+        "active_job_shape": [
+            "PRIMARY",
+            "PRIMARY_PRIOR_SENSITIVITY",
+            "TEMPORAL_GENERALITY",
+            "TEMPORAL_GENERALITY_PRIOR_SENSITIVITY",
+        ],
         "diagnostic_policy": (
             "permissive_smoke_thresholds_parser_compatibility_only"
         ),
         "primary": primary,
+        "primary_prior_sensitivity": primary_prior,
         "generality": generality,
+        "generality_prior_sensitivity": generality_prior,
         "claim_ceiling": (
-            "engine_stansummary_parser_smoke_only_not_production_fit_or_diagnostics"
+            "production_wrapper_engine_parser_smoke_only_not_production_fit_or_diagnostics"
         ),
     }
     (work_dir / "FIT_JOB_SMOKE_RECEIPT.json").write_text(
