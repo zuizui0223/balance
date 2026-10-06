@@ -299,10 +299,25 @@ def _mapping_entries(mapping: Mapping[str, object]) -> list[dict]:
             raise ValueError(
                 f"registered source {doi!r} has no source-verified sheet_mappings"
             )
+        expected = source.get("expected_files")
+        if expected is None and source.get("expected_file"):
+            expected = [source["expected_file"]]
+        expected_files = (
+            {str(name).strip() for name in expected}
+            if isinstance(expected, list)
+            else None
+        )
+
         for raw_entry in raw_entries:
             if not isinstance(raw_entry, Mapping):
                 raise ValueError("sheet mapping must be an object")
             entry = dict(raw_entry)
+            source_file = str(entry.get("source_file") or "").strip()
+            if expected_files is not None and source_file not in expected_files:
+                raise ValueError(
+                    f"sheet mapping source_file {source_file!r} is not registered "
+                    f"for source {doi!r}"
+                )
             entry["source_doi"] = doi
             entries.append(entry)
     if not entries:
