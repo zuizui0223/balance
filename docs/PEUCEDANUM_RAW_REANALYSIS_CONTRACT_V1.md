@@ -134,10 +134,14 @@ Only CSV/TSV/XLS/XLSX members are decoded as tables; code/README members remain 
 archive inventory. Absolute paths, parent traversal, backslash path separators, and
 duplicate member names fail closed.
 
-After visually checking the source workbook notes/README, populate
+After visually checking the exact source bytes and the source workbook notes/README,
+populate
 `empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json` with explicit
-`source_file`, `source_sheet`, one-based `header_row`, and exact
-`normalized_field -> source column` mappings. Only then change its status from
+`source_file`, `source_sheet`, one-based `header_row`, exact
+`normalized_field -> source column` mappings, and an `expected_file_sha256s` entry for
+every outer source file used by those mappings. For a mapped ZIP member, the binding is to
+the outer ZIP SHA256, which fixes the member bytes transitively through the archived source
+inventory. Only then change its status from
 
 ```text
 TEMPLATE_NOT_SOURCE_VERIFIED
@@ -159,9 +163,11 @@ python scripts/ingest_peucedanum_raw.py normalize \
 ```
 
 Normalization fails closed if the verified source table, header, or exact mapped column is
-absent; if a required normalized semantic is unspecified; or if a derived field is supplied
-rather than recomputed. Sheet-level constants such as year/population are allowed only when
-they are explicitly frozen in the reviewed mapping.
+absent; if a required normalized semantic is unspecified; if a derived field is supplied
+rather than recomputed; **or if the loaded outer source bytes do not match the SHA256 frozen
+in the source-verified mapping**. A same-named replacement file therefore cannot silently
+inherit a previously reviewed semantic mapping. Sheet-level constants such as
+year/population are allowed only when they are explicitly frozen in the reviewed mapping.
 
 Outputs:
 
