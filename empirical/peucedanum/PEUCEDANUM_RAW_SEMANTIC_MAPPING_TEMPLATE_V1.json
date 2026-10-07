@@ -23,7 +23,10 @@
       "source_doi": "10.14943/hu95572",
       "expected_role": "2025 raw data and reproducible code",
       "sheet_mappings": [],
-      "expected_file_sha256s": {}
+      "expected_file_sha256s": {},
+      "expected_file": "Kudo$Shibata_JEcol_Data.zip",
+      "public_landing_page": "https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/",
+      "public_download_url": "https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo$Shibata_JEcol_Data.zip"
     }
   ],
   "normalized_fields": {
