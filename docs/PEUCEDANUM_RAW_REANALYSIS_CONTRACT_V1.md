@@ -36,6 +36,9 @@ files:
 article DOI: 10.1111/1365-2745.70130
 repository DOI: 10.14943/hu95572
 handle: 2115/95572
+HUSCAP file: Kudo$Shibata_JEcol_Data.zip
+HUSCAP landing: https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/
+HUSCAP direct file: https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo$Shibata_JEcol_Data.zip
 Wiley supplement: jec70130-sup-0001-supinfo.zip
 ```
 
