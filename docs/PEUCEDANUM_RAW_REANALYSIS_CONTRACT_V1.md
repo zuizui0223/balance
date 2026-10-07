@@ -153,6 +153,11 @@ to
 SOURCE_VERIFIED_MAPPING
 ```
 
+Registered sources whose bytes have not yet been acquired may remain in the template with
+`sheet_mappings: []`; they are inactive and do not block normalization of another
+source. Every source that **does** contain a sheet mapping must, however, have a frozen
+SHA256 for each mapped outer source file.
+
 and run:
 
 ```bash
