@@ -42,7 +42,17 @@ HUSCAP direct file: https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo
 Wiley supplement: jec70130-sup-0001-supinfo.zip
 ```
 
-The Hokkaido repository is the preferred source for the 2025 raw data + reproducible code. Transport failure is tracked separately in issue #5.
+The Hokkaido repository is the preferred source for the 2025 raw data + reproducible code. The exact public archive was recovered and inspected on 2026-10-08. Its SHA256 is:
+
+```text
+07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca
+```
+
+The archive contains the source data dictionary (`Read_Me.docx`), `All_Plots_Data.csv`,
+`HA_Plot_Data.csv`, and the source analysis code
+`R_script_Kudo&Shibata.R`. Exact outer/member hashes and source-defined semantics are
+frozen in
+`empirical/peucedanum/PEUCEDANUM_2025_RAW_SOURCE_RECEIPT_V1.json`.
 
 ## Published-summary verification baseline
 
@@ -84,7 +94,6 @@ source_doi
 year
 population_id
 plant_id
-flowering_day
 perfect_flower_count
 male_flower_count
 initial_fruit_count
@@ -93,6 +102,15 @@ predator_egg_count
 seed_predation_rate
 flower_stem_height
 ```
+
+Optional context fields are retained only when the source actually measures them:
+
+```text
+flowering_day
+```
+
+The verified 2025 `All_Plots_Data.csv` does **not** contain an individual flowering-day
+column, so that field remains missing rather than being inferred from plot snowmelt timing.
 
 Derived fields may include:
 
@@ -142,7 +160,10 @@ populate
 `empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json` with explicit
 `source_file`, `source_sheet`, one-based `header_row`, exact
 `normalized_field -> source column` mappings, and an `expected_file_sha256s` entry for
-every outer source file used by those mappings. For a mapped ZIP member, the binding is to
+every outer source file used by those mappings. Source-specific formatting is also frozen
+explicitly: `missing_tokens` converts only registered source missing markers to normalized
+missing values, and `value_maps` performs exact source-value recoding such as
+`Y2020 -> 2020`. Unknown values in a field with a value map fail closed. For a mapped ZIP member, the binding is to
 the outer ZIP SHA256, which fixes the member bytes transitively through the archived source
 inventory. Only then change its status from
 
@@ -160,6 +181,32 @@ Registered sources whose bytes have not yet been acquired may remain in the temp
 `sheet_mappings: []`; they are inactive and do not block normalization of another
 source. Every source that **does** contain a sheet mapping must, however, have a frozen
 SHA256 for each mapped outer source file.
+
+The 2025 HUSCAP source is now source-verified. Its active mapping is:
+
+```text
+archive: Kudo$Shibata_JEcol_Data.zip
+member:  All_Plots_Data.csv
+sheet:   __CSV__
+header:  row 1
+
+Year          -> year, with explicit Y2020..Y2023 -> 2020..2023 value map
+Plot          -> population_id
+ID            -> plant_id
+HflowerN      -> perfect_flower_count
+MflowerN      -> male_flower_count
+InitialFruitN -> initial_fruit_count
+Height        -> flower_stem_height
+OvipN         -> predator_egg_count
+FinalFruitN   -> intact_fruit_count
+PredationR    -> seed_predation_rate
+
+source missing token: NA
+```
+
+The mapping is supported independently by the archive README and by the source R script,
+which reads these exact column names. `flowering_day` is deliberately not populated
+because this source does not measure it.
 
 and run:
 
@@ -189,8 +236,10 @@ normalization:
 ```
 
 The normalized rows are passed through the same fail-closed semantic validator used by the
-downstream reanalysis contract. R0 therefore cannot silently promote guessed spreadsheet
-semantics into R1.
+downstream reanalysis contract. Required cross-source fields are dataset/source identity,
+year, population, plant ID, and perfect/male flower counts. Context fields such as
+`flowering_day` are validated when present but are not fabricated when absent from a
+verified source. R0 therefore cannot silently promote guessed spreadsheet semantics into R1.
 
 ## Stage R1 — reproduce before extending
 
