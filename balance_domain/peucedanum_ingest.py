@@ -362,10 +362,12 @@ def _mapping_entries(mapping: Mapping[str, object]) -> list[dict]:
     entries = []
     for doi, source in sources.items():
         raw_entries = source.get("sheet_mappings")
-        if not isinstance(raw_entries, list) or not raw_entries:
+        if not isinstance(raw_entries, list):
             raise ValueError(
-                f"registered source {doi!r} has no source-verified sheet_mappings"
+                f"registered source {doi!r} sheet_mappings must be a list"
             )
+        if not raw_entries:
+            continue
         expected = source.get("expected_files")
         if expected is None and source.get("expected_file"):
             expected = [source["expected_file"]]
@@ -407,6 +409,14 @@ def _verify_mapping_source_hashes(
     """Bind a source-verified semantic mapping to the exact outer source bytes."""
     sources = _source_registry(mapping)
     for doi, source in sources.items():
+        raw_entries = source.get("sheet_mappings")
+        if not isinstance(raw_entries, list):
+            raise ValueError(
+                f"registered source {doi!r} sheet_mappings must be a list"
+            )
+        if not raw_entries:
+            continue
+
         raw_hashes = source.get("expected_file_sha256s")
         if not isinstance(raw_hashes, Mapping) or not raw_hashes:
             raise ValueError(
@@ -427,12 +437,6 @@ def _verify_mapping_source_hashes(
                     f"registered source {doi!r} has invalid expected SHA256 binding"
                 )
             expected_hashes[name] = value
-
-        raw_entries = source.get("sheet_mappings")
-        if not isinstance(raw_entries, list) or not raw_entries:
-            raise ValueError(
-                f"registered source {doi!r} has no source-verified sheet_mappings"
-            )
 
         referenced_outer_files: set[str] = set()
         for raw_entry in raw_entries:
