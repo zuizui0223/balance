@@ -1,0 +1,31 @@
+name: Fetch Peucedanum HUSCAP raw archive
+
+on:
+  push:
+    branches:
+      - ops/fetch-peucedanum-huscap-20261007
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download exact public HUSCAP archive
+        run: |
+          set -euo pipefail
+          mkdir -p peucedanum_huscap
+          curl -L --fail --retry 3 --retry-delay 2 \
+            'https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo%24Shibata_JEcol_Data.zip' \
+            -o peucedanum_huscap/Kudo_Shibata_JEcol_Data.zip
+          test -s peucedanum_huscap/Kudo_Shibata_JEcol_Data.zip
+          sha256sum peucedanum_huscap/Kudo_Shibata_JEcol_Data.zip | tee peucedanum_huscap/SHA256SUMS.txt
+          unzip -t peucedanum_huscap/Kudo_Shibata_JEcol_Data.zip
+          unzip -l peucedanum_huscap/Kudo_Shibata_JEcol_Data.zip | tee peucedanum_huscap/ZIP_INVENTORY.txt
+      - name: Upload raw archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: peucedanum-huscap-raw-2025
+          path: peucedanum_huscap/
+          if-no-files-found: error
