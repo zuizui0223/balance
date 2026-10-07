@@ -1,6 +1,6 @@
 {
   "schema_version": "BALANCE_PEUCEDANUM_RAW_SEMANTIC_MAPPING_V1",
-  "status": "TEMPLATE_NOT_SOURCE_VERIFIED",
+  "status": "SOURCE_VERIFIED_MAPPING",
   "registered_sources": [
     {
       "source_doi": "10.5061/dryad.b5mkkwhcq",
@@ -22,11 +22,54 @@
     {
       "source_doi": "10.14943/hu95572",
       "expected_role": "2025 raw data and reproducible code",
-      "sheet_mappings": [],
-      "expected_file_sha256s": {},
+      "sheet_mappings": [
+        {
+          "dataset_id": "PEUCEDANUM_2025_ALL_PLOTS",
+          "source_file": "Kudo$Shibata_JEcol_Data.zip::All_Plots_Data.csv",
+          "source_sheet": "__CSV__",
+          "header_row": 1,
+          "missing_tokens": [
+            "NA"
+          ],
+          "value_maps": {
+            "year": {
+              "Y2020": "2020",
+              "Y2021": "2021",
+              "Y2022": "2022",
+              "Y2023": "2023"
+            }
+          },
+          "columns": {
+            "year": "Year",
+            "population_id": "Plot",
+            "plant_id": "ID",
+            "perfect_flower_count": "HflowerN",
+            "male_flower_count": "MflowerN",
+            "initial_fruit_count": "InitialFruitN",
+            "flower_stem_height": "Height",
+            "predator_egg_count": "OvipN",
+            "intact_fruit_count": "FinalFruitN",
+            "seed_predation_rate": "PredationR"
+          }
+        }
+      ],
+      "expected_file_sha256s": {
+        "Kudo$Shibata_JEcol_Data.zip": "07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca"
+      },
       "expected_file": "Kudo$Shibata_JEcol_Data.zip",
       "public_landing_page": "https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/",
-      "public_download_url": "https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo$Shibata_JEcol_Data.zip"
+      "public_download_url": "https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo$Shibata_JEcol_Data.zip",
+      "source_verification": {
+        "verified_on": "2026-10-08",
+        "exact_outer_sha256": "07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca",
+        "readme_member": "Read_Me.docx",
+        "readme_sha256": "0a12e56e4da4f696ae17b637b2d241c48115ba7f6113f88f5234398c3ba334fa",
+        "analysis_code_member": "R_script_Kudo&Shibata.R",
+        "analysis_code_sha256": "6efb3a5b619166e0eb3ce491a67112c0009164456508093f513f4bc5c3a19d64",
+        "mapped_table_member": "All_Plots_Data.csv",
+        "mapped_table_sha256": "7ea5669a44bd4ebbdf8df3c2addbb28f230a7e6f970ccb2117e6dfb031d9d69f",
+        "mapping_basis": "Read_Me.docx defines exact column semantics; R_script_Kudo&Shibata.R reads the same column names directly. No header or positional guessing."
+      }
     }
   ],
   "normalized_fields": {
@@ -38,7 +81,6 @@
       "plant_id"
     ],
     "core_traits": [
-      "flowering_day",
       "perfect_flower_count",
       "male_flower_count"
     ],
@@ -57,9 +99,12 @@
       "total_flower_count",
       "male_fraction",
       "final_fruit_set_rate"
+    ],
+    "optional_context_traits": [
+      "flowering_day"
     ]
   },
-  "mapping_rule": "Populate source_file/source_sheet/source_column and expected_file_sha256s only after inspecting the exact source bytes plus workbook notes or README. Production normalization requires each mapped outer source file to match its frozen SHA256; do not infer source columns from this template.",
+  "mapping_rule": "Populate source_file/source_sheet/source_column, missing_tokens/value_maps where needed, and expected_file_sha256s only after inspecting the exact source bytes plus workbook notes or README. Production normalization requires each mapped outer source file to match its frozen SHA256; no fuzzy/header/position/value-format guessing.",
   "missing_value_rule": "Preserve source missingness; no silent imputation.",
   "ingest": {
     "cli": "scripts/ingest_peucedanum_raw.py",
@@ -84,7 +129,9 @@
       "columns"
     ],
     "optional": [
-      "constants"
+      "constants",
+      "missing_tokens",
+      "value_maps"
     ],
     "header_row_semantics": "one-based row containing exact source column names",
     "columns_semantics": "explicit normalized_field -> exact source column; no substring/fuzzy/position guessing",
@@ -95,10 +142,14 @@
       "using a column absent from the exact source header",
       "normalizing while status is TEMPLATE_NOT_SOURCE_VERIFIED",
       "ZIP members with absolute paths, parent traversal, backslash separators, or duplicate member names",
-      "applying a SOURCE_VERIFIED_MAPPING to source bytes whose SHA256 differs from the reviewed file"
+      "applying a SOURCE_VERIFIED_MAPPING to source bytes whose SHA256 differs from the reviewed file",
+      "silently stripping source prefixes such as Y from year values without an explicit value_maps entry",
+      "treating source missing tokens such as NA as numeric/text evidence without an explicit missing_tokens entry"
     ],
     "source_file_semantics": "standalone basename, or '<archive basename>::<member path>' for a tabular file inside an inventoried ZIP",
-    "required_source_binding": "Each outer source file referenced by a sheet mapping must have a 64-hex SHA256 entry in the parent source expected_file_sha256s object before production normalization."
+    "required_source_binding": "Each outer source file referenced by a sheet mapping must have a 64-hex SHA256 entry in the parent source expected_file_sha256s object before production normalization.",
+    "missing_tokens_semantics": "Explicit source strings such as 'NA' that are converted to normalized missing values before validation.",
+    "value_maps_semantics": "Exact source-value -> normalized-value recoding for a mapped field; every nonmissing source value in a field with a value map must be registered."
   },
   "promotion_rule": "Change status to SOURCE_VERIFIED_MAPPING only after source bytes and workbook notes/README have been inspected, every used source_file/source_sheet/header_row/source column has been verified, and expected_file_sha256s has been frozen for every mapped outer source file."
 }
