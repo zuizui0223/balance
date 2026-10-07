@@ -397,3 +397,32 @@ def test_production_normalization_rejects_verified_mapping_without_source_hash(t
 
     with pytest.raises(ValueError, match="requires expected_file_sha256s"):
         normalize_peucedanum_sources([source], mapping_path, tmp_path / "normalized")
+
+
+
+def test_production_normalization_allows_unmapped_registered_sources_to_remain_pending(tmp_path):
+    source = tmp_path / "raw.csv"
+    source.write_text(
+        "Year,Plot,Plant,DOY,Perfect,Male,Intact,PredRate\n"
+        "2021,HL,P1,210,20,30,8,0.4\n",
+        encoding="utf-8",
+    )
+    mapping = _write_verified_csv_mapping(tmp_path / "mapping.json", source)
+    mapping["registered_sources"].append(
+        {
+            "source_doi": "10.5061/dryad.unavailable-demo",
+            "expected_file": "not-yet-downloaded.xlsx",
+            "expected_file_sha256s": {},
+            "sheet_mappings": [],
+        }
+    )
+    mapping_path = tmp_path / "mapping.json"
+    mapping_path.write_text(json.dumps(mapping, indent=2) + "\n", encoding="utf-8")
+
+    receipt = normalize_peucedanum_sources(
+        [source],
+        mapping_path,
+        tmp_path / "normalized",
+    )
+    assert receipt["source_hash_binding_verified"] is True
+    assert receipt["normalized_rows"] == 1
