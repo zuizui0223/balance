@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import io
 import json
 import zipfile
@@ -9,6 +10,7 @@ from balance_domain.peucedanum_ingest import (
     build_source_inventory_receipt,
     inventory_tables,
     normalize_from_mapping,
+    normalize_peucedanum_sources,
     read_tabular_source,
 )
 
@@ -322,3 +324,76 @@ def test_zip_unsafe_member_paths_fail_closed(tmp_path, member):
 
     with pytest.raises(ValueError, match="unsafe member path"):
         build_source_inventory_receipt([archive])
+
+
+
+def _write_verified_csv_mapping(path, source):
+    mapping = _mapping()
+    source_entry = mapping["registered_sources"][0]
+    source_entry["expected_file"] = source.name
+    source_entry["expected_file_sha256s"] = {
+        source.name: hashlib.sha256(source.read_bytes()).hexdigest()
+    }
+    source_entry["sheet_mappings"][0]["source_file"] = source.name
+    path.write_text(json.dumps(mapping, indent=2) + "\n", encoding="utf-8")
+    return mapping
+
+
+def test_production_normalization_binds_verified_mapping_to_exact_source_bytes(tmp_path):
+    source = tmp_path / "raw.csv"
+    source.write_text(
+        "Year,Plot,Plant,DOY,Perfect,Male,Intact,PredRate\n"
+        "2021,HL,P1,210,20,30,8,0.4\n",
+        encoding="utf-8",
+    )
+    mapping_path = tmp_path / "mapping.json"
+    _write_verified_csv_mapping(mapping_path, source)
+
+    out_dir = tmp_path / "normalized"
+    receipt = normalize_peucedanum_sources([source], mapping_path, out_dir)
+
+    assert receipt["source_hash_binding_verified"] is True
+    assert receipt["source_files"][source.name]["source_sha256"] == (
+        hashlib.sha256(source.read_bytes()).hexdigest()
+    )
+    assert (out_dir / "BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv").exists()
+    assert (out_dir / "BALANCE_PEUCEDANUM_NORMALIZATION_RECEIPT_V1.json").exists()
+
+
+def test_production_normalization_rejects_same_named_source_with_changed_bytes(tmp_path):
+    source = tmp_path / "raw.csv"
+    source.write_text(
+        "Year,Plot,Plant,DOY,Perfect,Male,Intact,PredRate\n"
+        "2021,HL,P1,210,20,30,8,0.4\n",
+        encoding="utf-8",
+    )
+    mapping_path = tmp_path / "mapping.json"
+    _write_verified_csv_mapping(mapping_path, source)
+
+    # Keep the same basename/header while changing the bytes after human verification.
+    source.write_text(
+        "Year,Plot,Plant,DOY,Perfect,Male,Intact,PredRate\n"
+        "2021,HL,P1,210,20,31,8,0.4\n",
+        encoding="utf-8",
+    )
+    out_dir = tmp_path / "normalized"
+    with pytest.raises(ValueError, match="source SHA256 mismatch"):
+        normalize_peucedanum_sources([source], mapping_path, out_dir)
+    assert not out_dir.exists()
+
+
+def test_production_normalization_rejects_verified_mapping_without_source_hash(tmp_path):
+    source = tmp_path / "raw.csv"
+    source.write_text(
+        "Year,Plot,Plant,DOY,Perfect,Male,Intact,PredRate\n"
+        "2021,HL,P1,210,20,30,8,0.4\n",
+        encoding="utf-8",
+    )
+    mapping = _mapping()
+    mapping["registered_sources"][0]["expected_file"] = source.name
+    mapping["registered_sources"][0]["sheet_mappings"][0]["source_file"] = source.name
+    mapping_path = tmp_path / "mapping.json"
+    mapping_path.write_text(json.dumps(mapping, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="requires expected_file_sha256s"):
+        normalize_peucedanum_sources([source], mapping_path, tmp_path / "normalized")
