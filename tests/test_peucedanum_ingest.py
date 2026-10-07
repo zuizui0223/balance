@@ -426,3 +426,25 @@ def test_production_normalization_allows_unmapped_registered_sources_to_remain_p
     )
     assert receipt["source_hash_binding_verified"] is True
     assert receipt["normalized_rows"] == 1
+
+
+
+def test_mapping_template_freezes_exact_2025_huscap_archive_identity():
+    template = json.loads(
+        (
+            __import__("pathlib").Path(__file__).resolve().parents[1]
+            / "empirical"
+            / "peucedanum"
+            / "PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json"
+        ).read_text(encoding="utf-8")
+    )
+    source = next(
+        row
+        for row in template["registered_sources"]
+        if row["source_doi"] == "10.14943/hu95572"
+    )
+    assert source["expected_file"] == "Kudo$Shibata_JEcol_Data.zip"
+    assert source["public_landing_page"].endswith("/repo/huscap/all/95572/")
+    assert source["public_download_url"].endswith(
+        "/repo/huscap/all/95572/Kudo$Shibata_JEcol_Data.zip"
+    )
