@@ -608,3 +608,30 @@ def test_2025_raw_source_receipt_matches_frozen_mapping_provenance():
     assert receipt["readme_verified_semantics"][
         "flowering_day_present_in_all_plots_data"
     ] is False
+
+
+
+def test_zip_inventory_keeps_macos_metadata_but_does_not_decode_it_as_csv(tmp_path):
+    archive = tmp_path / "source.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr(
+            "All_Plots_Data.csv",
+            "Year,Plot,ID,HflowerN,MflowerN\nY2020,HA,P1,20,30\n",
+        )
+        zf.writestr("__MACOSX/._All_Plots_Data.csv", b"\x00\x05\x16\x07binary-metadata")
+
+    receipt = build_source_inventory_receipt([archive])
+    members = receipt["files"][archive.name]["members"]
+    assert {row["member"] for row in members} == {
+        "All_Plots_Data.csv",
+        "__MACOSX/._All_Plots_Data.csv",
+    }
+    assert receipt["tables"] == [
+        {
+            "source_file": f"{archive.name}::All_Plots_Data.csv",
+            "source_sheet": "__CSV__",
+            "row_count": 2,
+            "column_count": 5,
+            "nonempty_row_count": 2,
+        }
+    ]
