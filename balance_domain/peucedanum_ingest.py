@@ -330,6 +330,7 @@ def build_source_inventory_receipt(
         "files": files,
         "tables": inventory_tables(tables),
         "semantic_mapping_applied": False,
+        "source_hash_binding_verified": False,
         "claim_ceiling": "source_inventory_only_no_biological_result",
     }
 
@@ -397,6 +398,71 @@ def _mapping_entries(mapping: Mapping[str, object]) -> list[dict]:
     if not entries:
         raise ValueError("Peucedanum mapping contains no sheet mappings")
     return entries
+
+
+def _verify_mapping_source_hashes(
+    mapping: Mapping[str, object],
+    files: Mapping[str, Mapping[str, object]],
+) -> None:
+    """Bind a source-verified semantic mapping to the exact outer source bytes."""
+    sources = _source_registry(mapping)
+    for doi, source in sources.items():
+        raw_hashes = source.get("expected_file_sha256s")
+        if not isinstance(raw_hashes, Mapping) or not raw_hashes:
+            raise ValueError(
+                f"registered source {doi!r} requires expected_file_sha256s "
+                "before production normalization"
+            )
+
+        expected_hashes: dict[str, str] = {}
+        for filename, digest in raw_hashes.items():
+            name = str(filename).strip()
+            value = str(digest).strip().lower()
+            if (
+                not name
+                or len(value) != 64
+                or any(ch not in "0123456789abcdef" for ch in value)
+            ):
+                raise ValueError(
+                    f"registered source {doi!r} has invalid expected SHA256 binding"
+                )
+            expected_hashes[name] = value
+
+        raw_entries = source.get("sheet_mappings")
+        if not isinstance(raw_entries, list) or not raw_entries:
+            raise ValueError(
+                f"registered source {doi!r} has no source-verified sheet_mappings"
+            )
+
+        referenced_outer_files: set[str] = set()
+        for raw_entry in raw_entries:
+            if not isinstance(raw_entry, Mapping):
+                raise ValueError("sheet mapping must be an object")
+            source_file = str(raw_entry.get("source_file") or "").strip()
+            if not source_file:
+                raise ValueError("sheet mapping requires source_file")
+            referenced_outer_files.add(source_file.split("::", 1)[0])
+
+        missing = sorted(referenced_outer_files - set(expected_hashes))
+        if missing:
+            raise ValueError(
+                f"registered source {doi!r} lacks expected SHA256 for mapped file(s): "
+                + ", ".join(missing)
+            )
+
+        for outer in sorted(referenced_outer_files):
+            info = files.get(outer)
+            if info is None:
+                raise ValueError(
+                    f"source-verified mapping expects source file {outer!r} "
+                    "but those bytes were not loaded"
+                )
+            actual = str(info.get("source_sha256") or "").strip().lower()
+            if actual != expected_hashes[outer]:
+                raise ValueError(
+                    f"source SHA256 mismatch for {outer!r}: "
+                    f"expected {expected_hashes[outer]}, got {actual}"
+                )
 
 
 def _header_index(header: list[str]) -> dict[str, int]:
@@ -589,6 +655,7 @@ def normalize_peucedanum_sources(
     files, tables = load_sources(source_paths)
     mapping_raw = mapping_path.read_bytes()
     mapping = json.loads(mapping_raw.decode("utf-8"))
+    _verify_mapping_source_hashes(mapping, files)
     rows = normalize_from_mapping(tables, mapping)
     inventory = inventory_tables(tables)
 
@@ -597,6 +664,7 @@ def normalize_peucedanum_sources(
         "status": "SOURCE_VERIFIED_MAPPING_APPLIED",
         "mapping_file": mapping_path.name,
         "mapping_sha256": _sha256_bytes(mapping_raw),
+        "source_hash_binding_verified": True,
         "source_files": files,
         "source_tables": inventory,
         "normalized_rows": len(rows),
