@@ -39,6 +39,40 @@ jobs:
             | sha256sum -c -
           unzip -t 'release/generated/peucedanum_2025_source/Kudo$Shibata_JEcol_Data.zip'
 
+      - name: Verify frozen raw-source receipt
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          archive = Path(
+              "release/generated/peucedanum_2025_source/"
+              "Kudo$Shibata_JEcol_Data.zip"
+          )
+          receipt = json.loads(
+              Path(
+                  "empirical/peucedanum/"
+                  "PEUCEDANUM_2025_RAW_SOURCE_RECEIPT_V1.json"
+              ).read_text(encoding="utf-8")
+          )
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == (
+              receipt["source"]["outer_zip_sha256"]
+          )
+          expected = {
+              row["path"]: row["sha256"]
+              for row in receipt["members"]
+          }
+          with zipfile.ZipFile(archive) as zf:
+              actual = {
+                  info.filename: hashlib.sha256(zf.read(info)).hexdigest()
+                  for info in zf.infolist()
+                  if not info.is_dir()
+              }
+          assert actual == expected
+          PY
+
       - name: Inventory exact source bytes
         run: |
           python scripts/ingest_peucedanum_raw.py inventory \
