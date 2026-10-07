@@ -565,6 +565,36 @@ def normalize_from_mapping(
             str(field): _plain_text(value)
             for field, value in constants.items()
         }
+
+        raw_missing_tokens = entry.get("missing_tokens", [])
+        if not isinstance(raw_missing_tokens, list):
+            raise ValueError("sheet mapping missing_tokens must be a list")
+        missing_tokens = {_plain_text(value) for value in raw_missing_tokens}
+
+        raw_value_maps = entry.get("value_maps", {})
+        if not isinstance(raw_value_maps, Mapping):
+            raise ValueError("sheet mapping value_maps must be an object")
+        value_maps: dict[str, dict[str, str]] = {}
+        for field, raw_map in raw_value_maps.items():
+            field = str(field)
+            if field not in field_sources:
+                raise ValueError(
+                    f"value map field {field!r} must also have a mapped source column"
+                )
+            if not isinstance(raw_map, Mapping) or not raw_map:
+                raise ValueError(
+                    f"value map for {field!r} must be a non-empty object"
+                )
+            mapped: dict[str, str] = {}
+            for source_value, normalized_value in raw_map.items():
+                source_text = _plain_text(source_value)
+                normalized_text = _plain_text(normalized_value)
+                if source_text in mapped:
+                    raise ValueError(
+                        f"value map for {field!r} repeats source value {source_text!r}"
+                    )
+                mapped[source_text] = normalized_text
+            value_maps[field] = mapped
         if any(field not in NORMALIZED_FIELDS for field in constant_values):
             raise ValueError("sheet mapping contains unsupported constant field")
         if any(field in PROVENANCE_FIELDS for field in constant_values):
@@ -608,7 +638,19 @@ def normalize_from_mapping(
             })
             row.update(constant_values)
             for field, col_index in field_sources.items():
-                row[field] = padded[col_index]
+                source_value = padded[col_index]
+                if source_value in missing_tokens:
+                    row[field] = ""
+                    continue
+                if field in value_maps:
+                    if source_value not in value_maps[field]:
+                        raise ValueError(
+                            f"mapped source value {source_value!r} for {field!r} "
+                            "is not registered in value_maps"
+                        )
+                    row[field] = value_maps[field][source_value]
+                else:
+                    row[field] = source_value
             _derive_registered_fields(row)
             normalized.append(row)
 
