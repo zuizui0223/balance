@@ -448,3 +448,163 @@ def test_mapping_template_freezes_exact_2025_huscap_archive_identity():
     assert source["public_download_url"].endswith(
         "/repo/huscap/all/95572/Kudo$Shibata_JEcol_Data.zip"
     )
+
+
+
+def test_explicit_value_maps_and_missing_tokens_normalize_source_formats():
+    tables = {
+        ("Kudo$Shibata_JEcol_Data.zip::All_Plots_Data.csv", "__CSV__"): [
+            [
+                "Year", "Plot", "ID", "HflowerN", "MflowerN",
+                "InitialFruitN", "Height", "OvipN", "FinalFruitN", "PredationR",
+            ],
+            ["Y2020", "HA", "PA01", "20", "70", "16", "16", "4", "8", "0.47"],
+            ["Y2021", "HL", "PB01", "12", "53", "NA", "10", "NA", "NA", "NA"],
+        ]
+    }
+    mapping = {
+        "schema_version": "BALANCE_PEUCEDANUM_RAW_SEMANTIC_MAPPING_V1",
+        "status": "SOURCE_VERIFIED_MAPPING",
+        "registered_sources": [
+            {
+                "source_doi": "10.14943/hu95572",
+                "expected_file": "Kudo$Shibata_JEcol_Data.zip",
+                "sheet_mappings": [
+                    {
+                        "dataset_id": "PEUCEDANUM_2025_ALL_PLOTS",
+                        "source_file": (
+                            "Kudo$Shibata_JEcol_Data.zip::All_Plots_Data.csv"
+                        ),
+                        "source_sheet": "__CSV__",
+                        "header_row": 1,
+                        "missing_tokens": ["NA"],
+                        "value_maps": {
+                            "year": {
+                                "Y2020": "2020",
+                                "Y2021": "2021",
+                            }
+                        },
+                        "columns": {
+                            "year": "Year",
+                            "population_id": "Plot",
+                            "plant_id": "ID",
+                            "perfect_flower_count": "HflowerN",
+                            "male_flower_count": "MflowerN",
+                            "initial_fruit_count": "InitialFruitN",
+                            "flower_stem_height": "Height",
+                            "predator_egg_count": "OvipN",
+                            "intact_fruit_count": "FinalFruitN",
+                            "seed_predation_rate": "PredationR",
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    rows = normalize_from_mapping(tables, mapping)
+    assert rows[0]["year"] == "2020"
+    assert rows[0]["flowering_day"] == ""
+    assert rows[0]["initial_fruit_count"] == "16"
+    assert rows[1]["year"] == "2021"
+    assert rows[1]["initial_fruit_count"] == ""
+    assert rows[1]["predator_egg_count"] == ""
+    assert rows[1]["intact_fruit_count"] == ""
+    assert rows[1]["seed_predation_rate"] == ""
+
+
+def test_value_map_fails_closed_on_unregistered_source_value():
+    tables = {
+        ("raw.csv", "__CSV__"): [
+            ["Year", "Plot", "Plant", "Perfect", "Male"],
+            ["Y2024", "HL", "P1", "20", "30"],
+        ]
+    }
+    mapping = {
+        "schema_version": "BALANCE_PEUCEDANUM_RAW_SEMANTIC_MAPPING_V1",
+        "status": "SOURCE_VERIFIED_MAPPING",
+        "registered_sources": [
+            {
+                "source_doi": "10.14943/hu95572",
+                "sheet_mappings": [
+                    {
+                        "dataset_id": "demo",
+                        "source_file": "raw.csv",
+                        "source_sheet": "__CSV__",
+                        "header_row": 1,
+                        "value_maps": {
+                            "year": {"Y2020": "2020"}
+                        },
+                        "columns": {
+                            "year": "Year",
+                            "population_id": "Plot",
+                            "plant_id": "Plant",
+                            "perfect_flower_count": "Perfect",
+                            "male_flower_count": "Male",
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    with pytest.raises(ValueError, match="not registered in value_maps"):
+        normalize_from_mapping(tables, mapping)
+
+
+def test_2025_mapping_template_is_source_verified_and_hash_bound():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    template = json.loads(
+        (
+            root
+            / "empirical"
+            / "peucedanum"
+            / "PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert template["status"] == "SOURCE_VERIFIED_MAPPING"
+    source = next(
+        row for row in template["registered_sources"]
+        if row["source_doi"] == "10.14943/hu95572"
+    )
+    assert source["expected_file_sha256s"] == {
+        "Kudo$Shibata_JEcol_Data.zip":
+        "07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca"
+    }
+    assert len(source["sheet_mappings"]) == 1
+    mapping = source["sheet_mappings"][0]
+    assert mapping["source_file"] == (
+        "Kudo$Shibata_JEcol_Data.zip::All_Plots_Data.csv"
+    )
+    assert mapping["source_sheet"] == "__CSV__"
+    assert mapping["missing_tokens"] == ["NA"]
+    assert mapping["value_maps"]["year"]["Y2023"] == "2023"
+    assert "flowering_day" not in mapping["columns"]
+    assert mapping["columns"]["perfect_flower_count"] == "HflowerN"
+    assert mapping["columns"]["male_flower_count"] == "MflowerN"
+
+
+def test_2025_raw_source_receipt_matches_frozen_mapping_provenance():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    receipt = json.loads(
+        (
+            root
+            / "empirical"
+            / "peucedanum"
+            / "PEUCEDANUM_2025_RAW_SOURCE_RECEIPT_V1.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert receipt["status"] == "DIRECT_PUBLIC_RAW_ARCHIVE_VERIFIED"
+    assert receipt["source"]["outer_zip_sha256"] == (
+        "07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca"
+    )
+    members = {row["path"]: row for row in receipt["members"]}
+    assert members["All_Plots_Data.csv"]["sha256"] == (
+        "7ea5669a44bd4ebbdf8df3c2addbb28f230a7e6f970ccb2117e6dfb031d9d69f"
+    )
+    assert receipt["all_plots_table_audit"]["row_count_excluding_header"] == 685
+    assert receipt["readme_verified_semantics"][
+        "flowering_day_present_in_all_plots_data"
+    ] is False
