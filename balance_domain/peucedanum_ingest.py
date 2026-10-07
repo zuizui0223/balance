@@ -242,6 +242,11 @@ def read_tabular_source(
     return raw, _read_tabular_bytes(path.name, raw)
 
 
+def _is_ignorable_archive_metadata(member: str) -> bool:
+    path = PurePosixPath(member)
+    return "__MACOSX" in path.parts or path.name.startswith("._")
+
+
 def _safe_zip_members(raw: bytes) -> list[tuple[str, bytes]]:
     members: list[tuple[str, bytes]] = []
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
@@ -300,7 +305,10 @@ def load_sources(
                 "members": member_inventory,
             }
             for member, member_raw in members:
-                if Path(member).suffix.lower() not in TABULAR_SUFFIXES:
+                if (
+                    Path(member).suffix.lower() not in TABULAR_SUFFIXES
+                    or _is_ignorable_archive_metadata(member)
+                ):
                     continue
                 source_key = f"{path.name}::{member}"
                 decoded = _read_tabular_bytes(member, member_raw)
