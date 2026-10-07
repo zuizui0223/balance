@@ -5,7 +5,8 @@
     {
       "source_doi": "10.5061/dryad.b5mkkwhcq",
       "expected_file": "Kudo&Shibata_Ecol&Evol_DataSet.xlsx",
-      "sheet_mappings": []
+      "sheet_mappings": [],
+      "expected_file_sha256s": {}
     },
     {
       "source_doi": "10.5061/dryad.w3r2280v5",
@@ -15,12 +16,14 @@
         "Data3_FitnessAnal.xls",
         "README.md"
       ],
-      "sheet_mappings": []
+      "sheet_mappings": [],
+      "expected_file_sha256s": {}
     },
     {
       "source_doi": "10.14943/hu95572",
       "expected_role": "2025 raw data and reproducible code",
-      "sheet_mappings": []
+      "sheet_mappings": [],
+      "expected_file_sha256s": {}
     }
   ],
   "normalized_fields": {
@@ -53,7 +56,7 @@
       "final_fruit_set_rate"
     ]
   },
-  "mapping_rule": "Populate source_file/source_sheet/source_column only after inspecting the source workbook notes or README. Do not infer source columns from this template.",
+  "mapping_rule": "Populate source_file/source_sheet/source_column and expected_file_sha256s only after inspecting the exact source bytes plus workbook notes or README. Production normalization requires each mapped outer source file to match its frozen SHA256; do not infer source columns from this template.",
   "missing_value_rule": "Preserve source missingness; no silent imputation.",
   "ingest": {
     "cli": "scripts/ingest_peucedanum_raw.py",
@@ -88,9 +91,11 @@
       "mapping provenance fields from source columns",
       "using a column absent from the exact source header",
       "normalizing while status is TEMPLATE_NOT_SOURCE_VERIFIED",
-      "ZIP members with absolute paths, parent traversal, backslash separators, or duplicate member names"
+      "ZIP members with absolute paths, parent traversal, backslash separators, or duplicate member names",
+      "applying a SOURCE_VERIFIED_MAPPING to source bytes whose SHA256 differs from the reviewed file"
     ],
-    "source_file_semantics": "standalone basename, or '<archive basename>::<member path>' for a tabular file inside an inventoried ZIP"
+    "source_file_semantics": "standalone basename, or '<archive basename>::<member path>' for a tabular file inside an inventoried ZIP",
+    "required_source_binding": "Each outer source file referenced by a sheet mapping must have a 64-hex SHA256 entry in the parent source expected_file_sha256s object before production normalization."
   },
-  "promotion_rule": "Change status to SOURCE_VERIFIED_MAPPING only after source bytes and workbook notes/README have been inspected and every used source_file/source_sheet/header_row/source column has been verified."
+  "promotion_rule": "Change status to SOURCE_VERIFIED_MAPPING only after source bytes and workbook notes/README have been inspected, every used source_file/source_sheet/header_row/source column has been verified, and expected_file_sha256s has been frozen for every mapped outer source file."
 }
