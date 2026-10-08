@@ -17,6 +17,12 @@ Two anatomically distinct organs (corolla and cupulate bract) contribute to this
 
 This is a simple measurement-identifiability statement, **not a novel mathematical theorem**. The testable ecological hypothesis is whether the extra measured axis predicts specific predator behaviours or improves held-out prediction beyond published exsertion and floral size under verified water manipulation.
 
+## Existing source data cannot substitute for the new exposure axis
+
+The 2016 field study reported six floral and six vegetative traits, including flower length and cupulate-bract height. Its Supplementary Appendix S1 contains population trait means and standard errors. The study quantified pollen receipt and seed components, but the described morphology protocol does not supply matched **water-surface elevations and directly verified oviposition-site elevations at a known time**. Furthermore, trait/seed outcomes were linked at the same plant level in seven populations; labels were lost for five other seed-predation populations, so those populations contributed to between-population summaries rather than plant-level trait–fitness mediation. These are important limits to retrospective causal reconstruction (Sun, Armbruster & Huang 2016, DOI 10.1093/aob/mcw097, Methods/Appendix S1).
+
+Therefore, this protocol does **not** compute a previously unpublished "waterline barrier effect" from the existing 2016 summary coefficients. The new site-to-waterline axis and independent replicated manipulation must actually be measured.
+
 ## Two separately measured coordinates
 
 Use a *common instrument-calibrated vertical datum*, not a mixture of along-corolla lengths and projected elevations:
