@@ -34,6 +34,32 @@ def protocol():
     }
 
 
+
+def method_receipt():
+    return {
+        "schema_version": "PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1",
+        "status": "B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL",
+        "context": {
+            "context_id": "SYNTHETIC_CTX",
+            "population_id": "SYNTHETIC_POP",
+            "season_id": "SYNTHETIC_SEASON",
+            "protocol_version": "TEST_PROTOCOL_V1",
+        },
+        "randomization_unit": "PLANT_WITH_ONE_WATER_COMPARTMENT_PER_PLANT",
+        "gate_reasons": [],
+        "causal_water_effect_identified": False,
+        "structural_architecture_BALANCE_identified": False,
+        "claim_ceiling": "method_only_no_causal_water_contrast",
+    }
+
+
+def assess(rows, conf):
+    return assess_density_water_allocation(
+        rows, conf, b0_method_receipt=method_receipt(),
+        b0_method_sha256="a"*64,
+    )
+
+
 def sample_rows():
     rows = []
     for stratum, density in (("SPARSE", "1"), ("DENSE", "8")):
@@ -61,7 +87,7 @@ def sample_rows():
 
 
 def test_qualifies_balanced_patch_density_water_allocation_without_biological_promotion():
-    result = assess_density_water_allocation(sample_rows(), protocol())
+    result = assess(sample_rows(), protocol())
     assert result["status"] == "DENSITY_STRATIFIED_WATER_ALLOCATION_SUPPORTED_NOT_EFFECT"
     assert result["n_independent_plants"] == 24
     assert result["n_independent_patches"] == 4
@@ -81,7 +107,7 @@ def test_intermediate_density_not_silently_discarded():
     for row in rows:
         if row["patch_id"] == "SPARSE_0":
             row["preassignment_density_flowering_plants_m2"] = "3"
-    report = assess_density_water_allocation(rows, protocol())
+    report = assess(rows, protocol())
     assert report["status"] == "DENSITY_WATER_ALLOCATION_HOLD"
     assert "intermediate_density_patch_requires_preregistered_route" in report["gate_reasons"]
     assert report["patches_by_stratum"]["SPARSE"] == 1
@@ -92,7 +118,7 @@ def test_missing_one_water_arm_in_patch_is_a_positivity_failure():
     rows = [x for x in sample_rows()
             if not (x["patch_id"] == "DENSE_0"
                     and x["assigned_water_arm"] == "INTACT_DRY")]
-    report = assess_density_water_allocation(rows, protocol())
+    report = assess(rows, protocol())
     assert report["status"] == "DENSITY_WATER_ALLOCATION_HOLD"
     assert "insufficient_arm_support:SITE0/DENSE_0/INTACT_DRY" in report["gate_reasons"]
 
@@ -101,7 +127,7 @@ def test_block_by_arm_confounding_cannot_be_corrected_afterwards():
     rows = sample_rows()
     for row in rows:
         row["randomization_block_id"] += "_" + row["assigned_water_arm"]
-    report = assess_density_water_allocation(rows, protocol())
+    report = assess(rows, protocol())
     assert any(x.startswith("within_patch_arms_confounded_with_blocks")
                for x in report["gate_reasons"])
 
@@ -110,54 +136,54 @@ def test_plant_and_water_compartment_pseudoreplication_rejected():
     rows = sample_rows()
     rows[1]["plant_id"] = rows[0]["plant_id"]
     with pytest.raises(ValueError, match="duplicate plant ID"):
-        assess_density_water_allocation(rows, protocol())
+        assess(rows, protocol())
     rows = sample_rows()
     rows[1]["water_compartment_id"] = rows[0]["water_compartment_id"]
     with pytest.raises(ValueError, match="duplicate water-compartment ID"):
-        assess_density_water_allocation(rows, protocol())
+        assess(rows, protocol())
 
 
 def test_inconsistent_patch_baseline_and_impossible_patch_n_rejected():
     rows = sample_rows()
     rows[0]["preassignment_density_flowering_plants_m2"] = "1.8"
     with pytest.raises(ValueError, match="patch baseline density/size changed"):
-        assess_density_water_allocation(rows, protocol())
+        assess(rows, protocol())
     rows = sample_rows()
     for row in rows:
         if row["patch_id"] == "SPARSE_0":
             row["preassignment_patch_size_flowering_plants"] = "5"
     with pytest.raises(ValueError, match="exceed patch"):
-        assess_density_water_allocation(rows, protocol())
+        assess(rows, protocol())
 
 
 def test_unfrozen_cutoffs_and_unqualified_water_method_rejected():
     c = protocol()
     c["status"] = "TEMPLATE_NOT_FROZEN"
     with pytest.raises(ValueError, match="not prospectively frozen"):
-        assess_density_water_allocation(sample_rows(), c)
+        assess(sample_rows(), c)
     c = protocol()
     c["thresholds"]["sparse_max_density_flowering_plants_m2"] = 6
     with pytest.raises(ValueError, match="strata overlap"):
-        assess_density_water_allocation(sample_rows(), c)
+        assess(sample_rows(), c)
     c = protocol()
     c["water_method_B0_status"] = "B0_METHOD_FEASIBILITY_HOLD"
     with pytest.raises(ValueError, match="B0 method required|validated water-only B0"):
-        assess_density_water_allocation(sample_rows(), c)
+        assess(sample_rows(), c)
     c = protocol()
     c["water_B0_receipt_sha256"] = "REQUIRED_BEFORE_USE"
     with pytest.raises(ValueError, match="not prospectively frozen"):
-        assess_density_water_allocation(sample_rows(), c)
+        assess(sample_rows(), c)
 
 
 def test_no_biological_outcomes_or_unlocked_assignments():
     rows = sample_rows()
     rows[0]["seed_predation_rate"] = "0.01"
     with pytest.raises(ValueError, match="noncanonical"):
-        assess_density_water_allocation(rows, protocol())
+        assess(rows, protocol())
     rows = sample_rows()
     rows[0]["assignment_locked_before_outcomes"] = "0"
     rows[1]["water_compartment_confirmed"] = "0"
-    report = assess_density_water_allocation(rows, protocol())
+    report = assess(rows, protocol())
     assert "assignment_not_preoutcome_locked" in report["gate_reasons"]
     assert "unverified_shared_water_compartment" in report["gate_reasons"]
 
@@ -188,14 +214,19 @@ def test_cli_binds_both_input_sha256_and_refuses_overwrite(tmp_path):
         writer = csv.DictWriter(h, fieldnames=FIELDS)
         writer.writeheader()
         writer.writerows(sample_rows())
-    config_file.write_text(json.dumps(protocol()), encoding="utf-8")
-    result = build_receipt(rows_file, config_file, receipt_file)
+    b0 = tmp_path / "b0-method-receipt.json"
+    b0.write_text(json.dumps(method_receipt()), encoding="utf-8")
+    import hashlib
+    cfg = protocol()
+    cfg["water_B0_receipt_sha256"] = hashlib.sha256(b0.read_bytes()).hexdigest()
+    config_file.write_text(json.dumps(cfg), encoding="utf-8")
+    result = build_receipt(rows_file, config_file, b0, receipt_file)
     assert result["status"] == "DENSITY_STRATIFIED_WATER_ALLOCATION_SUPPORTED_NOT_EFFECT"
     assert len(result["allocation_csv_sha256"]) == 64
     assert len(result["protocol_json_sha256"]) == 64
     assert json.loads(receipt_file.read_text())["water_effect_identified"] is False
     with pytest.raises(ValueError, match="already exists"):
-        build_receipt(rows_file, config_file, receipt_file)
+        build_receipt(rows_file, config_file, b0, receipt_file)
 
 
 def test_csv_does_not_accept_previously_observed_fitness_columns(tmp_path):
@@ -208,6 +239,31 @@ def test_csv_does_not_accept_previously_observed_fitness_columns(tmp_path):
         for row in sample_rows():
             writer.writerow({**row, "seed_damage_fraction": "0.2"})
     config_file = tmp_path / "protocol.json"
-    config_file.write_text(json.dumps(protocol()), encoding="utf-8")
+    b0 = tmp_path / "b0-method-receipt.json"
+    b0.write_text(json.dumps(method_receipt()), encoding="utf-8")
+    import hashlib
+    cfg = protocol()
+    cfg["water_B0_receipt_sha256"] = hashlib.sha256(b0.read_bytes()).hexdigest()
+    config_file.write_text(json.dumps(cfg), encoding="utf-8")
     with pytest.raises(ValueError, match="canonical schema"):
-        build_receipt(csv_path, config_file, tmp_path / "unused.json")
+        build_receipt(csv_path, config_file, b0, tmp_path / "unused.json")
+
+
+
+def test_b0_context_mismatch_and_bad_receipt_cannot_qualify_design():
+    method = method_receipt()
+    method["context"]["population_id"] = "WRONG_POP"
+    with pytest.raises(ValueError, match="contexts do not match"):
+        assess_density_water_allocation(
+            sample_rows(), protocol(),
+            b0_method_receipt=method, b0_method_sha256="a"*64)
+    method = method_receipt()
+    method["status"] = "B0_METHOD_FEASIBILITY_HOLD"
+    with pytest.raises(ValueError, match="B0 method PASS"):
+        assess_density_water_allocation(
+            sample_rows(), protocol(),
+            b0_method_receipt=method, b0_method_sha256="a"*64)
+    with pytest.raises(ValueError, match="source-hash|SHA256"):
+        assess_density_water_allocation(
+            sample_rows(), protocol(),
+            b0_method_receipt=method_receipt(), b0_method_sha256="b"*64)
