@@ -172,3 +172,46 @@ def test_not_predicting_behaviour_from_exposure_sign():
     result = audit_exposure_geometry(data, config())
     assert result["waterline_status_counts"]["WATERLINE_BOUNDARY_UNRESOLVED"] == 1
     assert "shared_whorl_waterline_measurements_inconsistent" in result["gate_reasons"]
+
+
+def test_geometry_cli_source_hash_binding_and_no_reuse(tmp_path):
+    import csv
+    import json
+    from pathlib import Path
+    from balance_domain.pedicularis_exposure_geometry import FIELDS
+    from scripts.audit_pedicularis_exposure_geometry import build_receipt
+    source = tmp_path / "measurements.csv"
+    protocol = tmp_path / "frozen.json"
+    receipt = tmp_path / "receipt.json"
+    with source.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=FIELDS)
+        writer.writeheader()
+        writer.writerows(rows())
+    protocol.write_text(json.dumps(config()), encoding="utf-8")
+    result = build_receipt(source, protocol, receipt)
+    assert result["status"] == "GEOMETRIC_TWO_AXIS_SUPPORT_ONLY_NOT_CAUSAL"
+    assert len(result["source_csv_sha256"]) == 64
+    assert len(result["protocol_sha256"]) == 64
+    assert json.loads(receipt.read_text())["ecological_effect_identified"] is False
+    with pytest.raises(ValueError, match="already exists"):
+        build_receipt(source, protocol, receipt)
+
+
+def test_template_unfrozen_and_no_biological_outcome_fields():
+    import json
+    from pathlib import Path
+    from balance_domain.pedicularis_exposure_geometry import FIELDS
+    root = Path(__file__).resolve().parents[1]
+    j = json.loads((root /
+        "data/PEDICULARIS_EXPOSURE_GEOMETRY_PROTOCOL_TEMPLATE_V1.json"
+    ).read_text(encoding="utf-8"))
+    assert j["status"] == "TEMPLATE_NOT_FROZEN"
+    assert all(value == "REQUIRED_BEFORE_USE" for value in j["thresholds"].values())
+    header = (root /
+        "data/PEDICULARIS_EXPOSURE_GEOMETRY_FIELD_TEMPLATE_V1.csv"
+    ).read_text(encoding="utf-8").strip().split(",")
+    assert tuple(header) == FIELDS
+    assert not any(k in FIELDS for k in (
+        "predator_egg_count", "oviposition_scar_count",
+        "pollen_receipt", "mature_undamaged_seed_count",
+    ))
