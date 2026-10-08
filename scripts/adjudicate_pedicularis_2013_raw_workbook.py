@@ -64,6 +64,14 @@ PUBLISHED_F = {
         "factor": 45.029, "density": 317.878, "interaction": 106.270,
         "n": 2349, "df_residual": 2345
     },
+    "Table2_fruit_set": {
+        "factor": 0.206, "density": 2.368, "interaction": 3.060,
+        "n": 58, "df_residual": 54
+    },
+    "Table2_fruit_predation": {
+        "factor": 4.573, "density": 26.314, "interaction": 10.605,
+        "n": 58, "df_residual": 54
+    },
 }
 
 
@@ -237,6 +245,8 @@ def audit_workbook(path: Path):
         "Table2_initial_seed_set": ([r for r in seeds if r[0]==2],3,2),
         "Table2_final_seed_set": ([r for r in seeds if r[0]==2],4,2),
         "Table2_seed_predation": ([r for r in seeds if r[0]==2],5,2),
+        "Table2_fruit_set": ([r for r in fruits if r[0]==2],4,2),
+        "Table2_fruit_predation": ([r for r in fruits if r[0]==2],5,2),
     }
     models = {}
     for name,(rows,outcome,factor) in studies.items():
@@ -254,8 +264,8 @@ def audit_workbook(path: Path):
             or poll[5] != [2005,"sparse","dense","total"]):
         raise ValueError("pollination aggregation sheet schema changed")
     return {
-        "schema_version":"PEDICULARIS_2013_SOURCE_STRUCTURE_AND_ANOVA_V1",
-        "status":"PUBLISHED_UNCLUSTERED_SEED_ANOVA_REPRODUCED_PATCH_ID_ABSENT",
+        "schema_version":"PEDICULARIS_2013_SOURCE_STRUCTURE_AND_ANOVA_V2",
+        "status":"PUBLISHED_UNCLUSTERED_SEED_AND_2011_FRUIT_ANOVA_REPRODUCED_PATCH_ID_ABSENT",
         "source_doi":"10.5061/dryad.6cv06",
         "source_sha256":SOURCE_SHA256,
         "source_original_bytes":SOURCE_BYTES,
@@ -274,8 +284,11 @@ def audit_workbook(path: Path):
         "patch_id_present":False, "plant_id_present":False,
         "seed_to_fruit_stem_join_identifiable":False,
         "original_models":models,
-        "published_F_statistic_match_count":18,
-        "published_F_statistic_total_comparisons":18,
+        "published_F_statistic_match_count":24,
+        "published_F_statistic_total_comparisons":24,
+        "published_seed_F_matches":18,
+        "published_2011_fruit_F_matches":6,
+        "combined_2005_2011_fruit_ANCOVA_reproduction":"NOT_REPRODUCED_OR_ADJUDICATED",
         "patch_clustered_effect_estimable":False,
         "original_2013_findings_disproved":False,
         "causal_patch_density_effect_identified":False,
