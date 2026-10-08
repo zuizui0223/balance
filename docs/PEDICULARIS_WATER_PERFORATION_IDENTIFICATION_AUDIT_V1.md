@@ -14,6 +14,12 @@ Primary source: https://academic.oup.com/aobpla/article/doi/10.1093/aobpla/plv01
 
 The 2016 *Annals of Botany* study, DOI 10.1093/aob/mcw097 (source: https://pmc.ncbi.nlm.nih.gov/articles/PMC4970362/), reports pollinator-favoured floral exsertion alongside predator-associated selection for reduced exsertion across populations. It is observational evidence of opposing trait associations, **not** a randomized `x × water × puncture` landscape and not a direct BALANCE worldline receipt.
 
+## Independent biological precedent: handling controls, not architectural proof
+
+Carlson & Harms (2007), *Biology Letters* 3:405–407, DOI 10.1098/rsbl.2007.0095, experimentally studied a different water-bearing floral structure in *Chrysothemis friedrichsthaliana*. They randomized at least 80 buds to each of **unmanipulated wet**, **drained dry**, and **drained then refilled wet** conditions. The latter used liquid from the same/nearby calyces and was repeated daily. They reported no detectable difference in herbivore damage or bud abortion between untouched and drained-refilled treatments in a first-year comparison (reported p>0.90), then pooled them for subsequent analysis. They observed roughly a doubling of sterilization odds after drainage (reported OR 2.18, 95% CI 1.21–3.92) in that distinct taxon.
+
+Source: https://doi.org/10.1098/rsbl.2007.0095 ; open author PDF https://faculty.lsu.edu/kharms/files/carlson_harms_2007.pdf , Methods/Results. The drained-and-refilled handling control provides a **practical three-arm first test** before attempting water × puncture orthogonality. A non-significant handling comparison is **not** formal equivalence or proof of zero handling effect; *P. rex* method validation still needs prespecified off-target tolerances, realized water-depth verification and independent source outcomes. The published *Chrysothemis* work does not compare alternative bract architectures or report the BALANCE direct worldline.
+
 ## Competing ecological mechanisms with discriminating predictions
 
 | Hypothesis | Water retained vs experimentally removed, at fixed bract integrity | Perforated vs not, at fixed water state | Interpretation |
@@ -27,7 +33,15 @@ These alternatives are **not** assumed equiprobable. The physical route by which
 
 ## Stage B0 — manipulation feasibility before biological outcomes
 
-Aim for *orthogonal* manipulation of (A) water retained vs removed and (B) intact vs standardized basal perforation. The four intended arms are:
+**First priority — feasible three-arm handling test** (informed by Carlson & Harms 2007):
+
+1. intact + water retained, only matched observation/approach;
+2. intact + water removed by a prospectively validated nonperforating technique;
+3. intact + water removed and refilled from the same or chemically matched local water source, matching arm 2 for contact, timing and handling.
+
+Repeat the manipulation as required across the relevant predator oviposition window and measure *actual* retained depth and manipulation stress. If a nonperforating method causes injury or cannot keep bracts dry, **fail this water-only method test**. Compare arm 3 with arm 1 under a prospectively chosen *equivalence* tolerance for manipulation artefacts; do not treat a non-significant difference alone as proof of handling equivalence. The biological contrast of arm 2 against arm 3 is a potential water-state effect conditional on validated matched handling.
+
+**Second priority — optional fully orthogonal design**, only if physically feasible: vary (A) water retained vs removed and (B) intact vs standardized basal perforation. The four intended arms are:
 
 1. intact + retained water (matched handling/sham),
 2. intact + dry (aspirate water without perforation, repeat as required),
