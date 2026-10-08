@@ -61,3 +61,26 @@ def test_empty_file_manifest_is_not_source_qualification():
     r = inspect_source(fetch=empty_files)
     assert r["status"] == "DRYAD_FILES_UNLISTED_HOLD"
     assert r["field_data_retrieved"] is False
+
+
+def test_version_body_can_omit_id_and_canonical_link_still_qualifies():
+    def no_body_version_id(url):
+        value = fake_api(url)
+        if url == "https://datadryad.org/api/v2/versions/12345":
+            value.pop("id", None)
+        return value
+    result = inspect_source(fetch=no_body_version_id)
+    assert result["status"] == "DRYAD_METADATA_AND_FILE_MANIFEST_VERIFIED"
+    assert result["version_id"] == 12345
+    assert result["field_data_retrieved"] is False
+
+
+def test_version_body_id_mismatch_is_rejected():
+    def mismatch(url):
+        obj = fake_api(url)
+        if url == "https://datadryad.org/api/v2/versions/12345":
+            obj["id"] = 12344
+        return obj
+    result = inspect_source(fetch=mismatch)
+    assert result["status"] == "DRYAD_METADATA_NOT_VERIFIED_HOLD"
+    assert "mismatches" in result["diagnostic_message"]
