@@ -54,7 +54,8 @@ def test_r1_support_is_not_a_unique_plant_id_deduplication():
     assert result["missing_counts"]["intact_fruit_count"] == 2
     assert result["missing_counts"]["initial_fruit_count"] == 1
     assert result["missing_counts"]["flower_stem_height"] == 1
-    assert result["differential_candidate_rows"] == 2
+    assert result["pre_height_fruit_complete_rows"] == 2
+    assert result["differential_candidate_rows"] == 1
     assert result["gradient_candidate_rows"] == 1
     assert result["reused_year_plot_plant_id_keys"] == [{
         "year": "2020",
@@ -89,11 +90,13 @@ def test_2025_r1_support_expected_observation_grain_is_frozen():
     expected = json.loads(path.read_text(encoding="utf-8"))
     assert expected["source_rows"] == 685
     assert expected["observed_plot_year_cells"] == 19
-    assert expected["differential_candidate_rows"] == 620
+    assert expected["pre_height_fruit_complete_rows"] == 620
+    assert expected["differential_candidate_rows"] == 608
     assert expected["gradient_candidate_rows"] == 608
     assert expected["candidate_rows_by_plot"]["HD"] == {
         "source_rows": 139,
-        "differential_candidate_rows": 139,
+        "pre_height_fruit_complete_rows": 139,
+        "differential_candidate_rows": 127,
         "gradient_candidate_rows": 127,
     }
     assert expected["special_missing_cells"] == [
@@ -178,3 +181,17 @@ def test_r1_audit_rejects_changed_source_values_with_unchanged_missingness(tmp_p
     nr_path.write_text(json.dumps(nr, sort_keys=True) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="normalization receipt SHA256"):
         build_receipt(rows_path, nr_path, expected_path)
+
+
+
+def test_global_height_exclusion_applies_to_differential_as_well_as_gradient():
+    rows = [
+        _row(2, "2023", "HD", "id_a", height=""),
+        _row(3, "2023", "HD", "id_b"),
+    ]
+    out = build_r1_row_support_audit(rows)
+    assert out["pre_height_fruit_complete_rows"] == 2
+    assert out["differential_candidate_rows"] == 1
+    assert out["gradient_candidate_rows"] == 1
+    assert out["candidate_rows_by_plot"]["HD"]["pre_height_fruit_complete_rows"] == 2
+    assert out["candidate_rows_by_plot"]["HD"]["differential_candidate_rows"] == 1
