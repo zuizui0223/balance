@@ -30,6 +30,7 @@ def protocol():
             "sparse_max_density_flowering_plants_m2": 2,
             "dense_min_density_flowering_plants_m2": 5,
             "min_patches_per_stratum": 2,
+            "min_sites_with_both_density_strata": 1,
             "min_plants_per_arm_per_patch": 2,
             "min_blocks_with_all_three_arms_per_patch": 2,
         },
@@ -114,6 +115,25 @@ def test_intermediate_density_not_silently_discarded():
     assert "intermediate_density_patch_requires_preregistered_route" in report["gate_reasons"]
     assert report["patches_by_stratum"]["SPARSE"] == 1
     assert len(report["patches"]) == 4
+
+
+def test_site_is_not_permitted_to_encode_the_density_stratum():
+    rows = sample_rows()
+    for row in rows:
+        row["site_id"] = "ONLY_" + (
+            "DENSE" if row["patch_id"].startswith("DENSE") else "SPARSE"
+        )
+    report = assess(rows, protocol())
+    assert report["status"] == "DENSITY_WATER_ALLOCATION_HOLD"
+    assert "density_strata_confounded_with_site" in report["gate_reasons"]
+    assert report["n_sites_with_both_strata"] == 0
+
+
+def test_one_patch_per_density_stratum_cannot_support_context_heterogeneity():
+    conf = protocol()
+    conf["thresholds"]["min_patches_per_stratum"] = 1
+    with pytest.raises(ValueError, match="at least two independent patches"):
+        assess(sample_rows(), conf)
 
 
 def test_missing_one_water_arm_in_patch_is_a_positivity_failure():
