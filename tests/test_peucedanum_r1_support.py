@@ -105,6 +105,9 @@ def test_2025_r1_support_expected_observation_grain_is_frozen():
         {"year": "2022", "population_id": "HC", "missing_intact_fruit_count": 7},
         {"year": "2022", "population_id": "HL", "missing_intact_fruit_count": 7},
     ]
+    assert expected["special_missing_height_cells"] == [
+        {"year": "2022", "population_id": "HD", "missing_flower_stem_height": 12}
+    ]
     assert len(expected["reused_year_plot_plant_id_keys"]) == 2
 
 
@@ -119,6 +122,7 @@ def test_exact_expectations_reject_drift():
         "special_missing_cells": [
             {"year": "2020", "population_id": "HA", "missing_intact_fruit_count": 1}
         ],
+        "special_missing_height_cells": [],
     }
     validate_against_expectations(audit, expected)
     expected["source_rows"] = 3
@@ -154,6 +158,7 @@ def test_r1_audit_rejects_changed_source_values_with_unchanged_missingness(tmp_p
         "normalized_csv_sha256": hashlib.sha256(rows_path.read_bytes()).hexdigest(),
         "normalization_receipt_sha256": hashlib.sha256(nr_path.read_bytes()).hexdigest(),
         "special_missing_cells": [],
+        "special_missing_height_cells": [],
     }
     expected_path = tmp_path / "expectations.json"
     expected_path.write_text(
@@ -195,3 +200,23 @@ def test_global_height_exclusion_applies_to_differential_as_well_as_gradient():
     assert out["gradient_candidate_rows"] == 1
     assert out["candidate_rows_by_plot"]["HD"]["pre_height_fruit_complete_rows"] == 2
     assert out["candidate_rows_by_plot"]["HD"]["differential_candidate_rows"] == 1
+
+
+
+def test_height_missingness_cell_cannot_drift_after_source_freeze():
+    audit = build_r1_row_support_audit([
+        _row(2, "2022", "HD", "id_1", height=""),
+        _row(3, "2022", "HD", "id_2"),
+    ])
+    expected = {
+        **audit,
+        "schema_version": "BALANCE_PEUCEDANUM_2025_R1_ROW_SUPPORT_EXPECTATIONS_V1",
+        "special_missing_cells": [],
+        "special_missing_height_cells": [
+            {"year": "2022", "population_id": "HD", "missing_flower_stem_height": 1}
+        ],
+    }
+    validate_against_expectations(audit, expected)
+    expected["special_missing_height_cells"][0]["missing_flower_stem_height"] = 0
+    with pytest.raises(ValueError, match="special_missing_height_cells"):
+        validate_against_expectations(audit, expected)
