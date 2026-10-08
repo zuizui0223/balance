@@ -36,10 +36,19 @@ dataRB <- subset(dataRB, !is.na(InitialFruitN))
 
 extract_adjusted <- function(model, data, var, square_var) {
   tr <- as.data.frame(emtrends(model, ~ Plot, var=var, data=data))
-  pred <- predict(model, newdata=data, type="response")
-  constants <- data.frame(Plot=data$Plot, v=pred*(1-pred)) |>
+  # lme4 drops incomplete model-specific rows (notably HD Height NA).
+  # Predict only for rows actually included in the fitted model.
+  mf <- model.frame(model)
+  pred <- as.numeric(fitted(model))
+  if (length(pred) != nrow(mf) || any(!is.finite(pred))) {
+    stop("fitted values and model-frame rows do not match")
+  }
+  constants <- data.frame(Plot=mf$Plot, v=pred*(1-pred)) |>
     group_by(Plot) |>
-    summarise(constant=mean(v), .groups="drop")
+    summarise(constant=mean(v), fitted_n=dplyr::n(), .groups="drop")
+  if (any(!is.finite(constants$constant)) || any(constants$fitted_n < 1L)) {
+    stop("non-finite or unsupported fitted-row logistic adjustment")
+  }
   merged <- merge(tr, constants, by="Plot", sort=FALSE)
   trend_name <- grep("\\.trend$", names(merged), value=TRUE)
   if (length(trend_name) != 1) stop("could not identify emtrends estimate column")
@@ -91,8 +100,10 @@ out <- data.frame(
   Plot=plot_order,
   S=diff$adjusted_estimate,
   S_se=diff$adjusted_se,
+  S_fitted_n=diff$fitted_n,
   beta=grad$adjusted_estimate,
   beta_se=grad$adjusted_se,
+  beta_fitted_n=grad$fitted_n,
   female_gain_b=gain$b,
   female_gain_b_se=gain$b_se,
   published_S=unname(published_S[plot_order]),
