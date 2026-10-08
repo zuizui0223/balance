@@ -124,6 +124,7 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
             "population_id": plot,
             "source_rows": counts["source_rows"],
             "missing_intact_fruit_count": counts["missing_intact_fruit_count"],
+            "missing_flower_stem_height": counts["missing_flower_stem_height"],
             "pre_height_fruit_complete_rows": counts["pre_height_fruit_complete_rows"],
             "differential_candidate_rows": counts["differential_candidate_rows"],
             "gradient_candidate_rows": counts["gradient_candidate_rows"],
