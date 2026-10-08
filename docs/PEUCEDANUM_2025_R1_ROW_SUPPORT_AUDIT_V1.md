@@ -25,6 +25,12 @@ identical, is therefore a versioned-provenance change and must fail closed.
 The 685 recorded observations span **19** plot-by-year cells, not an assumed
 complete 5-by-4 panel. The `HL` plot has no row in 2020.
 
+Only **18 of those 19 observed cells** contribute any final-fruit-model
+candidate rows after source-global complete-case filtering. The **2021 HA**
+cell has 50 recorded plants but 0 observed final fruit counts. In a
+year-sensitive reanalysis, do not equate raw plot-year coverage with outcome
+support; zero-fill neither the absent 2020 HL cell nor the 2021 HA responses.
+
 | Plot | Raw rows | Fruit-complete, before global height exclusion | Original-source R1 candidate rows (differential and gradient) |
 | --- | ---: | ---: | ---: |
 | HA | 177 | 126 | 126 |
