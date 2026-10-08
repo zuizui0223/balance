@@ -155,6 +155,10 @@ It intentionally does not call the SCH mechanism positive or negative.
 
 # Experiment B pilot — shared BALANCE + BITA x-by-water surface
 
+## Water-state intervention identification prerequisite
+
+The published 2015 water-drainage treatment used a basal bract puncture and compared that joint water-plus-perforation package to intact controls. Before calling the new Experiment-B water manipulation a selective **water-state** intervention, separate (or explicitly acknowledge failure to separate) water depth from physical perforation, handling, access, and mechanical damage. See `docs/PEDICULARIS_WATER_PERFORATION_IDENTIFICATION_AUDIT_V1.md` for the source-backed B0 feasibility design. This prerequisite does not alter the frozen x × y downstream estimands; it controls whether the y contrast is causally interpretable.
+
 ## Design skeleton
 
 Use the same exsertion coordinate and, where biologically feasible, the same assigned x-level grid as Experiment A:
