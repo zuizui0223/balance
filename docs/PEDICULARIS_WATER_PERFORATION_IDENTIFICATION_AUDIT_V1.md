@@ -69,11 +69,17 @@ All arms need standardized contact/manipulation effort, repeated water-depth mea
 
 Experimental unit: focal plant or predeclared within-plant flower block; preserve `plant_id` dependence and `flower_id`. Randomize arms before outcomes. Do not treat repeated flowers on a plant as independent. Predeclare handling failure, leakage and attrition before seed outcomes are opened.
 
+## Experimental unit: one water-holding bract/whorl per randomized plant
+
+The 2015 *P. rex* methods describe flowers arranged in whorls (often four per whorl) with their leaf bases forming cupulate bracts, and the historical drainage manipulation assigned whole inflorescences/individuals (DOI 10.1093/aobpla/plv019, Methods: study species and seed predation). **Water is a property of the bract compartment, not of each flower independently.** Multiple flowers that share the same bract water cannot be randomized separately to wet/dry/refilled treatment without contamination.
+
+The B0 method pilot therefore requires **one verified water-holding compartment per independently randomized plant** for a transparent initial feasibility test, with plant identifiers unique across all treatment arms. The bract/whorl compartment receives a separate `water_compartment_id`, with a field confirmation that this is an independently measurable water reservoir. Any later full Experiment A/B can use within-plant blocks only after predeclaring compartment-level treatment interference and the plant-level clustering/assignment scheme; the B0 screening counts plants, not individual flowers, as replicates. If compartments communicate hydrologically, the plant-level experiment still needs a whole-plant water protocol; unverified compartment isolation is a HOLD.
+
 ## Machine-executable B0 protocol (added; no field observations yet)
 
 B0 now has a **method-only**, fail-closed validation implementation:
 
-- `data/PEDICULARIS_WATER_B0_METHOD_PILOT_TEMPLATE_V1.csv` — one assigned focal flower per row, preserving `plant_id`, `flower_id`, `block_id`, context, season, protocol and treatment arm. Only early/late measured water depth, handling duration, physical puncture, exsertion displacement, damage, and physical pollinator-entry access are in scope.
+- `data/PEDICULARIS_WATER_B0_METHOD_PILOT_TEMPLATE_V1.csv` — one measured water compartment per randomized plant, preserving `plant_id`, `water_compartment_id`, `block_id`, context, season, protocol and treatment arm. Only early/late measured water depth, handling duration, physical puncture, exsertion displacement, damage, and physical pollinator-entry access are in scope.
 - `data/PEDICULARIS_WATER_B0_METHOD_THRESHOLDS_TEMPLATE_V1.json` — **all biological feasibility thresholds are `REQUIRED_BEFORE_USE`**. The schedule SHA256, context identifiers, protocol version and justification must also be prospectively frozen. No pilot treatment effect can be used to tune these thresholds post hoc.
 - `balance_domain/pedicularis_water_b0.py` — validates source identities, all three assigned arms, plant and block support, prospective assignment locks, no punctures, water-state fidelity at *both* windows, missing-method data, tissue damage, exsertion off-target shifts, physical pollinator accessibility and matched removal/refill handling time.
 - `scripts/evaluate_pedicularis_water_b0.py` — uses exact CSV columns, rejects added fitness/egg outcomes, and emits a reproducible JSON receipt with SHA256 hashes of the pilot file and frozen threshold file.
