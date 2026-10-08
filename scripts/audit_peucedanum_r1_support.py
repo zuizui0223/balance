@@ -28,6 +28,7 @@ def validate_against_expectations(audit: dict, expected: dict) -> None:
         "year_counts",
         "plot_counts",
         "missing_counts",
+        "pre_height_fruit_complete_rows",
         "differential_candidate_rows",
         "gradient_candidate_rows",
         "candidate_rows_by_plot",
@@ -127,6 +128,7 @@ def main() -> None:
     print(json.dumps({
         "status": receipt["status"],
         "source_rows": receipt["source_rows"],
+        "pre_height_fruit_complete_rows": receipt["pre_height_fruit_complete_rows"],
         "differential_candidate_rows": receipt["differential_candidate_rows"],
         "gradient_candidate_rows": receipt["gradient_candidate_rows"],
         "reused_biological_id_keys": len(receipt["reused_year_plot_plant_id_keys"]),
