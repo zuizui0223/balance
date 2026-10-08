@@ -24,6 +24,10 @@ fitness_scale_id
 
 The water-y state must be qualified independently of any perforation/handling required to create it. The 2015 historical drainage method pierced the bract base, so its treatment effect alone does not isolate water retention from physical injury/access. The qualification route and fail-closed fallback are in `docs/PEDICULARIS_WATER_PERFORATION_IDENTIFICATION_AUDIT_V1.md`. An unqualified package contrast remains `WATER_AND_PERFORATION_PACKAGE_EFFECT`, not a direct water-only fitness worldline.
 
+## Geometry/partial-modularity limitation
+
+The 2016 *P. rex* "exsertion" variable is a **ratio of two organ lengths**, `(flower_length-bract_height)/flower_length`, not the vertical position of a predator oviposition site relative to the changing water surface. The separate bract and corolla are already anatomical modules; toggling bract water is a **functional-state** intervention, not adding or removing a structural module. Before mechanistic interpretation of the x-by-water surface, prospectively measure both length exsertion and the directly verified site-to-waterline clearance with a common elevation datum; see `docs/PEDICULARIS_PARTIAL_MODULARITY_EXPOSURE_GEOMETRY_V1.md`. The additional geometry support is not required by the already-frozen numerical x-y handoff contract and must never be retrospectively inserted as an outcome-selected decision rule.
+
 ## Direct state classification
 
 Let

@@ -1,0 +1,21 @@
+{
+  "schema_version": "PEDICULARIS_EXPOSURE_GEOMETRY_PROTOCOL_V1",
+  "status": "TEMPLATE_NOT_FROZEN",
+  "context_id": "REQUIRED_BEFORE_USE",
+  "population_id": "REQUIRED_BEFORE_USE",
+  "season_id": "REQUIRED_BEFORE_USE",
+  "protocol_version": "REQUIRED_BEFORE_USE",
+  "all_heights_share_an_instrument_calibrated_vertical_datum": false,
+  "oviposition_site_definition_reviewed_before_outcome": false,
+  "threshold_justification": "REQUIRED_BEFORE_USE",
+  "thresholds": {
+    "max_each_position_error_mm": "REQUIRED_BEFORE_USE",
+    "max_whorl_waterline_disagreement_mm": "REQUIRED_BEFORE_USE",
+    "min_waterline_clearance_contrast_mm": "REQUIRED_BEFORE_USE",
+    "max_within_flower_exsertion_difference": "REQUIRED_BEFORE_USE",
+    "min_independent_compartments_with_contrast": "REQUIRED_BEFORE_USE",
+    "min_independent_plants_with_contrast": "REQUIRED_BEFORE_USE",
+    "max_within_flower_focal_geometry_drift_mm": "REQUIRED_BEFORE_USE"
+  },
+  "claim_ceiling": "unfrozen_geometry_template_not_field_observations_or_predator_evidence"
+}
