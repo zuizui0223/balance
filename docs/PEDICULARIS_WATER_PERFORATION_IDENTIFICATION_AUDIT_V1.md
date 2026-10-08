@@ -12,7 +12,7 @@ Primary source: https://academic.oup.com/aobpla/article/doi/10.1093/aobpla/plv01
 
 **Identification warning, not a refutation:** in the reported treatment contrast, water removal and physical perforation co-occur. No water-retained/perforated or water-removed/nonperforated factorial contrast is documented in those reported methods. Hence the experimental treatment identifies the *joint intervention package*, not an isolated causal `water-depth` effect. Puncture/handling could potentially change oviposition access, bract microclimate, flower damage or another pathway. This possibility is a rival mechanism requiring direct controls; it is not proof that the historical conclusion was false. The point cannot be solved by fitting a more complicated regression to the same two treatment labels.
 
-The 2016 *Annals of Botany* study, DOI 10.1093/aob/mcw090 (source: https://pmc.ncbi.nlm.nih.gov/articles/PMC4970362/), reports pollinator-favoured floral exsertion alongside predator-associated selection for reduced exsertion across populations. It is observational evidence of opposing trait associations, **not** a randomized `x × water × puncture` landscape and not a direct BALANCE worldline receipt.
+The 2016 *Annals of Botany* study, DOI 10.1093/aob/mcw097 (source: https://pmc.ncbi.nlm.nih.gov/articles/PMC4970362/), reports pollinator-favoured floral exsertion alongside predator-associated selection for reduced exsertion across populations. It is observational evidence of opposing trait associations, **not** a randomized `x × water × puncture` landscape and not a direct BALANCE worldline receipt.
 
 ## Competing ecological mechanisms with discriminating predictions
 
