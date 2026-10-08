@@ -69,6 +69,28 @@ All arms need standardized contact/manipulation effort, repeated water-depth mea
 
 Experimental unit: focal plant or predeclared within-plant flower block; preserve `plant_id` dependence and `flower_id`. Randomize arms before outcomes. Do not treat repeated flowers on a plant as independent. Predeclare handling failure, leakage and attrition before seed outcomes are opened.
 
+## Machine-executable B0 protocol (added; no field observations yet)
+
+B0 now has a **method-only**, fail-closed validation implementation:
+
+- `data/PEDICULARIS_WATER_B0_METHOD_PILOT_TEMPLATE_V1.csv` — one assigned focal flower per row, preserving `plant_id`, `flower_id`, `block_id`, context, season, protocol and treatment arm. Only early/late measured water depth, handling duration, physical puncture, exsertion displacement, damage, and physical pollinator-entry access are in scope.
+- `data/PEDICULARIS_WATER_B0_METHOD_THRESHOLDS_TEMPLATE_V1.json` — **all biological feasibility thresholds are `REQUIRED_BEFORE_USE`**. The schedule SHA256, context identifiers, protocol version and justification must also be prospectively frozen. No pilot treatment effect can be used to tune these thresholds post hoc.
+- `balance_domain/pedicularis_water_b0.py` — validates source identities, all three assigned arms, plant and block support, prospective assignment locks, no punctures, water-state fidelity at *both* windows, missing-method data, tissue damage, exsertion off-target shifts, physical pollinator accessibility and matched removal/refill handling time.
+- `scripts/evaluate_pedicularis_water_b0.py` — uses exact CSV columns, rejects added fitness/egg outcomes, and emits a reproducible JSON receipt with SHA256 hashes of the pilot file and frozen threshold file.
+
+Run with **real, method-only pilot data**, *after* freezing justified thresholds:
+
+```bash
+python scripts/evaluate_pedicularis_water_b0.py \
+  --pilot /path/to/prospective-B0-method-pilot.csv \
+  --thresholds /path/to/preoutcome-frozen-B0-thresholds.json \
+  --out /path/to/B0-method-feasibility-receipt.json
+```
+
+This returns either `B0_METHOD_FEASIBILITY_HOLD` with specific failing checks or `B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL`. The latter is **a measurement/implementation screening result only**, not proof of blinded randomization, handling equivalence in fitness, a water-specific causal seed advantage, or any BALANCE worldline. The schedule hash asserts traceability but the matching schedule bytes still require independent audit. The endpoint excludes pollen, predator eggs and seed production intentionally to avoid selecting methods after viewing biological effects.
+
+Before analysing biological outcomes, separately preregister assignment verification, treatment-level interference, reproductive fitness, predator encounter/oviposition timing and the water-state equivalence/validity assumptions. Non-significant comparison of untouched and refilled outcomes never equals formal equivalence.
+
 ## Stage B1 — ecological contrast, not an architecture comparison
 
 Under matched pollinator and predator exposure, compare **within the validated manipulations**:
