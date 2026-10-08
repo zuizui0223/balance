@@ -100,9 +100,38 @@ def _frozen_config(config):
     return ids, result, sha
 
 
-def assess_density_water_allocation(rows, config):
-    """No egg, seed, pollen, visit, geometry-outcome, or treatment-effect input."""
+def assess_density_water_allocation(
+    rows, config, *, b0_method_receipt, b0_method_sha256
+):
+    """No egg, seed, pollen, visit, geometry-outcome, or treatment-effect input.
+
+    The B0 receipt must come from an independently run method-feasibility
+    audit. The caller must provide its SHA256, which the CLI computes from
+    actual input bytes. This is a provenance check, not proof of experimental
+    water fidelity in the *new* density trial.
+    """
     ids, lim, receipt_sha = _frozen_config(config)
+    if b0_method_sha256 != receipt_sha:
+        raise ValueError("B0 receipt bytes do not match prospectively frozen SHA256")
+    if not isinstance(b0_method_receipt, dict):
+        raise ValueError("validated B0 method receipt required")
+    if (b0_method_receipt.get("schema_version")
+            != "PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1"
+            or b0_method_receipt.get("status")
+            != "B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL"):
+        raise ValueError("independently checked B0 method PASS receipt required")
+    if b0_method_receipt.get("context") != ids:
+        raise ValueError("B0 method and density design contexts do not match")
+    if b0_method_receipt.get("randomization_unit") != (
+        "PLANT_WITH_ONE_WATER_COMPARTMENT_PER_PLANT"
+    ):
+        raise ValueError("B0 and B1 randomization units do not match")
+    if b0_method_receipt.get("gate_reasons") != []:
+        raise ValueError("B0 method receipt contains unresolved failures")
+    if (b0_method_receipt.get("causal_water_effect_identified") is not False
+            or b0_method_receipt.get("structural_architecture_BALANCE_identified")
+            is not False):
+        raise ValueError("B0 receipt misrepresents method-only claim ceiling")
     rows = list(rows)
     if not rows:
         raise ValueError("no density allocation rows")
@@ -198,9 +227,9 @@ def assess_density_water_allocation(rows, config):
         "patches_by_stratum": dict(sorted(by_stratum.items())),
         "patches": patch_summaries,
         "gate_reasons": sorted(reasons),
-        "B0_method_status_asserted_not_independently_verified":
-            config["water_method_B0_status"],
-        "B0_receipt_sha256_asserted_not_independently_verified": receipt_sha,
+        "B0_method_receipt_status": b0_method_receipt["status"],
+        "B0_receipt_sha256_content_linked": receipt_sha,
+        "B0_method_qualifies_new_density_context_without_retest": False,
         "plant_water_randomization_verified_independently": False,
         "water_effect_identified": False,
         "causal_patch_density_effect_identified": False,
