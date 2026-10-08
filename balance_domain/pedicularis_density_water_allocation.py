@@ -28,11 +28,13 @@ LIMIT_KEYS = (
     "sparse_max_density_flowering_plants_m2",
     "dense_min_density_flowering_plants_m2",
     "min_patches_per_stratum",
+    "min_sites_with_both_density_strata",
     "min_plants_per_arm_per_patch",
     "min_blocks_with_all_three_arms_per_patch",
 )
 INTEGER_KEYS = {
-    "min_patches_per_stratum", "min_plants_per_arm_per_patch",
+    "min_patches_per_stratum", "min_sites_with_both_density_strata",
+    "min_plants_per_arm_per_patch",
     "min_blocks_with_all_three_arms_per_patch",
 }
 
@@ -95,6 +97,8 @@ def _frozen_config(config):
             result[key] = int(val)
         else:
             result[key] = val
+    if result["min_patches_per_stratum"] < 2:
+        raise ValueError("at least two independent patches per density stratum required")
     if result["sparse_max_density_flowering_plants_m2"] >= (
         result["dense_min_density_flowering_plants_m2"]
     ):
@@ -189,6 +193,7 @@ def assess_density_water_allocation(
 
     patch_summaries = []
     by_stratum = Counter()
+    by_site_stratum = defaultdict(Counter)
     for (site, patch), samples in sorted(patches.items()):
         density_vals = {x["density"] for x in samples}
         patch_sizes = {x["patch_size"] for x in samples}
@@ -217,6 +222,7 @@ def assess_density_water_allocation(
             reasons.add(f"within_patch_arms_confounded_with_blocks:{site}/{patch}")
         if stratum != "INTERMEDIATE_NOT_REGISTERED":
             by_stratum[stratum] += 1
+            by_site_stratum[site][stratum] += 1
         patch_summaries.append({
             "site_id": site, "patch_id": patch,
             "density_stratum": stratum,
@@ -229,6 +235,12 @@ def assess_density_water_allocation(
     for stratum in ("SPARSE", "DENSE"):
         if by_stratum[stratum] < lim["min_patches_per_stratum"]:
             reasons.add(f"insufficient_independent_patches:{stratum}")
+    sites_with_both = [
+        site for site, counts in by_site_stratum.items()
+        if counts["SPARSE"] > 0 and counts["DENSE"] > 0
+    ]
+    if len(sites_with_both) < lim["min_sites_with_both_density_strata"]:
+        reasons.add("density_strata_confounded_with_site")
     return {
         "schema_version": "PEDICULARIS_DENSITY_WATER_ALLOCATION_SUPPORT_V1",
         "status": ("DENSITY_STRATIFIED_WATER_ALLOCATION_SUPPORTED_NOT_EFFECT"
@@ -236,6 +248,7 @@ def assess_density_water_allocation(
         "context": ids, "n_independent_plants": len(seen_plants),
         "n_independent_patches": len(patches),
         "patches_by_stratum": dict(sorted(by_stratum.items())),
+        "n_sites_with_both_strata": len(sites_with_both),
         "patches": patch_summaries,
         "gate_reasons": sorted(reasons),
         "B0_method_receipt_status": b0_method_receipt["status"],
