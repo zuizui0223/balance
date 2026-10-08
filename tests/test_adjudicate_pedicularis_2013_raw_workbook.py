@@ -95,3 +95,38 @@ def test_frozen_real_source_concordance_keeps_independent_patch_gate_closed():
             assert abs(model["F_"+key] - target_f[key]) < 0.00055
         alt = "F_size" if name.startswith("Table2") else "F_year"
         assert abs(model[alt] - target_f["factor"]) < 0.00055
+
+
+
+def test_missing_initial_seed_bounds_do_not_impute_complete_predation():
+    from scripts.adjudicate_pedicularis_2013_raw_workbook import (
+        initial_seed_missingness_bounds,
+    )
+    rows=[]
+    for year in (1,2):
+        for density in (1,2):
+            rows.append([year,density,2,20.0,16.0,20.0])
+            rows.append([year,density,2,None,0.0,100.0])
+    result=initial_seed_missingness_bounds(rows)
+    assert result["status"]=="INITIAL_SEED_RATE_OUTCOME_DEPENDENT_MISSINGNESS_HOLD"
+    s=result["groups"]["2011"]["by_density"]["sparse"]
+    assert s["n_initial_missing"]==1
+    assert s["observed_initial_mean_percent"]==pytest.approx(20.0)
+    assert s["population_mean_identification_lower_percent"]==pytest.approx(10.0)
+    assert s["population_mean_identification_upper_percent"]==pytest.approx(60.0)
+    assert result["groups"]["2011"][
+        "dense_minus_sparse_initial_mean_identified_interval_percent_points"
+    ] == pytest.approx([-50.0,50.0])
+    assert result["causal_pollination_or_fertilization_effect_identified"] is False
+
+
+def test_missing_initial_with_nonmaximal_predation_is_source_drift():
+    from scripts.adjudicate_pedicularis_2013_raw_workbook import (
+        initial_seed_missingness_bounds,
+    )
+    rows=[]
+    for year in (1,2):
+        for density in (1,2):
+            rows.append([year,density,2,None,0.0,99.0])
+    with pytest.raises(ValueError,match="predation=100"):
+        initial_seed_missingness_bounds(rows)
