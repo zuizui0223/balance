@@ -48,10 +48,30 @@ def stage_slopes(rows: Iterable[Mapping[str, str]]) -> dict:
             out.append({"year":year,"plot":plot,"n":n,"status":"INSUFFICIENT_VARIATION"})
             continue
         slopes = []
+        uncertainties = []
         for idx in (1, 2):
             my = sum(z[idx]*z[3] for z in data)/w
-            slopes.append(sum(z[3]*(z[0]-mx)*(z[idx]-my) for z in data)/denom)
+            beta = sum(z[3]*(z[0]-mx)*(z[idx]-my) for z in data)/denom
+            slopes.append(beta)
+            uncertainties.append(beta)
+        # Paired change is exactly the weighted regression of (final-initial)
+        # on the same allocation predictor. This does not assume independence
+        # of the two outcomes within an individual.
+        diffs = [(z[2]-z[1]) for z in data]
+        md = sum(z[3]*d for z,d in zip(data,diffs))/w
+        residuals = [d-md-(slopes[1]-slopes[0])*(z[0]-mx)
+                     for z,d in zip(data,diffs)]
+        # HC0/HC1-style leverage correction for a weighted linear regression.
+        # Effective observational independence is NOT established here.
+        leverages = [z[3]/w + z[3]*(z[0]-mx)**2/denom for z in data]
+        if any(h >= 1 for h in leverages):
+            out.append({"year":year,"plot":plot,"n":n,"status":"UNSTABLE_LEVERAGE"})
+            continue
+        se_hc3 = math.sqrt(sum((z[3]*(z[0]-mx)*r/(1-h))**2
+                                for z,r,h in zip(data,residuals,leverages))/denom**2)
         out.append({"year":year,"plot":plot,"n":n,
+                    "delta_se_hc3":se_hc3,
+                    "delta_z_hc3":((slopes[1]-slopes[0])/se_hc3 if se_hc3>0 else None),
                     "beta_initial":slopes[0],"beta_final":slopes[1],
                     "delta":slopes[1]-slopes[0],"status":"DESCRIPTIVE_ONLY"})
     return {"schema_version":"PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1",
