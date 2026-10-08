@@ -95,6 +95,8 @@ python scripts/evaluate_pedicularis_water_b0.py \
 
 This returns either `B0_METHOD_FEASIBILITY_HOLD` with specific failing checks or `B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL`. The latter is **a measurement/implementation screening result only**, not proof of blinded randomization, handling equivalence in fitness, a water-specific causal seed advantage, or any BALANCE worldline. The schedule hash asserts traceability but the matching schedule bytes still require independent audit. The endpoint excludes pollen, predator eggs and seed production intentionally to avoid selecting methods after viewing biological effects.
 
+The screening requires overlapping preassigned blocks represented in **all three arms** (threshold frozen before method observations), and audits within-block dry-versus-refill handling durations. A global matching of average handling time cannot rescue systematic differences between blocks. The source method-only CSV uses one confirmed water compartment per plant to prevent shared-water pseudoreplication. The randomization schedule's recorded SHA-256 is a provenance commitment, not independent verification of its contents or execution.
+
 Before analysing biological outcomes, separately preregister assignment verification, treatment-level interference, reproductive fitness, predator encounter/oviposition timing and the water-state equivalence/validity assumptions. Non-significant comparison of untouched and refilled outcomes never equals formal equivalence.
 
 ## Stage B1 — ecological contrast, not an architecture comparison
