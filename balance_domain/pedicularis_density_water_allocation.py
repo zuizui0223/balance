@@ -79,6 +79,8 @@ def _frozen_config(config):
     ids = {k: _text(config.get(k), k) for k in
            ("context_id", "population_id", "season_id", "protocol_version")}
     _text(config.get("density_cutoffs_justification"), "density_cutoffs_justification")
+    _text(config.get("water_B0_context_id"), "water_B0_context_id")
+    _text(config.get("water_B0_protocol_version"), "water_B0_protocol_version")
     if config.get("allocation_locked_before_biological_outcomes") is not True:
         raise ValueError("allocation not frozen before biological outcomes")
     limits = config.get("thresholds")
@@ -120,8 +122,17 @@ def assess_density_water_allocation(
             or b0_method_receipt.get("status")
             != "B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL"):
         raise ValueError("independently checked B0 method PASS receipt required")
-    if b0_method_receipt.get("context") != ids:
-        raise ValueError("B0 method and density design contexts do not match")
+    source_ctx = b0_method_receipt.get("context")
+    if not isinstance(source_ctx, dict):
+        raise ValueError("B0 method context mapping missing")
+    for field in ("population_id", "season_id"):
+        if source_ctx.get(field) != ids[field]:
+            raise ValueError("B0 method and density design contexts do not match")
+    if (source_ctx.get("context_id") != config["water_B0_context_id"]
+            or source_ctx.get("protocol_version")
+            != config["water_B0_protocol_version"]):
+        raise ValueError("B0 source method context/version not registered")
+    # A method pilot and a final randomized trial can use distinct versions.
     if b0_method_receipt.get("randomization_unit") != (
         "PLANT_WITH_ONE_WATER_COMPARTMENT_PER_PLANT"
     ):
