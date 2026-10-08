@@ -51,6 +51,10 @@ def test_r1_support_is_not_a_unique_plant_id_deduplication():
     result = build_r1_row_support_audit(rows)
     assert result["source_rows"] == 4
     assert result["observed_plot_year_cells"] == 2
+    assert result["source_fit_plot_year_cells"] == 1
+    assert result["observed_cells_without_source_fit_candidates"] == [
+        {"year": "2021", "population_id": "HD", "source_rows": 2}
+    ]
     assert result["missing_counts"]["intact_fruit_count"] == 2
     assert result["missing_counts"]["initial_fruit_count"] == 1
     assert result["missing_counts"]["flower_stem_height"] == 1
@@ -90,6 +94,10 @@ def test_2025_r1_support_expected_observation_grain_is_frozen():
     expected = json.loads(path.read_text(encoding="utf-8"))
     assert expected["source_rows"] == 685
     assert expected["observed_plot_year_cells"] == 19
+    assert expected["source_fit_plot_year_cells"] == 18
+    assert expected["observed_cells_without_source_fit_candidates"] == [
+        {"year": "2021", "population_id": "HA", "source_rows": 50}
+    ]
     assert expected["pre_height_fruit_complete_rows"] == 620
     assert expected["differential_candidate_rows"] == 608
     assert expected["gradient_candidate_rows"] == 608
