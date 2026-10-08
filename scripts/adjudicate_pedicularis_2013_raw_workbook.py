@@ -152,6 +152,56 @@ def _source_rows(header, data, expected_header, group_count):
     return rows, dict(sorted(counts.items()))
 
 
+def initial_seed_missingness_bounds(seed_rows):
+    """Partial-identification bounds, not imputed complete-case records.
+
+    A missing initial rate is allowed in [0,100] percent, regardless of
+    observed final zero and 100% predation. Missingness is outcome-dependent.
+    """
+    results={}
+    for year in (1,2):
+        by_density={}
+        for den in (1,2):
+            group=[r for r in seed_rows if r[0]==year and r[1]==den]
+            if not group:
+                raise ValueError("empty source year-density cell")
+            obs=[float(r[3]) for r in group if r[3] is not None]
+            missing=[r for r in group if r[3] is None]
+            if any(r[5]!=100 or r[4]!=0 for r in missing):
+                raise ValueError("initial missingness no longer aligns with predation=100/final=0")
+            if any(x<0 or x>100 for x in obs):
+                raise ValueError("source observed initial rate outside [0,100]")
+            n=len(group)
+            total=math.fsum(obs)
+            by_density["sparse" if den==1 else "dense"]={
+                "n_total":n,
+                "n_initial_observed":len(obs),
+                "n_initial_missing":len(missing),
+                "missing_fraction":len(missing)/n,
+                "observed_initial_mean_percent":total/len(obs) if obs else None,
+                "population_mean_identification_lower_percent":total/n,
+                "population_mean_identification_upper_percent":
+                    (total+100*len(missing))/n,
+                "all_missing_predation_100_final_0":True,
+            }
+        sparse=by_density["sparse"]; dense=by_density["dense"]
+        results["2005" if year==1 else "2011"]={
+            "by_density":by_density,
+            "dense_minus_sparse_initial_mean_identified_interval_percent_points":[
+                dense["population_mean_identification_lower_percent"]
+                    - sparse["population_mean_identification_upper_percent"],
+                dense["population_mean_identification_upper_percent"]
+                    - sparse["population_mean_identification_lower_percent"],
+            ],
+        }
+    return {
+        "status":"INITIAL_SEED_RATE_OUTCOME_DEPENDENT_MISSINGNESS_HOLD",
+        "missing_value_assumption":"unknown initial rate between 0 and 100 percent; NO imputation",
+        "groups":results,
+        "causal_pollination_or_fertilization_effect_identified":False,
+    }
+
+
 def audit_workbook(path: Path):
     blob = path.read_bytes()
     if (len(blob)!=SOURCE_BYTES or
@@ -176,6 +226,10 @@ def audit_workbook(path: Path):
     missing_initial = sum(r[3] is None for r in seeds)
     if missing_initial != 328:
         raise ValueError("initial seed missingness changed")
+    missingness = initial_seed_missingness_bounds(seeds)
+    if (missingness["groups"]["2011"]["by_density"]["sparse"]["n_initial_missing"]!=246
+            or missingness["groups"]["2011"]["by_density"]["dense"]["n_initial_missing"]!=52):
+        raise ValueError("initial missingness year-density pattern changed")
     studies = {
         "Table1_initial_seed_set": (seeds,3,0),
         "Table1_final_seed_set": (seeds,4,0),
@@ -209,6 +263,7 @@ def audit_workbook(path: Path):
         "fruit_stem_rows":len(fruits),
         "seed_capsule_rows":len(seeds),
         "seed_initial_rate_missing_rows":missing_initial,
+        "initial_seed_missingness_bounded_audit":missingness,
         "source_legend_rows_not_biological_records":4,
         "fruit_group_counts":fruit_counts,
         "seed_group_counts":seed_counts,
