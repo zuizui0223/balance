@@ -34,6 +34,16 @@ A treatment-by-density interaction in **final seed number alone** cannot allocat
 
 The 2016 long-tube/trait correlations are already published; do not claim this design newly discovered pollinator–enemy conflict.
 
+## Competing explanation H_spillover: protection may redistribute predators
+
+A fourth independent ecological hypothesis is **neighbour-mediated redistribution**. Water may repel an egg-laying insect from a protected plant only for it to lay eggs on a nearby drained plant. Under this mechanism the protected plant's apparent advantage is real at a particular mixed-treatment composition, but **the total patch predation burden may not fall**. Sparse versus dense settings can therefore show different water benefits simply because alternative hosts are spaced differently. This is *associational resistance/susceptibility* and frequency dependence, already recognized in plant–herbivore systems, not an invention of this project (Barbosa et al. 2009 DOI 10.1146/annurev.ecolsys.110308.120242; Kim 2017 DOI 10.1371/journal.pone.0176499).
+
+The prospective field comparisons should register **neighbouring plants' treatment assignments, distances and the patch-level assignment fraction**, alongside per-plant predator approach, deposition and final viable seeds. An H_spillover prediction is: increasing the fraction of water-protected plants reduces attacks on those plants while raising attacks on available unprotected neighbours, potentially leaving total patch attack approximately unchanged. An H_patch_suppression alternative predicts patch-total attack falls when water protection is common. Neither sign is guaranteed; predator emigration, weather or guild composition can change both.
+
+**Interference qualification:** if an insect can move from one randomized plant to another within a patch, the no-interference assumption of individual potential outcomes `Y_i(w_i)` is not automatically valid. A within-patch water contrast may estimate a **mixed-assignment-policy-specific effect**, not the isolated intrinsic fitness advantage of water independent of neighbours. Simply adjusting for the *realized* treatment fraction post hoc is insufficient to identify causal spillover because the fraction is determined by assignment and manipulation success.
+
+A stronger optional second-stage study would randomize the **fraction of protected plants at the patch level** (two-stage/saturation randomization), then randomize plants within each patch, while preserving enough independent patches in both density strata. That separates direct protection from spillover better than a fixed one-third allocation. However it requires more patches and qualified manipulations; **the current V1 outcome-blinded allocation checker does not implement or certify saturation randomization**, and it must not be presented as having identified H_spillover. Treat it as a prospective high-value extension after B0 and patch feasibility.
+
 ## Prospective water intervention and randomization
 
 **Prerequisite:** source-linked, *same-population, same-season* `PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1` with `B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL`, checked by exact file SHA256. B0 requires validated nonperforating dry and refilled wet methods, no unintended effects on floral exsertion, physical pollinator access, or mechanical damage. The proposed pilot does **not** make the water defence effect causal by itself; method fidelity must be checked again in the new patch ecology.
@@ -59,7 +69,7 @@ Within a patch, treatment arms must have overlapping randomization blocks: a wet
 
 Let `Y_ip(w)` be **the count of undamaged viable mature seeds per prospectively designated focal flower** on plant i in patch p if assigned water state w. Assign the focal flower and missing/censoring rules before knowing seed outcomes. A lost flower does not automatically equal zero; distinguish a verified zero viable seed result from unknown outcome/failed sampling.
 
-Within patch p, the intention-to-treat contrast is
+Within patch p, the assignment-policy-specific intention-to-treat contrast is
 
 `tau_p = mean(Y | REFILLED_WET, p) - mean(Y | DRY, p)`.
 
@@ -84,7 +94,7 @@ Conditioning on observed approach is **post-treatment selection** if water chang
 
 ### Statistical guardrails
 
-- **Primary:** patch-level ITT contrasts with plant as the water assignment unit; replicate patches in sparse and dense contexts, preserving site/season strata.
+- **Primary:** patch-level ITT contrasts with plant as the water assignment unit; replicate patches in sparse and dense contexts, preserving site/season strata; report assigned treatment composition and sensitivity to within-patch predator redistribution.
 - **Uncertainty:** patch-level resampling or hierarchical model that does not treat several plants sharing one patch as independent density contexts; small patch counts cannot license a precise theta.
 - **No fixed sample size:** field n needs independent B0 method feasibility, patch availability and prospectively specified minimum relevant water fitness effects, then cluster-aware power for the *heterogeneity* contrast, not merely a water main effect.
 - **No counterfactual architecture claim:** natural water/dry/refill states all retain the same cupulate-bract/corolla architecture; this is a context-sensitive **functional-state benefit**, not a directly measured developmental architecture cost K, recoverable conflict R or structural-BALANCE occupancy.
