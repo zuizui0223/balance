@@ -14,6 +14,12 @@ second, guessed source schema.
 Machine-readable frozen expectations:
 `empirical/peucedanum/PEUCEDANUM_2025_R1_ROW_SUPPORT_EXPECTATIONS_V1.json`.
 
+The observation audit also requires exact SHA256 matches for the verified normalized
+CSV and its normalization receipt, not merely the original ZIP's SHA256 and row
+counts. Two independent successful ingests reproduced the same normalized
+CSV bytes. A changed normalized value, even if missingness and total counts remain
+identical, is therefore a versioned-provenance change and must fail closed.
+
 ## Observation support
 
 The 685 recorded observations span **19** plot-by-year cells, not an assumed
