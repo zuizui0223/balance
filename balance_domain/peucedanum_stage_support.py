@@ -22,6 +22,7 @@ def _count(row: Mapping[str, str], key: str) -> int | None:
 def audit_stage_support(rows: Iterable[Mapping[str, str]]) -> dict:
     cells: dict[tuple[str, str], Counter] = defaultdict(Counter)
     failures: list[dict] = []
+    failure_details: list[dict] = []
     seen = set()
     n = 0
     for row in rows:
@@ -60,6 +61,10 @@ def audit_stage_support(rows: Iterable[Mapping[str, str]]) -> dict:
             failures.append({"source_row_number": provenance[-1], "year": year,
                              "plot": plot, "reasons": reasons})
             c["count_inconsistent_rows"] += 1
+            failure_details.append({"source_row_number": provenance[-1], "year": year,
+                                    "plot": plot, "perfect_flower_count": h,
+                                    "initial_fruit_count": initial,
+                                    "intact_fruit_count": final})
     if n == 0:
         raise ValueError("no source rows")
     by_cell = [{"year": y, "plot": p, **dict(sorted(c.items()))}
@@ -75,5 +80,6 @@ def audit_stage_support(rows: Iterable[Mapping[str, str]]) -> dict:
         "totals": dict(sorted(totals.items())),
         "by_year_plot": by_cell,
         "count_inconsistencies": failures,
+        "count_inconsistency_values": failure_details,
         "claim_ceiling": "observation_support_only_no_selection_or_mediation_inference",
     }
