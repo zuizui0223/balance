@@ -1,0 +1,62 @@
+name: Audit Peucedanum stage support
+'on':
+  push:
+    branches:
+      - analysis/peucedanum-stage-selection-20261008
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -e '.[dev,peucedanum]'
+      - name: Test stage-support contract
+        run: python -m pytest -q tests/test_peucedanum_stage_support.py tests/test_peucedanum_stage_slopes.py tests/test_peucedanum_stage_adjusted.py tests/test_peucedanum_stage_verdict.py
+      - name: Download exact source
+        run: |
+          curl -L --fail --retry 3 --retry-delay 2 \
+            'https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo%24Shibata_JEcol_Data.zip' \
+            -o 'Kudo$Shibata_JEcol_Data.zip'
+          printf '%s  %s\n' '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' 'Kudo$Shibata_JEcol_Data.zip' | sha256sum -c -
+      - name: Normalize verified survey
+        run: |
+          python scripts/ingest_peucedanum_raw.py normalize 'Kudo$Shibata_JEcol_Data.zip' \
+            --mapping empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json \
+            --out-dir release/generated/peucedanum_stage_normalized
+      - name: Audit fertilization, survival and egg support
+        run: |
+          python scripts/audit_peucedanum_stage_support.py \
+            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
+            --out release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
+      - name: Exploratory paired within-cell stage slopes
+        run: |
+          python scripts/analyze_peucedanum_stage_slopes.py \
+            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
+            --out release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
+      - name: Size-adjusted paired stage contrasts with HC3 and BH
+        run: |
+          python scripts/analyze_peucedanum_stage_adjusted.py \
+            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
+            --out release/generated/PEUCEDANUM_STAGE_ADJUSTED_EXPLORATORY_V1.json
+      - name: Adjudicate exploratory evidence ceiling and verify BH corrections
+        run: |
+          python scripts/adjudicate_peucedanum_stage_exploration.py \
+            --support release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json \
+            --unadjusted release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json \
+            --adjusted release/generated/PEUCEDANUM_STAGE_ADJUSTED_EXPLORATORY_V1.json \
+            --out release/generated/PEUCEDANUM_STAGE_EXPLORATORY_ADJUDICATION_V1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: peucedanum-stage-support-audit
+          path: |
+            release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
+            release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
+            release/generated/PEUCEDANUM_STAGE_ADJUSTED_EXPLORATORY_V1.json
+            release/generated/PEUCEDANUM_STAGE_EXPLORATORY_ADJUDICATION_V1.json
+          if-no-files-found: error
