@@ -19,8 +19,14 @@ jobs:
       - name: Retrieve published DOI metadata and file manifest only
         run: |
           python scripts/probe_pedicularis_2013_dryad.py --out release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json
+      - name: Fetch exact public source workbook bytes if download is accessible
+        run: |
+          python scripts/retrieve_pedicularis_2013_dryad_bytes.py \
+            --metadata release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json \
+            --out-zip release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip \
+            --out-receipt release/generated/PEDICULARIS_2013_DRYAD_RAW_BYTE_RECEIPT_V1.json
       - uses: actions/upload-artifact@v4
         with:
           name: pedicularis-2013-dryad-source-discovery
-          path: release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json
-          if-no-files-found: error
+          path: |\n            release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json\n            release/generated/PEDICULARIS_2013_DRYAD_RAW_BYTE_RECEIPT_V1.json
+          if-no-files-found: error\n      - uses: actions/upload-artifact@v4\n        with:\n          name: pedicularis-2013-dryad-source-zip-if-accessible\n          path: release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip\n          if-no-files-found: warn
