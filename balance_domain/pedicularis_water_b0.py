@@ -168,7 +168,7 @@ def evaluate_water_b0(rows, config):
         data = groups[arm]
         if not data:
             reasons.add(f"missing_arm:{arm}")
-            summaries[arm] = {"n_flowers": 0, "n_distinct_plants": 0,
+            summaries[arm] = {"n_water_compartments": 0, "n_distinct_plants": 0,
                               "n_blocks": 0}
             continue
         plants = len({r["plant_id"] for r in data})
@@ -210,7 +210,7 @@ def evaluate_water_b0(rows, config):
         duration_values = [r["handling_duration"] for r in data
                            if r["handling_duration"] is not None]
         summaries[arm] = {
-            "n_flowers": len(data), "n_distinct_plants": plants,
+            "n_water_compartments": len(data), "n_distinct_plants": plants,
             "n_blocks": blocks, "water_fidelity_fraction": water_fidelity,
             "measurement_missing_fraction": missing,
             "mechanical_damage_fraction": damage,
