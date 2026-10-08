@@ -25,7 +25,7 @@ identical, is therefore a versioned-provenance change and must fail closed.
 The 685 recorded observations span **19** plot-by-year cells, not an assumed
 complete 5-by-4 panel. The `HL` plot has no row in 2020.
 
-| Plot | Raw rows | Initial + final fruits observed | Initial + final fruits + height observed |
+| Plot | Raw rows | Fruit-complete, before global height exclusion | Original-source R1 candidate rows (differential and gradient) |
 | --- | ---: | ---: | ---: |
 | HA | 177 | 126 | 126 |
 | HL | 95 | 88 | 88 |
@@ -34,9 +34,13 @@ complete 5-by-4 panel. The `HL` plot has no row in 2020.
 | HD | 139 | 139 | 127 |
 | **Total** | **685** | **620** | **608** |
 
-These are **candidate inputs** under the explicit missingness filters of the
-existing R1 reproduction script, not necessarily the actual fitted sample
-size of every original source model.
+The original archived R script filters `InitialFruitN` and `Height` globally
+before **both** differential and gradient regressions and the female-gain
+NLS fits. Its final-fruit models subsequently require `FinalFruitN`.
+The 620 fruit-complete rows are therefore **not** 620 source-model
+differential candidates: source-faithful differential **and** gradient
+candidate counts are 608. These are still pre-fit eligible-row counts,
+not proof of exact fitted N.
 
 ## Structured missingness
 
@@ -50,8 +54,9 @@ The source contains 65 missing `FinalFruitN` values:
 Other missing values are `InitialFruitN=6`, `Height=12`,
 `OvipN=13`, and `PredationR=162`. The six missing initial-fruit
 observations also have missing final fruit count, and all 12 missing
-heights occur in HD. Thus 620 candidate rows with initial and final
-fruit counts become 608 after height is required.
+heights occur in HD. Thus 620 rows with both fruit counts become 608 after the source's global
+height exclusion. For HD specifically, this changes the differential and
+female-gain NLS input from 139 to 127 rows.
 
 Do not interpret the 2021 HA gap as zero reproductive success.
 Do not use the available `PredationR` fraction to silently reconstruct
@@ -76,7 +81,8 @@ original analysis script/README before handling biological ID reuse.
 
 ## R1 reproduction boundary
 
-The existing R1 reproduction attempt
+The first R1 reproduction attempt (before correcting the omitted global
+height exclusion)
 (<https://github.com/zuizui0223/balance/actions/runs/37645118381>)
 produced five plot-level summaries but did **not** exactly reproduce every
 published coefficient; in particular the HD multivariable selection
