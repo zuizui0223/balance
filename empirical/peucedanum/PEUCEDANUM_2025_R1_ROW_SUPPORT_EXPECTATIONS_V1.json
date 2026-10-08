@@ -106,10 +106,18 @@
     "do not drop or merge the two repeated biological ID keys without primary-source adjudication",
     "do not treat 620 fruit-complete / 608 source-model candidate rows as independent individuals or fitted model N before model extraction",
     "do not treat the 19 observed plot-year cells as a complete 5x4 panel",
-    "source row support is not R1 coefficient reproduction or BALANCE occupancy"
+    "source row support is not R1 coefficient reproduction or BALANCE occupancy",
+    "all 12 HD records without Height are in 2022, with plant IDs Dadd01 through Dadd12; document this source-defined subgroup without imputing heights"
   ],
   "normalized_csv_sha256": "ed6bf4c5301309283ca2e3d2033fdab1e253d46ed94bbba5fde1f3ee43281dbc",
   "normalization_receipt_sha256": "34505bc644e84f9108d85e3430e08391c74072285fbc962f4badcde73eb97535",
   "pre_height_fruit_complete_rows": 620,
-  "candidate_rule": "Source R script globally excludes missing InitialFruitN and Height before fitting; final-fruit response requires FinalFruitN, so both S and beta candidate samples are 608 rows. The 620 fruit-complete rows are pre-height diagnostic support only."
+  "candidate_rule": "Source R script globally excludes missing InitialFruitN and Height before fitting; final-fruit response requires FinalFruitN, so both S and beta candidate samples are 608 rows. The 620 fruit-complete rows are pre-height diagnostic support only.",
+  "special_missing_height_cells": [
+    {
+      "year": "2022",
+      "population_id": "HD",
+      "missing_flower_stem_height": 12
+    }
+  ]
 }
