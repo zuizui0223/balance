@@ -1,0 +1,103 @@
+{
+  "schema_version": "PEDICULARIS_2013_SOURCE_ANALYSIS_CONCORDANCE_V1",
+  "status": "EXACT_RAW_BYTES_VERIFIED_18_OF_18_PUBLISHED_SEED_F_REPRODUCED",
+  "citation_article_doi": "10.1098/rsbl.2013.0387",
+  "citation_dataset_doi": "10.5061/dryad.6cv06",
+  "source_filename": "raw data.xlsx",
+  "source_bytes": 89597,
+  "source_sha256": "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380",
+  "source_md5": "10a98383677bbd2a01e19a86c350fdd3",
+  "archive_version_id": 11193,
+  "sheet_names": [
+    "pollination rate",
+    "fruit set and fruit predation",
+    "seed set and seed predatioin"
+  ],
+  "fruit_biological_rows": 74,
+  "seed_biological_rows": 2930,
+  "legend_rows_in_fruit_sheet": 2,
+  "legend_rows_in_seed_sheet": 2,
+  "missing_initial_seed_rows": 328,
+  "initial_seed_complete_cases": 2602,
+  "original_year_codes": {
+    "1": "2005",
+    "2": "2011"
+  },
+  "original_density_codes": {
+    "1": "sparse",
+    "2": "dense"
+  },
+  "original_size_codes": {
+    "1": "small",
+    "2": "large"
+  },
+  "fruit_rows_by_year_density_size": {
+    "2005_sparse_large": 6,
+    "2005_dense_large": 10,
+    "2011_sparse_small": 9,
+    "2011_sparse_large": 17,
+    "2011_dense_small": 7,
+    "2011_dense_large": 25
+  },
+  "seed_rows_by_year_density_size": {
+    "2005_sparse_large": 273,
+    "2005_dense_large": 308,
+    "2011_sparse_small": 391,
+    "2011_sparse_large": 679,
+    "2011_dense_small": 187,
+    "2011_dense_large": 1092
+  },
+  "replicated_seed_models": {
+    "Table1_initial_seed_set": {
+      "n": 2602,
+      "residual_df": 2598,
+      "F_year": 0.506563823535047,
+      "F_density": 3.766796674397572,
+      "F_interaction": 1.2406272811060377
+    },
+    "Table1_final_seed_set": {
+      "n": 2930,
+      "residual_df": 2926,
+      "F_year": 11.9540791739463,
+      "F_density": 39.02470440623321,
+      "F_interaction": 0.42614608474365134
+    },
+    "Table1_seed_predation": {
+      "n": 2930,
+      "residual_df": 2926,
+      "F_year": 46.57055078613277,
+      "F_density": 166.21999869579636,
+      "F_interaction": 4.250063663113935
+    },
+    "Table2_initial_seed_set": {
+      "n": 2051,
+      "residual_df": 2047,
+      "F_size": 41.22094265,
+      "F_density": 27.347911,
+      "F_interaction": 44.556318
+    },
+    "Table2_final_seed_set": {
+      "n": 2349,
+      "residual_df": 2345,
+      "F_size": 1.024807,
+      "F_density": 26.958307,
+      "F_interaction": 0.023175
+    },
+    "Table2_seed_predation": {
+      "n": 2349,
+      "residual_df": 2345,
+      "F_size": 45.028559,
+      "F_density": 317.877569,
+      "F_interaction": 106.269634
+    }
+  },
+  "published_F_matches_to_3_decimals": 18,
+  "published_seed_F_tests": 18,
+  "source_has_patch_id": false,
+  "source_has_plant_id": false,
+  "patch_clustered_inference_identifiable": false,
+  "causal_density_identified": false,
+  "BALANCE_architecture_occupancy_identified": false,
+  "source_reconstruction_method": "artifact_tool Excel read; independent statsmodels OLS verification; standard-library OLS reproducer provided",
+  "claim_ceiling": "original_seed_F_numeric_reproduction_without_patch_or_plant_cluster_inference"
+}
