@@ -23,7 +23,8 @@ jobs:
           curl -L --fail --retry 3 --retry-delay 2 \
             'https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo%24Shibata_JEcol_Data.zip' \
             -o 'Kudo$Shibata_JEcol_Data.zip'
-          printf '%s  %s\n' '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' 'Kudo$Shibata_JEcol_Data.zip' | sha256sum -c -
+          printf '%s  %s
+' '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' 'Kudo$Shibata_JEcol_Data.zip' | sha256sum -c -
       - name: Normalize verified survey
         run: |
           python scripts/ingest_peucedanum_raw.py normalize 'Kudo$Shibata_JEcol_Data.zip' \
@@ -34,8 +35,15 @@ jobs:
           python scripts/audit_peucedanum_stage_support.py \
             --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
             --out release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
-      - name: Exploratory paired within-cell stage slopes\n        run: |\n          python scripts/analyze_peucedanum_stage_slopes.py \\\n            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \\\n            --out release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json\n      - uses: actions/upload-artifact@v4
+      - name: Exploratory paired within-cell stage slopes
+        run: |
+          python scripts/analyze_peucedanum_stage_slopes.py \
+            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
+            --out release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
+      - uses: actions/upload-artifact@v4
         with:
           name: peucedanum-stage-support-audit
-          path: |\n            release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json\n            release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
+          path: |
+            release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
+            release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
           if-no-files-found: error
