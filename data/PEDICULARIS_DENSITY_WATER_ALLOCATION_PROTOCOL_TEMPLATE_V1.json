@@ -1,0 +1,20 @@
+{
+  "schema_version": "PEDICULARIS_DENSITY_WATER_ALLOCATION_PROTOCOL_V1",
+  "status": "TEMPLATE_NOT_FROZEN",
+  "context_id": "REQUIRED_BEFORE_USE",
+  "population_id": "REQUIRED_BEFORE_USE",
+  "season_id": "REQUIRED_BEFORE_USE",
+  "protocol_version": "REQUIRED_BEFORE_USE",
+  "density_cutoffs_justification": "REQUIRED_BEFORE_USE",
+  "allocation_locked_before_biological_outcomes": false,
+  "water_method_B0_status": "REQUIRED_BEFORE_USE",
+  "water_B0_receipt_sha256": "REQUIRED_BEFORE_USE",
+  "thresholds": {
+    "sparse_max_density_flowering_plants_m2": "REQUIRED_BEFORE_USE",
+    "dense_min_density_flowering_plants_m2": "REQUIRED_BEFORE_USE",
+    "min_patches_per_stratum": "REQUIRED_BEFORE_USE",
+    "min_plants_per_arm_per_patch": "REQUIRED_BEFORE_USE",
+    "min_blocks_with_all_three_arms_per_patch": "REQUIRED_BEFORE_USE"
+  },
+  "claim_ceiling": "template_only_not_biological_effect_or_randomization_validation"
+}
