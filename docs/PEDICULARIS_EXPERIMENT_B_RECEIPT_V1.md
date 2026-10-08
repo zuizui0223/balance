@@ -20,6 +20,10 @@ season_id
 fitness_scale_id
 ```
 
+## Intervention-selectivity caveat
+
+The water-y state must be qualified independently of any perforation/handling required to create it. The 2015 historical drainage method pierced the bract base, so its treatment effect alone does not isolate water retention from physical injury/access. The qualification route and fail-closed fallback are in `docs/PEDICULARIS_WATER_PERFORATION_IDENTIFICATION_AUDIT_V1.md`. An unqualified package contrast remains `WATER_AND_PERFORATION_PACKAGE_EFFECT`, not a direct water-only fitness worldline.
+
 ## Direct state classification
 
 Let
