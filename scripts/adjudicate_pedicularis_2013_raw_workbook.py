@@ -111,7 +111,7 @@ def anova_two_factor(rows, outcome, factor):
     rss = math.fsum((yy-math.fsum(a*b for a,b in zip(v,beta)))**2
                     for v,yy in zip(x,y))
     df = n-k
-    if df <= 0 or rss <= 0:
+    if df <= 0 or rss <= 1e-24*max(1.0,math.fsum(yy*yy for yy in y)):
         raise ValueError("degenerate outcome, no residual uncertainty")
     mse = rss/df
     stats = [(beta[i]**2)/(mse*inv[i][i]) for i in (1,2,3)]
