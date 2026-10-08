@@ -131,6 +131,7 @@ def test_one_ulp_bh_roundoff_allowed_but_material_q_change_rejected():
     eligible[0]["q_bh_within_variant"]=eligible[0]["p_normal_hc3"]-1e-15
     out=adjudicate_stage_exploration(s,r,a)
     assert out["status"]=="EXPLORATORY_REPORT_COMPLETED_NOT_CONFIRMATORY"
-    eligible[0]["q_bh_within_variant"]=0.249
+    # Use a q above p to isolate the independent BH recalculation guard.
+    eligible[0]["q_bh_within_variant"]=0.251
     with pytest.raises(ValueError, match="BH-adjusted q differs"):
         adjudicate_stage_exploration(s,r,a)
