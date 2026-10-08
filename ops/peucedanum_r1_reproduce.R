@@ -33,6 +33,10 @@ dataRB$HflowerN_s_2 <- dataRB$HflowerN_s^2
 dataRB$MflowerN_s_2 <- dataRB$MflowerN_s^2
 dataRB$Height_s_2 <- dataRB$Height_s^2
 dataRB <- subset(dataRB, !is.na(InitialFruitN))
+# Original archived R_script_Kudo&Shibata.R also removes Height NA globally
+# *before* computing differentials, multivariable gradients, and nls female gain.
+dataRB <- subset(dataRB, !is.na(Height))
+cat('source-global complete-case rows:',nrow(dataRB),'\n')
 
 extract_adjusted <- function(model, data, var, square_var) {
   tr <- as.data.frame(emtrends(model, ~ Plot, var=var, data=data))
