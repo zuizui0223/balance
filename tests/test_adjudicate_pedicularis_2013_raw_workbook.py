@@ -1,10 +1,19 @@
 """No fake field evidence: algebraic tests for exact-source ANOVA reproducer."""
 import pytest
+from importlib.util import spec_from_file_location, module_from_spec
+from pathlib import Path
 
-from scripts.adjudicate_pedicularis_2013_raw_workbook import (
-    SOURCE_SHA256, PUBLISHED_F, anova_two_factor, _source_rows,
-    EXPECTED_COUNTS_FRUIT, EXPECTED_FRUIT_HEADER,
-)
+_SOURCE = Path(__file__).resolve().parents[1] / "scripts" / "adjudicate_pedicularis_2013_raw_workbook.py"
+_SPEC = spec_from_file_location("pedicularis_2013_source_anova", _SOURCE)
+_mod = module_from_spec(_SPEC)
+assert _SPEC.loader is not None
+_SPEC.loader.exec_module(_mod)
+SOURCE_SHA256 = _mod.SOURCE_SHA256
+PUBLISHED_F = _mod.PUBLISHED_F
+anova_two_factor = _mod.anova_two_factor
+_source_rows = _mod._source_rows
+EXPECTED_COUNTS_FRUIT = _mod.EXPECTED_COUNTS_FRUIT
+EXPECTED_FRUIT_HEADER = _mod.EXPECTED_FRUIT_HEADER
 
 
 def test_independent_balanced_two_factor_oracle():
@@ -99,9 +108,7 @@ def test_frozen_real_source_concordance_keeps_independent_patch_gate_closed():
 
 
 def test_missing_initial_seed_bounds_do_not_impute_complete_predation():
-    from scripts.adjudicate_pedicularis_2013_raw_workbook import (
-        initial_seed_missingness_bounds,
-    )
+    initial_seed_missingness_bounds = _mod.initial_seed_missingness_bounds
     rows=[]
     for year in (1,2):
         for density in (1,2):
@@ -121,9 +128,7 @@ def test_missing_initial_seed_bounds_do_not_impute_complete_predation():
 
 
 def test_missing_initial_with_nonmaximal_predation_is_source_drift():
-    from scripts.adjudicate_pedicularis_2013_raw_workbook import (
-        initial_seed_missingness_bounds,
-    )
+    initial_seed_missingness_bounds = _mod.initial_seed_missingness_bounds
     rows=[]
     for year in (1,2):
         for density in (1,2):
