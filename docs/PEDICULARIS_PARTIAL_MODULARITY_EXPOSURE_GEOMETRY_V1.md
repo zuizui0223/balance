@@ -50,6 +50,14 @@ Do not infer any of these mechanisms solely from `C_site` or a model fit to fina
 
 An adult cue hypothesis is not excluded by a positive clearance effect unless cues are independently controlled; a regression coefficient is not an allocated causal pathway.
 
+## Design-support modes and their different nulls
+
+**Important limitation of the first software version:** the `n_contrasting_whorls` PASS criterion is deliberately a **same-flower repeated-geometry** contrast. It asks whether a flower's waterline changed substantially while its morphology stayed stable. That can be observed during nonexperimental rainfall variation or deliberate within-flower water adjustment, but **does not** establish a causal effect: flower age, weather and predator availability change with time.
+
+A stable randomized B0 **between-plant** treatment design may maintain constant wet/dry states through the entire observation period. Such an experiment could be perfectly implemented yet have **zero within-flower waterline contrasts**. Its `EXPOSURE_GEOMETRY_SUPPORT_HOLD` therefore must not be interpreted as a B0 method failure or as absence of cross-arm water exposure; B0 has its separate arm/state qualification contract. A future between-arm predictor-outcome analysis needs plant-level randomization/block IDs and overlap of the morphology predictor across independently assigned arms, rather than manufacturing same-flower water variation.
+
+The `assigned_water_arm` field is retained as provenance/consistency metadata only; version 1 computes **no** between-arm fitness, behavioural effect or causal interpretation. No status in this geometry route overrides the B0 pilot receipt.
+
 ## Unit of analysis and genuine identification
 
 - One bract/whorl forms a shared water compartment: all flowers occupying it have the **same water state** at a time point and are not independent water-treatment replicates.
