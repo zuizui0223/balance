@@ -114,7 +114,8 @@ for (p in plot_order) {
     a=unname(coef(fit)[["a"]]),
     a_se=s["a","Std. Error"],
     b=unname(coef(fit)[["b"]]),
-    b_se=s["b","Std. Error"]
+    b_se=s["b","Std. Error"],
+    fitted_n=length(fitted(fit))
   )
 }
 gain <- do.call(rbind, gain_rows)
@@ -129,6 +130,7 @@ out <- data.frame(
   beta_fitted_n=grad$fitted_n,
   female_gain_b=gain$b,
   female_gain_b_se=gain$b_se,
+  female_gain_fitted_n=gain$fitted_n,
   published_S=unname(published_S[plot_order]),
   published_beta=unname(published_beta[plot_order]),
   published_b=unname(published_b[plot_order])
