@@ -1,0 +1,75 @@
+name: Peucedanum R1 source-model concordance
+
+on:
+  push:
+    branches:
+      - audit/peucedanum-r1-source-concordance-20261008
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: peucedanum-r1-source-concordance
+  cancel-in-progress: true
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.2'
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::lme4
+            any::emmeans
+            any::dplyr
+
+      - name: Fetch and verify original HUSCAP code and survey data
+        shell: bash
+        run: |
+          curl -L --fail --retry 3 --retry-delay 2 \
+            'https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo%24Shibata_JEcol_Data.zip' \
+            -o 'Kudo$Shibata_JEcol_Data.zip'
+          printf '%s  %s\n' \
+            '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' \
+            'Kudo$Shibata_JEcol_Data.zip' | sha256sum -c -
+          unzip -p 'Kudo$Shibata_JEcol_Data.zip' 'R_script_Kudo&Shibata.R' \
+            > 'R_script_Kudo_Shibata.R'
+          printf '%s  %s\n' \
+            '6efb3a5b619166e0eb3ce491a67112c0009164456508093f513f4bc5c3a19d64' \
+            'R_script_Kudo_Shibata.R' | sha256sum -c -
+          unzip -p 'Kudo$Shibata_JEcol_Data.zip' 'All_Plots_Data.csv' \
+            > 'All_Plots_Data.csv'
+          printf '%s  %s\n' \
+            '7ea5669a44bd4ebbdf8df3c2addbb28f230a7e6f970ccb2117e6dfb031d9d69f' \
+            'All_Plots_Data.csv' | sha256sum -c -
+
+      - name: Reproduce source R1 paired models
+        run: |
+          Rscript ops/peucedanum_r1_reproduce.R
+
+      - name: Audit points, SEs, fitted support and original source bytes
+        run: |
+          python scripts/adjudicate_peucedanum_r1.py \
+            --fit-csv PEUCEDANUM_2025_R1_REPRODUCTION.csv \
+            --source-archive 'Kudo$Shibata_JEcol_Data.zip' \
+            --original-r R_script_Kudo_Shibata.R \
+            --session-info R_SESSION_INFO.txt \
+            --out PEUCEDANUM_2025_R1_NUMERIC_AUDIT_V1.json
+
+      - name: Upload R1 diagnostics without promoting inference
+        uses: actions/upload-artifact@v4
+        with:
+          name: peucedanum-r1-original-environment-concordance-v1
+          path: |
+            PEUCEDANUM_2025_R1_REPRODUCTION.csv
+            PEUCEDANUM_2025_R1_NUMERIC_AUDIT_V1.json
+            R_SESSION_INFO.txt
+          if-no-files-found: error
