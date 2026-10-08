@@ -81,6 +81,17 @@ def adjudicate_stage_exploration(
             _require(0 <= x["p_normal_hc3"] <= 1, "invalid p value")
             _require(x["p_normal_hc3"] <= x["q_bh_within_variant"] <= 1 + 1e-12,
                      "invalid BH multiplicity result")
+        # Recompute BH independently rather than trusting reported q-values.
+        ranked = sorted(enumerate(eligible), key=lambda pair: pair[1]["p_normal_hc3"])
+        expected_q = [None] * len(ranked)
+        ceiling = 1.0
+        for rank in range(len(ranked) - 1, -1, -1):
+            original_index, item = ranked[rank]
+            ceiling = min(ceiling, item["p_normal_hc3"] * len(ranked) / (rank + 1))
+            expected_q[original_index] = ceiling
+        for item, q_expected in zip(eligible, expected_q):
+            _require(abs(item["q_bh_within_variant"] - q_expected) < 1e-9,
+                     "BH-adjusted q differs from independently reproduced value")
         best = min(eligible, key=lambda x: x["p_normal_hc3"])
         min_q = min(x["q_bh_within_variant"] for x in eligible)
         findings[name] = {
