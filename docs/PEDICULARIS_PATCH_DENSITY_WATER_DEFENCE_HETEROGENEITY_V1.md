@@ -36,7 +36,9 @@ The 2016 long-tube/trait correlations are already published; do not claim this d
 
 ## Prospective water intervention and randomization
 
-**Prerequisite:** source-linked, *same-context* `PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1` with `B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL`, checked by exact file SHA256. B0 requires validated nonperforating dry and refilled wet methods, no unintended effects on floral exsertion, physical pollinator access, or mechanical damage. The proposed pilot does **not** make the water defence effect causal by itself; method fidelity must be checked again in the new patch ecology.
+**Prerequisite:** source-linked, *same-population, same-season* `PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1` with `B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL`, checked by exact file SHA256. B0 requires validated nonperforating dry and refilled wet methods, no unintended effects on floral exsertion, physical pollinator access, or mechanical damage. The proposed pilot does **not** make the water defence effect causal by itself; method fidelity must be checked again in the new patch ecology.
+
+The B0 *method* pilot can have its own `context_id` and `protocol_version`, different from the definitive B1 treatment-effect trial, provided its source-verified population and season are the same. Freeze the **expected B0 method context ID and version separately** and verify them against the content-hashed B0 receipt; never relabel a B0 method pilot as the same causal experiment as B1. The pilot's documented water method must also remain feasible in both sparse and dense patches; validated methods in one habitat do not automatically transfer to another.
 
 The B1 experiment randomizes **one confirmed water compartment per plant** *within each density patch* into the three arms:
 - `INTACT_WET`: unmanipulated natural wet control;
