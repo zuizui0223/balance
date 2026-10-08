@@ -25,6 +25,7 @@ LIMIT_FIELDS = (
     "max_each_position_error_mm", "max_whorl_waterline_disagreement_mm",
     "min_waterline_clearance_contrast_mm",
     "max_within_flower_exsertion_difference",
+    "max_within_flower_focal_geometry_drift_mm",
     "min_independent_compartments_with_contrast",
     "min_independent_plants_with_contrast",
 )
@@ -83,6 +84,8 @@ def _validate_config(config):
         4 * limits["max_each_position_error_mm"]
     ):
         raise ValueError("contrast must exceed conservative four-position-error bound")
+    if limits["max_within_flower_focal_geometry_drift_mm"] > limits["min_waterline_clearance_contrast_mm"] / 2:
+        raise ValueError("focal morphology drift allowance must not swallow waterline contrast")
     if limits["max_within_flower_exsertion_difference"] > 1:
         raise ValueError("relative exsertion matching tolerance must be <= 1")
     return ids, limits
@@ -175,6 +178,12 @@ def audit_exposure_geometry(rows, config):
         )
         records[(plant,whorl,flower)].append({
             "time": time, "relative_exsertion": exsertion,
+            "flower_length_mm": length,
+            "bract_height_mm": numeric["bract_height_mm"],
+            "flower_tip_elevation_mm": numeric["flower_tip_elevation_mm"],
+            "bract_rim_elevation_mm": numeric["bract_rim_elevation_mm"],
+            "water_surface_elevation_mm": numeric["water_surface_elevation_mm"],
+            "oviposition_site_elevation_mm": numeric["oviposition_site_elevation_mm"],
             "site_waterline_clearance_mm": clearance,
             "flower_tip_rim_clearance_mm": pollinator_clearance,
             "site_verification_ok": verified and calibrated and blinded,
@@ -203,11 +212,14 @@ def audit_exposure_geometry(rows, config):
         qualified = [
             x for x in observations if x["site_verification_ok"]
         ]
+        morphology_keys = ("flower_length_mm", "bract_height_mm", "flower_tip_elevation_mm", "bract_rim_elevation_mm", "oviposition_site_elevation_mm")
         contrast = any(
             abs(x["relative_exsertion"] - y["relative_exsertion"])
             <= t["max_within_flower_exsertion_difference"]
-            and abs(x["site_waterline_clearance_mm"]
-                    - y["site_waterline_clearance_mm"])
+            and all(abs(x[k]-y[k]) <= t["max_within_flower_focal_geometry_drift_mm"] for k in morphology_keys)
+            and abs(x["water_surface_elevation_mm"] - y["water_surface_elevation_mm"])
+            >= t["min_waterline_clearance_contrast_mm"]
+            and abs(x["site_waterline_clearance_mm"] - y["site_waterline_clearance_mm"])
             >= t["min_waterline_clearance_contrast_mm"]
             for i, x in enumerate(qualified)
             for y in qualified[i+1:]
