@@ -49,8 +49,9 @@ def _rows():
                 "population_id": "TEST_POP",
                 "season_id": "2026_TEST",
                 "protocol_version": "SYNTHETIC_PROTOCOL_V1",
-                "plant_id": f"P{i+1}",
-                "flower_id": f"F_{arm}_{i+1}",
+                "plant_id": f"P_{arm}_{i+1}",
+                "water_compartment_id": f"WC_{arm}_{i+1}",
+                "water_compartment_confirmed": "1",
                 "block_id": f"B{i%2+1}",
                 "assigned_arm": arm,
                 "assignment_locked_before_measurement": "1",
@@ -71,8 +72,8 @@ def test_synthetic_method_pass_never_promotes_biological_fitness():
     result = evaluate_water_b0(_rows(), _config())
     assert result["status"] == "B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL"
     assert result["gate_reasons"] == []
-    assert result["n_focal_flowers"] == 18
-    assert result["n_distinct_plants_total"] == 6
+    assert result["n_water_compartments"] == 18
+    assert result["n_distinct_plants_total"] == 18
     for arm in ARMS:
         assert result["arms"][arm]["n_distinct_plants"] == 6
         assert result["arms"][arm]["n_blocks"] == 2
@@ -138,13 +139,25 @@ def test_unregistered_field_cannot_inject_biological_outcomes():
 
 def test_duplicate_source_units_and_unlocked_assignments():
     data = _rows()
-    data[1]["flower_id"] = data[0]["flower_id"]
+    data[1]["water_compartment_id"] = data[0]["water_compartment_id"]
     with pytest.raises(ValueError, match="duplicate"):
+        evaluate_water_b0(data, _config())
+    data = _rows()
+    data[1]["plant_id"] = data[0]["plant_id"]
+    with pytest.raises(ValueError, match="one compartment per plant"):
         evaluate_water_b0(data, _config())
     data = _rows()
     data[0]["assignment_locked_before_measurement"] = "0"
     result = evaluate_water_b0(data, _config())
     assert "assignment_not_prelocked" in result["gate_reasons"]
+
+
+def test_unverified_water_compartment_holds_pilot():
+    data = _rows()
+    data[0]["water_compartment_confirmed"] = "0"
+    out = evaluate_water_b0(data, _config())
+    assert out["status"] == "B0_METHOD_FEASIBILITY_HOLD"
+    assert "physical_water_compartment_unverified" in out["gate_reasons"]
 
 
 def test_cli_writes_exact_input_hashes_and_no_overwrite(tmp_path):
