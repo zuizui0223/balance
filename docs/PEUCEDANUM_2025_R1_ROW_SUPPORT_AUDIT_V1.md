@@ -53,10 +53,23 @@ The source contains 65 missing `FinalFruitN` values:
 
 Other missing values are `InitialFruitN=6`, `Height=12`,
 `OvipN=13`, and `PredationR=162`. The six missing initial-fruit
-observations also have missing final fruit count, and all 12 missing
-heights occur in HD. Thus 620 rows with both fruit counts become 608 after the source's global
+observations also have missing final fruit count. All 12 missing heights
+occur in **2022 HD**, among records labelled `Dadd01`–`Dadd12`.
+Thus 620 rows with both fruit counts become 608 after the source's global
 height exclusion. For HD specifically, this changes the differential and
 female-gain NLS input from 139 to 127 rows.
+
+As a diagnostic of potentially informative missingness, the raw mean
+`FinalFruitN/HflowerN` is 0.517 in the 12 excluded HD records versus
+0.398 among the 127 retained HD records. This comparison is descriptive,
+not an independently estimated selection effect. The missing Height must
+not be imputed to recreate the original fitted coefficients.
+
+A separate numerical NLS check of `Fitness = a * HflowerN^b` recovered
+HD `b=1.5297` from all 139 fruit-complete records and `b=1.5452`
+from the original global-height-complete 127 records, restoring the
+published rounded `b=1.55`. The source R-script reproduction remains
+the authority for regression and uncertainty verification.
 
 Do not interpret the 2021 HA gap as zero reproductive success.
 Do not use the available `PredationR` fraction to silently reconstruct
