@@ -25,6 +25,8 @@ def validate_against_expectations(audit: dict, expected: dict) -> None:
     keys = (
         "source_rows",
         "observed_plot_year_cells",
+        "source_fit_plot_year_cells",
+        "observed_cells_without_source_fit_candidates",
         "year_counts",
         "plot_counts",
         "missing_counts",
