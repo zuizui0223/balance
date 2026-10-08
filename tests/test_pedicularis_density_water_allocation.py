@@ -176,3 +176,38 @@ def test_source_template_requires_all_cutoffs_to_be_prospectively_frozen():
     assert tuple(header) == FIELDS
     assert not any(x in header for x in
                    ("seed_count", "pollen_grains", "oviposition_count", "predation_rate"))
+
+
+
+def test_cli_binds_both_input_sha256_and_refuses_overwrite(tmp_path):
+    from scripts.audit_pedicularis_density_water_allocation import build_receipt
+    rows_file = tmp_path / "allocation.csv"
+    config_file = tmp_path / "frozen-protocol.json"
+    receipt_file = tmp_path / "allocation-receipt.json"
+    with rows_file.open("w", encoding="utf-8", newline="") as h:
+        writer = csv.DictWriter(h, fieldnames=FIELDS)
+        writer.writeheader()
+        writer.writerows(sample_rows())
+    config_file.write_text(json.dumps(protocol()), encoding="utf-8")
+    result = build_receipt(rows_file, config_file, receipt_file)
+    assert result["status"] == "DENSITY_STRATIFIED_WATER_ALLOCATION_SUPPORTED_NOT_EFFECT"
+    assert len(result["allocation_csv_sha256"]) == 64
+    assert len(result["protocol_json_sha256"]) == 64
+    assert json.loads(receipt_file.read_text())["water_effect_identified"] is False
+    with pytest.raises(ValueError, match="already exists"):
+        build_receipt(rows_file, config_file, receipt_file)
+
+
+def test_csv_does_not_accept_previously_observed_fitness_columns(tmp_path):
+    from scripts.audit_pedicularis_density_water_allocation import build_receipt
+    csv_path = tmp_path / "with-outcomes.csv"
+    fields = list(FIELDS) + ["seed_damage_fraction"]
+    with csv_path.open("w", encoding="utf-8", newline="") as h:
+        writer = csv.DictWriter(h, fieldnames=fields)
+        writer.writeheader()
+        for row in sample_rows():
+            writer.writerow({**row, "seed_damage_fraction": "0.2"})
+    config_file = tmp_path / "protocol.json"
+    config_file.write_text(json.dumps(protocol()), encoding="utf-8")
+    with pytest.raises(ValueError, match="canonical schema"):
+        build_receipt(csv_path, config_file, tmp_path / "unused.json")
