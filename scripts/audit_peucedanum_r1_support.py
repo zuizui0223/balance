@@ -49,6 +49,17 @@ def validate_against_expectations(audit: dict, expected: dict) -> None:
     ]
     if nonzero != expected["special_missing_cells"]:
         raise ValueError("source-row audit drift at special_missing_cells")
+    missing_height = [
+        {
+            "year": cell["year"],
+            "population_id": cell["population_id"],
+            "missing_flower_stem_height": cell["missing_flower_stem_height"],
+        }
+        for cell in audit["by_year_plot"]
+        if cell["missing_flower_stem_height"]
+    ]
+    if missing_height != expected["special_missing_height_cells"]:
+        raise ValueError("source-row audit drift at special_missing_height_cells")
     if any(
         cell["year"] == "2020" and cell["population_id"] == "HL"
         for cell in audit["by_year_plot"]
