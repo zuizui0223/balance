@@ -1,0 +1,41 @@
+name: Audit original Peucedanum R model script
+
+on:
+  push:
+    branches:
+      - ops/audit-peucedanum-original-script-20261008
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and verify exact public source archive
+        run: |
+          mkdir -p release/generated/peucedanum_original_script
+          curl -L --fail --retry 3 --retry-delay 2 \
+            'https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo%24Shibata_JEcol_Data.zip' \
+            -o /tmp/peucedanum_source.zip
+          printf '%s  %s\n' \
+            '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' \
+            /tmp/peucedanum_source.zip | sha256sum -c -
+
+      - name: Verify source R script bytes
+        run: |
+          unzip -p /tmp/peucedanum_source.zip 'R_script_Kudo&Shibata.R' \
+            > release/generated/peucedanum_original_script/R_script_Kudo_Shibata.R
+          printf '%s  %s\n' \
+            '6efb3a5b619166e0eb3ce491a67112c0009164456508093f513f4bc5c3a19d64' \
+            release/generated/peucedanum_original_script/R_script_Kudo_Shibata.R \
+            | sha256sum -c -
+
+      - name: Upload source-verification artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: peucedanum-2025-original-r-source
+          path: release/generated/peucedanum_original_script/
+          if-no-files-found: error
