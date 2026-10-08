@@ -1,5 +1,6 @@
 """Fail-closed preregistered method-feasibility screening for Pedicularis B0.
 
+Unit: one confirmed water-holding bract/whorl compartment per plant.
 This module must NOT read pollen, seed outcomes, oviposition or other
 biological treatment outcomes. A PASS establishes method feasibility only.
 """
@@ -13,7 +14,8 @@ SCHEMA = "PEDICULARIS_WATER_B0_METHOD_THRESHOLDS_V1"
 ARMS = ("INTACT_WET", "INTACT_DRY", "INTACT_REFILLED_WET")
 FIELDS = (
     "context_id", "population_id", "season_id", "protocol_version",
-    "plant_id", "flower_id", "block_id", "assigned_arm",
+    "plant_id", "water_compartment_id", "block_id", "assigned_arm",
+    "water_compartment_confirmed",
     "assignment_locked_before_measurement", "bract_perforated",
     "water_depth_early_mm", "water_depth_late_mm",
     "handling_duration_seconds", "abs_exsertion_shift_mm",
@@ -110,7 +112,7 @@ def evaluate_water_b0(rows, config):
         raise ValueError("no B0 method observations")
     groups = defaultdict(list)
     seen = set()
-    seen_assignment_ids = set()
+    seen_plants = set()
     errors = []
     for i, row in enumerate(rows, 1):
         if not isinstance(row, dict) or set(row) != set(FIELDS):
@@ -122,11 +124,20 @@ def evaluate_water_b0(rows, config):
         if arm not in ARMS:
             raise ValueError(f"unknown B0 assigned arm {arm}")
         plant = _text(row["plant_id"], "plant_id")
-        flower = _text(row["flower_id"], "flower_id")
+        compartment = _text(row["water_compartment_id"], "water_compartment_id")
         block = _text(row["block_id"], "block_id")
-        if flower in seen:
-            raise ValueError("duplicate B0 flower_id")
-        seen.add(flower)
+        if compartment in seen:
+            raise ValueError("duplicate B0 water_compartment_id")
+        seen.add(compartment)
+        # Pilot v1 randomizes ONE water-holding compartment per plant.
+        # Bracts may serve multiple flowers, so flower-level assignments
+        # or repeated plant weights would create interference/pseudoreplication.
+        if plant in seen_plants:
+            raise ValueError("duplicate plant_id: B0 pilot requires one compartment per plant")
+        seen_plants.add(plant)
+        if not _bool(row["water_compartment_confirmed"],
+                     "water_compartment_confirmed"):
+            errors.append("physical_water_compartment_unverified")
         if not _bool(row["assignment_locked_before_measurement"],
                      "assignment_locked_before_measurement"):
             errors.append("assignment_not_prelocked")
@@ -221,10 +232,9 @@ def evaluate_water_b0(rows, config):
         "status": ("B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL"
                    if not reasons else "B0_METHOD_FEASIBILITY_HOLD"),
         "context": ids, "assigned_arms": list(ARMS),
-        "n_focal_flowers": len(rows),
-        "n_distinct_plants_total": len({
-            row["plant_id"] for row in rows
-        }),
+        "n_water_compartments": len(rows),
+        "n_distinct_plants_total": len(seen_plants),
+        "randomization_unit": "PLANT_WITH_ONE_WATER_COMPARTMENT_PER_PLANT",
         "arms": summaries,
         "handling_mean_gap_dry_refilled_seconds": handling_gap,
         "gate_reasons": sorted(reasons),
