@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -9,7 +10,10 @@ from balance_domain.peucedanum_r1_support import (
     audit_normalized_csv,
     build_r1_row_support_audit,
 )
-from scripts.audit_peucedanum_r1_support import validate_against_expectations
+from scripts.audit_peucedanum_r1_support import (
+    build_receipt,
+    validate_against_expectations,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,3 +121,60 @@ def test_exact_expectations_reject_drift():
     expected["source_rows"] = 3
     with pytest.raises(ValueError, match="source_rows"):
         validate_against_expectations(audit, expected)
+
+
+
+def test_r1_audit_rejects_changed_source_values_with_unchanged_missingness(tmp_path):
+    rows_path = tmp_path / "normalized.csv"
+    row = _row(2, "2020", "HA", "id_1")
+    with rows_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=NORMALIZED_FIELDS)
+        writer.writeheader()
+        writer.writerow(row)
+
+    nr_path = tmp_path / "normalization.json"
+    nr = {
+        "status": "SOURCE_VERIFIED_MAPPING_APPLIED",
+        "normalized_rows": 1,
+        "source_files": {
+            "Kudo$Shibata_JEcol_Data.zip": {
+                "source_sha256": "a" * 64,
+            }
+        },
+    }
+    nr_path.write_text(json.dumps(nr, sort_keys=True) + "\n", encoding="utf-8")
+
+    expectations = {
+        **build_r1_row_support_audit([row]),
+        "schema_version": "BALANCE_PEUCEDANUM_2025_R1_ROW_SUPPORT_EXPECTATIONS_V1",
+        "source_archive_sha256": "a" * 64,
+        "normalized_csv_sha256": hashlib.sha256(rows_path.read_bytes()).hexdigest(),
+        "normalization_receipt_sha256": hashlib.sha256(nr_path.read_bytes()).hexdigest(),
+        "special_missing_cells": [],
+    }
+    expected_path = tmp_path / "expectations.json"
+    expected_path.write_text(
+        json.dumps(expectations, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+    assert build_receipt(rows_path, nr_path, expected_path)["source_rows"] == 1
+
+    # Changed biology with identical source-row/missingness statistics fails closed.
+    row["male_flower_count"] = "4"
+    with rows_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=NORMALIZED_FIELDS)
+        writer.writeheader()
+        writer.writerow(row)
+    with pytest.raises(ValueError, match="normalized CSV SHA256"):
+        build_receipt(rows_path, nr_path, expected_path)
+
+    # Even metadata/provenance changes with unmodified normalized rows fail closed.
+    row["male_flower_count"] = "3"
+    with rows_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=NORMALIZED_FIELDS)
+        writer.writeheader()
+        writer.writerow(row)
+    nr["unregistered_mapping_change"] = True
+    nr_path.write_text(json.dumps(nr, sort_keys=True) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="normalization receipt SHA256"):
+        build_receipt(rows_path, nr_path, expected_path)
