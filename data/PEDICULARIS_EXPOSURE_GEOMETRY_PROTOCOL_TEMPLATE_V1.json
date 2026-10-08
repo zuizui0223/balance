@@ -14,7 +14,8 @@
     "min_waterline_clearance_contrast_mm": "REQUIRED_BEFORE_USE",
     "max_within_flower_exsertion_difference": "REQUIRED_BEFORE_USE",
     "min_independent_compartments_with_contrast": "REQUIRED_BEFORE_USE",
-    "min_independent_plants_with_contrast": "REQUIRED_BEFORE_USE"
+    "min_independent_plants_with_contrast": "REQUIRED_BEFORE_USE",
+    "max_within_flower_focal_geometry_drift_mm": "REQUIRED_BEFORE_USE"
   },
   "claim_ceiling": "unfrozen_geometry_template_not_field_observations_or_predator_evidence"
 }
