@@ -99,6 +99,10 @@ The screening requires overlapping preassigned blocks represented in **all three
 
 Before analysing biological outcomes, separately preregister assignment verification, treatment-level interference, reproductive fitness, predator encounter/oviposition timing and the water-state equivalence/validity assumptions. Non-significant comparison of untouched and refilled outcomes never equals formal equivalence.
 
+## Separate reported exsertion from the site-to-waterline geometry
+
+The source's published relative flower exsertion combines flower length and bract height, whereas the potential access barrier depends on a predator's verified oviposition tissue position relative to contemporaneous waterline height. Both must be recorded rather than treated as synonyms. An upstream, **outcome-blinded** geometry support checker is registered in `docs/PEDICULARIS_PARTIAL_MODULARITY_EXPOSURE_GEOMETRY_V1.md`. Geometrical site submergence is not automatic oviposition prevention, and the new fields/thresholds do not change this B0 method-only qualification or the later Experiment B estimands.
+
 ## Stage B1 — ecological contrast, not an architecture comparison
 
 Under matched pollinator and predator exposure, compare **within the validated manipulations**:
