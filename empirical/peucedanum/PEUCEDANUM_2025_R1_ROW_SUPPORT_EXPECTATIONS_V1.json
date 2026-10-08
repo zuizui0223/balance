@@ -102,5 +102,7 @@
     "do not interpret 620/608 as independent individuals or fitted model N before model extraction",
     "do not treat the 19 observed plot-year cells as a complete 5x4 panel",
     "source row support is not R1 coefficient reproduction or BALANCE occupancy"
-  ]
+  ],
+  "normalized_csv_sha256": "ed6bf4c5301309283ca2e3d2033fdab1e253d46ed94bbba5fde1f3ee43281dbc",
+  "normalization_receipt_sha256": "34505bc644e84f9108d85e3430e08391c74072285fbc962f4badcde73eb97535"
 }
