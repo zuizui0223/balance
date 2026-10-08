@@ -31,6 +31,21 @@ Source: https://doi.org/10.1098/rsbl.2007.0095 ; open author PDF https://faculty
 
 These alternatives are **not** assumed equiprobable. The physical route by which a basal hole would alter oviposition is an empirical question, not an established mechanism.
 
+## A stronger mechanistic question: *where* does water interrupt an attack?
+
+Separating water from perforation is the manipulation-identification prerequisite, but **oviposition deterrence versus post-oviposition larval loss** is a second, independently testable ecological mechanism. Carlson & Harms (2007) distinguished visible oviposition scars from later sterile flowers in *Chrysothemis* and reported larval establishment >98% among scarred buds in both treatments, supporting differential oviposition rather than differential larval survival **in that taxon** (DOI 10.1098/rsbl.2007.0095). This cannot be imported as the mechanism of *Pedicularis*.
+
+For each water-treatment arm and antagonist guild (Diptera and Lepidoptera, where independently recognizable), sample the attack sequence rather than inferring its stage from final seed damage:
+
+- **Encounter/approach**: rate of egg-laying female visits near a focal flower at known water depth.
+- **Attack initiation/success**: observed ovipositor insertion attempts and verified eggs or fresh oviposition scars per approach.
+- **Post-oviposition survival**: damaged seed/capsule outcome conditional on independently observed deposition, with rearing or dissection where practical.
+- **Fitness**: undamaged viable mature seeds per initially randomized focal flower, with losses and censored flowers retained.
+
+The predictions differ: fewer approaches supports a cue/microhabitat pathway; similar approach counts but fewer eggs per attempt supports a **pre-deposition physical access barrier**; similar egg load but less damage supports a post-deposition defence. These outcomes are not mutually exclusive, and a failure to reliably observe/identify oviposition must remain unresolved, not be replaced by a proxy regression. Independent pollinator-visit and pollen outcomes are necessary to verify that predator interventions do not disrupt the mutualist channel.
+
+This stage decomposition matters because a trait may simultaneously affect pollinator access and antagonist oviposition at different stages. A single final-seed contrast cannot locate which step produced the fitness change, much less reveal architecture cost.
+
 ## Stage B0 — manipulation feasibility before biological outcomes
 
 **First priority — feasible three-arm handling test** (informed by Carlson & Harms 2007):
