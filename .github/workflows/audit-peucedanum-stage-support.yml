@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -e '.[dev,peucedanum]'
       - name: Test stage-support contract
-        run: python -m pytest -q tests/test_peucedanum_stage_support.py
+        run: python -m pytest -q tests/test_peucedanum_stage_support.py tests/test_peucedanum_stage_slopes.py
       - name: Download exact source
         run: |
           curl -L --fail --retry 3 --retry-delay 2 \
@@ -34,8 +34,8 @@ jobs:
           python scripts/audit_peucedanum_stage_support.py \
             --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
             --out release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
-      - uses: actions/upload-artifact@v4
+      - name: Exploratory paired within-cell stage slopes\n        run: |\n          python scripts/analyze_peucedanum_stage_slopes.py \\\n            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \\\n            --out release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json\n      - uses: actions/upload-artifact@v4
         with:
           name: peucedanum-stage-support-audit
-          path: release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
+          path: |\n            release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json\n            release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
           if-no-files-found: error
