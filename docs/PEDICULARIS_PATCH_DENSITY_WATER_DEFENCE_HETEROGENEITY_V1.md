@@ -92,6 +92,12 @@ Collect separate, time-aligned observations:
 
 Conditioning on observed approach is **post-treatment selection** if water changes approaches; `eggs / observed approaches` is a mechanistic description, not automatically a causal direct effect. To identify a physical waterline barrier independent of adult encounter context, an **independent standardized encounter experiment** (or independently justified selective approach intervention) is needed, without making water/oviposition manipulation alter the measured geometry. No such predator-access experiment is claimed as already feasible.
 
+### An important practical bottleneck: identifying the attacking adult
+
+Sun & Huang (2015) observed that most *P. rex* seed herbivores were fly larvae, but reported that they **could not successfully rear and identify the adult flies**. The 2016 paper similarly notes both Diptera and Lepidoptera attacks, often identified only to order. This means that a controlled exposure to the same identified gravid female is **not presently an available validated manipulation**. A standardized adult-oviposition assay is an explicitly **conditional Stage-B2 method-development target**, not a prerequisite falsely asserted to be feasible or a completed mechanism test.
+
+The basic three-arm randomized patch study can still estimate seed-output and damage treatment contrasts without adult identification. For mechanism diagnostics, begin with independent validation of fresh egg/scar morphology, close-up time-lapse oviposition records, and larval rearing/dissection across patches, retaining `UNRESOLVED_GUILD` rather than assigning insects by intuition. A failure to identify adults leaves physical-contact versus cue-mediated movement only partially identified and must not be rescued by statistical mediation of unverified egg counts.
+
 ### Statistical guardrails
 
 - **Primary:** patch-level ITT contrasts with plant as the water assignment unit; replicate patches in sparse and dense contexts, preserving site/season strata; report assigned treatment composition and sensitivity to within-patch predator redistribution.
