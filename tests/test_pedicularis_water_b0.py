@@ -26,6 +26,7 @@ def _config():
         "thresholds": {
             "min_independent_plants_per_arm": 4,
             "min_blocks_per_arm": 2,
+            "min_blocks_shared_across_all_arms": 2,
             "min_wet_depth_mm": 1.5,
             "max_dry_depth_mm": 0.5,
             "min_water_fidelity_fraction": 0.9,
@@ -105,6 +106,24 @@ def test_handling_mismatch_and_pollinator_access_fail_closed():
     result = evaluate_water_b0(data, _config())
     assert "dry_refilled_handling_not_matched" in result["gate_reasons"]
     assert "pollinator_entry_restricted:INTACT_WET" in result["gate_reasons"]
+
+
+def test_arm_block_confounding_and_within_block_handling_mismatch():
+    data = _rows()
+    for item in data:
+        item["block_id"] = item["assigned_arm"] + item["block_id"]
+    result = evaluate_water_b0(data, _config())
+    assert "insufficient_cross_arm_randomization_blocks" in result["gate_reasons"]
+    data = _rows()
+    for item in data:
+        if item["assigned_arm"] == "INTACT_REFILLED_WET" and item["block_id"] == "B1":
+            item["handling_duration_seconds"] = "20"
+        if item["assigned_arm"] == "INTACT_REFILLED_WET" and item["block_id"] == "B2":
+            item["handling_duration_seconds"] = "0"
+    result = evaluate_water_b0(data, _config())
+    assert result["handling_mean_gap_dry_refilled_seconds"] == 0
+    assert result["max_shared_block_handling_gap_seconds"] == 10
+    assert "blockwise_handling_not_matched" in result["gate_reasons"]
 
 
 def test_missingness_is_not_an_imputed_success():
