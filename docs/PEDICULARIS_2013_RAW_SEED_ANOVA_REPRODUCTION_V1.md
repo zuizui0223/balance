@@ -42,6 +42,25 @@ Using the original percentage measurements, fit ordinary least squares with two 
 
 The last two decimal places of each original F are determined by source percentage precision and numerical method; replication must not be presented as a second biological study. Fruit-related Table 1 covariate models are **not** included in the 18/18 result because the published fruit-production covariate is not independently present in the source XLSX; do not imply full article/fruit-model reproduction.
 
+## A second, independent result: all missing initial seed rates are fully predated records
+
+**328/328 missing initial seed-rate rows** have `seed predation = 100%` and `final seed set = 0%`. Missingness is therefore strongly tied to reproductive loss, **not an uninformative missing-at-random draw**. Density and year additionally predict which rows have missing initial seed rates.
+
+| Original cell | Initial rate missing | Missing fraction | Mean initial rate among measurable flowers | Conservative all-flower initial mean bound |
+| --- | ---: | ---: | ---: | ---: |
+| 2005 sparse | 17 / 273 | 6.2% | 25.32% | 23.74%–29.97% |
+| 2005 dense | 13 / 308 | 4.2% | 24.64% | 23.60%–27.82% |
+| 2011 sparse | 246 / 1,070 | **23.0%** | 25.65% | **19.75%–42.74%** |
+| 2011 dense | 52 / 1,279 | **4.1%** | 23.13% | **22.19%–26.25%** |
+
+The bounds are **not imputations**: they ask only what the overall mean would range over if each missing initial seed rate could lie anywhere from 0% to 100%. Under no further assumptions, 2011's dense-minus-sparse initial seed-mean contrast lies in **[-20.56,+6.50] percentage points**; its sign is **not identified**. The 2005 analogous interval is [-6.37,+4.08] points. These ranges are arithmetic outer bounds, not population confidence intervals and **do not** include patch-level sampling uncertainty.
+
+The biological interpretation matters. The paper's methods count both intact and recognizable predated seeds in **initial seed set**, but code `seed predation = 100%` if no distinguishable seeds can be recovered (Xia et al. 2013, Methods). When original seed identity is fully destroyed, the pre-attack number of formed seeds is unobservable. Hence replacing the missing initial value with **zero** would conflate lack of fertilization with complete post-fertilization destruction. Conversely, excluding all these flowers from an early-stage causal comparison preferentially retains less-predated flowers, especially in sparse 2011 patches.
+
+This does not negate the measured **final seed-set** result (those rows have observed final zero and remain in the final outcome model). It does limit the statement "initial seed set is independent of density" to **the set of flowers for which initial seed count remained ascertainable**. To identify true early seed production separately from later predation would require a prospective seed-development measurement before enemy destruction or justified missing-value assumptions. The dataset alone does not identify pollination and predation as separable causal pathways.
+
+The source-bound script now includes `initial_seed_missingness_bounds` and a fail-closed test for the all-destroyed missingness pattern. No biological values are filled in.
+
 ## Key inferential limitation now proven at the source-file level
 
 **Neither the fruit worksheet nor the seed worksheet contains a `patch_id`, `plant_id`, geographical patch identifier, or seed-to-plant linking key.** Both provide only coarse group codes `year,density,size`. The 2013 paper's density exposure is a **patch-level variable**:
