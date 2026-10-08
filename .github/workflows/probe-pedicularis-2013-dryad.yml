@@ -1,0 +1,26 @@
+name: Probe Peucedanum-independent Pedicularis 2013 Dryad source
+'on':
+  push:
+    branches:
+      - source/pedicularis-2013-dryad-20261008
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run source-probe contract tests
+        run: python -m pip install -e '.[dev]' && python -m pytest -q tests/test_probe_pedicularis_2013_dryad.py
+      - name: Retrieve published DOI metadata and file manifest only
+        run: |
+          python scripts/probe_pedicularis_2013_dryad.py --out release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pedicularis-2013-dryad-source-discovery
+          path: release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json
+          if-no-files-found: error
