@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -e '.[dev,peucedanum]'
       - name: Test stage-support contract
-        run: python -m pytest -q tests/test_peucedanum_stage_support.py tests/test_peucedanum_stage_slopes.py
+        run: python -m pytest -q tests/test_peucedanum_stage_support.py tests/test_peucedanum_stage_slopes.py tests/test_peucedanum_stage_adjusted.py
       - name: Download exact source
         run: |
           curl -L --fail --retry 3 --retry-delay 2 \
@@ -39,10 +39,16 @@ jobs:
           python scripts/analyze_peucedanum_stage_slopes.py \
             --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
             --out release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
+      - name: Size-adjusted paired stage contrasts with HC3 and BH
+        run: |
+          python scripts/analyze_peucedanum_stage_adjusted.py \
+            --normalized release/generated/peucedanum_stage_normalized/BALANCE_PEUCEDANUM_NORMALIZED_ROWS_V1.csv \
+            --out release/generated/PEUCEDANUM_STAGE_ADJUSTED_EXPLORATORY_V1.json
       - uses: actions/upload-artifact@v4
         with:
           name: peucedanum-stage-support-audit
           path: |
             release/generated/PEUCEDANUM_STAGE_SUPPORT_AUDIT_V1.json
             release/generated/PEUCEDANUM_STAGE_SLOPES_EXPLORATORY_V1.json
+            release/generated/PEUCEDANUM_STAGE_ADJUSTED_EXPLORATORY_V1.json
           if-no-files-found: error
