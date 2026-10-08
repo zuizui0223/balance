@@ -51,9 +51,9 @@ def test_known_published_seed_model_support_is_not_claimed_cluster_robust():
     assert SOURCE_SHA256 == (
         "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380"
     )
-    assert len(PUBLISHED_F) == 6
+    assert len(PUBLISHED_F) == 8
     assert sum(len([f for f in ("factor","density","interaction") if f in item])
-               for item in PUBLISHED_F.values()) == 18
+               for item in PUBLISHED_F.values()) == 24
     assert all(x["n"] - 4 == x["df_residual"]
                for x in PUBLISHED_F.values())
 
@@ -135,3 +135,39 @@ def test_missing_initial_with_nonmaximal_predation_is_source_drift():
             rows.append([year,density,2,None,0.0,99.0])
     with pytest.raises(ValueError,match="predation=100"):
         initial_seed_missingness_bounds(rows)
+
+
+def test_table2_fruit_extension_is_not_a_patch_density_claim():
+    # The article's Table 2 fruit-model ANOVAs use 2011 spikes (n=58)
+    # not the 2,349 seed-sheet records. Only unclustered F are reproduced.
+    for outcome, expected in (
+        ("Table2_fruit_set", (0.206, 2.368, 3.060)),
+        ("Table2_fruit_predation", (4.573, 26.314, 10.605)),
+    ):
+        model = PUBLISHED_F[outcome]
+        assert (model["n"], model["df_residual"]) == (58, 54)
+        assert (model["factor"], model["density"], model["interaction"]) == expected
+
+    import json
+    from pathlib import Path
+    receipt = json.loads((
+        Path(__file__).resolve().parents[1]
+        / "data/PEDICULARIS_2013_ANOVA_24F_SOURCE_RECEIPT_V1.json"
+    ).read_text(encoding="utf-8"))
+    assert receipt["source"]["workbook_sha256"] == SOURCE_SHA256
+    assert receipt["published_F_tests_matched"] == 24
+    assert len(receipt["model_records"]) == 8
+    assert receipt["sheet_support"]["patch_id_present"] is False
+    assert receipt["missing_claims"]["patch_clustered_standard_errors_computed"] is False
+    assert receipt["missing_claims"]["component_Allee_effect_invalidated"] is False
+    assert receipt["missing_claims"]["sparse_patch_water_defence_intervention_present"] is False
+    for item in receipt["model_records"]:
+        paper = PUBLISHED_F[item["model"]]
+        assert item["n"] == paper["n"]
+        assert item["residual_df"] == paper["df_residual"]
+        for name, factor_key in (
+            ("density", "density"), ("interaction", "interaction"),
+            ("year" if item["model"].startswith("Table1") else "size", "factor"),
+        ):
+            assert abs(item["reproduced_F"][name] - paper[factor_key]) < 0.00055
+            assert item["published_F"][name] == paper[factor_key]
