@@ -24,6 +24,8 @@ def protocol():
         "allocation_locked_before_biological_outcomes": True,
         "water_method_B0_status": "B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL",
         "water_B0_receipt_sha256": "a" * 64,
+        "water_B0_context_id": "SYNTHETIC_B0_CONTEXT",
+        "water_B0_protocol_version": "SYNTHETIC_B0_METHOD_V1",
         "thresholds": {
             "sparse_max_density_flowering_plants_m2": 2,
             "dense_min_density_flowering_plants_m2": 5,
@@ -40,10 +42,10 @@ def method_receipt():
         "schema_version": "PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1",
         "status": "B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL",
         "context": {
-            "context_id": "SYNTHETIC_CTX",
+            "context_id": "SYNTHETIC_B0_CONTEXT",
             "population_id": "SYNTHETIC_POP",
             "season_id": "SYNTHETIC_SEASON",
-            "protocol_version": "TEST_PROTOCOL_V1",
+            "protocol_version": "SYNTHETIC_B0_METHOD_V1",
         },
         "randomization_unit": "PLANT_WITH_ONE_WATER_COMPARTMENT_PER_PLANT",
         "gate_reasons": [],
@@ -267,3 +269,9 @@ def test_b0_context_mismatch_and_bad_receipt_cannot_qualify_design():
         assess_density_water_allocation(
             sample_rows(), protocol(),
             b0_method_receipt=method_receipt(), b0_method_sha256="b"*64)
+    method = method_receipt()
+    method["context"]["protocol_version"] = "WRONG_METHOD_VERSION"
+    with pytest.raises(ValueError, match="method context/version not registered"):
+        assess_density_water_allocation(
+            sample_rows(), protocol(),
+            b0_method_receipt=method, b0_method_sha256="a"*64)
