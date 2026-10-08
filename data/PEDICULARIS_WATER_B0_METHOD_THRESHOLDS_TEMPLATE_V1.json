@@ -1,0 +1,25 @@
+{
+  "schema_version": "PEDICULARIS_WATER_B0_METHOD_THRESHOLDS_V1",
+  "status": "TEMPLATE_NOT_FROZEN",
+  "context_id": "REQUIRED_BEFORE_USE",
+  "population_id": "REQUIRED_BEFORE_USE",
+  "season_id": "REQUIRED_BEFORE_USE",
+  "protocol_version": "REQUIRED_BEFORE_USE",
+  "randomization_schedule_sha256": "REQUIRED_BEFORE_USE",
+  "threshold_justification": "REQUIRED_BEFORE_USE",
+  "blinded_to_reproductive_outcomes": false,
+  "thresholds": {
+    "min_independent_plants_per_arm": "REQUIRED_BEFORE_USE",
+    "min_blocks_per_arm": "REQUIRED_BEFORE_USE",
+    "min_wet_depth_mm": "REQUIRED_BEFORE_USE",
+    "max_dry_depth_mm": "REQUIRED_BEFORE_USE",
+    "min_water_fidelity_fraction": "REQUIRED_BEFORE_USE",
+    "max_missing_measurement_fraction": "REQUIRED_BEFORE_USE",
+    "max_mechanical_damage_fraction": "REQUIRED_BEFORE_USE",
+    "max_exsertion_shift_mm": "REQUIRED_BEFORE_USE",
+    "max_exsertion_offtarget_fraction": "REQUIRED_BEFORE_USE",
+    "min_pollinator_entry_unobstructed_fraction": "REQUIRED_BEFORE_USE",
+    "max_dry_vs_refilled_handling_gap_seconds": "REQUIRED_BEFORE_USE"
+  },
+  "claim_ceiling": "template_not_field_outcomes_or_experimental_confirmation"
+}
