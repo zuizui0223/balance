@@ -1,0 +1,132 @@
+{
+  "schema_version": "BALANCE_PEUCEDANUM_2025_R1_ROW_SUPPORT_EXPECTATIONS_V1",
+  "status": "SOURCE_VERIFIED_PRE_MODEL_OBSERVATION_AUDIT",
+  "source_archive_sha256": "07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca",
+  "source_rows": 685,
+  "observed_plot_year_cells": 19,
+  "year_counts": {
+    "2020": 119,
+    "2021": 166,
+    "2022": 205,
+    "2023": 195
+  },
+  "plot_counts": {
+    "HA": 177,
+    "HC": 139,
+    "HD": 139,
+    "HL": 95,
+    "KD": 135
+  },
+  "missing_counts": {
+    "initial_fruit_count": 6,
+    "intact_fruit_count": 65,
+    "flower_stem_height": 12,
+    "predator_egg_count": 13,
+    "seed_predation_rate": 162
+  },
+  "differential_candidate_rows": 608,
+  "gradient_candidate_rows": 608,
+  "candidate_rows_by_plot": {
+    "HA": {
+      "source_rows": 177,
+      "differential_candidate_rows": 126,
+      "gradient_candidate_rows": 126,
+      "pre_height_fruit_complete_rows": 126
+    },
+    "HC": {
+      "source_rows": 139,
+      "differential_candidate_rows": 132,
+      "gradient_candidate_rows": 132,
+      "pre_height_fruit_complete_rows": 132
+    },
+    "HD": {
+      "source_rows": 139,
+      "differential_candidate_rows": 127,
+      "gradient_candidate_rows": 127,
+      "pre_height_fruit_complete_rows": 139
+    },
+    "HL": {
+      "source_rows": 95,
+      "differential_candidate_rows": 88,
+      "gradient_candidate_rows": 88,
+      "pre_height_fruit_complete_rows": 88
+    },
+    "KD": {
+      "source_rows": 135,
+      "differential_candidate_rows": 135,
+      "gradient_candidate_rows": 135,
+      "pre_height_fruit_complete_rows": 135
+    }
+  },
+  "special_missing_cells": [
+    {
+      "year": "2020",
+      "population_id": "HA",
+      "missing_intact_fruit_count": 1
+    },
+    {
+      "year": "2021",
+      "population_id": "HA",
+      "missing_intact_fruit_count": 50
+    },
+    {
+      "year": "2022",
+      "population_id": "HC",
+      "missing_intact_fruit_count": 7
+    },
+    {
+      "year": "2022",
+      "population_id": "HL",
+      "missing_intact_fruit_count": 7
+    }
+  ],
+  "observed_plot_year_omission": "2020_HL_absent_no_zero_filling",
+  "reused_year_plot_plant_id_keys": [
+    {
+      "year": "2022",
+      "population_id": "HC",
+      "plant_id": "C769",
+      "source_row_numbers": [
+        "344",
+        "366"
+      ]
+    },
+    {
+      "year": "2023",
+      "population_id": "KD",
+      "plant_id": "KD769",
+      "source_row_numbers": [
+        "514",
+        "516"
+      ]
+    }
+  ],
+  "classification": "observation_identity_ambiguous_preserve_distinct_source_rows",
+  "restrictions": [
+    "do not drop or merge the two repeated biological ID keys without primary-source adjudication",
+    "do not treat 620 fruit-complete / 608 source-model candidate rows as independent individuals or fitted model N before model extraction",
+    "do not treat the 19 observed plot-year cells as a complete 5x4 panel",
+    "source row support is not R1 coefficient reproduction or BALANCE occupancy",
+    "all 12 HD records without Height are in 2022, with plant IDs Dadd01 through Dadd12; document this source-defined subgroup without imputing heights",
+    "the 19 raw plot-year cells include 2021 HA with 50 source records but zero final-fruit model candidates; do not treat it as female-fit support"
+  ],
+  "normalized_csv_sha256": "ed6bf4c5301309283ca2e3d2033fdab1e253d46ed94bbba5fde1f3ee43281dbc",
+  "normalization_receipt_sha256": "34505bc644e84f9108d85e3430e08391c74072285fbc962f4badcde73eb97535",
+  "pre_height_fruit_complete_rows": 620,
+  "candidate_rule": "Source R script globally excludes missing InitialFruitN and Height before fitting; final-fruit response requires FinalFruitN, so both S and beta candidate samples are 608 rows. The 620 fruit-complete rows are pre-height diagnostic support only.",
+  "special_missing_height_cells": [
+    {
+      "year": "2022",
+      "population_id": "HD",
+      "missing_flower_stem_height": 12
+    }
+  ],
+  "source_fit_plot_year_cells": 18,
+  "observed_cells_without_source_fit_candidates": [
+    {
+      "year": "2021",
+      "population_id": "HA",
+      "source_rows": 50
+    }
+  ]
+}
