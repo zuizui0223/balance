@@ -1,8 +1,9 @@
 """Noninferential observation-grain and complete-case audit for Peucedanum R1.
 
 This does not estimate selection gradients or recreate the source regression.
-It counts candidate input rows under the explicit missingness filters in the
-current Peucedanum R1 reproduction script, before any fitted-model exclusions.
+It records both fruit-complete rows and candidate source-model rows under the
+global InitialFruitN + Height complete-case restriction in the archived
+R_script_Kudo&Shibata.R, before subsequent FinalFruitN filtering.
 """
 from __future__ import annotations
 
@@ -87,19 +88,23 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
                 missing_counts[field] += 1
                 cell[f"missing_{field}"] += 1
 
-        # These are only candidate input-support counts for the current
-        # reproduction script; neither glmer estimates nor NLS output.
-        eligible_diff = (
+        # The *original* archived R script excludes missing InitialFruitN and
+        # Height before EVERY final-fruit model, including the single-trait
+        # differential and nls female-gain fit. FinalFruitN is filtered next.
+        # Keep the broader fruit-complete count only as a pre-height diagnostic.
+        fruit_complete = (
             _is_present(row, "initial_fruit_count")
             and _is_present(row, "intact_fruit_count")
         )
-        eligible_gradient = eligible_diff and _is_present(
+        source_fit_candidate = fruit_complete and _is_present(
             row, "flower_stem_height"
         )
-        if eligible_diff:
+        if fruit_complete:
+            cell["pre_height_fruit_complete_rows"] += 1
+            plot_cell["pre_height_fruit_complete_rows"] += 1
+        if source_fit_candidate:
             cell["differential_candidate_rows"] += 1
             plot_cell["differential_candidate_rows"] += 1
-        if eligible_gradient:
             cell["gradient_candidate_rows"] += 1
             plot_cell["gradient_candidate_rows"] += 1
 
@@ -119,6 +124,7 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
             "population_id": plot,
             "source_rows": counts["source_rows"],
             "missing_intact_fruit_count": counts["missing_intact_fruit_count"],
+            "pre_height_fruit_complete_rows": counts["pre_height_fruit_complete_rows"],
             "differential_candidate_rows": counts["differential_candidate_rows"],
             "gradient_candidate_rows": counts["gradient_candidate_rows"],
         }
@@ -134,6 +140,9 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
         "missing_counts": {
             key: missing_counts[key] for key in MISSINGNESS_FIELDS
         },
+        "pre_height_fruit_complete_rows": sum(
+            x["pre_height_fruit_complete_rows"] for x in by_cell
+        ),
         "differential_candidate_rows": sum(
             x["differential_candidate_rows"] for x in by_cell
         ),
@@ -143,6 +152,7 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
         "candidate_rows_by_plot": {
             plot: {
                 "source_rows": counts["source_rows"],
+                "pre_height_fruit_complete_rows": counts["pre_height_fruit_complete_rows"],
                 "differential_candidate_rows": counts["differential_candidate_rows"],
                 "gradient_candidate_rows": counts["gradient_candidate_rows"],
             }
@@ -152,9 +162,11 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
         "reused_year_plot_plant_id_keys": reused_ids,
         "reused_biological_id_keys_are_not_automatically_deduplicated": True,
         "candidate_rule": (
-            "R1 differential: InitialFruitN and FinalFruitN observed; "
-            "R1 multiple-trait gradient: the same plus Height observed; "
-            "actual source-model inclusion remains subject to model fitting"
+            "Source script globally filters InitialFruitN and Height before "
+            "differentials, gradients and female-gain fits; final-fruit models "
+            "then require FinalFruitN. Fruit-complete before Height restriction "
+            "is separately reported. Model-specific inclusion remains subject "
+            "to actual source fitting."
         ),
         "claim_ceiling": (
             "source_row_support_only_not_reproduction_of_published_model_"
