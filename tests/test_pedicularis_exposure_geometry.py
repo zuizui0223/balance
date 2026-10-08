@@ -23,6 +23,7 @@ def config():
             "max_whorl_waterline_disagreement_mm": 0.2,
             "min_waterline_clearance_contrast_mm": 5.0,
             "max_within_flower_exsertion_difference": 0.01,
+            "max_within_flower_focal_geometry_drift_mm": 0.3,
             "min_independent_compartments_with_contrast": 3,
             "min_independent_plants_with_contrast": 3,
         },
@@ -215,3 +216,26 @@ def test_template_unfrozen_and_no_biological_outcome_fields():
         "predator_egg_count", "oviposition_scar_count",
         "pollen_receipt", "mature_undamaged_seed_count",
     ))
+
+
+def test_site_growth_cannot_masquerade_as_waterline_movement():
+    data = rows()
+    # Waterline remains fixed, but target tissue moves 7 mm.
+    # A clearance-only contrast would be a false positive.
+    for row in data:
+        if row["observation_time_id"] == "LATE":
+            row["water_surface_elevation_mm"] = "14"
+            row["oviposition_site_elevation_mm"] = "19"
+    result = audit_exposure_geometry(data, config())
+    assert result["status"] == "EXPOSURE_GEOMETRY_SUPPORT_HOLD"
+    assert result["n_contrasting_whorls"] == 0
+
+
+def test_flower_morphology_drift_blocks_a_false_waterline_only_witness():
+    data = rows()
+    for row in data:
+        if row["observation_time_id"] == "LATE":
+            row["flower_tip_elevation_mm"] = "35"
+    result = audit_exposure_geometry(data, config())
+    assert result["n_contrasting_whorls"] == 0
+    assert "insufficient_independent_waterline_contrasts" in result["gate_reasons"]
