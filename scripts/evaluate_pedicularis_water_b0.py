@@ -64,7 +64,7 @@ def main():
     print(json.dumps({
         "status": result["status"],
         "gate_reasons": result["gate_reasons"],
-        "n_focal_flowers": result["n_focal_flowers"],
+        "n_water_compartments": result["n_water_compartments"],
         "n_distinct_plants_total": result["n_distinct_plants_total"],
         "claim_ceiling": result["claim_ceiling"],
     }, sort_keys=True))
