@@ -1,6 +1,17 @@
 """Mock-only tests for 2013 Dryad archive provenance; never fake raw data."""
 import copy
-from scripts.probe_pedicularis_2013_dryad import inspect_source, DATASET_API
+from importlib.util import spec_from_file_location, module_from_spec
+from pathlib import Path
+
+_SPEC = spec_from_file_location(
+    "pedicularis_2013_source_probe",
+    Path(__file__).resolve().parents[1] / "scripts" / "probe_pedicularis_2013_dryad.py",
+)
+_mod = module_from_spec(_SPEC)
+assert _SPEC.loader is not None
+_SPEC.loader.exec_module(_mod)
+inspect_source = _mod.inspect_source
+DATASET_API = _mod.DATASET_API
 
 
 def fake_api(url):
