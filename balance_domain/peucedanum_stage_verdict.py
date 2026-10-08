@@ -79,7 +79,12 @@ def adjudicate_stage_exploration(
                 _require(math.isfinite(x[field]), "nonfinite exploratory statistic")
             _require(x["se_hc3"] > 0, "nonpositive standard error")
             _require(0 <= x["p_normal_hc3"] <= 1, "invalid p value")
-            _require(x["p_normal_hc3"] <= x["q_bh_within_variant"] <= 1 + 1e-12,
+            # A p-value and its BH q-value can differ by ~1 ulp after
+            # JSON serialization/recalculation; do not mistake floating
+            # roundoff for a scientific-support error. Recomputed BH values
+            # must still agree below to 1e-9 absolute tolerance.
+            _require(x["p_normal_hc3"] <= x["q_bh_within_variant"] + 1e-12
+                     and 0 <= x["q_bh_within_variant"] <= 1 + 1e-12,
                      "invalid BH multiplicity result")
         # Recompute BH independently rather than trusting reported q-values.
         ranked = sorted(enumerate(eligible), key=lambda pair: pair[1]["p_normal_hc3"])
