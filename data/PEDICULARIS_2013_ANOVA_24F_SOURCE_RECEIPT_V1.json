@@ -1,0 +1,175 @@
+{
+  "schema_version": "PEDICULARIS_2013_DRYAD_24F_SOURCE_REPRODUCTION_V1",
+  "status": "24_PUBLISHED_F_VALUES_REPRODUCED_UNCLUSTERED_PATCH_INFERENCE_HOLD",
+  "source": {
+    "article_doi": "10.1098/rsbl.2013.0387",
+    "dataset_doi": "10.5061/dryad.6cv06",
+    "dryad_version": 11193,
+    "filename": "raw data.xlsx",
+    "workbook_sha256": "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380",
+    "workbook_md5": "10a98383677bbd2a01e19a86c350fdd3",
+    "source_workbook_bytes": 89597
+  },
+  "sheet_support": {
+    "seed_usable_rows": 2930,
+    "fruit_usable_rows": 74,
+    "seed_initial_missing": 328,
+    "fruit_2011_rows": 58,
+    "patch_id_present": false,
+    "plant_id_present": false,
+    "fruit_seed_cross_sheet_join_identifiable": false
+  },
+  "model_family": "Unclustered OLS on individual workbook observation rows; sum-to-zero ±1 coded density/year/size and their product",
+  "printed_paper_tables": [
+    "Table 1 seed 2005-2011",
+    "Table 2 seed 2011",
+    "Table 2 fruit 2011"
+  ],
+  "published_F_tests_matched": 24,
+  "model_records": [
+    {
+      "model": "Table1_initial_seed_set",
+      "n": 2602,
+      "residual_df": 2598,
+      "published_F": {
+        "year": 0.507,
+        "density": 3.767,
+        "interaction": 1.241
+      },
+      "reproduced_F": {
+        "year": 0.5065638235350476,
+        "density": 3.766796674397572,
+        "interaction": 1.2406272811060377
+      }
+    },
+    {
+      "model": "Table1_final_seed_set",
+      "n": 2930,
+      "residual_df": 2926,
+      "published_F": {
+        "year": 11.954,
+        "density": 39.025,
+        "interaction": 0.426
+      },
+      "reproduced_F": {
+        "year": 11.9540791739463,
+        "density": 39.02470440623321,
+        "interaction": 0.42614608474365134
+      }
+    },
+    {
+      "model": "Table1_seed_predation",
+      "n": 2930,
+      "residual_df": 2926,
+      "published_F": {
+        "year": 46.571,
+        "density": 166.22,
+        "interaction": 4.25
+      },
+      "reproduced_F": {
+        "year": 46.57055078613277,
+        "density": 166.21999869579636,
+        "interaction": 4.250063663113935
+      }
+    },
+    {
+      "model": "Table2_initial_seed_set",
+      "n": 2051,
+      "residual_df": 2047,
+      "published_F": {
+        "size": 41.221,
+        "density": 27.348,
+        "interaction": 44.556
+      },
+      "reproduced_F": {
+        "size": 41.220942579820296,
+        "density": 27.347911060764815,
+        "interaction": 44.55631781979975
+      }
+    },
+    {
+      "model": "Table2_final_seed_set",
+      "n": 2349,
+      "residual_df": 2345,
+      "published_F": {
+        "size": 1.025,
+        "density": 26.958,
+        "interaction": 0.023
+      },
+      "reproduced_F": {
+        "size": 1.024807041032972,
+        "density": 26.95830653296872,
+        "interaction": 0.023175355160866076
+      }
+    },
+    {
+      "model": "Table2_seed_predation",
+      "n": 2349,
+      "residual_df": 2345,
+      "published_F": {
+        "size": 45.029,
+        "density": 317.878,
+        "interaction": 106.27
+      },
+      "reproduced_F": {
+        "size": 45.028559379478565,
+        "density": 317.87756850304123,
+        "interaction": 106.26963373758174
+      }
+    },
+    {
+      "model": "Table2_fruit_set",
+      "n": 58,
+      "residual_df": 54,
+      "published_F": {
+        "size": 0.206,
+        "density": 2.368,
+        "interaction": 3.06
+      },
+      "reproduced_F": {
+        "size": 0.205897,
+        "density": 2.368312,
+        "interaction": 3.059863
+      }
+    },
+    {
+      "model": "Table2_fruit_predation",
+      "n": 58,
+      "residual_df": 54,
+      "published_F": {
+        "size": 4.573,
+        "density": 26.314,
+        "interaction": 10.605
+      },
+      "reproduced_F": {
+        "size": 4.57314,
+        "density": 26.314323,
+        "interaction": 10.605488
+      }
+    }
+  ],
+  "observed_2011_seed_predation_row_means_pct": {
+    "sparse_small": 53.35831,
+    "sparse_large": 22.98162,
+    "dense_small": 3.1361,
+    "dense_large": 9.55872
+  },
+  "independent_patches_from_published_methods": {
+    "2005": {
+      "sparse": 1,
+      "dense": 1
+    },
+    "2011": {
+      "sparse": 5,
+      "dense": 6
+    }
+  },
+  "missing_claims": {
+    "patch_clustered_standard_errors_computed": false,
+    "component_Allee_effect_invalidated": false,
+    "density_manipulated": false,
+    "sparse_patch_water_defence_intervention_present": false
+  },
+  "unresolved": "2005+2011 combined fruit ANCOVA original printed F not included; requires source covariate semantics and code verification",
+  "claim_ceiling": "exact_unclustered_statistic_replay_and_row_weighted_descriptives_only_no_patch_level_inference_or_causal_density"
+}
