@@ -23,6 +23,7 @@ FIELDS = (
 )
 THRESHOLDS = (
     "min_independent_plants_per_arm", "min_blocks_per_arm",
+    "min_blocks_shared_across_all_arms",
     "min_wet_depth_mm", "max_dry_depth_mm",
     "min_water_fidelity_fraction", "max_missing_measurement_fraction",
     "max_mechanical_damage_fraction", "max_exsertion_shift_mm",
@@ -32,6 +33,7 @@ THRESHOLDS = (
 )
 INTEGER_THRESHOLDS = {
     "min_independent_plants_per_arm", "min_blocks_per_arm",
+    "min_blocks_shared_across_all_arms",
 }
 FRACTION_THRESHOLDS = {
     "min_water_fidelity_fraction", "max_missing_measurement_fraction",
@@ -218,6 +220,13 @@ def evaluate_water_b0(rows, config):
             if duration_values else None,
             "n_perforated": sum(r["perforated"] for r in data),
         }
+    block_sets = [
+        {r["block_id"] for r in groups[arm]} for arm in ARMS
+    ]
+    shared_blocks = set.intersection(*block_sets)
+    if len(shared_blocks) < limits["min_blocks_shared_across_all_arms"]:
+        reasons.add("insufficient_cross_arm_randomization_blocks")
+
     dry = summaries["INTACT_DRY"].get("mean_handling_seconds")
     refill = summaries["INTACT_REFILLED_WET"].get("mean_handling_seconds")
     handling_gap = None
@@ -227,6 +236,23 @@ def evaluate_water_b0(rows, config):
         handling_gap = abs(dry-refill)
         if handling_gap > limits["max_dry_vs_refilled_handling_gap_seconds"]:
             reasons.add("dry_refilled_handling_not_matched")
+    blockwise_gaps = []
+    for block in sorted(shared_blocks):
+        vals = []
+        for arm in ("INTACT_DRY", "INTACT_REFILLED_WET"):
+            vals_arm = [
+                r["handling_duration"] for r in groups[arm]
+                if r["block_id"] == block and r["handling_duration"] is not None
+            ]
+            if not vals_arm:
+                reasons.add("blockwise_handling_duration_missing")
+                break
+            vals.append(fmean(vals_arm))
+        if len(vals) == 2:
+            gap = abs(vals[0] - vals[1])
+            blockwise_gaps.append(gap)
+            if gap > limits["max_dry_vs_refilled_handling_gap_seconds"]:
+                reasons.add("blockwise_handling_not_matched")
     return {
         "schema_version": "PEDICULARIS_WATER_B0_METHOD_FEASIBILITY_RECEIPT_V1",
         "status": ("B0_METHOD_FEASIBILITY_SCREEN_PASSED_NOT_CAUSAL"
@@ -237,6 +263,10 @@ def evaluate_water_b0(rows, config):
         "randomization_unit": "PLANT_WITH_ONE_WATER_COMPARTMENT_PER_PLANT",
         "arms": summaries,
         "handling_mean_gap_dry_refilled_seconds": handling_gap,
+        "n_shared_randomization_blocks": len(shared_blocks),
+        "max_shared_block_handling_gap_seconds": (
+            max(blockwise_gaps) if blockwise_gaps else None
+        ),
         "gate_reasons": sorted(reasons),
         "randomization_schedule_sha256": config["randomization_schedule_sha256"],
         "preoutcome_thresholds": limits,
