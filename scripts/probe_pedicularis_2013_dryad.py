@@ -85,9 +85,21 @@ def inspect_source(fetch=_get_json) -> dict:
         version = fetch(version_url)
         if not isinstance(version, dict):
             raise ValueError("Dryad dataset version metadata missing")
-        vid = version.get("id")
-        if not isinstance(vid, int) or isinstance(vid, bool) or vid <= 0:
+        # Dryad's public Version schema does not guarantee an 'id' field:
+        # the API's canonical stash:version link is the identifier source.
+        # Always parse its exact /api/v2/versions/<integer> route.
+        version_path = urllib.parse.urlsplit(version_url).path
+        version_parts = version_path.split("/")
+        if (len(version_parts) != 5
+                or version_parts[:4] != ["", "api", "v2", "versions"]
+                or not version_parts[4].isdigit()):
+            raise ValueError("Dryad canonical version link has no integer id")
+        vid = int(version_parts[4])
+        if vid <= 0:
             raise ValueError("Dryad version identifier invalid")
+        embedded_vid = version.get("id")
+        if embedded_vid is not None and embedded_vid != vid:
+            raise ValueError("version body id mismatches canonical version link")
         files_url = _uri(f"/api/v2/versions/{vid}/files")
         raw_files = fetch(files_url)
         embedded = raw_files.get("_embedded", {}) if isinstance(raw_files, dict) else {}
