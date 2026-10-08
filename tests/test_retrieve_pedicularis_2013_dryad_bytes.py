@@ -4,8 +4,16 @@ import io
 import zipfile
 
 import pytest
+from importlib.util import spec_from_file_location, module_from_spec
+from pathlib import Path
 
-import scripts.retrieve_pedicularis_2013_dryad_bytes as download
+_SPEC = spec_from_file_location(
+    "pedicularis_2013_source_bytes",
+    Path(__file__).resolve().parents[1] / "scripts" / "retrieve_pedicularis_2013_dryad_bytes.py",
+)
+download = module_from_spec(_SPEC)
+assert _SPEC.loader is not None
+_SPEC.loader.exec_module(download)
 
 
 def make_archive(path=download.EXPECTED_FILE, payload=b"PK\x03\x04fake-xlsx-bytes"):
