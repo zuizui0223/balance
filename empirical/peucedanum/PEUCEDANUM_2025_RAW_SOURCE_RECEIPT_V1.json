@@ -1,0 +1,157 @@
+{
+  "schema_version": "BALANCE_PEUCEDANUM_2025_RAW_SOURCE_RECEIPT_V1",
+  "status": "DIRECT_PUBLIC_RAW_ARCHIVE_VERIFIED",
+  "system": "Peucedanum multivittatum",
+  "source": {
+    "article_doi": "10.1111/1365-2745.70130",
+    "repository_doi": "10.14943/hu95572",
+    "public_filename": "Kudo$Shibata_JEcol_Data.zip",
+    "verified_on": "2026-10-08",
+    "outer_zip_sha256": "07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca",
+    "outer_zip_bytes": 31985
+  },
+  "members": [
+    {
+      "path": "Read_Me.docx",
+      "bytes": 16428,
+      "sha256": "0a12e56e4da4f696ae17b637b2d241c48115ba7f6113f88f5234398c3ba334fa",
+      "role": "SOURCE_DATA_DICTIONARY"
+    },
+    {
+      "path": "All_Plots_Data.csv",
+      "bytes": 23932,
+      "sha256": "7ea5669a44bd4ebbdf8df3c2addbb28f230a7e6f970ccb2117e6dfb031d9d69f",
+      "role": "PRIMARY_FIVE_PLOT_2020_2023_DATA"
+    },
+    {
+      "path": "HA_Plot_Data.csv",
+      "bytes": 3524,
+      "sha256": "9ef55ac8529192157c558fac7347c10b45c528418482eb7a45cf668718718000",
+      "role": "HA_2020_EXPERIMENTAL_MALE_FEMALE_FITNESS_DATA"
+    },
+    {
+      "path": "R_script_Kudo&Shibata.R",
+      "bytes": 41296,
+      "sha256": "6efb3a5b619166e0eb3ce491a67112c0009164456508093f513f4bc5c3a19d64",
+      "role": "SOURCE_ANALYSIS_CODE"
+    },
+    {
+      "path": "__MACOSX/._Read_Me.docx",
+      "bytes": 590,
+      "sha256": "cb73e8229bdc1df2a86cdd5293249df692d9877689d5db30b2d846091a01b8b9",
+      "role": "OS_METADATA_IGNORED"
+    },
+    {
+      "path": "__MACOSX/._All_Plots_Data.csv",
+      "bytes": 344,
+      "sha256": "a8e842672a0b463a7d58b860a0c33c2876b98a090b73245868d58a8ee9054d03",
+      "role": "OS_METADATA_IGNORED"
+    },
+    {
+      "path": "__MACOSX/._HA_Plot_Data.csv",
+      "bytes": 344,
+      "sha256": "96d493e2ec7383bfd2d3551d7d695b516b3c5fc553453e610b9568a39072a7dd",
+      "role": "OS_METADATA_IGNORED"
+    },
+    {
+      "path": "__MACOSX/._R_script_Kudo&Shibata.R",
+      "bytes": 176,
+      "sha256": "d2e01190766c116c5bf21e5d86c9b4ccce1a1fe1a9b2deb942aab4518366e16f",
+      "role": "OS_METADATA_IGNORED"
+    }
+  ],
+  "readme_verified_semantics": {
+    "study_period": "2020-2023",
+    "plots": [
+      "HA",
+      "HL",
+      "HC",
+      "KD",
+      "HD"
+    ],
+    "all_plots_columns": {
+      "Year": "Y2020/Y2021/Y2022/Y2023",
+      "Plot": "HA/HL/HC/KD/HD",
+      "ID": "individual plant ID",
+      "HflowerN": "number of perfect flowers",
+      "MflowerN": "number of male flowers",
+      "InitialFruitN": "number of fruits before predation damage / fertilization success",
+      "Height": "flower stem height in cm",
+      "OvipN": "number of predator moth eggs",
+      "FinalFruitN": "number of intact fruits after predation damage / final fruit-set success",
+      "PredationR": "fruit predation rate as supplied by source"
+    },
+    "flowering_day_present_in_all_plots_data": false
+  },
+  "all_plots_table_audit": {
+    "row_count_excluding_header": 685,
+    "year_counts": {
+      "Y2020": 119,
+      "Y2021": 166,
+      "Y2022": 205,
+      "Y2023": 195
+    },
+    "plot_counts": {
+      "HA": 177,
+      "HL": 95,
+      "HC": 139,
+      "KD": 135,
+      "HD": 139
+    },
+    "missing_counts": {
+      "InitialFruitN": 6,
+      "Height": 12,
+      "OvipN": 13,
+      "FinalFruitN": 65,
+      "PredationR": 162
+    },
+    "source_missing_token": "NA",
+    "year_recode_required": {
+      "Y2020": 2020,
+      "Y2021": 2021,
+      "Y2022": 2022,
+      "Y2023": 2023
+    }
+  },
+  "r_script_verified_contract": {
+    "input_file": "All_Plots_Data.csv",
+    "plot_order": [
+      "HA",
+      "HL",
+      "HC",
+      "KD",
+      "HD"
+    ],
+    "derived_source_variables": [
+      "Fertilization_rate = InitialFruitN/HflowerN",
+      "Fruitset_rate = FinalFruitN/HflowerN",
+      "Floral_gender = MflowerN/(HflowerN+MflowerN)"
+    ],
+    "within_plot_standardization": [
+      "HflowerN_s = scale(HflowerN)",
+      "MflowerN_s = scale(MflowerN)",
+      "Height_s = scale(Height)"
+    ],
+    "final_fruit_gradient_model": "glmer(Fruitset_rate ~ HflowerN_s*Plot + MflowerN_s*Plot + Height_s*Plot + quadratic terms by Plot + (1|Year), weights=HflowerN, family=binomial)",
+    "final_fruit_differential_model": "glmer(Fruitset_rate ~ HflowerN_s*Plot + HflowerN_s^2*Plot + (1|Year), weights=HflowerN, family=binomial)",
+    "female_gain_model": "plot-specific nls(Fitness ~ a*HflowerN^b)",
+    "published_gain_exponents_in_code": {
+      "HA": 0.631,
+      "HL": 0.45,
+      "HC": 1.152,
+      "KD": 1.257,
+      "HD": 1.545
+    }
+  },
+  "semantic_mapping": {
+    "mapped_member": "All_Plots_Data.csv",
+    "mapping_contract": "empirical/peucedanum/PEUCEDANUM_RAW_SEMANTIC_MAPPING_TEMPLATE_V1.json",
+    "status": "SOURCE_VERIFIED_MAPPING",
+    "mapping_excludes_flowering_day_because_source_column_absent": true,
+    "mapping_uses_explicit_missing_tokens": [
+      "NA"
+    ],
+    "mapping_uses_explicit_year_value_map": true
+  },
+  "claim_ceiling": "raw_source_identity_and_semantic_mapping_verification_only_not_model_reproduction_or_direct_BALANCE_occupancy"
+}

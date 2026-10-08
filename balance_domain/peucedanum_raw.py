@@ -28,7 +28,6 @@ REQUIRED_NORMALIZED_FIELDS = (
     "year",
     "population_id",
     "plant_id",
-    "flowering_day",
     "perfect_flower_count",
     "male_flower_count",
 )
@@ -153,7 +152,8 @@ def validate_normalized_rows(rows: Iterable[Mapping[str, object]]) -> RawInvento
         _required_identifier(row["source_doi"], f"row {i} source_doi")
         _required_identifier(row["plant_id"], f"row {i} plant_id")
 
-        _finite_numeric(row["flowering_day"], f"row {i} flowering_day")
+        if row.get("flowering_day") not in (None, ""):
+            _finite_numeric(row["flowering_day"], f"row {i} flowering_day")
         perfect = _finite_nonnegative(
             row["perfect_flower_count"], f"row {i} perfect_flower_count"
         )

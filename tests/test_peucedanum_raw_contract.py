@@ -108,3 +108,14 @@ def test_numeric_proximity_is_reported_but_not_used_before_source_model_reproduc
     assert result.qualitative_status == "PUBLISHED_REGIME_REPRODUCED"
     assert result.max_abs_difference_from_published == pytest.approx(0.10)
     assert result.numeric_tolerance_registered is False
+
+
+
+def test_flowering_day_is_optional_when_source_does_not_measure_it():
+    row = _row()
+    del row["flowering_day"]
+    inventory = validate_normalized_rows([row])
+    assert inventory.n_records == 1
+
+    with pytest.raises(ValueError, match="flowering_day must be finite"):
+        validate_normalized_rows([_row(flowering_day="not-a-number")])
