@@ -63,6 +63,12 @@ def build_receipt(
     normalized_bytes = rows_path.read_bytes()
     nr = json.loads(normalization_receipt_path.read_text(encoding="utf-8"))
     expected = json.loads(expectations_path.read_text(encoding="utf-8"))
+    normalized_sha256 = hashlib.sha256(normalized_bytes).hexdigest()
+    receipt_sha256 = hashlib.sha256(normalization_receipt_path.read_bytes()).hexdigest()
+    if normalized_sha256 != expected.get("normalized_csv_sha256"):
+        raise ValueError("Peucedanum normalized CSV SHA256 differs from verified bytes")
+    if receipt_sha256 != expected.get("normalization_receipt_sha256"):
+        raise ValueError("Peucedanum normalization receipt SHA256 differs from verified bytes")
     if nr.get("status") != "SOURCE_VERIFIED_MAPPING_APPLIED":
         raise ValueError("R1 audit requires source-verified normalized rows")
     if nr.get("normalized_rows") != expected["source_rows"]:
@@ -80,10 +86,8 @@ def build_receipt(
     return {
         **audit,
         "status": "EXACT_2025_ROW_SUPPORT_AUDITED_PRE_MODEL",
-        "normalized_file_sha256": hashlib.sha256(normalized_bytes).hexdigest(),
-        "normalization_receipt_sha256": hashlib.sha256(
-            normalization_receipt_path.read_bytes()
-        ).hexdigest(),
+        "normalized_file_sha256": normalized_sha256,
+        "normalization_receipt_sha256": receipt_sha256,
         "source_archive_sha256": expected["source_archive_sha256"],
         "claim_ceiling": (
             "source_row_support_only_not_fitted_selection_or_BALANCE_result"
