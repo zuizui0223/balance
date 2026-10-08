@@ -14,7 +14,8 @@
     "dense_min_density_flowering_plants_m2": "REQUIRED_BEFORE_USE",
     "min_patches_per_stratum": "REQUIRED_BEFORE_USE",
     "min_plants_per_arm_per_patch": "REQUIRED_BEFORE_USE",
-    "min_blocks_with_all_three_arms_per_patch": "REQUIRED_BEFORE_USE"
+    "min_blocks_with_all_three_arms_per_patch": "REQUIRED_BEFORE_USE",
+    "min_sites_with_both_density_strata": "REQUIRED_BEFORE_USE"
   },
   "claim_ceiling": "template_only_not_biological_effect_or_randomization_validation",
   "water_B0_context_id": "REQUIRED_BEFORE_USE",
