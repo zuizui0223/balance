@@ -10,6 +10,14 @@ Three published results address *different* components of the same system, in di
 2. **Sun & Huang (2015)**, *AoB PLANTS*, DOI 10.1093/aobpla/plv019: bract drainage (by physical basal perforation) increased seed predation in **five of six** populations, and the paper reported a site-by-treatment interaction for predation. This identifies a combined water-removal/perforation intervention; its water-only mechanism requires the separate B0 qualification protocol. These six treatment populations are **not** a paired 2013 density-randomization experiment.
 3. **Sun, Armbruster & Huang (2016)**, *Annals of Botany*, DOI 10.1093/aob/mcw097: floral relative exsertion was positively associated with both stigma pollen receipt and seed predation. The index `(flower_length-bract_height)/flower_length` is an anatomical composite, **not** direct water-to-oviposition-site clearance.
 
+### The key literature-induced support gap: 2015 deliberately avoided sparse patches
+
+Sun & Huang (2015) did not merely fail to include a density covariate: its Methods explicitly say the authors **tagged and sampled from dense patches in every population to reduce confounding from the Xia et al. (2013) density-dependent predation result**. The Methods sampled 40–60 inflorescences from 20 **dense** subplots per population and drained 20–30 inflorescences in each of six populations. Therefore no *within-study randomized wet-versus-drained contrast in sparse patches* is available for source-based reweighting, and 2015 cannot answer the proposed sparse-versus-dense water-treatment heterogeneity question.
+
+In 2015, `site × treatment` was statistically detected for **seed predation** (Table 2: χ²=36.782, df=5, p<0.0001), but **not** for final viable seed set (χ²=4.913, df=5, p=0.4265). The paper reports water-drainage-related seed predation increases in five of six sites. Site heterogeneity alone does not establish a density gradient: those experimental sites were sampled from dense patches, and site also includes climate, antagonist community and other contextual differences.
+
+This is a sharper empirical gap than simply noting three papers on the same organism. The required unobserved cells are *water-manipulated, method-qualified sparse patches*, with within-patch randomization and adequate independent patch replication. It is also a stronger novelty check: do not claim the 2015 seed predation effect or 2013 component Allee effect as newly discovered.
+
 The **open question** is whether the causal payoff of an already existing water-bearing bract defence varies systematically with predator encounter context, and **at what biological stage**: encounter, oviposition given encounter, or seed damage after verified deposition. The three source papers motivate the question; they have not jointly estimated its causal contrasts.
 
 ## Registered ecological alternatives and discriminating predictions
