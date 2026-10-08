@@ -28,5 +28,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: pedicularis-2013-dryad-source-discovery
-          path: |\n            release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json\n            release/generated/PEDICULARIS_2013_DRYAD_RAW_BYTE_RECEIPT_V1.json
-          if-no-files-found: error\n      - uses: actions/upload-artifact@v4\n        with:\n          name: pedicularis-2013-dryad-source-zip-if-accessible\n          path: release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip\n          if-no-files-found: warn
+          path: |
+            release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json
+            release/generated/PEDICULARIS_2013_DRYAD_RAW_BYTE_RECEIPT_V1.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pedicularis-2013-dryad-source-zip-if-accessible
+          path: release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip
+          if-no-files-found: warn
