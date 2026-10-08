@@ -136,6 +136,18 @@ def build_r1_row_support_audit(rows: Iterable[Mapping[str, object]]) -> dict:
         "analysis": "noninferential_raw_observation_support",
         "source_rows": len(rows),
         "observed_plot_year_cells": len(by_cell),
+        "source_fit_plot_year_cells": sum(
+            cell["differential_candidate_rows"] > 0 for cell in by_cell
+        ),
+        "observed_cells_without_source_fit_candidates": [
+            {
+                "year": cell["year"],
+                "population_id": cell["population_id"],
+                "source_rows": cell["source_rows"],
+            }
+            for cell in by_cell
+            if cell["differential_candidate_rows"] == 0
+        ],
         "year_counts": dict(sorted(year_counts.items())),
         "plot_counts": dict(sorted(plot_counts.items())),
         "missing_counts": {
