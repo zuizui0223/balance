@@ -70,3 +70,28 @@ def test_source_rows_validate_exact_category_and_legend():
     with pytest.raises(ValueError,match="source worksheet"):
         _source_rows(EXPECTED_FRUIT_HEADER,records,
                      EXPECTED_FRUIT_HEADER,EXPECTED_COUNTS_FRUIT)
+
+
+def test_frozen_real_source_concordance_keeps_independent_patch_gate_closed():
+    import json
+    from pathlib import Path
+    target = (Path(__file__).resolve().parents[1] /
+              "data/PEDICULARIS_2013_SOURCE_SEED_ANOVA_CONCORDANCE_V1.json")
+    data = json.loads(target.read_text(encoding="utf-8"))
+    assert data["source_sha256"] == SOURCE_SHA256
+    assert data["source_has_patch_id"] is False
+    assert data["source_has_plant_id"] is False
+    assert data["patch_clustered_inference_identifiable"] is False
+    assert data["causal_density_identified"] is False
+    assert data["published_F_matches_to_3_decimals"] == 18
+    assert data["fruit_biological_rows"] == 74
+    assert data["seed_biological_rows"] == 2930
+    assert data["missing_initial_seed_rows"] == 328
+    for name,model in data["replicated_seed_models"].items():
+        target_f = PUBLISHED_F[name]
+        assert model["n"] == target_f["n"]
+        assert model["residual_df"] == target_f["df_residual"]
+        for key in ("density","interaction"):
+            assert abs(model["F_"+key] - target_f[key]) < 0.00055
+        alt = "F_size" if name.startswith("Table2") else "F_year"
+        assert abs(model[alt] - target_f["factor"]) < 0.00055
