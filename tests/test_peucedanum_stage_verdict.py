@@ -121,3 +121,16 @@ def test_even_positive_screen_is_never_causal_promotion():
     assert positive["q_below_0_05"]==1
     assert result["independent_ecological_discovery"] is False
     assert result["BALANCE_worldline_occupancy_identified"] is False
+
+def test_one_ulp_bh_roundoff_allowed_but_material_q_change_rejected():
+    s,r,a=receipts()
+    group=a["variants"]["log_male_count_all_pairs"]
+    eligible=[x for x in group["cells"] if x.get("p_normal_hc3") is not None]
+    # BH should equal p for a constant p vector, but JSON float
+    # roundoff can make stored q 1e-15 smaller than p.
+    eligible[0]["q_bh_within_variant"]=eligible[0]["p_normal_hc3"]-1e-15
+    out=adjudicate_stage_exploration(s,r,a)
+    assert out["status"]=="EXPLORATORY_REPORT_COMPLETED_NOT_CONFIRMATORY"
+    eligible[0]["q_bh_within_variant"]=0.249
+    with pytest.raises(ValueError, match="BH-adjusted q differs"):
+        adjudicate_stage_exploration(s,r,a)
