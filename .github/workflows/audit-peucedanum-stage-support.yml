@@ -1,5 +1,5 @@
 name: Audit Peucedanum stage support
-on:
+'on':
   push:
     branches:
       - analysis/peucedanum-stage-selection-20261008
