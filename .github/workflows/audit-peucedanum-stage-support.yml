@@ -23,8 +23,7 @@ jobs:
           curl -L --fail --retry 3 --retry-delay 2 \
             'https://eprints.lib.hokudai.ac.jp/repo/huscap/all/95572/Kudo%24Shibata_JEcol_Data.zip' \
             -o 'Kudo$Shibata_JEcol_Data.zip'
-          printf '%s  %s
-' '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' 'Kudo$Shibata_JEcol_Data.zip' | sha256sum -c -
+          printf '%s  %s\n' '07d9f718d58b795553d50c2cb2b33e9a7dd3df9e34b5c1757ed55d5674c777ca' 'Kudo$Shibata_JEcol_Data.zip' | sha256sum -c -
       - name: Normalize verified survey
         run: |
           python scripts/ingest_peucedanum_raw.py normalize 'Kudo$Shibata_JEcol_Data.zip' \
