@@ -1,0 +1,91 @@
+{
+  "schema_version": "PEDICULARIS_2013_FRUIT_INTEGER_DENOMINATOR_FREEZE_V1",
+  "status": "EXACT_SOURCE_ARITHMETIC_ONLY_NO_FRUIT_COUNT_IMPUTATION",
+  "source_article_doi": "10.1098/rsbl.2013.0387",
+  "source_dataset_doi": "10.5061/dryad.6cv06",
+  "original_workbook_sha256": "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380",
+  "original_workbook_bytes": 89597,
+  "tolerance_percentage_points": 0.0051,
+  "biological_rows": 74,
+  "by_year": {
+    "2005": {
+      "source_rows": 16,
+      "joint_integer_chain_compatible": 15,
+      "fruit_set_integer_incompatible": 1,
+      "predation_given_compatible_fruit_incompatible": 0
+    },
+    "2011": {
+      "source_rows": 58,
+      "joint_integer_chain_compatible": 39,
+      "fruit_set_integer_incompatible": 3,
+      "predation_given_compatible_fruit_incompatible": 16
+    }
+  },
+  "joint_integer_chain_compatible": 54,
+  "not_jointly_integer_compatible": 20,
+  "fruit_set_integer_incompatible_source_excel_rows": [
+    16,
+    57,
+    68,
+    72
+  ],
+  "predation_given_compatible_fruit_incompatible_source_excel_rows": [
+    19,
+    20,
+    22,
+    25,
+    28,
+    29,
+    33,
+    35,
+    36,
+    39,
+    42,
+    46,
+    47,
+    54,
+    60,
+    61
+  ],
+  "examples": [
+    {
+      "source_excel_row": 16,
+      "year": 2005,
+      "density": "dense",
+      "flowers": 44,
+      "fruit_set_percent": 77.73,
+      "nearest_integer_fruits": 34,
+      "absolute_error_percentage_points": 0.4572727272727377
+    },
+    {
+      "source_excel_row": 57,
+      "year": 2011,
+      "density": "dense",
+      "flowers": 90,
+      "fruit_set_percent": 96.15,
+      "nearest_integer_fruits": 87,
+      "absolute_error_percentage_points": 0.5166666666666657
+    },
+    {
+      "source_excel_row": 68,
+      "year": 2011,
+      "density": "sparse",
+      "flowers": 95,
+      "fruit_set_percent": 62.86,
+      "nearest_integer_fruits": 60,
+      "absolute_error_percentage_points": 0.2978947368421032
+    },
+    {
+      "source_excel_row": 72,
+      "year": 2011,
+      "density": "sparse",
+      "flowers": 40,
+      "fruit_set_percent": 65.63,
+      "nearest_integer_fruits": 26,
+      "absolute_error_percentage_points": 0.6299999999999955
+    }
+  ],
+  "source_data_are_wrong": false,
+  "fruit_ANCOVA_original_covariate_verified": false,
+  "claim_ceiling": "conditional_arithmetic_compatibility_without_original_fruit_count_or_patch_membership"
+}
