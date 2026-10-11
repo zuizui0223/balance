@@ -87,5 +87,10 @@
   ],
   "source_data_are_wrong": false,
   "fruit_ANCOVA_original_covariate_verified": false,
-  "claim_ceiling": "conditional_arithmetic_compatibility_without_original_fruit_count_or_patch_membership"
+  "claim_ceiling": "conditional_arithmetic_compatibility_without_original_fruit_count_or_patch_membership",
+  "loose_stress_test_tolerance_percentage_points": 0.1,
+  "loose_stress_test_joint_integer_compatible": 54,
+  "loose_stress_test_not_compatible": 20,
+  "minimum_absolute_fruit_set_fraction_gap_in_four_incompatible_records_pp": 0.2978947368421032,
+  "minimum_absolute_predation_fraction_gap_in_sixteen_incompatible_records_pp": 0.10638297872340452
 }
