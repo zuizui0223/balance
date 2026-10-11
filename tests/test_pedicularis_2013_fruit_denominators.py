@@ -81,3 +81,32 @@ def test_frozen_tolerance_and_exact_category_counts():
         audit_fruit_denominators(rows)
     with pytest.raises(ValueError, match="74"):
         audit_fruit_denominators(rows[:-1])
+
+
+
+def test_frozen_exact_original_source_manifest_is_inference_bounded():
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    freeze = json.loads((root /
+        "data/PEDICULARIS_2013_FRUIT_INTEGER_DENOMINATOR_FREEZE_V1.json"
+    ).read_text(encoding="utf-8"))
+    assert freeze["original_workbook_sha256"] == (
+        "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380")
+    assert freeze["biological_rows"] == 74
+    assert freeze["joint_integer_chain_compatible"] == 54
+    assert freeze["not_jointly_integer_compatible"] == 20
+    assert freeze["fruit_set_integer_incompatible_source_excel_rows"] == [16,57,68,72]
+    assert freeze["predation_given_compatible_fruit_incompatible_source_excel_rows"] == [
+        19,20,22,25,28,29,33,35,36,39,42,46,47,54,60,61]
+    assert freeze["by_year"]["2011"]["predation_given_compatible_fruit_incompatible"] == 16
+    assert freeze["fruit_ANCOVA_original_covariate_verified"] is False
+    assert freeze["source_data_are_wrong"] is False
+
+
+def test_tolerance_has_no_independent_fruit_production_claim():
+    original = fixture_rows()
+    out = audit_fruit_denominators(original)
+    assert out["fruit_production_count_identified_as_source_variable"] is False
+    assert out["published_fruit_ANCOVA_covariate_reconstructed"] is False
+    assert out["observed_rates_changed_or_imputed"] is False
