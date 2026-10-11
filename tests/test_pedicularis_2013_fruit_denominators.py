@@ -96,6 +96,10 @@ def test_frozen_exact_original_source_manifest_is_inference_bounded():
     assert freeze["biological_rows"] == 74
     assert freeze["joint_integer_chain_compatible"] == 54
     assert freeze["not_jointly_integer_compatible"] == 20
+    assert freeze["loose_stress_test_joint_integer_compatible"] == 54
+    assert freeze["loose_stress_test_not_compatible"] == 20
+    assert freeze["minimum_absolute_fruit_set_fraction_gap_in_four_incompatible_records_pp"] > 0.29
+    assert freeze["minimum_absolute_predation_fraction_gap_in_sixteen_incompatible_records_pp"] > 0.10
     assert freeze["fruit_set_integer_incompatible_source_excel_rows"] == [16,57,68,72]
     assert freeze["predation_given_compatible_fruit_incompatible_source_excel_rows"] == [
         19,20,22,25,28,29,33,35,36,39,42,46,47,54,60,61]
