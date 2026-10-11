@@ -19,7 +19,7 @@ The existing `scripts/adjudicate_pedicularis_2013_raw_workbook.py` now reproduce
 
 ## What still does *not* reproduce
 
-**The pooled 2005+2011 Table 1 fruit-set and fruit-predation ANCOVAs are not promoted as matched.** Their source paper includes plant-size and fruit-production covariates; the original XLSX has a `flowers` column and percentages, but does not provide an independent original fruit-production count nor an original analysis-script/missing-data specification. A post hoc reconstructed count from rounded percentages is not a verified covariate. Therefore the 24/24 claim is **explicitly restricted** to the six listed source models and two additional 2011 fruit-only models; it is **not full-article numerical reproduction**.
+**The pooled 2005+2011 Table 1 fruit-set and fruit-predation ANCOVAs are not promoted as fully matched.** They require plant-size and fruit-production covariates, respectively. The follow-up [fruit-set ANCOVA audit](PEDICULARIS_2013_FRUIT_SET_ANCOVA_PARTIAL_REPRODUCTION_V1.md) uses the deposited `flowers` column as the assumed plant-size covariate and matches **3/4** printed F values; the interaction is **0.080051** rather than **0.355**. The fruit-predation ANCOVA separately lacks an independent original fruit-production count. A post hoc reconstructed count from percentages is not a verified covariate. The 24/24 receipt remains restricted to its eight models; the additional check must be reported as **3/4**, not silently combined into an all-matched set. This is not full-article reproduction.
 
 ## Reproduction is not independent patch-level uncertainty
 
@@ -61,3 +61,10 @@ python scripts/adjudicate_pedicularis_2013_raw_workbook.py \
 The command requires the exact workbook checksum and the installed `artifact_tool` interface for XLSX import. Tests for the pure-standard-library effect-coded OLS and the frozen numerical source receipt run in baseline GitHub CI. **Do not count the 2011 fruit extension as an independent biological dataset from the 2013 seed analysis**.
 
 Original source: https://pmc.ncbi.nlm.nih.gov/articles/PMC3971674/
+
+## New fruit-denominator qualification (2026-10-11)
+
+An independent **exact-XLSX percentage-arithmetic audit** (`docs/PEDICULARIS_2013_FRUIT_COUNT_DENOMINATOR_AUDIT_V1.md`) checked whether the original `fruit set (%)` could be inverted into a *unique integer fruit production count* using the deposited `flowers` count. With a conservative ±0.0051 percentage-point rounding allowance, **4/74** rows have no such fruit count. Among the other 70 rows, **16 more** have a fruit predation percentage incompatible with any integer damaged-fruit numerator out of the reconstructed fruit set count. Joint integer-chain support is therefore **54/74**, but these are conditional arithmetic tests, **not proven source errors**. The discrepancy is mainly in 2011.
+
+The original 24/24 F-value reproduction **remains valid** because it uses observed percentages, never a reconstructed numerator. These incompatibilities reinforce the strict HOLD on reconstructed fruit-production covariates for the pooled Table 1 **fruit-predation** ANCOVA. The fruit-set ANCOVA has a separate 3/4 partial replay using recorded flowers. Original analysis code, field-count/censoring definitions and `flower→plant→patch` IDs remain needed to resolve the outstanding questions. No source correction or new biological inference is claimed.
+

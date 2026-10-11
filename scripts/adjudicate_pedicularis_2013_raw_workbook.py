@@ -133,6 +133,93 @@ def anova_two_factor(rows, outcome, factor):
     }
 
 
+def ancova_fruit_set(rows):
+    """One fixed, unclustered pooled model using the recorded flower count.
+
+    Fruit-set percentage ~ 1 + year + density + year*density + flowers.
+    Factors use +/-1 sum coding; flower count is mean-centered. Interpreting
+    recorded flowers as the paper's plant-size covariate is conditional.
+    No fruit-production counts or alternative specifications are generated.
+    """
+    rows = list(rows)
+    if len(rows) < 6:
+        raise ValueError("insufficient ANCOVA outcome support")
+    for row in rows:
+        if not isinstance(row, (list, tuple)) or len(row) != 6:
+            raise ValueError("ANCOVA requires six source columns")
+        if any(isinstance(row[j], bool) or row[j] not in (1, 2)
+               for j in (0, 1, 2)):
+            raise ValueError("source group factor code invalid")
+        for j in (3, 4):
+            if (isinstance(row[j], bool)
+                    or not isinstance(row[j], (int, float))
+                    or not math.isfinite(row[j])):
+                raise ValueError("ANCOVA flowers and fruit set must be finite")
+        if row[3] <= 0 or row[3] != int(row[3]):
+            raise ValueError("flowers must be a positive integer count")
+        if not 0 <= row[4] <= 100:
+            raise ValueError("fruit-set percentage outside [0,100]")
+    n, k = len(rows), 5
+    flower_mean = math.fsum(r[3] for r in rows) / n
+    x = [[1.0, float(2*r[0]-3), float(2*r[1]-3),
+          float((2*r[0]-3)*(2*r[1]-3)), float(r[3]-flower_mean)]
+         for r in rows]
+    y = [float(r[4]) for r in rows]
+    gram = [[math.fsum(v[i]*v[j] for v in x) for j in range(k)]
+            for i in range(k)]
+    inv = _invert(gram)
+    xy = [math.fsum(v[i]*yy for v, yy in zip(x, y)) for i in range(k)]
+    beta = [math.fsum(inv[i][j]*xy[j] for j in range(k))
+            for i in range(k)]
+    rss = math.fsum((yy-math.fsum(a*b for a, b in zip(v, beta)))**2
+                    for v, yy in zip(x, y))
+    df = n-k
+    if rss <= 1e-24*max(1.0, math.fsum(yy*yy for yy in y)):
+        raise ValueError("degenerate outcome, no residual uncertainty")
+    mse = rss/df
+    terms = ("year", "density", "interaction", "flowers")
+    stats = {name: beta[i]**2/(mse*inv[i][i])
+             for i, name in enumerate(terms, 1)}
+    if any(not math.isfinite(s) or s < 0 for s in stats.values()):
+        raise ValueError("nonfinite F statistic")
+    return {
+        "n": n, "df_residual": df, "F": stats,
+        "residual_sum_of_squares": rss,
+        "flower_covariate_mean": flower_mean,
+        "inferential_unit": "FRUIT_SHEET_SPIKE_ROW_UNCLUSTERED",
+        "patch_cluster_robust": False,
+    }
+
+
+def compare_fruit_set_ancova(stats):
+    """Retain all four printed Table 1 comparisons, including mismatches."""
+    published = {"year": 67.671, "density": 2.945,
+                 "interaction": 0.355, "flowers": 3.855}
+    if not isinstance(stats, dict) or set(stats) != set(published):
+        raise ValueError("exactly four fruit-set ANCOVA F comparisons required")
+    comparisons = {}
+    for name, target in published.items():
+        actual = stats[name]
+        if (isinstance(actual, bool) or not isinstance(actual, (int, float))
+                or not math.isfinite(actual) or actual < 0):
+            raise ValueError("nonfinite or invalid ANCOVA F comparison")
+        difference = actual-target
+        comparisons[name] = {
+            "published_F": target, "recomputed_F": actual,
+            "difference": difference,
+            "matches_printed_precision": abs(difference) <= 0.0005,
+        }
+    matched = sum(c["matches_printed_precision"] for c in comparisons.values())
+    status = ("ALL_F_REPRODUCED_CONDITIONAL_ON_FLOWER_COVARIATE" if matched == 4
+              else "PARTIAL_REPRODUCTION_HOLD" if matched else "NOT_REPRODUCED_HOLD")
+    return {
+        "status": status, "comparisons": comparisons,
+        "matched_F_count": matched, "attempted_F_count": 4,
+        "all_F_reproduced": matched == 4,
+        "printed_F_absolute_tolerance": 0.0005,
+    }
+
+
 def _source_rows(header, data, expected_header, group_count):
     if list(header) != expected_header:
         raise ValueError("published source workbook column schema changed")

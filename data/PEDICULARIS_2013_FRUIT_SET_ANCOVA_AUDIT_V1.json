@@ -1,0 +1,81 @@
+{
+  "all_F_reproduced": false,
+  "analysis_status": "post-publication computational audit; no pre-outcome ecological confirmation",
+  "attempted_F_count": 4,
+  "causal_density_effect_identified": false,
+  "claim_ceiling": "fixed conditional source-statistic replay only; retain every mismatch; no original-code or patch-level causal identification",
+  "comparisons": {
+    "density": {
+      "difference": 8.436857768856498e-06,
+      "matches_printed_precision": true,
+      "published_F": 2.945,
+      "recomputed_F": 2.9450084368577687
+    },
+    "flowers": {
+      "difference": 0.00045824955195827854,
+      "matches_printed_precision": true,
+      "published_F": 3.855,
+      "recomputed_F": 3.8554582495519583
+    },
+    "interaction": {
+      "difference": -0.2749488706258843,
+      "matches_printed_precision": false,
+      "published_F": 0.355,
+      "recomputed_F": 0.0800511293741157
+    },
+    "year": {
+      "difference": 0.0004204891970829294,
+      "matches_printed_precision": true,
+      "published_F": 67.671,
+      "recomputed_F": 67.67142048919709
+    }
+  },
+  "conditional_covariate_assumption": "recorded flowers represents the published plant-size covariate",
+  "existing_24F_receipt_scope_changed": false,
+  "factor_coding": "year and density use 2*source_code-3; interaction is their product",
+  "fruit_predation_ANCOVA_reproduced": false,
+  "fruit_production_counts_reconstructed": false,
+  "matched_F_count": 3,
+  "model": {
+    "F": {
+      "density": 2.9450084368577687,
+      "flowers": 3.8554582495519583,
+      "interaction": 0.0800511293741157,
+      "year": 67.67142048919709
+    },
+    "df_residual": 69,
+    "flower_covariate_mean": 57.58108108108108,
+    "inferential_unit": "FRUIT_SHEET_SPIKE_ROW_UNCLUSTERED",
+    "n": 74,
+    "patch_cluster_robust": false,
+    "residual_sum_of_squares": 8425.593347792403
+  },
+  "model_formula": "recorded fruit-set percent ~ 1 + year + density + year:density + centered recorded flowers",
+  "number_of_specifications_tested": 1,
+  "observed_rates_changed_or_imputed": false,
+  "original_SPSS_specification_independently_verified": false,
+  "original_source_bytes_verified": true,
+  "patch_clustered_inference_identified": false,
+  "printed_F_absolute_tolerance": 0.0005,
+  "schema_version": "PEDICULARIS_2013_FRUIT_SET_ANCOVA_AUDIT_V1",
+  "source_article_doi": "10.1098/rsbl.2013.0387",
+  "source_biological_excel_rows": [
+    2,
+    75
+  ],
+  "source_dataset_doi": "10.5061/dryad.6cv06",
+  "source_group_counts": {
+    "2005_dense_large": 10,
+    "2005_sparse_large": 6,
+    "2011_dense_large": 25,
+    "2011_dense_small": 7,
+    "2011_sparse_large": 17,
+    "2011_sparse_small": 9
+  },
+  "source_paper_error_established": false,
+  "source_sheet": "fruit set and fruit predation",
+  "source_workbook_bytes": 89597,
+  "source_workbook_md5": "10a98383677bbd2a01e19a86c350fdd3",
+  "source_workbook_sha256": "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380",
+  "status": "PARTIAL_REPRODUCTION_HOLD"
+}
