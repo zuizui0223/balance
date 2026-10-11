@@ -76,6 +76,18 @@ def audit_fruit_denominators(rows, *,
         fruit_candidates = _possible_numerators(
             fruit_pct, n_flowers, tolerance
         )
+        fruit_min_gap = min(
+            abs(100.0*k/n_flowers - fruit_pct)
+            for k in range(n_flowers+1)
+        )
+        # An intentionally loose *stress test*, twenty times a rounded
+        # two-decimal percentage unit. This does not repair any source value.
+        loose_fruit = _possible_numerators(fruit_pct, n_flowers, 0.1)
+        loose_pred = (
+            _possible_numerators(pred_pct, loose_fruit[0], 0.1)
+            if len(loose_fruit) == 1 and loose_fruit[0] > 0
+            else []
+        )
         pred_candidates = (
             _possible_numerators(pred_pct, fruit_candidates[0], tolerance)
             if len(fruit_candidates) == 1 and fruit_candidates[0] > 0
@@ -102,6 +114,10 @@ def audit_fruit_denominators(rows, *,
         by_year[yr][status] += 1
         data.append({
             "source_xlsx_row": source_row,
+            "nearest_fruit_set_integer_fraction_error_pct_points": fruit_min_gap,
+            "joint_chain_compatible_at_loose_0_1_pct_point_tolerance": (
+                len(loose_fruit) == 1 and len(loose_pred) == 1
+            ),
             "year": yr, "density": density, "size": size,
             "flowers_recorded": n_flowers,
             "fruit_set_rate_percent_recorded": fruit_pct,
@@ -138,6 +154,11 @@ def audit_fruit_denominators(rows, *,
         "source_row_records":data,
         "joint_chain_support_rows":status_counts[
             "JOINT_INTEGER_CHAIN_COMPATIBLE_NOT_INDEPENDENTLY_VERIFIED"],
+        "loose_rounding_stress_test_tolerance_pct_points": 0.1,
+        "loose_rounding_stress_test_joint_support_rows": sum(
+            r["joint_chain_compatible_at_loose_0_1_pct_point_tolerance"]
+            for r in data
+        ),
         "fruit_production_count_identified_as_source_variable":False,
         "fruit_predation_denominator_independently_verified":False,
         "published_fruit_ANCOVA_covariate_reconstructed":False,
