@@ -29,6 +29,8 @@ For each original biological row (Excel fruit-sheet rows **2–75**, 74 observat
 
 Therefore **20/74** recorded rows cannot support the full proposed nested integer reconstruction at ±0.0051 pp, with most of the disagreement in 2011. These are not 20 proven data errors and are not proof that the source ANOVA was miscomputed: the reproduced ANOVA uses the recorded percentages directly, without reconstructing counts.
 
+**Rounding stress test:** even relaxing the percentage tolerance to **±0.1 percentage points** (about twenty times the two-decimal rounding allowance) yields the *same* **54/74 joint-compatible** rows and the *same* 20 incompatible records. Among the four incompatible fruit-set rows, the smallest distance to any legal integer count ratio is **0.2979 pp**. Among the 16 additional incompatible predation rows with a uniquely compatible fruit count, the smallest distance to any legal integer damaged-fruit ratio is **0.1064 pp**. This confirms that ordinary two-decimal rounding alone is inadequate under the single-cohort denominator assumption; it does not prove field errors or identify the true separate denominator.
+
 The four *fruit-set* contradictions alone are particularly clear (Excel row indices, **not** 2013 patch IDs):
 
 | Source Excel row | Year/density | Registered `flowers` | Fruit set (%) | Nearest integer `F` | Error from recorded percent (pp) |
