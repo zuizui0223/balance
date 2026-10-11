@@ -29,6 +29,34 @@ def audit_source(workbook_file: Path) -> dict:
     rows, counts = _source_rows(original[0], original[1:],
                                 EXPECTED_FRUIT_HEADER, EXPECTED_COUNTS_FRUIT)
     result = audit_fruit_denominators(rows)
+    freeze_path = (
+        Path(__file__).resolve().parents[1]
+        / "data/PEDICULARIS_2013_FRUIT_INTEGER_DENOMINATOR_FREEZE_V1.json"
+    )
+    freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
+    if (freeze.get("original_workbook_sha256") != SOURCE_SHA256
+            or freeze.get("biological_rows") != len(rows)
+            or freeze.get("tolerance_percentage_points")
+            != result["rate_tolerance_percent_points"]):
+        raise ValueError("integer denominator frozen source contract differs")
+    if (freeze.get("fruit_set_integer_incompatible_source_excel_rows")
+            != result["fruit_set_rate_not_supported_by_integer_count_rows"]
+            or freeze.get("predation_given_compatible_fruit_incompatible_source_excel_rows")
+            != result["predation_not_supported_conditional_on_fruit_count_rows"]
+            or freeze.get("joint_integer_chain_compatible")
+            != result["joint_chain_support_rows"]):
+        raise ValueError("source denominator inconsistency positions drifted")
+    for year in ("2005", "2011"):
+        actual = result["counts_by_year"][year]
+        expected = freeze["by_year"][year]
+        if (actual.get("JOINT_INTEGER_CHAIN_COMPATIBLE_NOT_INDEPENDENTLY_VERIFIED", 0)
+            != expected["joint_integer_chain_compatible"]
+            or actual.get("FRUIT_SET_DENOMINATOR_NOT_INTEGER_COMPATIBLE", 0)
+            != expected["fruit_set_integer_incompatible"]
+            or actual.get("PREDATION_NOT_COMPATIBLE_WITH_FRUIT_SET_COUNT", 0)
+            != expected["predation_given_compatible_fruit_incompatible"]):
+            raise ValueError("source denominator status by year drifted")
+    result["frozen_source_row_diagnostic_validated"] = True
     result["source_group_counts"] = counts
     result["original_source_bytes_sha256_verified"] = True
     return result
