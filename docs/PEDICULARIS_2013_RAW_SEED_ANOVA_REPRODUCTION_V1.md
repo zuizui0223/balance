@@ -91,3 +91,10 @@ Request from the authors a **row-to-plant/inflorescence-to-patch crosswalk** wit
 Reproducer: `scripts/adjudicate_pedicularis_2013_raw_workbook.py` (uses installed `artifact_tool` for XLSX import and standard-library fixed-effect OLS); raw-binary source receipt: `scripts/retrieve_pedicularis_2013_dryad_bytes.py`. Source test suite includes synthetic algebraic contrast oracles and digest/source-category guards.
 
 Original article: https://pmc.ncbi.nlm.nih.gov/articles/PMC3971674/
+
+## New fruit-denominator qualification (2026-10-11)
+
+An independent **exact-XLSX percentage-arithmetic audit** (`docs/PEDICULARIS_2013_FRUIT_COUNT_DENOMINATOR_AUDIT_V1.md`) checked whether the original `fruit set (%)` could be inverted into a *unique integer fruit production count* using the deposited `flowers` count. With a conservative ±0.0051 percentage-point rounding allowance, **4/74** rows have no such fruit count. Among the other 70 rows, **16 more** have a fruit predation percentage incompatible with any integer damaged-fruit numerator out of the reconstructed fruit set count. Joint integer-chain support is therefore **54/74**, but these are conditional arithmetic tests, **not proven source errors**. The discrepancy is mainly in 2011.
+
+The original 24/24 F-value reproduction **remains valid** because it uses observed percentages, never a reconstructed numerator. These incompatibilities reinforce the strict HOLD on reconstructed fruit-production covariates for the pooled Table 1 ANCOVAs. Separate field-count/censoring definitions and `flower→plant→patch` IDs must be requested. No additional ANOVA reproduction, source correction or biological inference is claimed.
+
