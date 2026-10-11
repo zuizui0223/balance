@@ -40,11 +40,11 @@ Using the original percentage measurements, fit ordinary least squares with two 
 
 **18/18 of these printed F statistics match** the article to 3 decimals. This is not an inference about the true number of independent density replicates: it is a reproducibility check that identifies a row-level statistical computation capable of recreating the published analysis.
 
-The last two decimal places of each original F are determined by source percentage precision and numerical method; replication must not be presented as a second biological study. Fruit-related Table 1 covariate models are **not** included in the 18/18 result because the published fruit-production covariate is not independently present in the source XLSX; do not imply full article/fruit-model reproduction.
+Replication must not be presented as a second biological study. Fruit-related Table 1 covariate models are outside this 18/18 seed-only scope. The fruit-predation model lacks an independently recorded fruit-production covariate; the [separate fruit-set audit](PEDICULARIS_2013_FRUIT_SET_ANCOVA_PARTIAL_REPRODUCTION_V1.md) tests observed flower number as plant size and matches 3/4 F values. Neither this receipt nor the later completed 24F subset implies full-article reproduction.
 
-## A second, independent result: all missing initial seed rates are fully predated records
+## Source missingness: all missing initial rates are coded as 100% predation
 
-**328/328 missing initial seed-rate rows** have `seed predation = 100%` and `final seed set = 0%`. Missingness is therefore strongly tied to reproductive loss, **not an uninformative missing-at-random draw**. Density and year additionally predict which rows have missing initial seed rates.
+**328/328 missing initial seed-rate rows** are coded as `seed predation = 100%` and `final seed set = 0%`. Original initial seed formation is unascertainable from these records. Missingness is associated with the recorded outcomes and differs by density/year; the file does not independently establish the cause of every missing value or a formal missing-data mechanism conditional on all relevant variables.
 
 | Original cell | Initial rate missing | Missing fraction | Mean initial rate among measurable flowers | Conservative all-flower initial mean bound |
 | --- | ---: | ---: | ---: | ---: |
@@ -55,11 +55,11 @@ The last two decimal places of each original F are determined by source percenta
 
 The bounds are **not imputations**: they ask only what the overall mean would range over if each missing initial seed rate could lie anywhere from 0% to 100%. Under no further assumptions, 2011's dense-minus-sparse initial seed-mean contrast lies in **[-20.56,+6.50] percentage points**; its sign is **not identified**. The 2005 analogous interval is [-6.37,+4.08] points. These ranges are arithmetic outer bounds, not population confidence intervals and **do not** include patch-level sampling uncertainty.
 
-The biological interpretation matters. The paper's methods count both intact and recognizable predated seeds in **initial seed set**, but code `seed predation = 100%` if no distinguishable seeds can be recovered (Xia et al. 2013, Methods). When original seed identity is fully destroyed, the pre-attack number of formed seeds is unobservable. Hence replacing the missing initial value with **zero** would conflate lack of fertilization with complete post-fertilization destruction. Conversely, excluding all these flowers from an early-stage causal comparison preferentially retains less-predated flowers, especially in sparse 2011 patches.
+The paper's methods count intact and recognizable predated seeds in **initial seed set**, but assign `seed predation = 100%` when no distinguishable seeds are found (Xia et al. 2013, Methods). The recorded code does not independently reveal the pre-attack seed count or establish complete destruction as the cause in every case. Replacing a missing initial value with **zero** would assume absence of initial seed formation even though later destruction is another possible explanation. Excluding these rows instead selects on whether initial seed formation remains ascertainable, with especially unequal missingness in sparse and dense 2011 patches.
 
 This does not negate the measured **final seed-set** result (those rows have observed final zero and remain in the final outcome model). It does limit the statement "initial seed set is independent of density" to **the set of flowers for which initial seed count remained ascertainable**. To identify true early seed production separately from later predation would require a prospective seed-development measurement before enemy destruction or justified missing-value assumptions. The dataset alone does not identify pollination and predation as separable causal pathways.
 
-The source-bound script now includes `initial_seed_missingness_bounds` and a fail-closed test for the all-destroyed missingness pattern. No biological values are filled in.
+The source-bound script includes `initial_seed_missingness_bounds` and a test for the recorded 100%-predation/zero-final-rate pattern. No biological values are filled in.
 
 ## Key inferential limitation now proven at the source-file level
 
@@ -96,5 +96,5 @@ Original article: https://pmc.ncbi.nlm.nih.gov/articles/PMC3971674/
 
 An independent **exact-XLSX percentage-arithmetic audit** (`docs/PEDICULARIS_2013_FRUIT_COUNT_DENOMINATOR_AUDIT_V1.md`) checked whether the original `fruit set (%)` could be inverted into a *unique integer fruit production count* using the deposited `flowers` count. With a conservative ±0.0051 percentage-point rounding allowance, **4/74** rows have no such fruit count. Among the other 70 rows, **16 more** have a fruit predation percentage incompatible with any integer damaged-fruit numerator out of the reconstructed fruit set count. Joint integer-chain support is therefore **54/74**, but these are conditional arithmetic tests, **not proven source errors**. The discrepancy is mainly in 2011.
 
-The original 24/24 F-value reproduction **remains valid** because it uses observed percentages, never a reconstructed numerator. These incompatibilities reinforce the strict HOLD on reconstructed fruit-production covariates for the pooled Table 1 ANCOVAs. Separate field-count/censoring definitions and `flower→plant→patch` IDs must be requested. No additional ANOVA reproduction, source correction or biological inference is claimed.
+The original 24/24 F-value reproduction **remains valid** because it uses observed percentages, never a reconstructed numerator. These incompatibilities reinforce the strict HOLD on reconstructed fruit-production covariates for the pooled Table 1 **fruit-predation** ANCOVA. The fruit-set ANCOVA has a separate 3/4 partial replay using recorded flowers. Original analysis code, field-count/censoring definitions and `flower→plant→patch` IDs remain needed to resolve the outstanding questions. No source correction or new biological inference is claimed.
 

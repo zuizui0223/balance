@@ -4,11 +4,11 @@
 
 ## Why this is a new forensic question
 
-Existing BALANCE source work reproduced **24/24** original Xia, Sun & Liu (2013) published Table 1 seed and Table 2 seed/fruit F statistics, and demonstrated that the 2013 XLSX has **no plant/patch identity**. The remaining 2005+2011 **Table 1 fruit ANCOVAs** use observed `flowers` (plant size) and **fruit production** covariates, but the deposited fruit worksheet gives only `flowers`, `fruit set (%)` and `fruit predation (%)`, not a separate exact fruit production count.
+Existing BALANCE source work reproduced **24/24** original Xia, Sun & Liu (2013) published Table 1 seed and Table 2 seed/fruit F statistics, and demonstrated that the 2013 XLSX has **no plant/patch identity**. The pooled 2005+2011 Table 1 models use **plant size for fruit set** and **fruit production for fruit predation**, respectively. The deposited fruit worksheet contains `flowers`, `fruit set (%)` and `fruit predation (%)`, but no separate exact fruit-production count. Missing fruit production directly blocks the fruit-predation model; the fruit-set model can be tested conditionally using observed flower number as plant size.
 
 A tempting strategy is to reconstruct integer fruit production by `round(flowers * fruit_set / 100)`. **We tested whether this is licensed by the actual recorded percentages**, rather than postulating that a rounded value equals its originally measured count.
 
-Original source: [Xia et al. (2013)](https://doi.org/10.1098/rsbl.2013.0387), Dryad [10.5061/dryad.6cv06](https://doi.org/10.5061/dryad.6cv06), raw workbook SHA256 `d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380` (89,597 bytes). The published Methods define fruit set as fruit count / flower count and fruit predation as damaged fruits / produced fruits. The source XLSX is not itself an original field book.
+Original source: [Xia et al. (2013)](https://doi.org/10.1098/rsbl.2013.0387), Dryad [10.5061/dryad.6cv06](https://doi.org/10.5061/dryad.6cv06), raw workbook SHA256 `d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380` (89,597 bytes). The Methods report counting flowers and fruits per plant to calculate fruit set, and explicitly define fruit predation as damaged fruits divided by fruits per plant. This audit tests the conventional interpretation that the deposited flower count and both percentages refer to a common cohort. Count dates and eligibility rules are not independently established by the source XLSX, which is not an original field book.
 
 ## Conditional integer consistency, no imputation
 
@@ -46,13 +46,17 @@ An independent second-stage example: Excel row **19** has `flowers=40`, `fruit_s
 
 ## Scientific conclusion and manuscript consequence
 
-**What is established:** the raw source includes valid raw percentages that quantitatively reproduce the reported 24 F statistics; its fruit set/flower and fruit-predation/derived-fruit-rate chain is **not universally reconstructible as integer counts** from deposited columns under a normal rounding model. Neither true `fruit production` for all 74 stems nor a universally shared predation denominator can be independently recovered from this file.
+**What is established:** the source includes recorded percentages that quantitatively reproduce the reported 24 F statistics; its fruit set/flower and fruit-predation/derived-fruit-rate chain is **not universally reconstructible as integer counts** from deposited columns under a normal rounding model. Neither true `fruit production` for all 74 stems nor a universally shared predation denominator can be independently recovered from this file.
 
 **What is not established:** that 20 records have incorrect field values; that the original article's fruit ANCOVA is wrong; that any patch-level density effect is invalid; or that the source files measure different fruit cohorts. These are competing interpretations requiring field documentation.
 
 **Hard gate:** do **not** present `round(flowers*fruit_set/100)` as an original verified covariate, do not use that synthetic series to declare Table 1 fruit predation ANCOVA reproduced, and do not treat 70 valid-looking inversions as a calibration of the remaining four discrepancies. The original fruit **Table 2** F reproduction is unaffected because it models the recorded percentages with their original rows, not reconstructed fruit counts.
 
 For genuine completion, request the original `fruit production` count, count dates/censoring definitions, and a `flower/capsule → plant → patch` crosswalk. This is a different missing-data issue from the **328 missing initial seed-set percentages** already documented in the source audit. Both must be retained as separate evidence ceilings.
+
+## The fruit-set ANCOVA has now been tested separately
+
+A fixed pooled model using the recorded flower count as the assumed plant-size covariate reproduces **3/4** Table 1 fruit-set F values: year, density and flower count. Its year × density F is **0.080051**, compared with the published **0.355**. No fruit counts are needed or reconstructed for this check. The interaction's original analysis provenance remains unresolved; the result does not establish a paper error. See [the complete four-comparison audit](PEDICULARIS_2013_FRUIT_SET_ANCOVA_PARTIAL_REPRODUCTION_V1.md). Keep the completed 24F scope and this additional partial check explicit.
 
 ## Reproducibility
 
