@@ -44,7 +44,9 @@ def audit_source(workbook_file: Path) -> dict:
             or freeze.get("predation_given_compatible_fruit_incompatible_source_excel_rows")
             != result["predation_not_supported_conditional_on_fruit_count_rows"]
             or freeze.get("joint_integer_chain_compatible")
-            != result["joint_chain_support_rows"]):
+            != result["joint_chain_support_rows"]
+            or freeze.get("loose_stress_test_joint_integer_compatible")
+            != result["loose_rounding_stress_test_joint_support_rows"]):
         raise ValueError("source denominator inconsistency positions drifted")
     for year in ("2005", "2011"):
         actual = result["counts_by_year"][year]
