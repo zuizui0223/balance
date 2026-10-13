@@ -301,3 +301,20 @@ real Pedicularis Experiment B              NOT YET EXECUTED
 ```
 
 No biological claim is promoted by this protocol.
+
+## 2026-10-13 production-status clarification
+
+This historical V1 pilot plan is retained for provenance, but prior labels
+describing BITA Experiment-B PR #181/#182 as green and merely awaiting merge
+are **out of date**. Both PRs were closed **without merging** after the
+publication split. SCH PR #22 (Experiment-A power wrapper) was also closed
+unmerged, while SCH PR #21 (Experiment-A bundle) is still open. Do not
+report active production readiness based on this V1 table or on BALANCE
+synthetic handoff tests.
+
+A second pre-field correction is recorded in
+`data/PEDICULARIS_BALANCE_COMPARATOR_AMENDMENT_V2.json`: a fixed functional
+y1-vs-y0 gap is not the optimized uncosted union over {y0,y1}, and the
+exact SCH fixed-water baseline still requires source verification. These
+checks must be resolved before using the two-experiment plan for a strict
+structural BALANCE claim.

@@ -31,6 +31,8 @@ class PedicularisXYBalanceReceipt:
     dimensional_release_point: float
     bita_surface_status: str | None
     claim_level: str
+    comparison_scope: str = "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0"
+    structural_architecture_cost_identified: bool = False
 
     @property
     def legacy_state(self) -> str:
@@ -116,6 +118,17 @@ def consume_pedicularis_xy_surface(conflict: dict, xy: dict) -> PedicularisXYBal
     if not isinstance(worldlines, dict):
         raise ValueError("x-y receipt lacks worldlines")
     gap, glo, ghi = _three(worldlines.get("gap_y1_minus_y0"), "worldline_gap")
+
+    # A fixed y1-minus-y0 contrast may be negative. It is *not* the optimum
+    # over the union of y0 and y1, whose uncosted maximum contains y0.
+    # V1 handoffs omit comparison_scope, but an explicit incompatible scope
+    # must not be silently relabelled as fixed-state evidence.
+    declared_scope = worldlines.get("comparison_scope")
+    if declared_scope is not None and declared_scope != "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0":
+        raise ValueError(
+            "worldline comparison_scope must be fixed y1 minus y0; "
+            "a nested uncosted envelope cannot establish negative architecture value"
+        )
 
     rpoint, _, _ = _three(xy.get("dimensional_release"), "dimensional_release")
 

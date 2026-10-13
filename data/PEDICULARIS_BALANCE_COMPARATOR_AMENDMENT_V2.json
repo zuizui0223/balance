@@ -1,0 +1,64 @@
+{
+  "schema_version": "PEDICULARIS_BALANCE_COMPARATOR_AMENDMENT_V2",
+  "status": "PRE_FIELD_SEMANTIC_CORRECTION_NO_NEW_BIOLOGICAL_RECEIPT",
+  "supersedes_scope_in": "data/PEDICULARIS_FINAL_IDENTIFICATION_PROGRAM_V1.json#paper_receipts.BALANCE",
+  "reason": "The previously described max over (z,y0 or y1) option set nests the max over z at y0, and cannot yield a negative uncosted value gap on one objective.",
+  "v1_immutable_record_retained": true,
+  "registered_functional_comparison": {
+    "receipt_schema_version": "PEDICULARIS_XY_SURFACE_HANDOFF_V1",
+    "comparison_scope": "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0",
+    "baseline_y0": "water defence disabled / drained",
+    "focal_y1": "water defence active / protected",
+    "w_y0_star": "max_z W(z,y0)",
+    "w_y1_star": "max_z W(z,y1)",
+    "gap": "w_y1_star - w_y0_star",
+    "negative_gap_possible": true,
+    "claim_ceiling": "FUNCTIONAL_STATE_ONLY_NOT_STRUCTURAL_ARCHITECTURE",
+    "sch_water_baseline_alignment": "REQUIRED_INDEPENDENT_SOURCE_VERIFICATION_BEFORE_REAL_FIELD_PROMOTION",
+    "water_selectivity_and_handling": "B0_FEASIBILITY_REQUIRED_BEFORE_CAUSAL_WATER_EFFECT"
+  },
+  "uncosted_nested_envelope": {
+    "definition": "max_{z,y in {y0,y1}} W(z,y) - max_z W(z,y0)",
+    "contains_shared_feasible_set": true,
+    "negative_gap_possible": false,
+    "empirical_balanced_nesting_claim": "MATHEMATICAL_IMPOSSIBILITY_NOT_NEW_ECOLOGICAL_EVIDENCE"
+  },
+  "structural_comparison": {
+    "status": "NOT_IDENTIFIED_BY_FUNCTIONAL_Y0_VS_Y1_HANDOFF",
+    "required": "PROSPECTIVELY_REGISTERED_NON_NESTED_OR_COST_ADJUSTED_NET_ARCHITECTURES_ON_COMMON_FITNESS_SCALE",
+    "construction_or_maintenance_cost_measured": false,
+    "growth_or_architectural_phenotype_measured": false,
+    "architecture_value_promoted": false,
+    "frozen_design_effects_reestimated": false
+  },
+  "legacy_v1_consumer": {
+    "explicit_comparison_scope_is_optional_for_v1_handoff": true,
+    "reject_explicit_nested_envelope_as_y1_y0": true,
+    "underlying_surface_domain_verified_by_v1_consumer": false
+  },
+  "next_empirical_step": "Freeze and validate the SCH water baseline and Experiment-B fixed-state direction; for structural BALANCE, measure distinct architecture fitness net of measured costs or use another system.",
+  "causal_architecture_occupancy_claimed": false,
+  "implementation_checkpoint_2026_10_13": {
+    "bita_xy_exporter_pr": "https://github.com/zuizui0223/bita/pull/181",
+    "bita_xy_exporter_status": "CLOSED_UNMERGED_ARCHIVED_PROTOTYPE",
+    "bita_power_wrapper_pr": "https://github.com/zuizui0223/bita/pull/182",
+    "bita_power_wrapper_status": "CLOSED_UNMERGED",
+    "sch_experiment_a_bundle_pr": "https://github.com/zuizui0223/sch/pull/21",
+    "sch_experiment_a_bundle_status": "OPEN_UNMERGED",
+    "sch_experiment_a_power_pr": "https://github.com/zuizui0223/sch/pull/22",
+    "sch_experiment_a_power_status": "CLOSED_UNMERGED",
+    "active_bita_main_xy_producer_verified": false,
+    "real_experiment_b_worldline_receipt_available": false
+  },
+  "baseline_method_screen": {
+    "schema_version": "PEDICULARIS_SCH_XY_BASELINE_METHOD_V1",
+    "implementation": "balance_domain/pedicularis_baseline.py",
+    "runner": "scripts/evaluate_pedicularis_baseline.py",
+    "input_contract": "PRE_OUTCOME_WATER_METHOD_ONLY_NO_BIOLOGICAL_OUTCOMES",
+    "accepted_baseline": "SCH_FIXED_EQUALS_XY_Y0_DRY",
+    "status": "NO_REAL_FIELD_PROFILE_SCREEN_RUN",
+    "real_source_lineage_verification": false,
+    "active_producer_verified": false,
+    "functional_state_BALANCE_identified": false
+  }
+}

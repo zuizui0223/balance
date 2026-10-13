@@ -1,0 +1,19 @@
+{
+  "schema_version": "PEDICULARIS_SCH_XY_BASELINE_METHOD_V1",
+  "status": "NOT_FROZEN_REQUIRED_BEFORE_USE",
+  "blinded_to_biological_outcomes": "REQUIRED_BEFORE_USE",
+  "expected_sch_water_state": "XY_Y0_DRY",
+  "context_id": "REQUIRED_BEFORE_USE",
+  "population_id": "REQUIRED_BEFORE_USE",
+  "season_id": "REQUIRED_BEFORE_USE",
+  "protocol_version": "REQUIRED_BEFORE_USE",
+  "fitness_scale_id": "REQUIRED_BEFORE_USE",
+  "threshold_justification": "REQUIRED_BEFORE_USE",
+  "thresholds": {
+    "min_independent_plants_per_arm": "REQUIRED_BEFORE_USE",
+    "max_dry_water_depth_mm": "REQUIRED_BEFORE_USE",
+    "min_wet_water_depth_mm": "REQUIRED_BEFORE_USE",
+    "max_within_arm_water_depth_range_mm": "REQUIRED_BEFORE_USE",
+    "max_sch_y0_profile_endpoint_gap_mm": "REQUIRED_BEFORE_USE"
+  }
+}

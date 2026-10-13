@@ -100,51 +100,97 @@ Test whether conflict can remain active while the optimized shared architecture 
 
 The SCH receipt supplies independent evidence that conflict is active. BALANCE then compares two explicitly registered worlds.
 
-### Shared world S
+### Registered functional-state worldlines (Experiment B)
+
+The archived BITA-to-BALANCE V1 handoff **specification** reports a
+**fixed-state contrast**, not
+the optimum over an enlarged option set. Freeze the direction before outcomes:
 
 ```text
-S = the preregistered one-axis exsertion architecture
-    with water defence fixed at the baseline state used for the SCH receipt.
+y0 = water defence disabled / bract drained
+y1 = water defence active / protected
+
+W_y0* = max_z W(z, y0)
+W_y1* = max_z W(z, y1)
+Delta_state = W_y1* - W_y0*
 ```
 
-Optimize over the valid exsertion range:
+`Delta_state<0` is mathematically possible, and the existing
+`PEDICULARIS_XY_SURFACE_HANDOFF_V1` can describe such a **functional-state**
+advantage when SCH conflict is independently qualified and the intervention is
+selective. Both y states retain the same cupulate bract architecture. This
+receipt **does not identify structural architecture-value BALANCE** or any
+developmental/maintenance cost. The direct consumer labels it
+`FUNCTIONAL_STATE_BALANCE_IDENTIFIED`, not structural architecture occupancy.
+
+The SCH experiment freezes water-y at one state but the present SCH handoff
+does not independently certify which baseline state was used. Before any
+combined biological claim, preserve a method/source record proving that the
+SCH `L` receipt and Experiment-B `W_S*` refer to the *same registered
+functional baseline and ecological context*, not only identical string IDs.
+If the SCH baseline is y1, do not silently treat y0 as its shared-world
+baseline. Failing this alignment is a hold, not a reason to reverse the gap
+sign after observing outcomes.
+
+A narrow pre-outcome water-depth profile screen has now been implemented in
+`balance_domain/pedicularis_baseline.py`, with method-only data templates
+and the [method gate](PEDICULARIS_BASELINE_WATER_PROFILE_GATE_V1.md).
+It cannot independently verify the original SCH/BITA producer source
+lineage or qualify water-specific causality. A positive screen is a necessary
+measurement check for the prospectively **dry-y0** SCH-baseline design,
+not a BALANCE effect. No real method receipt has been executed.
+
+
+### Non-nested structural architecture alternative (not yet measured)
+
+A **structural** BALANCE claim requires a prospectively specified shared
+architecture S and a genuinely distinct, biologically accessible architecture
+D, with **net** optimized reproductive fitness on the same scale. Structural
+construction/maintenance costs or constraints, if relevant, must enter the
+measured D worldline or be independently estimated with a justified common-scale
+bridge. A functional switch of an extant bract is not such a measurement.
+
+Critically, this previously ambiguous comparison is **invalid** as a
+negative architecture-value test without a cost/constraint:
 
 ```text
-W_S* = max_z W_S(z).
+W_S*     = max_z W(z, y0)
+W_union* = max_(z, y in {y0,y1}) W(z,y)
 ```
 
-### Accessible alternative world D
+Because the second optimization includes every shared-world option,
 
 ```text
-D = the registered exsertion x water-defence architecture surface,
-    evaluated in the same context_id and fitness_scale_id.
+W_union* >= W_S*      (same objective, no fixed cost)
 ```
 
-The alternative must be specified prospectively. It is not chosen after observing which treatment gives the largest fitness.
+and `W_union* - W_S* < 0` is algebraically impossible. A negative **fixed**
+`y1-y0` gap must never be substituted for the **union** gap. Merely adding
+sampling power, a more flexible model, or bootstraps cannot repair this
+non-identification. See `theory/ACCESSIBILITY_SCOPE_MONOTONICITY_V1.md` and
+`data/PEDICULARIS_BALANCE_COMPARATOR_AMENDMENT_V2.json`.
 
-Optimize over its registered accessible states:
+For the general structural direct estimator (distinct optimized S and D
+worldlines, including justified costs), retain:
 
 ```text
-W_D* = max_(z,y) W_D(z,y).
+Delta_architecture = W_D* - W_S*
+SCH conflict L > 0 AND Delta_architecture < 0
 ```
 
-Primary direct estimand:
+with joint uncertainty. Until such an alternative is measured,
+the Experiment-B readout is **functional-state only**, not the programme's
+final structural architecture comparison.
 
-```text
-Delta_W = W_D* - W_S*.
-```
+**Execution status (2026-10-13):** the BITA exporter in
+[PR #181](https://github.com/zuizui0223/bita/pull/181) and Experiment-B
+power wrapper in [PR #182](https://github.com/zuizui0223/bita/pull/182)
+were closed unmerged. SCH Experiment-A bundling
+[PR #21](https://github.com/zuizui0223/sch/pull/21) remains open while its
+power wrapper [PR #22](https://github.com/zuizui0223/sch/pull/22) was
+closed unmerged. The BALANCE end-to-end receipt is synthetic and cannot
+stand in for those missing active upstream producers or any field observation.
 
-Direct BALANCE support requires:
-
-```text
-active conflict from the independent SCH receipt
-and
-Delta_W < 0
-```
-
-with joint uncertainty for the optimized worldline difference.
-
-This is the minimum direct BALANCE receipt. It does **not** require estimates of `s`, `K`, `Phi`, `xi`, `d_B`, or a historical differentiation process.
 
 ### Optional environmental crossing
 

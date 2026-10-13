@@ -50,6 +50,36 @@ for every context `e`. Therefore
 
 Thus registering more accessible alternative architectures can never make the shared world look safer on the static worldline comparison.
 
+## Corollary 1a — a nested, uncosted alternative cannot lose
+
+If the shared architecture's feasible set `X_S` is itself included in an
+allegedly differentiated feasible set `X_D`, and the optimization evaluates
+the **same objective on the same fitness scale** with no architecture-specific
+cost or other constraint, then
+
+\[
+\max_{u\in X_D} W(u) \geq \max_{u\in X_S} W(u).
+\]
+
+Consequently, the direct alternative-minus-shared gap cannot be negative.
+This is a **set-inclusion identity, not a new biological prediction**.
+
+For a Pedicularis x-by-water state surface, the following are distinct:
+
+- **Fixed-state contrast:** `max_x W(x,y1)-max_x W(x,y0)` can have either sign.
+- **Uncosted union envelope:** `max_{x,y in {y0,y1}} W(x,y)-max_x W(x,y0)`
+  cannot be negative; the second arm includes the first.
+- **Net structural architecture contrast:** a negative gap is possible only
+  if distinct architecture-specific constraints/costs enter a justified
+  comparison; a water-state toggle of the existing bract does not measure them.
+
+A genuinely non-nested architecture's net optimum is not restricted by this
+simple inclusion inequality. If two independently fitted surfaces appear to
+violate known nesting on a common objective, treat it as an estimation/design
+incoherence to audit, **not** a BALANCE middle-world discovery. Never use
+bootstrap uncertainty to turn an impossible nested estimand into a structural
+claim.
+
 ## Theorem 2 — BALANCE domains are nested downward with accessibility scope
 
 From the reserve ordering,

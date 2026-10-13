@@ -20,6 +20,19 @@ season_id
 fitness_scale_id
 ```
 
+## Source-producer availability checkpoint (2026-10-13)
+
+The BITA `PEDICULARIS_XY_SURFACE_HANDOFF_V1` producer was developed in
+[BITA PR #181](https://github.com/zuizui0223/bita/pull/181), which is
+**closed without merge**. Its power wrapper in
+[BITA PR #182](https://github.com/zuizui0223/bita/pull/182) is also
+**closed without merge** following the publication/ownership split.
+The BALANCE consumer and synthetic end-to-end test do **not** mean an active
+BITA-main exporter or a real Pedicularis field receipt exists. Reopening
+live three-world execution needs an explicit owner/protocol decision and
+source-verified y-baseline metadata; do not relabel the archived BITA
+prototype as production evidence.
+
 ## Intervention-selectivity caveat
 
 The water-y state must be qualified independently of any perforation/handling required to create it. The 2015 historical drainage method pierced the bract base, so its treatment effect alone does not isolate water retention from physical injury/access. The qualification route and fail-closed fallback are in `docs/PEDICULARIS_WATER_PERFORATION_IDENTIFICATION_AUDIT_V1.md`. An unqualified package contrast remains `WATER_AND_PERFORATION_PACKAGE_EFFECT`, not a direct water-only fitness worldline.
@@ -57,6 +70,44 @@ L.lower95 > 0 and Delta_W interval crosses 0
 ```
 
 A point estimate is never used to override an interval crossing zero.
+
+## Fixed-state comparator and cost limitation (2026-10-13 amendment)
+
+`gap_y1_minus_y0` is **max over x at fixed y1 minus max over x at fixed y0**.
+It is not `max over {y0,y1} minus max over y0`. The latter is a nested,
+uncosted option-set comparison and cannot be negative on the same objective,
+since the enlarged set contains every y0 option. Treating a negative fixed
+contrast as evidence for a negative nested-envelope gap would be an algebraic
+identification error.
+
+The machine consumer now exposes
+`comparison_scope=FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0` and
+`structural_architecture_cost_identified=false`; explicit incompatible
+`worldlines.comparison_scope` labels fail closed. The V1 producer need not
+supply this optional annotation because its `gap_y1_minus_y0` key already
+defines the fixed contrast. This consumer **cannot independently verify**
+the underlying optimization domain or original SCH water baseline from the
+current two source receipts alone. Those source/protocol checks remain
+necessary before promoting any real field inference.
+
+The protected y1 state is not automatically a differentiated architecture,
+and the SCH fixed-water baseline must be checked against the designated
+shared-world y0 baseline. This is a pre-outcome **design correction**, not
+a newly observed empirical BALANCE result.
+
+## Independent source-water baseline screen
+
+The V1 SCH conflict handoff does not identify whether SCH held water-y at y0
+or y1. A matching context/scale string is insufficient: before assigning the
+SCH conflict baseline to Experiment-B `W_y0*`, run the **pre-outcome,
+method-only** water-profile screen defined in
+[`PEDICULARIS_BASELINE_WATER_PROFILE_GATE_V1.md`](PEDICULARIS_BASELINE_WATER_PROFILE_GATE_V1.md)
+or supply a stronger independently source-verified replacement. The screen
+rejects SCH-wet / Experiment-B-dry relabelling, checks method profiles and
+water-compartment-level independence, and cannot itself promote biology.
+A passed method profile still requires source-lineage, randomization,
+manipulation-selectivity and outcomes to be independently verified.
+No real field profile for this gate is included in the repository.
 
 ## Direct middle-world coordinates
 

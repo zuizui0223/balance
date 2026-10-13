@@ -64,6 +64,8 @@ def test_negative_gap_identifies_functional_state_balance() -> None:
     assert math.isclose(out.direct_middle_position, 0.4 / 0.5)
     assert math.isclose(out.direct_two_sided_depth, 0.1)
     assert out.claim_level == "FUNCTIONAL_STATE_ONLY_NOT_STRUCTURAL_ARCHITECTURE"
+    assert out.comparison_scope == "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0"
+    assert out.structural_architecture_cost_identified is False
 
 
 def test_positive_gap_identifies_architecture_favoured_side_without_requiring_bita_status() -> None:
@@ -129,3 +131,49 @@ def test_extreme_functional_balance_uses_canonical_half_position() -> None:
     assert out.direct_reserve_point == pytest.approx(1.0e308)
     assert out.direct_middle_position == pytest.approx(0.5)
     assert out.direct_two_sided_depth == pytest.approx(1.0e308)
+
+def test_declared_fixed_state_scope_is_accepted_but_nested_envelope_scope_is_rejected():
+    xy = _xy()
+    xy["worldlines"]["comparison_scope"] = "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0"
+    assert consume_pedicularis_xy_surface(_conflict(), xy).state == (
+        "FUNCTIONAL_STATE_BALANCE_IDENTIFIED"
+    )
+
+    xy["worldlines"]["comparison_scope"] = "NESTED_UNCOSTED_Y0_OR_Y1_ENVELOPE"
+    with pytest.raises(ValueError, match="comparison_scope"):
+        consume_pedicularis_xy_surface(_conflict(), xy)
+
+
+def test_fixed_state_loss_does_not_imply_nested_uncosted_envelope_loss():
+    # Same recorded x grid and fitness units, no independently measured fixed cost.
+    y0 = (10.0, 12.0, 11.0)
+    y1 = (8.0, 9.0, 10.0)
+    fixed_state_gap = max(y1) - max(y0)
+    nested_envelope_gap = max(y0 + y1) - max(y0)
+    assert fixed_state_gap == -2.0
+    assert nested_envelope_gap == 0.0
+    # This is a set-inclusion guard, not a field-data or architecture-cost result.
+
+def test_registered_v2_comparator_amendment_preserves_non_nested_claim_ceiling():
+    import json
+    from pathlib import Path
+
+    f = Path(__file__).resolve().parents[1] / (
+        "data/PEDICULARIS_BALANCE_COMPARATOR_AMENDMENT_V2.json"
+    )
+    receipt = json.loads(f.read_text(encoding="utf-8"))
+    assert receipt["status"] == "PRE_FIELD_SEMANTIC_CORRECTION_NO_NEW_BIOLOGICAL_RECEIPT"
+    assert receipt["v1_immutable_record_retained"] is True
+    assert receipt["registered_functional_comparison"]["comparison_scope"] == (
+        "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0"
+    )
+    assert receipt["registered_functional_comparison"]["claim_ceiling"] == (
+        "FUNCTIONAL_STATE_ONLY_NOT_STRUCTURAL_ARCHITECTURE"
+    )
+    assert receipt["uncosted_nested_envelope"]["contains_shared_feasible_set"] is True
+    assert receipt["uncosted_nested_envelope"]["negative_gap_possible"] is False
+    assert receipt["structural_comparison"]["architecture_value_promoted"] is False
+    assert receipt["causal_architecture_occupancy_claimed"] is False
+    status = receipt["implementation_checkpoint_2026_10_13"]
+    assert status["active_bita_main_xy_producer_verified"] is False
+    assert status["real_experiment_b_worldline_receipt_available"] is False
