@@ -132,6 +132,15 @@ If the SCH baseline is y1, do not silently treat y0 as its shared-world
 baseline. Failing this alignment is a hold, not a reason to reverse the gap
 sign after observing outcomes.
 
+A narrow pre-outcome water-depth profile screen has now been implemented in
+`balance_domain/pedicularis_baseline.py`, with method-only data templates
+and the [method gate](PEDICULARIS_BASELINE_WATER_PROFILE_GATE_V1.md).
+It cannot independently verify the original SCH/BITA producer source
+lineage or qualify water-specific causality. A positive screen is a necessary
+measurement check for the prospectively **dry-y0** SCH-baseline design,
+not a BALANCE effect. No real method receipt has been executed.
+
+
 ### Non-nested structural architecture alternative (not yet measured)
 
 A **structural** BALANCE claim requires a prospectively specified shared
