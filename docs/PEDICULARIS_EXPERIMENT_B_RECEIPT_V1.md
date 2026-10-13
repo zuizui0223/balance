@@ -58,6 +58,30 @@ L.lower95 > 0 and Delta_W interval crosses 0
 
 A point estimate is never used to override an interval crossing zero.
 
+## Fixed-state comparator and cost limitation (2026-10-13 amendment)
+
+`gap_y1_minus_y0` is **max over x at fixed y1 minus max over x at fixed y0**.
+It is not `max over {y0,y1} minus max over y0`. The latter is a nested,
+uncosted option-set comparison and cannot be negative on the same objective,
+since the enlarged set contains every y0 option. Treating a negative fixed
+contrast as evidence for a negative nested-envelope gap would be an algebraic
+identification error.
+
+The machine consumer now exposes
+`comparison_scope=FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0` and
+`structural_architecture_cost_identified=false`; explicit incompatible
+`worldlines.comparison_scope` labels fail closed. The V1 producer need not
+supply this optional annotation because its `gap_y1_minus_y0` key already
+defines the fixed contrast. This consumer **cannot independently verify**
+the underlying optimization domain or original SCH water baseline from the
+current two source receipts alone. Those source/protocol checks remain
+necessary before promoting any real field inference.
+
+The protected y1 state is not automatically a differentiated architecture,
+and the SCH fixed-water baseline must be checked against the designated
+shared-world y0 baseline. This is a pre-outcome **design correction**, not
+a newly observed empirical BALANCE result.
+
 ## Direct middle-world coordinates
 
 Only after bounded BALANCE identification define the point summaries
