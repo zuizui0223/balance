@@ -49,5 +49,16 @@
     "sch_experiment_a_power_status": "CLOSED_UNMERGED",
     "active_bita_main_xy_producer_verified": false,
     "real_experiment_b_worldline_receipt_available": false
+  },
+  "baseline_method_screen": {
+    "schema_version": "PEDICULARIS_SCH_XY_BASELINE_METHOD_V1",
+    "implementation": "balance_domain/pedicularis_baseline.py",
+    "runner": "scripts/evaluate_pedicularis_baseline.py",
+    "input_contract": "PRE_OUTCOME_WATER_METHOD_ONLY_NO_BIOLOGICAL_OUTCOMES",
+    "accepted_baseline": "SCH_FIXED_EQUALS_XY_Y0_DRY",
+    "status": "NO_REAL_FIELD_PROFILE_SCREEN_RUN",
+    "real_source_lineage_verification": false,
+    "active_producer_verified": false,
+    "functional_state_BALANCE_identified": false
   }
 }
