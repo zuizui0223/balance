@@ -1,0 +1,604 @@
+{
+  "actual_patch_ids_present": false,
+  "analysis_year": 2011,
+  "article_doi": "10.1098/rsbl.2013.0387",
+  "bounds_are_not_confidence_intervals_or_causal_effects": true,
+  "claim_ceiling": "unknown patch row assignments; extreme mathematical envelopes only; no cluster-robust p values, no BALANCE worldline inference",
+  "dataset_doi": "10.5061/dryad.6cv06",
+  "downloaded_zip_sha256_observed_not_pinned": "a6a105e01db2cd4d5fcd4265255fffdce16be54e594fbe11c4b95a9ae3f6f268",
+  "fruit_source_category_counts": {
+    "2005_dense_large": 10,
+    "2005_sparse_large": 6,
+    "2011_dense_large": 25,
+    "2011_dense_small": 7,
+    "2011_sparse_large": 17,
+    "2011_sparse_small": 9
+  },
+  "hypothetical_patch_assignments_are_not_actual_sample_design": true,
+  "only_density_and_published_patch_counts_constrained": true,
+  "original_2011_fruit_row_support": {
+    "dense": 32,
+    "sparse": 26
+  },
+  "original_2011_seed_row_support": {
+    "dense": 1279,
+    "sparse": 1070
+  },
+  "original_source_bytes_verified": true,
+  "outcomes": {
+    "final_seed_set": {
+      "1": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1274
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.5580233991807955,
+          "hypothetical_equal_patch_mean_upper_percent": 64.5526333351031,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 21.264684021374514,
+          "sample_rows": 1279
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -77.11894291452859,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 61.169345941056,
+        "row_weighted_dense_minus_sparse_pp": 4.411486067850216,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            1066
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.383287394047092,
+          "hypothetical_equal_patch_mean_upper_percent": 80.67696631370939,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 16.853197953524298,
+          "sample_rows": 1070
+        }
+      },
+      "5": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            5,
+            1254
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.6147701838567254,
+          "hypothetical_equal_patch_mean_upper_percent": 55.53313074284954,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 21.264684021374514,
+          "sample_rows": 1279
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -67.97135562406727,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 52.09828849327411,
+        "row_weighted_dense_minus_sparse_pp": 4.411486067850216,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            1050
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.4348422495754285,
+          "hypothetical_equal_patch_mean_upper_percent": 71.58612580792399,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 16.853197953524298,
+          "sample_rows": 1070
+        }
+      },
+      "20": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 20,
+          "extreme_allocation_group_sizes_only": [
+            20,
+            20,
+            20,
+            20,
+            20,
+            1179
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.8447173965702572,
+          "hypothetical_equal_patch_mean_upper_percent": 44.93941763071501,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 21.264684021374514,
+          "sample_rows": 1279
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -53.062211978922875,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 41.296403123589556,
+        "row_weighted_dense_minus_sparse_pp": 4.411486067850216,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 20,
+          "extreme_allocation_group_sizes_only": [
+            20,
+            20,
+            20,
+            20,
+            990
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.6430145071254545,
+          "hypothetical_equal_patch_mean_upper_percent": 56.906929375493135,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 16.853197953524298,
+          "sample_rows": 1070
+        }
+      }
+    },
+    "fruit_predation": {
+      "1": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            27
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 2.256619429660494,
+          "hypothetical_equal_patch_mean_upper_percent": 32.6464061087963,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 11.42413586265625,
+          "sample_rows": 32
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -80.34465385289406,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 22.140103994869026,
+        "row_weighted_dense_minus_sparse_pp": -27.911961315843747,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            22
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 10.506302113927273,
+          "hypothetical_equal_patch_mean_upper_percent": 82.60127328255454,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 39.3360971785,
+          "sample_rows": 26
+        }
+      },
+      "2": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 2,
+          "extreme_allocation_group_sizes_only": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            22
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 3.6727243964772724,
+          "hypothetical_equal_patch_mean_upper_percent": 22.910343159128786,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 11.42413586265625,
+          "sample_rows": 32
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -70.5452434222005,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 8.876596834939898,
+        "row_weighted_dense_minus_sparse_pp": -27.911961315843747,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 2,
+          "extreme_allocation_group_sizes_only": [
+            2,
+            2,
+            2,
+            2,
+            18
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 14.033746324188888,
+          "hypothetical_equal_patch_mean_upper_percent": 74.21796781867778,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 39.3360971785,
+          "sample_rows": 26
+        }
+      },
+      "5": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            5,
+            7
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 10.033156846166667,
+          "hypothetical_equal_patch_mean_upper_percent": 12.185744920166668,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 11.42413586265625,
+          "sample_rows": 32
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": false,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -30.776802017359998,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": -25.009748846406666,
+        "row_weighted_dense_minus_sparse_pp": -27.911961315843747,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            6
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 37.195493766573335,
+          "hypothetical_equal_patch_mean_upper_percent": 40.80995886352667,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 39.3360971785,
+          "sample_rows": 26
+        }
+      }
+    },
+    "fruit_set": {
+      "1": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            27
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 74.4845718362963,
+          "hypothetical_equal_patch_mean_upper_percent": 97.46872414654321,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 88.69004562,
+          "sample_rows": 32
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -19.141006514067342,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 29.009357916815944,
+        "row_weighted_dense_minus_sparse_pp": 7.164265417307703,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            22
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 68.45936622972727,
+          "hypothetical_equal_patch_mean_upper_percent": 93.62557835036364,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 81.5257802026923,
+          "sample_rows": 26
+        }
+      },
+      "2": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 2,
+          "extreme_allocation_group_sizes_only": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            22
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 79.85791575636364,
+          "hypothetical_equal_patch_mean_upper_percent": 95.8701737980303,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 88.69004562,
+          "sample_rows": 32
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -10.39172586130303,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 23.925958507474732,
+        "row_weighted_dense_minus_sparse_pp": 7.164265417307703,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 2,
+          "extreme_allocation_group_sizes_only": [
+            2,
+            2,
+            2,
+            2,
+            18
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 71.94421529055556,
+          "hypothetical_equal_patch_mean_upper_percent": 90.24964161766667,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 81.5257802026923,
+          "sample_rows": 26
+        }
+      },
+      "5": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            5,
+            7
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 87.99911391704762,
+          "hypothetical_equal_patch_mean_upper_percent": 89.67132159466667,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 88.69004562,
+          "sample_rows": 32
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": false,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": 5.852635839580955,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 8.703308067466665,
+        "row_weighted_dense_minus_sparse_pp": 7.164265417307703,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            6
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 80.9680135272,
+          "hypothetical_equal_patch_mean_upper_percent": 82.14647807746667,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 81.5257802026923,
+          "sample_rows": 26
+        }
+      }
+    },
+    "seed_predation": {
+      "1": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1274
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 1.4422523394989533,
+          "hypothetical_equal_patch_mean_upper_percent": 84.7101748931358,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 8.61968481870993,
+          "sample_rows": 1279
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -85.32465650234307,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 77.86821914697857,
+        "row_weighted_dense_minus_sparse_pp": -25.462206888783534,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 1,
+          "extreme_allocation_group_sizes_only": [
+            1,
+            1,
+            1,
+            1,
+            1066
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 6.841955746157224,
+          "hypothetical_equal_patch_mean_upper_percent": 86.76690884184202,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 34.08189170749346,
+          "sample_rows": 1070
+        }
+      },
+      "5": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            5,
+            1254
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 1.4652547691560338,
+          "hypothetical_equal_patch_mean_upper_percent": 84.46631803337719,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 8.61968481870993,
+          "sample_rows": 1279
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -85.10000696932359,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 77.52010391394519,
+        "row_weighted_dense_minus_sparse_pp": -25.462206888783534,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 5,
+          "extreme_allocation_group_sizes_only": [
+            5,
+            5,
+            5,
+            5,
+            1050
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 6.9462141194320015,
+          "hypothetical_equal_patch_mean_upper_percent": 86.56526173847962,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 34.08189170749346,
+          "sample_rows": 1070
+        }
+      },
+      "20": {
+        "actual_patch_membership_reconstructed": false,
+        "causal_density_effect_identified": false,
+        "dense": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 20,
+          "extreme_allocation_group_sizes_only": [
+            20,
+            20,
+            20,
+            20,
+            20,
+            1179
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 1.5584643600692676,
+          "hypothetical_equal_patch_mean_upper_percent": 81.10252615920031,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 6,
+          "row_weighted_mean_percent": 8.61968481870993,
+          "sample_rows": 1279
+        },
+        "patch_level_p_value_or_se_estimated": false,
+        "patch_size_categories_and_plant_membership_not_enforced": true,
+        "relaxed_envelope_contains_both_signs": true,
+        "relaxed_equal_patch_dense_minus_sparse_lower_pp": -84.19257081710609,
+        "relaxed_equal_patch_dense_minus_sparse_upper_pp": 73.73532936586334,
+        "row_weighted_dense_minus_sparse_pp": -25.462206888783534,
+        "sparse": {
+          "actual_patch_ids_observed": false,
+          "assumed_min_rows_per_patch": 20,
+          "extreme_allocation_group_sizes_only": [
+            20,
+            20,
+            20,
+            20,
+            990
+          ],
+          "hypothetical_equal_patch_mean_lower_percent": 7.36719679333697,
+          "hypothetical_equal_patch_mean_upper_percent": 85.75103517717535,
+          "patch_level_confidence_interval": false,
+          "published_patch_count": 5,
+          "row_weighted_mean_percent": 34.08189170749346,
+          "sample_rows": 1070
+        }
+      }
+    }
+  },
+  "plant_ids_present": false,
+  "published_patch_counts_by_density": {
+    "dense": 6,
+    "sparse": 5
+  },
+  "reported_patch_size_binary_labels_not_constrained_in_relaxed_envelope": true,
+  "schema_version": "PEDICULARIS_2013_RELAXED_LATENT_PATCH_MEAN_ENVELOPE_V1",
+  "seed_source_category_counts": {
+    "2005_dense_large": 308,
+    "2005_sparse_large": 273,
+    "2011_dense_large": 1092,
+    "2011_dense_small": 187,
+    "2011_sparse_large": 679,
+    "2011_sparse_small": 391
+  },
+  "source_supplemental_SPSS_code_recovered": false,
+  "source_workbook_bytes": 89597,
+  "source_workbook_sha256": "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380",
+  "status": "SOURCE_VERIFIED_RELAXED_PATCH_ASSIGNMENT_OUTER_BOUND_NOT_EMPIRICAL_PATCH_INFERENCE",
+  "receipt_provenance": {
+    "executed_via": "https://github.com/zuizui0223/balance/actions/runs/38425273023",
+    "source_job_id": 115392914959,
+    "producing_commit": "0267d1ae80f378a8d543ef17e0e5a067bab538ae",
+    "executed_at_utc": "2026-10-13T15:49:17Z",
+    "note": "source ZIP wrapper checksum recorded but not source workbook identity; original workbook SHA256 pinned"
+  }
+}
