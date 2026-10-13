@@ -31,6 +31,10 @@ from .definition_concordance import (
 from .receipt import Interval, MiddleWorldReceipt, classify_bounded_receipt
 from .handoff import ConflictHandoff, consume_conflict_handoff
 from .pedicularis_xy import PedicularisXYBalanceReceipt, consume_pedicularis_xy_surface
+from .pedicularis_baseline import (
+    PedicularisBaselineMethodScreen,
+    evaluate_pedicularis_baseline_method,
+)
 from .depth_path import DeepestMiddleWorldPoint, deepest_middle_point
 from .sensitivity import (
     BoundarySensitivity,
@@ -141,6 +145,7 @@ __all__ = [
     "NormalizedPhasePoint",
     "PLOT_ORDER",
     "PUBLISHED_2025",
+    "PedicularisBaselineMethodScreen",
     "PedicularisXYBalanceReceipt",
     "RawInventory",
     "ReproductionGate",
@@ -190,6 +195,7 @@ __all__ = [
     "diagonal_metric_boundary_depth",
     "endpoint_reserve_certificate",
     "environmental_depth",
+    "evaluate_pedicularis_baseline_method",
     "interval_concave_bulge_bounds",
     "lipschitz_covering_certificate",
     "lipschitz_lower_envelope",
