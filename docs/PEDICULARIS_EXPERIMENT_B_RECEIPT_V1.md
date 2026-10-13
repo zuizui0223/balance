@@ -95,6 +95,20 @@ and the SCH fixed-water baseline must be checked against the designated
 shared-world y0 baseline. This is a pre-outcome **design correction**, not
 a newly observed empirical BALANCE result.
 
+## Independent source-water baseline screen
+
+The V1 SCH conflict handoff does not identify whether SCH held water-y at y0
+or y1. A matching context/scale string is insufficient: before assigning the
+SCH conflict baseline to Experiment-B `W_y0*`, run the **pre-outcome,
+method-only** water-profile screen defined in
+[`PEDICULARIS_BASELINE_WATER_PROFILE_GATE_V1.md`](PEDICULARIS_BASELINE_WATER_PROFILE_GATE_V1.md)
+or supply a stronger independently source-verified replacement. The screen
+rejects SCH-wet / Experiment-B-dry relabelling, checks method profiles and
+water-compartment-level independence, and cannot itself promote biology.
+A passed method profile still requires source-lineage, randomization,
+manipulation-selectivity and outcomes to be independently verified.
+No real field profile for this gate is included in the repository.
+
 ## Direct middle-world coordinates
 
 Only after bounded BALANCE identification define the point summaries
