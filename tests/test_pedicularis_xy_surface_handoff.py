@@ -174,3 +174,6 @@ def test_registered_v2_comparator_amendment_preserves_non_nested_claim_ceiling()
     assert receipt["uncosted_nested_envelope"]["negative_gap_possible"] is False
     assert receipt["structural_comparison"]["architecture_value_promoted"] is False
     assert receipt["causal_architecture_occupancy_claimed"] is False
+    status = receipt["implementation_checkpoint_2026_10_13"]
+    assert status["active_bita_main_xy_producer_verified"] is False
+    assert status["real_experiment_b_worldline_receipt_available"] is False
