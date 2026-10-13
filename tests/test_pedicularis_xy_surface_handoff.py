@@ -153,3 +153,24 @@ def test_fixed_state_loss_does_not_imply_nested_uncosted_envelope_loss():
     assert fixed_state_gap == -2.0
     assert nested_envelope_gap == 0.0
     # This is a set-inclusion guard, not a field-data or architecture-cost result.
+
+def test_registered_v2_comparator_amendment_preserves_non_nested_claim_ceiling():
+    import json
+    from pathlib import Path
+
+    f = Path(__file__).resolve().parents[1] / (
+        "data/PEDICULARIS_BALANCE_COMPARATOR_AMENDMENT_V2.json"
+    )
+    receipt = json.loads(f.read_text(encoding="utf-8"))
+    assert receipt["status"] == "PRE_FIELD_SEMANTIC_CORRECTION_NO_NEW_BIOLOGICAL_RECEIPT"
+    assert receipt["v1_immutable_record_retained"] is True
+    assert receipt["registered_functional_comparison"]["comparison_scope"] == (
+        "FIXED_FUNCTIONAL_STATE_Y1_MINUS_Y0"
+    )
+    assert receipt["registered_functional_comparison"]["claim_ceiling"] == (
+        "FUNCTIONAL_STATE_ONLY_NOT_STRUCTURAL_ARCHITECTURE"
+    )
+    assert receipt["uncosted_nested_envelope"]["contains_shared_feasible_set"] is True
+    assert receipt["uncosted_nested_envelope"]["negative_gap_possible"] is False
+    assert receipt["structural_comparison"]["architecture_value_promoted"] is False
+    assert receipt["causal_architecture_occupancy_claimed"] is False
