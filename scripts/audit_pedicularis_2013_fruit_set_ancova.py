@@ -17,14 +17,14 @@ from scripts.adjudicate_pedicularis_2013_raw_workbook import (
 )
 
 
-def audit_source(workbook_file: Path) -> dict:
+def load_fruit_rows(workbook_file: Path):
+    """Hash-verified, read-only 74-row source loader shared by audits."""
     content = workbook_file.read_bytes()
     if (len(content) != SOURCE_BYTES
             or hashlib.sha256(content).hexdigest() != SOURCE_SHA256
             or hashlib.md5(content).hexdigest() != SOURCE_MD5):
         raise ValueError("original Dryad source workbook bytes/digest changed")
     from openpyxl import load_workbook
-
     workbook = load_workbook(workbook_file, read_only=True, data_only=True)
     try:
         if workbook.sheetnames != ["pollination rate", FRUIT_SHEET, SEED_SHEET]:
@@ -33,8 +33,12 @@ def audit_source(workbook_file: Path) -> dict:
             min_row=1, max_row=77, min_col=1, max_col=6, values_only=True)]
     finally:
         workbook.close()
-    rows, counts = _source_rows(cells[0], cells[1:], EXPECTED_FRUIT_HEADER,
-                                EXPECTED_COUNTS_FRUIT)
+    return _source_rows(cells[0], cells[1:], EXPECTED_FRUIT_HEADER,
+                        EXPECTED_COUNTS_FRUIT)
+
+
+def audit_source(workbook_file: Path) -> dict:
+    rows, counts = load_fruit_rows(workbook_file)
     model = ancova_fruit_set(rows)
     if model["n"] != 74 or model["df_residual"] != 69:
         raise ValueError("pooled fruit-set ANCOVA source support changed")

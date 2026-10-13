@@ -1,0 +1,40 @@
+name: Pedicularis 2013 original fruit-set source sensitivity
+'on':
+  push:
+    branches:
+      - analysis/pedicularis-2013-ancova-sensitivity-20261013
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-sensitivity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact-source reader and test dependencies
+        run: python -m pip install -e '.[dev,pedicularis]'
+      - name: Test synthetic algebraic controls
+        run: python -m pytest -q tests/test_pedicularis_2013_ancova_sensitivity.py tests/test_pedicularis_2013_fruit_set_ancova.py
+      - name: Retrieve original public Dryad metadata
+        run: python scripts/probe_pedicularis_2013_dryad.py --out release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json
+      - name: Download and verify original source workbook ZIP
+        run: |
+          python scripts/retrieve_pedicularis_2013_dryad_bytes.py \
+            --metadata release/generated/PEDICULARIS_2013_DRYAD_SOURCE_DISCOVERY_V1.json \
+            --out-zip release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip \
+            --out-receipt release/generated/PEDICULARIS_2013_DRYAD_RAW_BYTE_RECEIPT_V1.json
+      - name: Execute exact-source sensitivity and print reproducible receipt
+        run: |
+          python -m scripts.audit_pedicularis_2013_ancova_sensitivity \
+            --source-zip release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip \
+            --out release/generated/PEDICULARIS_2013_FRUIT_SET_SENSITIVITY_V1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pedicularis-2013-fruit-set-source-sensitivity
+          path: |
+            release/generated/PEDICULARIS_2013_DRYAD_RAW_BYTE_RECEIPT_V1.json
+            release/generated/PEDICULARIS_2013_FRUIT_SET_SENSITIVITY_V1.json
+          if-no-files-found: error
