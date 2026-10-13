@@ -147,8 +147,9 @@ def diagnose(rows, four_rows, sixteen_rows, original_receipt):
 
 def audit_zip(source_zip):
     data=Path(source_zip).read_bytes()
-    if hashlib.sha256(data).hexdigest()!=ZIP_SHA256:
-        raise ValueError("source ZIP hash drifted")
+    # Dryad may repackage the same immutable workbook in a byte-different ZIP.
+    # Record (rather than reject) archive-byte drift; require exact original XLSX.
+    observed_zip_sha256 = hashlib.sha256(data).hexdigest()
     meta=verify_zip(data)
     if meta["source_sha256"]!=SOURCE_SHA256:
         raise ValueError("original XLSX hash drifted")
@@ -168,7 +169,9 @@ def audit_zip(source_zip):
             original)
         report.update({
             "verified_original_workbook_sha256":SOURCE_SHA256,
-            "verified_original_zip_sha256":ZIP_SHA256,
+            "observed_source_zip_sha256":observed_zip_sha256,
+            "previously_recorded_zip_sha256":ZIP_SHA256,
+            "archive_bytes_match_previous_download":observed_zip_sha256==ZIP_SHA256,
             "source_group_counts":groups,
             "source_excel_rows":[2,75],
             "source_original_bytes_verified":True})
