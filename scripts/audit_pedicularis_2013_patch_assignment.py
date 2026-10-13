@@ -30,6 +30,51 @@ OUTCOMES={
 }
 
 
+def verify_frozen_source_result(report):
+    """Fail closed against the original-source V1 numeric receipt.
+
+    The ZIP wrapper hash is allowed to vary. Biological observations, case
+    support and all predeclared density-bound values are not.
+    """
+    frozen_path=(Path(__file__).resolve().parents[1]/
+                 "data/PEDICULARIS_2013_RELAXED_PATCH_ASSIGNMENT_ENVELOPE_V1.json")
+    frozen=json.loads(frozen_path.read_text(encoding="utf-8"))
+    for key in ("schema_version", "source_workbook_sha256", "source_workbook_bytes",
+                "analysis_year", "published_patch_counts_by_density",
+                "original_2011_fruit_row_support", "original_2011_seed_row_support",
+                "fruit_source_category_counts", "seed_source_category_counts"):
+        if frozen.get(key)!=report.get(key):
+            raise ValueError("exact-source frozen patch-bound contract mismatch: "+key)
+    if set(frozen["outcomes"])!=set(report["outcomes"]):
+        raise ValueError("source outcome list changed")
+    for outcome, cases in frozen["outcomes"].items():
+        if set(cases)!=set(report["outcomes"][outcome]):
+            raise ValueError("source sensitivity case set changed")
+        for m, reference in cases.items():
+            check=report["outcomes"][outcome][m]
+            for key in ("row_weighted_dense_minus_sparse_pp",
+                        "relaxed_equal_patch_dense_minus_sparse_lower_pp",
+                        "relaxed_equal_patch_dense_minus_sparse_upper_pp",
+                        "relaxed_envelope_contains_both_signs"):
+                x,y=reference[key],check[key]
+                if isinstance(x,bool):
+                    if x is not y:
+                        raise ValueError("source-bound sign diagnostic drifted")
+                elif abs(x-y)>1e-9:
+                    raise ValueError("source-bound numerical result drifted")
+            for group in ("sparse","dense"):
+                for key in ("sample_rows", "published_patch_count",
+                            "assumed_min_rows_per_patch"):
+                    if reference[group][key]!=check[group][key]:
+                        raise ValueError("source-bounded patch-count support drifted")
+                for key in ("row_weighted_mean_percent",
+                            "hypothetical_equal_patch_mean_lower_percent",
+                            "hypothetical_equal_patch_mean_upper_percent"):
+                    if abs(reference[group][key]-check[group][key])>1e-9:
+                        raise ValueError("source patch-average bound drifted")
+    return True
+
+
 def load_seed_rows(workbook_file:Path):
     content=workbook_file.read_bytes()
     if (len(content)!=SOURCE_BYTES or hashlib.md5(content).hexdigest()!=SOURCE_MD5
@@ -113,6 +158,8 @@ def audit_zip(path:Path):
         workbook.write_bytes(content)
         report=audit_source(workbook)
     report["downloaded_zip_sha256_observed_not_pinned"]=hashlib.sha256(zipbytes).hexdigest()
+    verify_frozen_source_result(report)
+    report["source_v1_fixed_numerical_receipt_verified"]=True
     return report
 
 

@@ -68,3 +68,17 @@ def test_fail_closed_on_invalid_source_support(vals,k,m):
 def test_minimum_patch_size_requires_total_support():
     with pytest.raises(ValueError):
         density_contrast_envelope([10]*26,[20]*32,5,6,6)
+
+
+def test_original_source_freeze_fails_when_a_result_is_modified():
+    from copy import deepcopy
+    import json
+    from pathlib import Path
+    from scripts.audit_pedicularis_2013_patch_assignment import verify_frozen_source_result
+    root=Path(__file__).resolve().parents[1]
+    freeze=json.loads((root/"data/PEDICULARIS_2013_RELAXED_PATCH_ASSIGNMENT_ENVELOPE_V1.json").read_text())
+    assert verify_frozen_source_result(freeze)
+    changed=deepcopy(freeze)
+    changed["outcomes"]["seed_predation"]["20"]["relaxed_equal_patch_dense_minus_sparse_lower_pp"]+=0.001
+    with pytest.raises(ValueError,match="numerical result drifted"):
+        verify_frozen_source_result(changed)
