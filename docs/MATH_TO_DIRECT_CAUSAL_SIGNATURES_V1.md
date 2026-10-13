@@ -152,7 +152,7 @@ f(e_t)-[(1-t)f(e_0)+tf(e_1)]
 
 ## Pedicularis use
 
-The final focal Experiment-B surface can establish B1 for the functional-state alternative once the cross-system pattern map is mature enough to justify the focal identification test. Repeated matched contexts are required for B5-B9. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
+The final focal Experiment-B surface can estimate a **fixed y1-minus-y0 functional-state contrast**, conditional on a matched SCH baseline and validated manipulation. This is not structural B1: treating the larger uncosted {y0,y1} option set as a differentiated alternative makes a negative gap impossible by set inclusion. Structural B1 requires a genuinely distinct net architecture worldline, with independently justified costs or constraints where relevant (see `PEDICULARIS_THREE_WORLD_CHAIN_V1.md`). Repeated matched contexts are required for B5-B9. Alternative-scope signatures become relevant only after more than one biologically credible differentiated-accessible state is registered.
 
 B8-B9 are attractive for later repeated-environment Pedicularis work because interior contexts can be used as held-out shape/curvature checks rather than all contexts being consumed to fit a flexible path model.
 
