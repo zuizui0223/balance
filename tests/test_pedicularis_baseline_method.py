@@ -179,3 +179,54 @@ def test_repeated_dependent_water_compartments_cannot_inflate_support():
     data.append(extra)
     with pytest.raises(ValueError, match="duplicate plant_id"):
         evaluate_pedicularis_baseline_method(data, config())
+
+
+def test_method_cli_writes_hashed_receipt_and_refuses_overwrite(tmp_path):
+    import csv
+    import hashlib
+    import json
+
+    from scripts.evaluate_pedicularis_baseline import build_receipt
+
+    csv_path = tmp_path / "baseline.csv"
+    conf_path = tmp_path / "thresholds.json"
+    out_path = tmp_path / "receipt.json"
+    with csv_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=FIELDS)
+        writer.writeheader()
+        writer.writerows(rows())
+    conf_path.write_text(json.dumps(config(), sort_keys=True), encoding="utf-8")
+    result = build_receipt(csv_path, conf_path, out_path)
+    assert out_path.exists()
+    assert result["status"] == "BASELINE_METHOD_PROFILE_SCREEN_PASSED_NOT_CAUSAL"
+    assert result["source_csv_sha256"] == hashlib.sha256(csv_path.read_bytes()).hexdigest()
+    assert result["frozen_config_sha256"] == hashlib.sha256(conf_path.read_bytes()).hexdigest()
+    assert result["functional_state_BALANCE_identified"] is False
+    assert result["structural_architecture_BALANCE_identified"] is False
+    with pytest.raises(ValueError, match="already exists"):
+        build_receipt(csv_path, conf_path, out_path)
+
+
+def test_unfrozen_production_template_cannot_pass(tmp_path):
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    template_path = root / "data/PEDICULARIS_SCH_XY_BASELINE_THRESHOLDS_TEMPLATE_V1.json"
+    template = json.loads(template_path.read_text(encoding="utf-8"))
+    assert template["status"] != "FROZEN_PRE_OUTCOME"
+    with pytest.raises(ValueError, match="pre-outcome"):
+        evaluate_pedicularis_baseline_method(rows(), template)
+
+
+def test_registered_baseline_amendment_never_claims_field_result():
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    d = json.loads((root / "data/PEDICULARIS_BALANCE_COMPARATOR_AMENDMENT_V2.json").read_text())
+    gate = d["baseline_method_screen"]
+    assert gate["status"] == "NO_REAL_FIELD_PROFILE_SCREEN_RUN"
+    assert gate["real_source_lineage_verification"] is False
+    assert gate["active_producer_verified"] is False
+    assert gate["functional_state_BALANCE_identified"] is False
