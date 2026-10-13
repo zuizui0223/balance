@@ -20,6 +20,19 @@ season_id
 fitness_scale_id
 ```
 
+## Source-producer availability checkpoint (2026-10-13)
+
+The BITA `PEDICULARIS_XY_SURFACE_HANDOFF_V1` producer was developed in
+[BITA PR #181](https://github.com/zuizui0223/bita/pull/181), which is
+**closed without merge**. Its power wrapper in
+[BITA PR #182](https://github.com/zuizui0223/bita/pull/182) is also
+**closed without merge** following the publication/ownership split.
+The BALANCE consumer and synthetic end-to-end test do **not** mean an active
+BITA-main exporter or a real Pedicularis field receipt exists. Reopening
+live three-world execution needs an explicit owner/protocol decision and
+source-verified y-baseline metadata; do not relabel the archived BITA
+prototype as production evidence.
+
 ## Intervention-selectivity caveat
 
 The water-y state must be qualified independently of any perforation/handling required to create it. The 2015 historical drainage method pierced the bract base, so its treatment effect alone does not isolate water retention from physical injury/access. The qualification route and fail-closed fallback are in `docs/PEDICULARIS_WATER_PERFORATION_IDENTIFICATION_AUDIT_V1.md`. An unqualified package contrast remains `WATER_AND_PERFORATION_PACKAGE_EFFECT`, not a direct water-only fitness worldline.
