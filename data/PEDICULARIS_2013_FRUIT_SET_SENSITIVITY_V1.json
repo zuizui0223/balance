@@ -1,0 +1,178 @@
+{
+  "actual_patch_membership_known": false,
+  "archive_bytes_match_previous_download": false,
+  "causal_density_or_BALANCE_claim_identified": false,
+  "coding_invariance": {
+    "dummy_coding_interaction_F": 0.08005112937414902,
+    "effect_coding_interaction_F": 0.0800511293741157,
+    "fraction_response_interaction_F": 0.08005112937411535
+  },
+  "exclusion_fits_are_not_original_2013_model_reproduction": true,
+  "full_interaction_F_matched": false,
+  "leave_one_spike_out_interaction_F": {
+    "five_largest_abs_changes": [
+      {
+        "abs_change": 0.34715958189490154,
+        "excel_row": 5,
+        "interaction_F": 0.4272107112690172
+      },
+      {
+        "abs_change": 0.2905039741821376,
+        "excel_row": 2,
+        "interaction_F": 0.37055510355625326
+      },
+      {
+        "abs_change": 0.2081793637351163,
+        "excel_row": 16,
+        "interaction_F": 0.288230493109232
+      },
+      {
+        "abs_change": 0.19753980512146208,
+        "excel_row": 14,
+        "interaction_F": 0.27759093449557776
+      },
+      {
+        "abs_change": 0.19043307533946524,
+        "excel_row": 37,
+        "interaction_F": 0.2704842047135809
+      }
+    ],
+    "max": 0.4272107112690172,
+    "median": 0.08547723515288366,
+    "min": 0.000004230898082501,
+    "n_fits": 74
+  },
+  "models": {
+    "all_74": {
+      "F": {
+        "density": 2.9450084368577687,
+        "flowers": 3.8554582495519583,
+        "interaction": 0.0800511293741157,
+        "year": 67.67142048919709
+      },
+      "conditional_dense_minus_sparse_fruit_set_pp": {
+        "2005": 5.096609088923087,
+        "2011": 7.099333731047784
+      },
+      "df_residual": 69,
+      "excluded_source_excel_rows": [],
+      "interaction_partial_eta_squared": 0.0011588168807836403,
+      "n": 74,
+      "patch_cluster_robust": false
+    },
+    "exclude_four_fruit_set_denominator_flags": {
+      "F": {
+        "density": 1.559389676571896,
+        "flowers": 3.31699877141706,
+        "interaction": 0.09304311206241224,
+        "year": 74.93003485999297
+      },
+      "conditional_dense_minus_sparse_fruit_set_pp": {
+        "2005": 3.3014883523839824,
+        "2011": 5.424453460575075
+      },
+      "df_residual": 65,
+      "excluded_source_excel_rows": [
+        16,
+        57,
+        68,
+        72
+      ],
+      "interaction_partial_eta_squared": 0.0014293864230964244,
+      "n": 70,
+      "patch_cluster_robust": false
+    },
+    "exclude_twenty_nested_denominator_flags": {
+      "F": {
+        "density": 1.0695772797887213,
+        "flowers": 3.8687525813706065,
+        "interaction": 0.2647255829940005,
+        "year": 53.707396371575854
+      },
+      "conditional_dense_minus_sparse_fruit_set_pp": {
+        "2005": 1.963443525645134,
+        "2011": 5.9108456401822025
+      },
+      "df_residual": 49,
+      "excluded_source_excel_rows": [
+        16,
+        19,
+        20,
+        22,
+        25,
+        28,
+        29,
+        33,
+        35,
+        36,
+        39,
+        42,
+        46,
+        47,
+        54,
+        57,
+        60,
+        61,
+        68,
+        72
+      ],
+      "interaction_partial_eta_squared": 0.005373532073126634,
+      "n": 54,
+      "patch_cluster_robust": false
+    }
+  },
+  "observed_source_zip_sha256": "623532d2b33c91d8ffe0f7042211797beb1557f8960cee0495dc0a6ecd7e47cf",
+  "original_24F_replay_unchanged": true,
+  "original_SPSS_code_recovered": false,
+  "post_outcome_exploratory_not_confirmatory": true,
+  "previously_recorded_zip_sha256": "e002c369ad864c2de22365b070c0551370c5d6c2cd6a10f80655865f0612f185",
+  "published_full_interaction_F": 0.355,
+  "schema_version": "PEDICULARIS_2013_FRUIT_SET_SENSITIVITY_V1",
+  "source_defined_fruit_set_flag_rows": [
+    16,
+    57,
+    68,
+    72
+  ],
+  "source_defined_predation_flag_rows": [
+    19,
+    20,
+    22,
+    25,
+    28,
+    29,
+    33,
+    35,
+    36,
+    39,
+    42,
+    46,
+    47,
+    54,
+    60,
+    61
+  ],
+  "source_error_proven": false,
+  "source_excel_rows": [
+    2,
+    75
+  ],
+  "source_group_counts": {
+    "2005_dense_large": 10,
+    "2005_sparse_large": 6,
+    "2011_dense_large": 25,
+    "2011_dense_small": 7,
+    "2011_sparse_large": 17,
+    "2011_sparse_small": 9
+  },
+  "source_original_bytes_verified": true,
+  "status": "SOURCE_VERIFIED_SENSITIVITY_PUBLISHED_INTERACTION_UNRESOLVED",
+  "verified_original_workbook_sha256": "d1dab0ea6f4371370aacd13106eee57017abbccccb3cd12dea75b69bdfa60380",
+  "receipt_provenance": {
+    "source_action_run": "https://github.com/zuizui0223/balance/actions/runs/38404909698",
+    "source_job_id": 115321876376,
+    "producing_commit": "35f452ab84dc0f8a1136ffc0f38d8ed189b406fd",
+    "generated_at_utc": "2026-10-13T13:26:50Z",
+    "note": "The archive ZIP can be repackaged. Exact workbook SHA256, size, and MD5 remain required; ZIP hash is recorded, not treated as an invariant."
+  }
+}

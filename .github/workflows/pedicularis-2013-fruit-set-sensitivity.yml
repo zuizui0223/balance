@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install exact-source reader and test dependencies
-        run: python -m pip install -e '.[dev,pedicularis]'
+        run: python -m pip install -e '.[dev,pedicularis]' && python -m pip install 'numpy>=1.24,<3'
       - name: Test synthetic algebraic controls
         run: python -m pytest -q tests/test_pedicularis_2013_ancova_sensitivity.py tests/test_pedicularis_2013_fruit_set_ancova.py
       - name: Retrieve original public Dryad metadata
@@ -31,6 +31,11 @@ jobs:
           python -m scripts.audit_pedicularis_2013_ancova_sensitivity \
             --source-zip release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip \
             --out release/generated/PEDICULARIS_2013_FRUIT_SET_SENSITIVITY_V1.json
+      - name: Independent original-source NumPy least-squares audit
+        run: |
+          python -m scripts.verify_pedicularis_2013_ancova_sensitivity_numpy \
+            --source-zip release/generated/PEDICULARIS_2013_DRYAD_SOURCE_VERSION_ZIP_V1.zip \
+            --audit-receipt release/generated/PEDICULARIS_2013_FRUIT_SET_SENSITIVITY_V1.json
       - uses: actions/upload-artifact@v4
         with:
           name: pedicularis-2013-fruit-set-source-sensitivity
