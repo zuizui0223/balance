@@ -102,7 +102,8 @@ The SCH receipt supplies independent evidence that conflict is active. BALANCE t
 
 ### Registered functional-state worldlines (Experiment B)
 
-The existing BITA-to-BALANCE handoff reports a **fixed-state contrast**, not
+The archived BITA-to-BALANCE V1 handoff **specification** reports a
+**fixed-state contrast**, not
 the optimum over an enlarged option set. Freeze the direction before outcomes:
 
 ```text
@@ -171,6 +172,16 @@ SCH conflict L > 0 AND Delta_architecture < 0
 with joint uncertainty. Until such an alternative is measured,
 the Experiment-B readout is **functional-state only**, not the programme's
 final structural architecture comparison.
+
+**Execution status (2026-10-13):** the BITA exporter in
+[PR #181](https://github.com/zuizui0223/bita/pull/181) and Experiment-B
+power wrapper in [PR #182](https://github.com/zuizui0223/bita/pull/182)
+were closed unmerged. SCH Experiment-A bundling
+[PR #21](https://github.com/zuizui0223/sch/pull/21) remains open while its
+power wrapper [PR #22](https://github.com/zuizui0223/sch/pull/22) was
+closed unmerged. The BALANCE end-to-end receipt is synthetic and cannot
+stand in for those missing active upstream producers or any field observation.
+
 
 ### Optional environmental crossing
 
