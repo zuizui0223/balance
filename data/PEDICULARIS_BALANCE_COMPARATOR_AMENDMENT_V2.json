@@ -37,5 +37,17 @@
     "underlying_surface_domain_verified_by_v1_consumer": false
   },
   "next_empirical_step": "Freeze and validate the SCH water baseline and Experiment-B fixed-state direction; for structural BALANCE, measure distinct architecture fitness net of measured costs or use another system.",
-  "causal_architecture_occupancy_claimed": false
+  "causal_architecture_occupancy_claimed": false,
+  "implementation_checkpoint_2026_10_13": {
+    "bita_xy_exporter_pr": "https://github.com/zuizui0223/bita/pull/181",
+    "bita_xy_exporter_status": "CLOSED_UNMERGED_ARCHIVED_PROTOTYPE",
+    "bita_power_wrapper_pr": "https://github.com/zuizui0223/bita/pull/182",
+    "bita_power_wrapper_status": "CLOSED_UNMERGED",
+    "sch_experiment_a_bundle_pr": "https://github.com/zuizui0223/sch/pull/21",
+    "sch_experiment_a_bundle_status": "OPEN_UNMERGED",
+    "sch_experiment_a_power_pr": "https://github.com/zuizui0223/sch/pull/22",
+    "sch_experiment_a_power_status": "CLOSED_UNMERGED",
+    "active_bita_main_xy_producer_verified": false,
+    "real_experiment_b_worldline_receipt_available": false
+  }
 }
