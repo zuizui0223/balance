@@ -151,9 +151,9 @@
       "system": "Escherichia coli coGFP (one versus two active gene copies)",
       "source_doi": "10.7554/eLife.97216",
       "source_url": "https://doi.org/10.7554/eLife.97216",
-      "comparison_class": "STRUCTURAL_NONNESTED",
+      "comparison_class": "STRUCTURAL_COMPARATOR_UNRESOLVED",
       "net_architecture_cost_in_fitness": false,
-      "observed_anchor": "Matched single-active versus double-active copy plasmid constructs, with same backbone/size expression-control strategy. Selection was FACS fluorescence, not competitive organismal fitness; two-copy populations showed no copy-wise colour specialization.",
+      "observed_anchor": "Matched single-active versus double-active copy plasmid constructs, with same backbone/size expression-control strategy. Selection was FACS fluorescence, not competitive organismal fitness; two-copy populations showed no copy-wise colour specialization. Copy induction options mean feasible-set nesting cannot be assumed absent; fixed net architecture comparator was not defined in advance.",
       "evidence": {
         "positive_sch_conflict_on_fitness_scale": {
           "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
@@ -177,7 +177,7 @@
         },
         "preoutcome_accessibility_and_comparator_frozen": {
           "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
-          "source_basis": "Fluorescence selection regimes were planned, but not a prospectively declared BALANCE ecological accessibility and architecture-fitness comparator."
+          "source_basis": "Fluorescence selection regimes were planned, but neither fixed-expression options nor structural cost and net growth comparator scope were registered for a BALANCE architecture worldline."
         },
         "joint_uncertainty_on_worldline_difference": {
           "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
