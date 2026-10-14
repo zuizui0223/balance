@@ -144,7 +144,10 @@ def adjudicate_structural_registry(registry: Mapping[str, object]) -> dict:
         if result.candidate_id in seen:
             raise ValueError("duplicate candidate_id")
         seen.add(result.candidate_id)
-        results.append(asdict(result))
+        normalized = asdict(result)
+        # JSON readers return arrays as lists, not Python tuples.
+        normalized["missing_gates"] = list(result.missing_gates)
+        results.append(normalized)
     return {
         "schema_version": SCHEMA,
         "status": "SOURCE_ELIGIBILITY_AUDIT_ONLY",
