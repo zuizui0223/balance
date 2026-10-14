@@ -53,7 +53,7 @@ def test_dalechampia_seed_only_cost_does_not_promote_net_fitness():
 
 def test_cogfp_structural_control_does_not_turn_facs_into_fitness():
     row = next(x for x in registry()["candidates"] if x["candidate_id"] == "COGFP_1V2")
-    assert row["comparison_class"] == "STRUCTURAL_NONNESTED"
+    assert row["comparison_class"] == "STRUCTURAL_COMPARATOR_UNRESOLVED"
     assert row["evidence"]["same_biological_context"]["status"] == STATE_VERIFIED
     assert row["evidence"]["common_net_whole_system_fitness_scale"]["status"] == STATE_MISSING
     assert row["evidence"]["positive_sch_conflict_on_fitness_scale"]["status"] == STATE_MISSING
@@ -90,6 +90,7 @@ def test_nested_architecture_requires_net_cost_in_same_fitness_scale():
 def test_all_claim_source_proof_gates_must_be_accounted_for():
     row = copy.deepcopy(registry()["candidates"][3])
     row["candidate_id"] = "SYNTHETIC_NONNESTED_ELIGIBLE"
+    row["comparison_class"] = "STRUCTURAL_NONNESTED"
     for evidence in row["evidence"].values():
         evidence["status"] = STATE_VERIFIED
     result = adjudicate_structural_source(row)
