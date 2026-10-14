@@ -159,3 +159,19 @@ def test_output_summary_contains_no_source_free_direct_architecture_claim():
     v = audit_dalechampia_temporal_bracts(source())
     assert "positive post-pollination retained-bract female seed-mass benefit" in v["ecological_claim_ceiling"]
     assert v["source_dois"]["postanthesis_2015"] == "10.1111/1365-2435.12427"
+
+
+def test_hashed_source_readout_stays_read_only_and_reproducible(tmp_path):
+    import hashlib
+    from scripts.audit_dalechampia_temporal_bracts import build_readout
+
+    raw = PATH.read_bytes()
+    out_path = tmp_path / "reported-readout.json"
+    result = build_readout(PATH, out_path)
+    assert result["source_json_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert "not independent raw reanalysis" in result["source_semantics"]
+    assert result["direct_BALANCE_occupancy_identified"] is False
+    assert json.loads(out_path.read_text(encoding="utf-8")) == result
+    assert PATH.read_bytes() == raw
+    with pytest.raises(ValueError, match="already exists"):
+        build_readout(PATH, out_path)
