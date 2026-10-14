@@ -1,0 +1,246 @@
+{
+  "schema_version": "BALANCE_STRUCTURAL_WORLDLINE_SOURCE_AUDIT_V1",
+  "status": "CURATED_SOURCE_AUDIT_NOT_FIELD_DATA",
+  "candidates": [
+    {
+      "candidate_id": "PED_REX_WATER",
+      "system": "Pedicularis rex (bract water-state experiment)",
+      "source_doi": "10.1093/aobpla/plv019",
+      "source_url": "https://doi.org/10.1093/aobpla/plv019",
+      "comparison_class": "FUNCTIONAL_STATE_ONLY",
+      "net_architecture_cost_in_fitness": false,
+      "observed_anchor": "2015 wet versus basal-perforation/drainage package tests water-associated defence, not a structurally alternative bract. 2016 exsertion selection is observational.",
+      "evidence": {
+        "positive_sch_conflict_on_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Independent SCH P0/P/G conflict budget L with matched context is unexecuted; 2016 selection gradient not a qualified L."
+        },
+        "matched_shared_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Retained cupulate bract exists in both wet and drained arms; not a structural S architecture."
+        },
+        "matched_alternative_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Perforation/water-state toggles do not construct a new differentiated bract architecture."
+        },
+        "same_biological_context": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Historical 2015 and 2016 measurements are not the proposed one-population one-season S/D architecture experiment."
+        },
+        "common_net_whole_system_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Historical seed endpoints are not matched net architecture fitness for S/D on one outcome scale."
+        },
+        "preoutcome_accessibility_and_comparator_frozen": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No prospectively executed structural alternatives or accessibility scope; proposed Experiment B only."
+        },
+        "joint_uncertainty_on_worldline_difference": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No joint S-versus-net-D structural optimum interval."
+        },
+        "structural_intervention_or_architecture_identity_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No stable alternative bract structural phenotype with validated cost or removal of architecture."
+        },
+        "source_lineage_and_independent_replication_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Archived BITA exporter #181 closed unmerged; original SCH/BITA source links absent; no real matched plant-level structural units."
+        }
+      },
+      "same_cluster_as": "Pedicularis_rex_SCH_BALANCE_BITA_programme"
+    },
+    {
+      "candidate_id": "SOL_ROS_ANTHERS",
+      "system": "Solanum rostratum (feeding and pollinating anthers)",
+      "source_doi": "10.1111/j.1420-9101.2009.01693.x",
+      "source_url": "https://doi.org/10.1111/j.1420-9101.2009.01693.x",
+      "comparison_class": "STRUCTURAL_COMPARATOR_UNRESOLVED",
+      "net_architecture_cost_in_fitness": false,
+      "observed_anchor": "Flight-cage evidence: bees preferentially manipulate feeding anthers and pollinating anthers export more pollen. Disabling anthers left floral morphology unchanged.",
+      "evidence": {
+        "positive_sch_conflict_on_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Pollen-fate division supports functional conflict, but no same-fitness quantified SCH conflict L."
+        },
+        "matched_shared_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Experiment uses existing dimorphic flowers; no isomorphic-stamen S structural world fitted."
+        },
+        "matched_alternative_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Functional inactivation of existing anther type, not a distinct structural D compared with S."
+        },
+        "same_biological_context": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "The trial shares an S. rostratum field/cage context but lacks a second architecture within that context."
+        },
+        "common_net_whole_system_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Bee behavior and stigma pollen export are not matched total plant fitness for S and D."
+        },
+        "preoutcome_accessibility_and_comparator_frozen": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "The study did not prospectively register a net S-versus-D structural architecture comparison."
+        },
+        "joint_uncertainty_on_worldline_difference": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No joint confidence interval for optimized net S-D structural fitness difference."
+        },
+        "structural_intervention_or_architecture_identity_verified": {
+          "status": "SOURCE_VERIFIED",
+          "source_basis": "Existing short feeding and long pollinating anthers are identified as distinct structural modules; this alone does not identify a shared comparator."
+        },
+        "source_lineage_and_independent_replication_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "The study experimentally manipulates functional access within D, not source-linked shared-architecture and differentiated-architecture biological units."
+        }
+      },
+      "same_cluster_as": "Solanum_rostratum_heteranthery_boundary"
+    },
+    {
+      "candidate_id": "DAL_SCAN_REWARD",
+      "system": "Dalechampia scandens (resin reward-gland experiment)",
+      "source_doi": "10.1093/aob/mcs091",
+      "source_url": "https://doi.org/10.1093/aob/mcs091",
+      "comparison_class": "STRUCTURAL_COMPARATOR_UNRESOLVED",
+      "net_architecture_cost_in_fitness": false,
+      "observed_anchor": "Within greenhouse population, authors assigned blossom-level gland/male-flower/resin manipulations and measured hand-pollinated female seed count/mass; no detectable seed cost is not an equivalence proof.",
+      "evidence": {
+        "positive_sch_conflict_on_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Study quantifies gland/resin production but not independent SCH pollinator-antagonist L on a single net fitness axis."
+        },
+        "matched_shared_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No intact matched integrated S architecture reference optimized over a shared functional coordinate."
+        },
+        "matched_alternative_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Excision of staminate flowers and/or gland is not a stable prospective alternative reproductive architecture of the same functions."
+        },
+        "same_biological_context": {
+          "status": "SOURCE_VERIFIED",
+          "source_basis": "Randomized blossom treatments share the greenhouse plant population and study period."
+        },
+        "common_net_whole_system_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Hand pollination and female seed number/mass omit male fitness; gland/male-flower excision precludes treating seed result as total net fitness."
+        },
+        "preoutcome_accessibility_and_comparator_frozen": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Original treatments not prospectively registered as a S-versus-D net-architecture envelope."
+        },
+        "joint_uncertainty_on_worldline_difference": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No optimized matched S-vs-D whole-organism fitness difference and joint interval."
+        },
+        "structural_intervention_or_architecture_identity_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Removing gland/male flowers tests production costs and tissue interference, not a verified developmental architecture variant."
+        },
+        "source_lineage_and_independent_replication_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Blossoms and plants recorded, but no source-linked independently randomized structural S/D architecture fitness units exist."
+        }
+      },
+      "same_cluster_as": "Dalechampia_scandens_preexisting_pattern_cluster_not_new_replication"
+    },
+    {
+      "candidate_id": "COGFP_1V2",
+      "system": "Escherichia coli coGFP (one versus two active gene copies)",
+      "source_doi": "10.7554/eLife.97216",
+      "source_url": "https://doi.org/10.7554/eLife.97216",
+      "comparison_class": "STRUCTURAL_COMPARATOR_UNRESOLVED",
+      "net_architecture_cost_in_fitness": false,
+      "observed_anchor": "Matched single-active versus double-active copy plasmid constructs, with same backbone/size expression-control strategy. Selection was FACS fluorescence, not competitive organismal fitness; two-copy populations showed no copy-wise colour specialization. Copy induction options mean feasible-set nesting cannot be assumed absent; fixed net architecture comparator was not defined in advance.",
+      "evidence": {
+        "positive_sch_conflict_on_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Blue-green fluorescence tradeoff is not a SCH fitness-scale L, independent of architecture state."
+        },
+        "matched_shared_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "One active-copy construct exists, but no common net fitness optimization over a shared coordinate is supplied."
+        },
+        "matched_alternative_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Two active-copy construct exists, but no matched optimized reproductive/growth net architecture worldline is supplied."
+        },
+        "same_biological_context": {
+          "status": "SOURCE_VERIFIED",
+          "source_basis": "Constructs are deliberately compared in E. coli under experimentally defined fluorescence regimes."
+        },
+        "common_net_whole_system_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "FACS fluorescence is selection proxy, not demonstrated common Malthusian/reproductive fitness; plasmid burden/growth costs are not measured as a net worldline."
+        },
+        "preoutcome_accessibility_and_comparator_frozen": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Fluorescence selection regimes were planned, but neither fixed-expression options nor structural cost and net growth comparator scope were registered for a BALANCE architecture worldline."
+        },
+        "joint_uncertainty_on_worldline_difference": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No joint fitness-scale optimized single/double architecture comparison."
+        },
+        "structural_intervention_or_architecture_identity_verified": {
+          "status": "SOURCE_VERIFIED",
+          "source_basis": "One-active and two-active gene-copy constructs are experimentally defined; no claim of specialization follows from copy number."
+        },
+        "source_lineage_and_independent_replication_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Copy-resolved phenotype and evolution replicates exist, but not source-linked same-scale net growth-fitness optimum data for the BALANCE estimand."
+        }
+      },
+      "same_cluster_as": "coGFP_dual_color_duplication_existing_pattern_cluster"
+    },
+    {
+      "candidate_id": "SAL_TRPF_RESCUE",
+      "system": "Salmonella enterica HisA/TrpA rescue of trpF deletion (2026)",
+      "source_doi": "10.1093/g3journal/jkag167",
+      "source_url": "https://doi.org/10.1093/g3journal/jkag167",
+      "comparison_class": "STRUCTURAL_COMPARATOR_UNRESOLVED",
+      "net_architecture_cost_in_fitness": false,
+      "observed_anchor": "Genetic reconstructions establish bifunctional growth rescue and ancestral-function tradeoffs; only one target-gene duplication was found, without demonstrated functional divergence.",
+      "evidence": {
+        "positive_sch_conflict_on_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Growth tradeoffs were measured but not the registered independent SCH L optima/budget on one fitness surface."
+        },
+        "matched_shared_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Reconstructed generalist mutants are tested but not optimized as a shared-architecture worldline against a costed D."
+        },
+        "matched_alternative_structural_worldline": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "One duplication without divergence does not identify a matched differentiated/specialized net architecture."
+        },
+        "same_biological_context": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Mutant reconstruction and growth data are in matched laboratory medium, but the required shared-versus-duplicated specialist matched comparison is absent."
+        },
+        "common_net_whole_system_fitness_scale": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Growth AUC is a biological endpoint in this source, but it is not an architecture-paired net S/D worldline response."
+        },
+        "preoutcome_accessibility_and_comparator_frozen": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Not designed with a prospective registered S vs a specialized two-copy D accessible set."
+        },
+        "joint_uncertainty_on_worldline_difference": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No joint interval for a direct shared versus differentiated net fitness optimum difference."
+        },
+        "structural_intervention_or_architecture_identity_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "No demonstrated differentiated two-copy structural/functional alternative to matched reconstructed bifunctional generalist."
+        },
+        "source_lineage_and_independent_replication_verified": {
+          "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
+          "source_basis": "Source verifies strain backgrounds and growth assays, but no identified paired S/D architecture comparison of the target."
+        }
+      },
+      "same_cluster_as": "Salmonella_HisA_TrpF_family_existing_cross_domain_audit"
+    }
+  ]
+}
