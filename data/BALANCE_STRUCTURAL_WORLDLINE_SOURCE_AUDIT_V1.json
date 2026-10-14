@@ -73,7 +73,7 @@
         },
         "same_biological_context": {
           "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
-          "source_basis": "Antenna? Not applicable: the trial shares S. rostratum context but lacks a second architecture within that context."
+          "source_basis": "The trial shares an S. rostratum field/cage context but lacks a second architecture within that context."
         },
         "common_net_whole_system_fitness_scale": {
           "status": "NOT_IDENTIFIED_IN_AUDITED_SOURCE",
