@@ -35,7 +35,7 @@ def test_five_source_candidates_stay_outside_direct_structural_receipt():
     assert all(x["direct_worldline_gap_estimated"] is False for x in result["results"])
 
 
-def test_solannum_anther_function_evidence_is_not_matched_architecture_fitness():
+def test_solanum_anther_function_evidence_is_not_matched_architecture_fitness():
     result = registry()["candidates"][1]
     assert result["system"].startswith("Solanum rostratum")
     assert result["evidence"]["structural_intervention_or_architecture_identity_verified"]["status"] == STATE_VERIFIED
@@ -139,3 +139,20 @@ def test_machine_source_audit_is_only_eligibility_not_new_pooled_replication():
                for x in result["results"])
     assert all(x["contributes_new_independent_biological_cluster"] is False
                for x in result["results"])
+
+
+def test_hashed_source_runner_is_reproducible_and_never_overwrites(tmp_path):
+    import hashlib
+    from scripts.audit_structural_worldline_sources import run_source_audit
+
+    target = tmp_path / "readout.json"
+    before = REGISTRY.read_bytes()
+    result = run_source_audit(REGISTRY, target)
+    assert target.exists()
+    assert result["source_registry_sha256"] == hashlib.sha256(before).hexdigest()
+    assert result["status"] == "SOURCE_ELIGIBILITY_AUDIT_ONLY"
+    assert result["source_eligible_count"] == 0
+    assert REGISTRY.read_bytes() == before
+    assert json.loads(target.read_text(encoding="utf-8")) == result
+    with pytest.raises(ValueError, match="already exists"):
+        run_source_audit(REGISTRY, target)
