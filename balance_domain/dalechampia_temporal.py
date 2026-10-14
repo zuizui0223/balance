@@ -26,6 +26,19 @@ CONTRASTS = {
     "BRAC_EDGE_CUT_CONTROL_MINUS_CONTROL",
 }
 Z95_REFERENCE = Decimal("1.96")
+# Frozen reported figures from the three primary sources. A changed source
+# estimate or definition needs a versioned new audit, not a silent overwrite.
+SOURCE_2015_ANCHORS = {
+    "POSTANTHESIS_BRACTS_REMOVED_MINUS_CONTROL": ("-1.34", "0.32"),
+    "POSTANTHESIS_BRACTS_SHADED_MINUS_CONTROL": ("-2.03", "0.32"),
+    "BRAC_EDGE_CUT_CONTROL_MINUS_CONTROL": ("0.29", "0.32"),
+}
+SOURCE_2015_GAS = {
+    "green_bracts_mean": "1.47", "green_bracts_se": "0.23",
+    "white_bracts_mean": "0.42", "white_bracts_se": "0.24",
+    "leaves_mean": "5.80", "leaves_se": "0.25",
+}
+
 
 
 def _num(value: object, label: str, *, positive=False) -> Decimal:
@@ -96,6 +109,8 @@ def audit_dalechampia_temporal_bracts(record: dict) -> dict:
     if design.get("experimental_manipulation_beyond_photosynthesis_possible") is not True:
         raise ValueError("2015 bract treatments may also change microclimate/protection")
     control = _num(design.get("control_mean_seed_mass_mg"), "2015 control seed mass", positive=True)
+    if control != Decimal("34.67"):
+        raise ValueError("published 2015 control mean seed mass changed")
     treatment_rows = design.get("reported_treatment_minus_unmanipulated_seed_mass")
     if not isinstance(treatment_rows, list) or len(treatment_rows) != 3:
         raise ValueError("three published 2015 treatment contrasts required")
@@ -110,6 +125,8 @@ def audit_dalechampia_temporal_bracts(record: dict) -> dict:
         observed_contrasts.add(name)
         point = _num(item["point_mg"], f"{name}.point_mg")
         se = _num(item["se_mg"], f"{name}.se_mg", positive=True)
+        if (point, se) != tuple(Decimal(v) for v in SOURCE_2015_ANCHORS[name]):
+            raise ValueError(f"{name} original published numeric anchor changed")
         low, high = _normal_reference_interval(point, se)
         effects.append({
             "contrast": name,
@@ -131,6 +148,9 @@ def audit_dalechampia_temporal_bracts(record: dict) -> dict:
         "source_does_not_supply_cross_stage_covariance",
     }:
         raise ValueError("gas exchange values do not match reported source fields")
+    for key, expected in SOURCE_2015_GAS.items():
+        if _num(gas.get(key), f"gas.{key}", positive=True) != Decimal(expected):
+            raise ValueError(f"gas.{key} published numeric anchor changed")
     if gas["source_does_not_supply_cross_stage_covariance"] is not True:
         raise ValueError("no reported green/white paired uncertainty for ratio")
     green = _num(gas["green_bracts_mean"], "green gas-exchange mean", positive=True)
@@ -163,6 +183,8 @@ def audit_dalechampia_temporal_bracts(record: dict) -> dict:
         raise ValueError("2012 manipulation could not remove prior construction costs")
     resin_point = _num(resin.get("contrast_seed_mass_mg"), "2012 resin estimate")
     resin_se = _num(resin.get("contrast_seed_mass_se_mg"), "2012 resin SE", positive=True)
+    if (resin_point, resin_se) != (Decimal("-0.66"), Decimal("0.54")):
+        raise ValueError("2012 resin seed mass contrast numeric anchor changed")
     limits = record.get("inference_limits")
     if not isinstance(limits, dict) or set(limits) != {
         "cross_study_male_and_female_fitness_combined",
