@@ -1,0 +1,77 @@
+{
+  "schema_version": "DALECHAMPIA_TEMPORAL_BRACT_SOURCE_V1",
+  "status": "SOURCE_REPORTED_ANCHORS_NOT_RAW_DATA",
+  "system": "Dalechampia scandens",
+  "cross_source_rule": "DISTINCT_CONTEXTS_NO_POOLED_NET_FITNESS_OR_STRUCTURAL_BALANCE",
+  "sources": {
+    "postanthesis_2015": {
+      "doi": "10.1111/1365-2435.12427",
+      "url": "https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2435.12427",
+      "study_context": "2013 greenhouse, fifth-generation Mexican-derived population, hand-pollination",
+      "n_maternal_plants": 39,
+      "n_complete_four_treatments": 33,
+      "sampling_phase": "seed mass at four weeks after pollination, before full maturity",
+      "response": "individual seed mass, mg per seed",
+      "control_mean_seed_mass_mg": 34.67,
+      "reported_treatment_minus_unmanipulated_seed_mass": [
+        {
+          "contrast": "POSTANTHESIS_BRACTS_REMOVED_MINUS_CONTROL",
+          "point_mg": -1.34,
+          "se_mg": 0.32
+        },
+        {
+          "contrast": "POSTANTHESIS_BRACTS_SHADED_MINUS_CONTROL",
+          "point_mg": -2.03,
+          "se_mg": 0.32
+        },
+        {
+          "contrast": "BRAC_EDGE_CUT_CONTROL_MINUS_CONTROL",
+          "point_mg": 0.29,
+          "se_mg": 0.32
+        }
+      ],
+      "area_gross_photosynthesis_umol_m2_s": {
+        "green_bracts_mean": 1.47,
+        "green_bracts_se": 0.23,
+        "white_bracts_mean": 0.42,
+        "white_bracts_se": 0.24,
+        "leaves_mean": 5.8,
+        "leaves_se": 0.25,
+        "source_does_not_supply_cross_stage_covariance": true
+      },
+      "authors_carbon_budget_model": "green bract photosynthesis estimated sufficient to meet blossom respiration under registered moderate light schedule; not direct isotope tracing of C to seeds",
+      "treatments_are_distinct_independent_maternal_seed_mass_contrasts": false,
+      "experimental_manipulation_beyond_photosynthesis_possible": true
+    },
+    "pollinator_antagonist_2013": {
+      "doi": "10.1111/j.1600-0706.2013.20780.x",
+      "url": "https://nsojournals.onlinelibrary.wiley.com/doi/10.1111/j.1600-0706.2013.20780.x",
+      "study_context": "2006 wild Mexican population, observational selection analysis",
+      "pollinators_favour_larger_bracts": true,
+      "seed_predators_oviposit_more_on_larger_bracts": true,
+      "net_selection_tended_stabilizing": true,
+      "causal_sch_conflict_budget_L_measured": false
+    },
+    "resin_cost_2012": {
+      "doi": "10.1093/aob/mcs091",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3359932/",
+      "study_context": "greenhouse fifth-generation Mexican-derived population, hand-pollinated blossoms",
+      "reported_table3_contrast": "removed male inflorescence plus gland minus removed staminate flowers with gland retained",
+      "contrast_seed_mass_mg": -0.66,
+      "contrast_seed_mass_se_mg": 0.54,
+      "n_matched_for_reported_contrast": 51,
+      "reported_seed_mass_cost_detected": false,
+      "treatment_occurred_after_gland_development": true,
+      "cost_zero_established": false
+    }
+  },
+  "inference_limits": {
+    "cross_study_male_and_female_fitness_combined": false,
+    "common_sch_L_and_S_D_worldlines": false,
+    "structural_architecture_cost_identified": false,
+    "direct_structural_balance_occupancy_identified": false,
+    "causal_carbon_transfer_traced_with_label": false,
+    "cross_study_meta_analysis_permitted": false,
+    "new_independent_cluster_count": 0
+  }
+}
