@@ -211,11 +211,18 @@ def _table(raw: bytes, expected_fields: list[str], label: str):
         raise ValueError(f"{label} empty verified source file")
     # These older Dryad .txt exports are delimited text; tolerate CRLF and BOM.
     sample = text[:4096]
-    try:
-        dialect = csv.Sniffer().sniff(sample, delimiters="\t,;")
-    except csv.Error as exc:
-        raise ValueError(f"{label} delimiter not resolved; review exact source layout") from exc
-    reader = csv.DictReader(io.StringIO(text), dialect=dialect)
+    # The original archived files are tab-delimited. Sniffer may reject
+    # an otherwise perfectly valid two-row TSV; a verified tab-separated
+    # header is a stronger delimiter declaration than a heuristic guess.
+    header = text.splitlines()[0]
+    if "\t" in header:
+        reader = csv.DictReader(io.StringIO(text), delimiter="\t")
+    else:
+        try:
+            dialect = csv.Sniffer().sniff(sample, delimiters="\t,;")
+        except csv.Error as exc:
+            raise ValueError(f"{label} delimiter not resolved; review exact source layout") from exc
+        reader = csv.DictReader(io.StringIO(text), dialect=dialect)
     names = reader.fieldnames or []
     norm = lambda s: s.strip().casefold().replace("_", "").replace(" ", "")
     found = {norm(k): k for k in names if k is not None}
