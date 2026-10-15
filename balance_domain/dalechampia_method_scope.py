@@ -173,7 +173,7 @@ def audit_dalechampia_method_scope(c: dict) -> dict:
         raise ValueError("nested experimental units changed")
     return {
         "schema_version": SCHEMA,
-        "status": "SOURCE_METHOD_CORRECTED_BRact_CARBON_UNIDENTIFIED",
+        "status": "SOURCE_METHOD_CORRECTED_BRACT_CARBON_UNIDENTIFIED",
         "original_historical_treatment_codes": list(ARMS),
         "whole_blossom_foil_shade_includes_fruit_light": True,
         "bract_local_photosynthesis_only_intervention": False,
