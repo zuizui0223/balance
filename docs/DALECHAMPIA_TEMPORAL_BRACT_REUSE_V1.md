@@ -2,6 +2,14 @@
 
 **Status: SOURCE-REPORTED QUANTITATIVE READOUT / POSITIVE SEED-MASS EFFECT / NOT STRUCTURAL BALANCE OCCUPANCY.**
 
+## Source-method qualification added 2026-10-15
+
+**Important:** the 2015 arm called "shaded bracts" actually placed **the entire pollinated blossom** between two perforated aluminium-foil sheets. Bracts and fruits were both shaded, and thermal/humidity/handling effects were not separately equalized with a transparent foil sham. This is a **whole-blossom foil-treatment effect**, not a bract-local carbon-assimilation causal estimate. Bract removal separately changes both local carbon capacity and protective architecture. The original ±0.32 mg source SEs and numerical treatment-minus-control differences remain unchanged, but the bract-specific mechanistic attribution requires additional experiments.
+
+The published seed/gas-exchange **raw data exist** in Dryad [10.5061/dryad.nb675](https://doi.org/10.5061/dryad.nb675), with two file identities and MD5s now frozen in [the V2 source-method/data gate](DALECHAMPIA_2015_WHOLE_BLOSSOM_SHADE_DRYAD_GATE_V2.md). Their original bytes have not yet been imported, and the model has not been independently re-fitted here. The 2015 response remains **seed mass at 4 weeks**, not final reproductive fitness.
+
+
+
 This evidence moves the BALANCE programme beyond its dry structural-source eligibility inventory, but does **not** repair the missing matched S/D architecture worldline. In *Dalechampia scandens*, the same floral bract is deployed as a conspicuous pollinator advertisement during anthesis and becomes a green, photosynthetically active structure around the maturing seeds after pollination. An independently randomized post-pollination experiment supports a *benefit of retaining the organ* for early seed development. This is a **real measured outcome in the primary literature**, not a newly generated field dataset.
 
 ## Three distinct and non-exchangeable source lanes
@@ -9,7 +17,7 @@ This evidence moves the BALANCE programme beyond its dry structural-source eligi
 | Source | Biological layer | Observed evidence | Strict limitation |
 |---|---|---|---|
 | [Pérez-Barrales et al. 2013, Oikos](https://doi.org/10.1111/j.1600-0706.2013.20780.x) | Conflict while attracting pollinators in 2006 wild Mexico | Larger bracts received more bee visits/pollen but also more seed-predator egg deposition; combined seed selection tended stabilizing | Observational selection; does not identify a same-fitness-scale SCH causal conflict budget L |
-| [Pélabon et al. 2015, Functional Ecology](https://doi.org/10.1111/1365-2435.12427) | Post-anthesis carbon contribution and reproductive return in 2013 greenhouse | Removing or shading bracts after hand pollination reduced **four-week seed mass**, while bracts became more photosynthetically active on greening | Not full seed maturity, not male fitness, not an S/D architecture comparison; bract manipulation can alter microclimate/protection |
+| [Pélabon et al. 2015, Functional Ecology](https://doi.org/10.1111/1365-2435.12427) | Post-anthesis carbon contribution and reproductive return in 2013 greenhouse | Removing bracts or shading the **entire blossom** after hand pollination reduced **four-week seed mass**, while bracts became more photosynthetically active on greening | Not full seed maturity, not male fitness, not an S/D architecture comparison; bract manipulation can alter microclimate/protection |
 | [Pélabon et al. 2012, Annals of Botany](https://doi.org/10.1093/aob/mcs091) | Reward production in a different greenhouse cohort | Manipulated resin production did not detectably change seed count/mass; resin-gland/flower-removal contrast was small and imprecise | Nonsignificant maternal cost is not K=0, cost equivalence, or evidence about prior construction expenditure |
 
 **Never concatenate the rows across these papers to estimate one plant's** `L`, `K`, `Phi`, `W_S*`, `W_D*`, or structural differentiation. They used different cohorts, environmental contexts, functions and endpoints. The established *D. scandens* conflict-without-splitting cluster is **not** counted anew for this staged study.
@@ -23,7 +31,7 @@ All signs below are **treatment minus unmanipulated control**, units mg **per se
 | Postpollination manipulation | Source estimate ± source SE (mg) | Approximate normal-reference 95% range (mg) | Percent of control mean (34.67 mg) |
 |---|---:|---:|---:|
 | Bracts removed | **−1.34 ± 0.32** | [−1.9672, −0.7128] | −3.87% |
-| Bracts shaded | **−2.03 ± 0.32** | [−2.6572, −1.4028] | −5.86% |
+| Entire blossom foil-shaded (historical label: shaded bracts) | **−2.03 ± 0.32** | [−2.6572, −1.4028] | −5.86% |
 | Edge-cut control | +0.29 ± 0.32 | [−0.3372, +0.9172] | +0.84% |
 
 The ranges are computed from rounded published estimate ± **1.96 × reported SE** and are **NOT** the exact original mixed-effects model confidence intervals. They ignore the unknown model degrees of freedom and correlation between treatment contrasts, so do not infer a precise shade-versus-removal difference or treatment equivalence from them. Their role is to make the reported precision transparent, not to manufacture new inferential significance.
@@ -56,7 +64,7 @@ The staged-functional benefit may raise the costs of losing existing floral orga
 
 This is a *prospective explanation for persistence*, distinct from the tautological definition of the BALANCE region.
 
-A rigorous first experiment would manipulate post-anthesis **photosynthetic availability**, with transparent/light-excluding sham covers matched for handling and microclimate, while leaving the bract's physical protection and early display intact. Randomize at the independent plant/compartment level and account for correlated blossoms. Cross this with independently validated predator exposure and, if feasible, prospective variation in early bract advertisement. Collect:
+A rigorous first experiment would manipulate post-anthesis **bract-local photosynthetic availability (not whole-blossom foil shading)**, with transparent/light-excluding sham covers matched for handling and microclimate, while leaving the bract's physical protection and early display intact. Randomize at the independent plant/compartment level and account for correlated blossoms. Cross this with independently validated predator exposure and, if feasible, prospective variation in early bract advertisement. Collect:
 
 - pre/post light, gas exchange, surface temperature, water status, and bract closing integrity;
 - pollen receipt/visitation and independently measured predator egg/attack counts;
