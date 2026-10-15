@@ -220,3 +220,19 @@ def test_source_nesting_parser_rejects_duplicate_seeds_within_blossom():
     assert rows[0]["seedID"]==rows[1]["seedID"]
     # The actual end-to-end duplicate guard is in verify_exact_dryad_bytes
     # after original MD5; no seed is a legitimate independent plant replicate.
+
+
+def test_original_latin1_decimal_comma_and_missing_mass_contract():
+    from balance_domain.dalechampia_method_scope import parse_source_decimal
+    assert parse_source_decimal("38,83","seedmass") == 38.83
+    assert parse_source_decimal("38.83","gas") == 38.83
+    assert parse_source_decimal("0,01","small") == 0.01
+    assert parse_source_decimal("NA","missing") is None
+    assert parse_source_decimal("","missing") is None
+    with pytest.raises(ValueError, match="cannot be missing"):
+        parse_source_decimal("NA","mandatory",allow_missing=False)
+    for bad in ("1,234,567", "1.000,4", "1,2,3", "Infinity", "1e309", "fifteen"):
+        with pytest.raises(ValueError, match="decimal format"):
+            parse_source_decimal(bad,"seedmass")
+    with pytest.raises(ValueError, match="original source text"):
+        parse_source_decimal(38.83,"seedmass")
