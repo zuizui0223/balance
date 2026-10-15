@@ -1,0 +1,138 @@
+{
+  "schema_version": "DALECHAMPIA_POSTANTHESIS_METHOD_AND_DRYAD_V2",
+  "status": "ORIGINAL_METHOD_SOURCE_VERIFIED_RAW_BYTES_NOT_ACQUIRED",
+  "article_doi": "10.1111/1365-2435.12427",
+  "article_methods_url": "https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2435.12427",
+  "dryad_doi": "10.5061/dryad.nb675",
+  "dryad_dataset_url": "https://datadryad.org/dataset/doi:10.5061/dryad.nb675",
+  "dryad_version_id": 11209,
+  "source_methods": {
+    "year": 2013,
+    "n_maternal_plants": 39,
+    "n_maternal_plants_with_four_treatments_completed": 33,
+    "pollination": "hand pollination before randomization of post-pollination bract treatments",
+    "all_treatments_male_inflorescence_removed_in_female_phase": true,
+    "outcome": "individual seed mass measured four weeks post-pollination; before full seed maturity",
+    "raw_seed_mass_analysis_requires_maternal_plant_clustering": true,
+    "abortion_morphology_not_identified_from_numeric_mass_alone": true
+  },
+  "original_arms": [
+    {
+      "code": "cont",
+      "description": "unmanipulated after hand pollination",
+      "bracts_retained": true,
+      "foil_entire_blossom": false,
+      "bracts_physically_cut": false,
+      "selective_bract_photosynthesis_disabled": false
+    },
+    {
+      "code": "cut",
+      "description": "both upper and lower bracts cut off close to insertion",
+      "bracts_retained": false,
+      "foil_entire_blossom": false,
+      "bracts_physically_cut": true,
+      "selective_bract_photosynthesis_disabled": false
+    },
+    {
+      "code": "cutcont",
+      "description": "both bract edges trimmed approximately 1 mm as cutting control",
+      "bracts_retained": true,
+      "foil_entire_blossom": false,
+      "bracts_physically_cut": true,
+      "selective_bract_photosynthesis_disabled": false
+    },
+    {
+      "code": "bag",
+      "description": "ENTIRE hand-pollinated blossom enclosed between perforated aluminium-foil sheets",
+      "bracts_retained": true,
+      "foil_entire_blossom": true,
+      "bracts_physically_cut": false,
+      "selective_bract_photosynthesis_disabled": false
+    }
+  ],
+  "source_totals": {
+    "seed_count": {
+      "bag": 317,
+      "cut": 295,
+      "cutcont": 317,
+      "cont": 291
+    },
+    "reported_aborted_seed_count": {
+      "bag": 33,
+      "cut": 25,
+      "cutcont": 39,
+      "cont": 20
+    },
+    "aborted_seed_morphology_separately_observed_by_authors": true,
+    "abort_identification_by_mass_threshold_alone_valid": false,
+    "shade_specific_fruit_seed_effect_measured_without_foil_microclimate_control": false
+  },
+  "dryad_source_files": [
+    {
+      "source_file_id": 46163,
+      "name": "Pelabon et al FE file 1.txt",
+      "size_bytes": 84562,
+      "md5": "0d64b8a35835bfd23e0feab9276026bb",
+      "api_metadata_url": "https://datadryad.org/api/v2/files/46163",
+      "download_url": "https://datadryad.org/api/v2/files/46163/download",
+      "contents": "individual_seed_and_blossom_manipulation",
+      "expected_fields": [
+        "FemaleID",
+        "MaleID",
+        "crossID",
+        "treatcode",
+        "seedID",
+        "seedmass",
+        "seedset",
+        "ped"
+      ]
+    },
+    {
+      "source_file_id": 46164,
+      "name": "Pelabon et al FE file 2.txt",
+      "size_bytes": 4821,
+      "md5": "4b06aa5894f0c3ff361ee225a1f81ee5",
+      "api_metadata_url": "https://datadryad.org/api/v2/files/46164",
+      "download_url": "https://datadryad.org/api/v2/files/46164/download",
+      "contents": "within_blossom_bract_removal_gas_exchange",
+      "expected_fields": [
+        "Plant_ID",
+        "Color",
+        "Replicate",
+        "Bract",
+        "AN",
+        "R",
+        "GPP",
+        "GPPnett"
+      ]
+    }
+  ],
+  "source_access": {
+    "original_article_verified": true,
+    "dryad_metadata_verified": true,
+    "raw_file_bytes_acquired_in_this_study": false,
+    "exact_hash_verified_locally": false,
+    "raw_reanalysis_executed": false
+  },
+  "identification": {
+    "seed_mass_total_package_effects_reported": true,
+    "whole_blossom_shade_effect_reported": true,
+    "bract_local_light_effect_isolated": false,
+    "fruit_light_held_constant_during_shading": false,
+    "light_equal_foil_sham_present": false,
+    "bract_protection_constant_in_removal": false,
+    "gross_gas_exchange_greening_effect_observed": true,
+    "cause_of_seed_mass_effect_isolated_to_bract_carbon": false,
+    "whole_organism_fitness_measured": false,
+    "structural_architecture_BALANCE_occupancy_identified": false,
+    "no_cross_study_fitness_pooling": true,
+    "new_independent_biological_clusters": 0
+  },
+  "next_stage": {
+    "stage0_required": "demonstrate independent manipulation of bract-local photosynthesis with constant fruit irradiance, bract integrity, foil handling, humidity and temperature",
+    "if_stage0_fails": "BRACT_SPECIFIC_CARBON_CAUSAL_ESTIMAND_NOT_IDENTIFIABLE_WITH_PROPOSED_METHOD",
+    "source_bytes_precondition": "both exact Dryad text files must pass file size and md5 before any source reanalysis",
+    "inferential_unit": "maternal plant clustered; blossom treatment allocation; seeds nested within blossom",
+    "primary_reproductive_endpoint": "four-week seed mass is stage-specific; mature viability requires new measurements"
+  }
+}
