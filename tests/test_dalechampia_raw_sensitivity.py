@@ -62,3 +62,38 @@ def test_bootstrap_is_deterministic_and_percentile_bounded():
 
 def test_source_schema_is_explicitly_not_a_published_mixed_model():
     assert SCHEMA.endswith("SOURCE_MATERNAL_SENSITIVITY_V1")
+
+
+def test_source_gas_green_white_paired_plants_without_seed_jointness():
+    import csv, io
+    from balance_domain.dalechampia_method_scope import _table
+    from balance_domain.dalechampia_raw_sensitivity import _gas_maternal_paired_summary
+    f=io.StringIO()
+    headers=["Plant_ID","Color","Replicate","Bract","GPPnett","Area_Leaf.1"]
+    writer=csv.DictWriter(f, fieldnames=headers,delimiter="\t",lineterminator="\n")
+    writer.writeheader()
+    for i in range(6):
+        for c, raw in (("Green","14.7"),("White","4.2")):
+            for rep in ("A","B"):
+                writer.writerow({"Plant_ID":f"P{i}","Color":c,"Replicate":rep,
+                                 "Bract":"Bract","GPPnett":raw,"Area_Leaf.1":"10"})
+    rows,fields,normalize=_table(f.getvalue().encode("utf-8"),headers,"synthetic gas")
+    out=_gas_maternal_paired_summary(rows,fields,normalize)
+    assert out["source_physiology_plants"] == 6
+    assert out["area_based_green_mean"] == 1.47
+    assert out["area_based_white_mean"] == 0.42
+    assert out["within_plant_green_minus_white_mean"] == 1.05
+    assert out["bootstrap_plant_cluster_95_interval"] == [1.05,1.05]
+    assert out["seed_carbon_transfer_identified"] is False
+    assert out["plant_seed_mass_experiment_jointly_observed"] is False
+
+
+def test_gas_missing_source_plant_pairs_are_not_inferred():
+    import csv, io
+    from balance_domain.dalechampia_method_scope import _table
+    from balance_domain.dalechampia_raw_sensitivity import _gas_maternal_paired_summary
+    fields=["Plant_ID","Color","Replicate","Bract","GPPnett","Area_Leaf.1"]
+    t="\\t".join(fields)+"\nP1\tGreen\tA\tBract\t14.7\t10\n"
+    rows,found,norm=_table(t.encode("utf-8"),fields,"test")
+    with pytest.raises(ValueError,match="six plants"):
+        _gas_maternal_paired_summary(rows,found,norm)
