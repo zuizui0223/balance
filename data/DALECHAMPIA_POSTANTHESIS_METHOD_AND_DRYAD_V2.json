@@ -65,7 +65,7 @@
     },
     "aborted_seed_morphology_separately_observed_by_authors": true,
     "abort_identification_by_mass_threshold_alone_valid": false,
-    "shade_specific_fruit_seed_effect_measured_without_foil_microlimate_control": false
+    "shade_specific_fruit_seed_effect_measured_without_foil_microclimate_control": false
   },
   "dryad_source_files": [
     {
@@ -130,7 +130,7 @@
   },
   "next_stage": {
     "stage0_required": "demonstrate independent manipulation of bract-local photosynthesis with constant fruit irradiance, bract integrity, foil handling, humidity and temperature",
-    "if_stage0_fails": "BRact_SPECIFIC_CARBON_CAUSAL_ESTIMAND_NOT_IDENTIFIABLE_WITH_PROPOSED_METHOD",
+    "if_stage0_fails": "BRACT_SPECIFIC_CARBON_CAUSAL_ESTIMAND_NOT_IDENTIFIABLE_WITH_PROPOSED_METHOD",
     "source_bytes_precondition": "both exact Dryad text files must pass file size and md5 before any source reanalysis",
     "inferential_unit": "maternal plant clustered; blossom treatment allocation; seeds nested within blossom",
     "primary_reproductive_endpoint": "four-week seed mass is stage-specific; mature viability requires new measurements"
