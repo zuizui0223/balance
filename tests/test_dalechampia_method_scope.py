@@ -30,7 +30,7 @@ def contract():
 def test_methods_treatment_scope_is_original_whole_blossom_foil():
     c = contract()
     result = audit_dalechampia_method_scope(c)
-    assert result["status"] == "SOURCE_METHOD_CORRECTED_BRact_CARBON_UNIDENTIFIED"
+    assert result["status"] == "SOURCE_METHOD_CORRECTED_BRACT_CARBON_UNIDENTIFIED"
     assert result["original_historical_treatment_codes"] == list(ARMS)
     assert result["whole_blossom_foil_shade_includes_fruit_light"] is True
     assert result["bract_local_photosynthesis_only_intervention"] is False
