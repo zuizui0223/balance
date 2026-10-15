@@ -1,0 +1,105 @@
+{
+  "schema_version": "DALECHAMPIA_2015_EXACT_DRYAD_SENSITIVITY_FREEZE_V1",
+  "status": "ORIGINAL_PUBLIC_DRYAD_SOURCE_RECOMPUTED_NOT_SOURCE_MIXED_MODEL",
+  "source_dataset_doi": "10.5061/dryad.nb675",
+  "original_dryad_version_id": 11209,
+  "origin_run_url": "https://github.com/zuizui0223/balance/actions/runs/38705336694",
+  "receipt_artifact_id": 11958286011,
+  "original_source_contract_sha256": "97359e648f8cd92892d9036f41e86f8ff4cb333294783fbfef99d62f170b0c00",
+  "original_source_file_sha256": {
+    "Pelabon et al FE file 1.txt": "31aa3cfea166eb229f60f4abc9e752f50170540cf83f08d118c6cb70c7c1ff09",
+    "Pelabon et al FE file 2.txt": "6a741987565fa1b0a7e717cdedbe9e46501fb81e631bbe09f7fdafb8fd6137f4"
+  },
+  "exact_generated_receipt_sha256": "d9b653be5d4b8243765bec0da16d743a746e3a115da1adbb512470a4d072a9c0",
+  "observed_seed_support": {
+    "recorded_seed_rows": 1221,
+    "recorded_seed_masses": 1220,
+    "numeric_mass_under_20mg_count": 117,
+    "maternal_plants_with_any_seeds": 37,
+    "blossom_identities": 142,
+    "abortion_morphology_independently_verified": false
+  },
+  "paired_maternal_seed_mass": {
+    "model": "retrospective unadjusted mother-paired blossom means",
+    "bootstrap_replicates": 10000,
+    "selection_bias_due_missing_or_threshold_proxies_possible": true,
+    "contrasts": {
+      "all_measured_masses": {
+        "bag_minus_cont": {
+          "n": 34,
+          "mean": -1.976005,
+          "ci95": [
+            -4.200635,
+            0.330964
+          ]
+        },
+        "cut_minus_cont": {
+          "n": 34,
+          "mean": -1.255833,
+          "ci95": [
+            -3.625651,
+            0.866304
+          ]
+        },
+        "cutcont_minus_cont": {
+          "n": 34,
+          "mean": -0.175842,
+          "ci95": [
+            -2.95102,
+            2.619717
+          ]
+        }
+      },
+      "numeric_ge20_proxy_only": {
+        "bag_minus_cont": {
+          "n": 30,
+          "mean": -1.753823,
+          "ci95": [
+            -3.544501,
+            0.027966
+          ]
+        },
+        "cut_minus_cont": {
+          "n": 31,
+          "mean": -0.013168,
+          "ci95": [
+            -1.786842,
+            1.681799
+          ]
+        },
+        "cutcont_minus_cont": {
+          "n": 31,
+          "mean": 0.130364,
+          "ci95": [
+            -2.206912,
+            2.442985
+          ]
+        }
+      }
+    },
+    "original_pelabon_2015_mixed_model_reproduced": false
+  },
+  "bract_gas_within_plant": {
+    "n_plants": 6,
+    "green_n": 12,
+    "white_n": 12,
+    "source_units": "umol_C_per_m2_s",
+    "mean_green": 1.469282,
+    "mean_white": 0.424414,
+    "mean_green_minus_white": 1.044868,
+    "plant_bootstrap_95": [
+      0.766266,
+      1.328367
+    ],
+    "original_gas_mixed_model_reproduced": false
+  },
+  "scientific_ceiling": {
+    "source_files_exact_hash_verified": true,
+    "treatment_is_whole_blossom_foil_not_bract_local": true,
+    "seed_maternal_vs_gas_plants_joint_source_experiment": false,
+    "bract_labelled_carbon_transfer_verified": false,
+    "complete_lifetime_net_fitness_measured": false,
+    "direct_structural_balance_identified": false,
+    "extra_biological_clusters": 0
+  }
+}
