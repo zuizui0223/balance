@@ -104,3 +104,33 @@ Stop promotion if any of the following remain absent:
 - matched net structural architecture S/D worldlines and independently inherited positive SCH `L`.
 
 No new field experiment was executed, and the existing `Dalechampia_scandens_mexico` biological cluster count remains unchanged.
+
+
+## 2026-10-15 source recovery and inference update
+
+The preceding metadata-only description records the state of the original
+V2 method correction. **Original source bytes have now been retrieved** in a
+separate source-gated workflow. Both Dryad texts matched the archived size and
+MD5, and a machine-generated source receipt pins their SHA256. Seed data use
+Latin-1 tabs with decimal commas while gas data use decimal points. No original
+observation has been repaired, replaced or imputed.
+
+The new [exact Dryad source analysis](DALECHAMPIA_2015_EXACT_DRYAD_MATERNAL_SENSITIVITY_V1.md)
+recovers 1,221 seed records / 1 missing seed mass, 142 blossoms from 37
+seed-producing mothers, and 60 gas rows from six independently measured plants.
+The <20mg **numeric proxy** matches 117 source-reported aborted seeds by arm,
+but original embryo/seed-coat morphology is not independently recorded.
+
+Independent source calculations recover the green-versus-white bract
+photosynthesis increase using the same plant's measurements. Exploratory
+blossom-then-mother mean seed-mass sensitivities are reported separately from
+the 2015 peduncle-adjusted maternal mixed-effects model, which is **not
+reproduced**. The entire-blossom aluminium foil intervention and the
+bract-removal protection/microclimate confounding remain unchanged. Nothing
+is promoted to a carbon-specific causal mechanism or structural BALANCE
+worldline from source recovery.
+
+Frozen readout: `data/DALECHAMPIA_2015_EXACT_DRYAD_SENSITIVITY_FREEZE_V1.json`.
+Original data stay in time-limited GitHub Actions artifacts, not committed
+as new independent ecological evidence.
+
