@@ -78,6 +78,74 @@ def _mother_paired_contrast(
     }
 
 
+def _gas_maternal_paired_summary(
+    rows: list[dict], fields: dict[str, str], normalize,
+) -> dict:
+    """Paired Green-vs-White bract gas exchange, 6 independent plants.
+
+    The source GPPnett column is the intact-minus-bract-removed GPP within
+    each blossom. Dividing by the original intact bract area reproduces the
+    published area-based photosynthesis. Plant—not replicate or blossom—is
+    the bootstrap unit. This experiment is DISTINCT from the maternal
+    seed-mass experiment and cannot be joined to causal seed carbon flux.
+    """
+    source: defaultdict[tuple[str, str], list[float]] = defaultdict(list)
+    for row in rows:
+        stage = _nonblank(row, fields, normalize("Color"), "gas stage").casefold()
+        structure = _nonblank(row, fields, normalize("Bract"), "gas state").casefold()
+        if stage not in {"green", "white"} or structure != "bract":
+            continue
+        plant = _nonblank(row, fields, normalize("Plant_ID"), "gas plant")
+        gppnet = parse_source_decimal(row.get(fields[normalize("GPPnett")]),
+                                      "GPPnett", allow_missing=False)
+        area = parse_source_decimal(row.get(fields[normalize("Area_Leaf.1")]),
+                                    "Area_Leaf.1", allow_missing=False)
+        if area <= 0:
+            raise ValueError("source bract area must be positive")
+        source[(plant, stage)].append(gppnet / area)
+    plants = sorted({m for m, _ in source})
+    if len(plants) != 6 or any(
+        len(source[(p, c)]) != 2 for p in plants for c in ("green", "white")
+    ):
+        raise ValueError("gas assay must retain two independent bract observations per stage on six plants")
+    stage_means = {
+        color: fsum(value for p in plants for value in source[(p, color)]) / 12
+        for color in ("green", "white")
+    }
+    # Pair within the *gas physiology* plants only; not seed-mass mothers.
+    differences = [
+        fsum(source[(p, "green")]) / 2 - fsum(source[(p, "white")]) / 2
+        for p in plants
+    ]
+    point = fsum(differences) / len(plants)
+    rng = random.Random(SEED + 999)
+    boot = [
+        fsum(differences[rng.randrange(len(plants))]
+             for _ in range(len(plants))) / len(plants)
+        for _ in range(REPS)
+    ]
+    lo, hi = _percentile(boot, .025), _percentile(boot, .975)
+    if (round(stage_means["green"], 2), round(stage_means["white"], 2)) != (1.47, 0.42):
+        raise ValueError("raw area-based gas source does not reproduce printed green/white means")
+    return {
+        "source_physiology_plants": 6,
+        "source_green_bract_measurements": 12,
+        "source_white_bract_measurements": 12,
+        "units": "umol_C_per_m2_s",
+        "area_based_green_mean": round(stage_means["green"], 6),
+        "area_based_white_mean": round(stage_means["white"], 6),
+        "ratio_of_means_descriptive_only": round(
+            stage_means["green"] / stage_means["white"], 6
+        ),
+        "within_plant_green_minus_white_mean": round(point, 6),
+        "bootstrap_plant_cluster_95_interval": [round(lo, 6), round(hi, 6)],
+        "bootstrap_replicates": REPS,
+        "plant_seed_mass_experiment_jointly_observed": False,
+        "seed_carbon_transfer_identified": False,
+        "original_gas_mixed_model_reproduced": False,
+    }
+
+
 def analyze_authenticated_dalechampia(
     contract: dict, raw_files: dict[str, bytes],
 ) -> dict:
@@ -140,7 +208,19 @@ def analyze_authenticated_dalechampia(
             "original_published_mixed_model_reproduced": False,
             "new_confirmatory_p_values_computed": False,
         }
+    gas_name = FILE_IDENTITIES[46164][0]
+    gas_expected = next(
+        f["expected_fields"] for f in contract["dryad_source_files"]
+        if f["source_file_id"] == 46164
+    )
+    gas_rows, gas_fields, gas_normalize = _table(
+        raw_files[gas_name], gas_expected, "original gas source"
+    )
+    physiology = _gas_maternal_paired_summary(
+        gas_rows, gas_fields, gas_normalize
+    )
     return {
+        "gas_exchange_within_plant": physiology,
         "schema_version": SCHEMA,
         "status": "EXACT_SOURCE_DESCRIPTIVE_MATERNAL_PAIR_SENSITIVITY_NOT_PUBLISHED_MODEL",
         "source_dataset_doi": "10.5061/dryad.nb675",
