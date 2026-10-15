@@ -148,3 +148,75 @@ def test_bad_archive_file_id_md5_or_version_fails_closed():
     c["dryad_version_id"]=11210
     with pytest.raises(ValueError,match="version ID"):
         audit_dalechampia_method_scope(c)
+
+
+def test_synthetic_exact_bytes_path_preserves_plant_blossom_seed_nesting(monkeypatch):
+    """Artificial tiny text fixtures; NOT authentic Dryad biological observations."""
+    import csv
+    import hashlib
+    import io
+    import balance_domain.dalechampia_method_scope as m
+
+    def tsv(fields, records):
+        f=io.StringIO()
+        writer=csv.DictWriter(f, fieldnames=fields, delimiter="\t", lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(records)
+        return f.getvalue().encode("utf-8")
+
+    seeds=tsv(
+        ["FemaleID","MaleID","crossID","treatcode","seedID","seedmass","seedset","ped"],
+        [
+            {"FemaleID":"M1","MaleID":"F1","crossID":"B1","treatcode":"bag","seedID":"1","seedmass":"33","seedset":"2","ped":"1"},
+            {"FemaleID":"M1","MaleID":"F1","crossID":"B1","treatcode":"bag","seedID":"2","seedmass":"32","seedset":"2","ped":"1"},
+            {"FemaleID":"M1","MaleID":"F2","crossID":"B2","treatcode":"cont","seedID":"1","seedmass":"40","seedset":"1","ped":"1"},
+            {"FemaleID":"M2","MaleID":"F3","crossID":"B3","treatcode":"cut","seedID":"1","seedmass":"31","seedset":"1","ped":"2"},
+            {"FemaleID":"M3","MaleID":"F4","crossID":"B4","treatcode":"cutcont","seedID":"1","seedmass":"34","seedset":"1","ped":"2"},
+        ]
+    )
+    gases=tsv(
+        ["Plant_ID","Color","Replicate","Bract","AN","R","GPP","GPPnett"],
+        [
+            {"Plant_ID":"P1","Color":"white","Replicate":"1","Bract":"Bract","AN":"0.4","R":"-1","GPP":"1.4","GPPnett":"1.2"},
+            {"Plant_ID":"P1","Color":"white","Replicate":"1","Bract":"No_Bract","AN":"0.1","R":"-0.1","GPP":"0.2","GPPnett":""},
+            {"Plant_ID":"P2","Color":"green","Replicate":"1","Bract":"Bract","AN":"1.2","R":"-1","GPP":"2.2","GPPnett":"1.9"},
+        ]
+    )
+    names={46163:"synthetic_seed.tsv",46164:"synthetic_gas.tsv"}
+    by_id={46163:seeds,46164:gases}
+    monkeypatch.setattr(m,"FILE_IDENTITIES",{
+        k:(names[k],len(v),hashlib.md5(v).hexdigest()) for k,v in by_id.items()
+    })
+    contract_synthetic=contract()
+    for entry in contract_synthetic["dryad_source_files"]:
+        id_=entry["source_file_id"]
+        entry["name"],entry["size_bytes"],entry["md5"]=m.FILE_IDENTITIES[id_]
+    result=m.verify_exact_dryad_bytes(contract_synthetic,{
+        names[46163]:seeds,names[46164]:gases
+    })
+    assert result["status"]=="EXACT_DRYAD_BYTES_VERIFIED_SUPPORT_ONLY_NO_MODELS"
+    assert result["raw_file_bytes_verified"] is True
+    assert result["raw_seed_records"]==5
+    assert result["raw_treatment_seed_rows"]=={"bag":2,"cont":1,"cut":1,"cutcont":1}
+    assert result["raw_independent_blossoms"]==4
+    assert result["raw_independent_maternal_plants"]==3
+    assert result["raw_treatment_maternal_plants"]=={
+        "bag":1,"cut":1,"cutcont":1,"cont":1
+    }
+    assert result["raw_gas_exchange_rows"]==3
+    assert result["raw_gas_exchange_plant_replicate_units"]==2
+    assert result["raw_row_counts_equal_published_total_per_arm"] is False
+    assert result["published_abortions_reconstructed"] is False
+    assert result["source_original_mixed_model_reproduced"] is False
+    assert result["raw_reanalysis_executed"] is False
+    assert result["structural_BALANCE_identified"] is False
+
+
+def test_source_nesting_parser_rejects_duplicate_seeds_within_blossom():
+    import balance_domain.dalechampia_method_scope as m
+    fake=b"FemaleID\tMaleID\tcrossID\ttreatcode\tseedID\tseedmass\tseedset\tped\nM1\tF1\tB1\tbag\t1\t30\t2\t1\nM1\tF1\tB1\tbag\t1\t31\t2\t1\n"
+    rows,fields,norm=m._table(fake,["FemaleID","MaleID","crossID","treatcode","seedID","seedmass","seedset","ped"],"test")
+    assert len(rows)==2
+    assert rows[0]["seedID"]==rows[1]["seedID"]
+    # The actual end-to-end duplicate guard is in verify_exact_dryad_bytes
+    # after original MD5; no seed is a legitimate independent plant replicate.
