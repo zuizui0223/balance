@@ -1,6 +1,9 @@
 """Quantify *reported* Dalechampia bract benefits without cross-study promotion.
 
-Pélabon et al. 2015: bract removal/shading contrasts for 4-week seed mass.
+Pélabon et al. 2015: bract removal and ENTIRE-BLOSSOM foil-shading
+package contrasts for 4-week seed mass. The historical "shaded bracts"
+label does not denote an isolated bract photosynthesis manipulation;
+see docs/DALECHAMPIA_2015_WHOLE_BLOSSOM_SHADE_DRYAD_GATE_V2.md.
 Pérez-Barrales et al. 2013: observational selection on floral bract size.
 Pélabon et al. 2012: a separate greenhouse resin-gland investment assay.
 
