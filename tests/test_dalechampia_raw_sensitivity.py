@@ -93,7 +93,7 @@ def test_gas_missing_source_plant_pairs_are_not_inferred():
     from balance_domain.dalechampia_method_scope import _table
     from balance_domain.dalechampia_raw_sensitivity import _gas_maternal_paired_summary
     fields=["Plant_ID","Color","Replicate","Bract","GPPnett","Area_Leaf.1"]
-    t="\\t".join(fields)+"\nP1\tGreen\tA\tBract\t14.7\t10\nP1\tWhite\tB\tBract\t4.2\t10\n"
+    t="\t".join(fields)+"\nP1\tGreen\tA\tBract\t14.7\t10\nP1\tWhite\tB\tBract\t4.2\t10\n"
     rows,found,norm=_table(t.encode("utf-8"),fields,"test")
     with pytest.raises(ValueError,match="six plants"):
         _gas_maternal_paired_summary(rows,found,norm)
