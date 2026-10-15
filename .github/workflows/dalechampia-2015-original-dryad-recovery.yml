@@ -51,6 +51,9 @@ jobs:
               --gas-file "release/generated/original_dalechampia_files/Pelabon et al FE file 2.txt" \
               --recovery-receipt release/generated/DALECHAMPIA_ORIGINAL_DRYAD_RECOVERY_V1.json \
               --out release/generated/DALECHAMPIA_2015_RAW_MATERNAL_SENSITIVITY_V1.json
+            python -m scripts.verify_dalechampia_2015_source_freeze \
+              --frozen data/DALECHAMPIA_2015_EXACT_DRYAD_SENSITIVITY_FREEZE_V1.json \
+              --computed release/generated/DALECHAMPIA_2015_RAW_MATERNAL_SENSITIVITY_V1.json
           else
             echo "Exact original source HOLD; no maternal analysis performed"
           fi
