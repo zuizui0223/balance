@@ -1,0 +1,91 @@
+{
+  "schema_version": "DALECHAMPIA_2015_PUBLISHED_NLME_REPLAY_CONTRACT_V1",
+  "status": "RETROSPECTIVE_SOURCE_REGISTERED_BEFORE_R_NLME_RUN",
+  "article_doi": "10.1111/1365-2435.12427",
+  "data_doi": "10.5061/dryad.nb675",
+  "original_R_version_reported": "2.15.2",
+  "original_R_code_available": false,
+  "current_nlme_version_pinned": false,
+  "dryad_version_id": 11209,
+  "original_file_sha256": {
+    "Pelabon et al FE file 1.txt": "31aa3cfea166eb229f60f4abc9e752f50170540cf83f08d118c6cb70c7c1ff09",
+    "Pelabon et al FE file 2.txt": "6a741987565fa1b0a7e717cdedbe9e46501fb81e631bbe09f7fdafb8fd6137f4"
+  },
+  "source_sample": {
+    "total_raw_seed_records": 1221,
+    "missing_seed_mass": 1,
+    "numeric_below_20mg": 117,
+    "analysis_seed_count": 1103,
+    "analysis_mothers": 36,
+    "analysis_blossoms": 132,
+    "source_morphological_abortions_independently_reattributed": false
+  },
+  "source_table2_ml_aic": {
+    "ped_seedset_treat": 6006.35,
+    "ped_treat": 6005.72,
+    "ped_seedset": 6070.67,
+    "seedset_only": 6221.11,
+    "ped_only": 6070.15,
+    "intercept": 6222.85
+  },
+  "printed_source_remL_fixed_effects_references": {
+    "ped_treat": {
+      "treatcodebag": {
+        "estimate_mg": -2.03,
+        "reported_se_mg": 0.32
+      },
+      "treatcodecut": {
+        "estimate_mg": -1.34,
+        "reported_se_mg": 0.32
+      },
+      "treatcodecutcont": {
+        "estimate_mg": 0.29,
+        "reported_se_mg": 0.32
+      },
+      "ped": {
+        "estimate_mg_per_mm": 13.77,
+        "reported_se_mg_per_mm": 0.99
+      }
+    }
+  },
+  "source_residual_variance_sensitivity": {
+    "shared_residual_aic_ml_reported": 6005.6,
+    "treatment_specific_residual_varident_aic_ml_reported": 5987.3,
+    "not_table2_selection_row": true,
+    "varident_was_in_source_nlme_methods": true
+  },
+  "independent_python_check_before_R": {
+    "statsmodels_MixedLM_method": "ML random maternal intercept on 1103 seeds >=20 mg",
+    "library_version_unfrozen": true,
+    "ml_aic": {
+      "ped_seedset_treat": 6153.997158,
+      "ped_treat": 6152.41184,
+      "ped_seedset": 6221.641902,
+      "seedset_only": 6375.331949,
+      "ped_only": 6221.636,
+      "intercept": 6373.46
+    },
+    "significant_aic_offset_in_python_not_yet_attributed_to_original_source": true
+  },
+  "replay_rules": {
+    "model_family": "nlme::lme Gaussian LMM random=~1|FemaleID",
+    "model_selection": "ML",
+    "fixed_effect_reporting": "REML",
+    "abort_proxy": "numeric seed mass >=20 mg (not independent embryo morphology)",
+    "categorical_reference": "cont",
+    "residual_heterogeneity_comparison": "nlme::varIdent(~1|treatcode) separate from source Table2 candidates",
+    "source_AIC_abs_tolerance": 1,
+    "classify_all_six_models_with_same_registered_tolerance": true,
+    "exclude_or_impute_additional_original_rows": false,
+    "select_model_by_agreement_with_published_results": false,
+    "no_posthoc_gain_from_alternative_architecture": false
+  },
+  "evidence_limits": {
+    "matched_SCH_conflict_L_identified": false,
+    "bract_only_photosynthetic_causal_effect_identified": false,
+    "source_original_analysis_script_recovered": false,
+    "field_fitness_net_architecture_comparator_identified": false,
+    "structural_BALANCE_occupancy_identified": false,
+    "new_biological_clusters": 0
+  }
+}
