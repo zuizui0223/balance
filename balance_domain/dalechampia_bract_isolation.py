@@ -30,6 +30,7 @@ FIELD_NAMES = (
 )
 THRESHOLDS = (
     "minimum_selective_bract_PAR_reduction_fraction",
+    "minimum_valid_reference_PAR_umol_m2_s",
     "maximum_sham_bract_PAR_change_fraction",
     "maximum_sham_fruit_PAR_change_fraction",
     "maximum_relative_fruit_PAR_change_vs_sham_fraction",
@@ -94,6 +95,8 @@ def validate_pilot_config(spec: dict) -> dict:
             raise ValueError(f"{key} fraction must be <=1")
     if t["minimum_selective_bract_PAR_reduction_fraction"] <= 0:
         raise ValueError("selective-bract light reduction target must be positive")
+    if t["minimum_valid_reference_PAR_umol_m2_s"] <= 0:
+        raise ValueError("reference PAR must exceed a calibrated instrument detection threshold")
     exclusions=spec["scope_exclusions"]
     if not isinstance(exclusions, dict) or set(exclusions) != {
         "contains_reproductive_outcomes", "source_carbon_flow_verified",
@@ -167,6 +170,12 @@ def evaluate_bract_local_optical_pilot(spec: dict, observations: list[dict]) -> 
         relative_b=b_target / b_sham if b_sham>0 else math.inf
         relative_f=f_target / f_sham if f_sham>0 else math.inf
         problems=[]
+        minimum_baseline=t["minimum_valid_reference_PAR_umol_m2_s"]
+        if min(
+            sham["bract_par_before"],target["bract_par_before"],
+            sham["fruit_par_before"],target["fruit_par_before"],
+        ) < minimum_baseline:
+            problems.append("PRETREATMENT_PAR_BELOW_CALIBRATED_REFERENCE")
         if not math.isfinite(relative_b) or relative_b > (
             1-t["minimum_selective_bract_PAR_reduction_fraction"]
         ):
