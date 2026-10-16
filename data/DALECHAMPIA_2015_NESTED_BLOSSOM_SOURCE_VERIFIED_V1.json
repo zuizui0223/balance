@@ -1,0 +1,97 @@
+{
+  "schema_version": "DALECHAMPIA_2015_NESTED_BLOSSOM_SOURCE_VERIFIED_V1",
+  "status": "ORIGINAL_DRYAD_NESTED_COVARIANCE_STRONGLY_SUPPORTED_NOT_CAUSAL",
+  "source_doi": "10.5061/dryad.nb675",
+  "analysis_run_url": "https://github.com/zuizui0223/balance/actions/runs/38921890413",
+  "github_artifact_id": 12055246869,
+  "generated_source_readout_sha256": "89dd49cb7bda58324170ab6255bfd0bae220e4773a5a612404fa2758b467877d",
+  "model_table_csv_sha256": "174bc41e759bebcede2cb0e2653bbc94b1e76f25c3633f624b630a9f2dd5280d",
+  "coefficient_table_csv_sha256": "7f312d981f34df5c30356469677248354b9775b552fba1e8a1a11cb93aaab14a",
+  "archive_seed_file_sha256": "31aa3cfea166eb229f60f4abc9e752f50170540cf83f08d118c6cb70c7c1ff09",
+  "archive_gas_file_sha256": "6a741987565fa1b0a7e717cdedbe9e46501fb81e631bbe09f7fdafb8fd6137f4",
+  "same_raw_source_and_fixed_effects": {
+    "numeric_ge20mg_seed_masses": 1103,
+    "blossoms": 132,
+    "mothers": 36,
+    "fixed_effects": [
+      "peduncle diameter",
+      "treatcode cont baseline"
+    ],
+    "source_maternal_only_model_status": "independently R nlme reproduced from PR235",
+    "seed_morphological_abortion_independently_observed": false
+  },
+  "random_intercept_comparison": {
+    "maternal_only": {
+      "ML_AIC": 6152.411839,
+      "ML_loglik": -3069.20591967848,
+      "maternal_variance": 19.17498,
+      "blossom_variance": 0,
+      "residual_variance": 13.52712,
+      "conditional_same_blossom_correlation_under_model": 0.586353
+    },
+    "maternal_plus_blossom": {
+      "ML_AIC": 5135.56109,
+      "ML_loglik": -2559.78054482212,
+      "maternal_variance": 15.190316,
+      "blossom_variance": 14.499685,
+      "residual_variance": 3.808892,
+      "same_blossom_seed_icc": 0.886298,
+      "different_blossoms_same_mother_seed_icc": 0.453457
+    },
+    "nested_minus_maternal_only_AIC": -1016.85075,
+    "compatible_same_data_ML_likelihood_family": true,
+    "large_improvement_means_random_blossom_covariance_worth_modelling": true
+  },
+  "reml_treatment_effects": [
+    {
+      "term": "entire-blossom foil cover minus intact",
+      "maternal_only_beta_mg": -1.841252,
+      "nested_beta_mg": -1.829316,
+      "maternal_only_SE_mg": 0.318239,
+      "nested_SE_mg": 0.991392,
+      "SE_inflation_factor": 3.1152,
+      "nested_asymptotic_normal_95_mg": [
+        -3.772445,
+        0.113812
+      ],
+      "includes_zero": true
+    },
+    {
+      "term": "bracts removed minus intact",
+      "maternal_only_beta_mg": -1.177281,
+      "nested_beta_mg": -1.119477,
+      "maternal_only_SE_mg": 0.32256,
+      "nested_SE_mg": 1.000075,
+      "SE_inflation_factor": 3.1004,
+      "nested_asymptotic_normal_95_mg": [
+        -3.079623,
+        0.84067
+      ],
+      "includes_zero": true
+    },
+    {
+      "term": "edge-cut sham minus intact",
+      "maternal_only_beta_mg": 0.712982,
+      "nested_beta_mg": 0.574754,
+      "maternal_only_SE_mg": 0.321516,
+      "nested_SE_mg": 0.980145,
+      "SE_inflation_factor": 3.0485,
+      "nested_asymptotic_normal_95_mg": [
+        -1.34633,
+        2.495838
+      ],
+      "includes_zero": true
+    }
+  ],
+  "interpretation_limits": {
+    "alternative_random_effect_specification_is_posthoc": true,
+    "original_published_R_code_recovered": false,
+    "original_published_mixed_model_AIC_reproduced": false,
+    "approximate_wald_CI_small_cluster_bias_possible": true,
+    "outcome_conditioned_abortion_threshold": true,
+    "maternal_male_fitness_combined": false,
+    "carbon_assimilation_in_seed_traced": false,
+    "structural_BALANCE_occupancy_identified": false,
+    "additional_independent_biological_clusters": 0
+  }
+}

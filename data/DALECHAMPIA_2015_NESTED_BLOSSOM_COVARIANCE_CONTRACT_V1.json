@@ -1,0 +1,57 @@
+{
+  "schema_version": "DALECHAMPIA_2015_NESTED_BLOSSOM_COVARIANCE_CONTRACT_V1",
+  "status": "POSTHOC_EXPERIMENTAL_UNIT_SENSITIVITY_NO_NEW_FIELD_DATA",
+  "source_doi": "10.5061/dryad.nb675",
+  "article_doi": "10.1111/1365-2435.12427",
+  "source_files_sha256": {
+    "Pelabon et al FE file 1.txt": "31aa3cfea166eb229f60f4abc9e752f50170540cf83f08d118c6cb70c7c1ff09",
+    "Pelabon et al FE file 2.txt": "6a741987565fa1b0a7e717cdedbe9e46501fb81e631bbe09f7fdafb8fd6137f4"
+  },
+  "fixed_observations": {
+    "numeric_ge20mg_seed_masses": 1103,
+    "maternal_plants": 36,
+    "blossom_ids_nested_within_mothers": 132,
+    "experimental_treatment_unit": "blossom",
+    "measured_unit": "seed",
+    "exact_same_covariates_in_both_models": [
+      "intercept",
+      "peduncle",
+      "treatment"
+    ],
+    "original_morphological_abortions_independently_recovered": false,
+    "treatment_bag_means": "entire blossom foil-covered, not selective bract photosynthesis"
+  },
+  "registered_R_nlme_models": {
+    "maternal_only": {
+      "random": "~1|FemaleID",
+      "fixed": "seedmass ~ ped + treatcode",
+      "previous_source_verified_AIC_ML": 6152.411839,
+      "previous_source_verified_REML_treatment_SE_mg": {
+        "bag": 0.318239,
+        "cut": 0.32256,
+        "cutcont": 0.321516
+      }
+    },
+    "maternal_plus_blossom": {
+      "random": "~1|FemaleID/crossID",
+      "fixed": "seedmass ~ ped + treatcode",
+      "estimated_AIC_or_coefficients_frozen_before_run": false
+    }
+  },
+  "source_matching": {
+    "maternal_only_AIC_difference_limit": 0.01,
+    "nested_model_has_extra_variance_component": true,
+    "ML_for_model_AIC": true,
+    "REML_for_fixed_effect_coefficients": true,
+    "mother_bl0ssom_covariance_assessed_from_same_raw_sample": true
+  },
+  "scientific_ceiling": {
+    "source_author_R_code_recovered": false,
+    "historical_published_nlme_reproduced": false,
+    "randomization_at_seed_level": false,
+    "plant_seed_exchangeable_with_blossom_seed": false,
+    "bract_specific_carbon_transfer_identified": false,
+    "structural_BALANCE_occupancy_identified": false,
+    "extra_independent_clusters": 0
+  }
+}
