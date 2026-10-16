@@ -1,0 +1,106 @@
+{
+  "schema_version": "DALECHAMPIA_2015_PUBLISHED_NLME_REPLAY_VERIFIED_V1",
+  "status": "SIX_MODELS_SOURCE_REPLAYED_BUT_PUBLISHED_AIC_DISCREPANCY_HOLD",
+  "source_article": "10.1111/1365-2435.12427",
+  "source_data": "10.5061/dryad.nb675",
+  "source_runners": [
+    "R nlme 3.1-169 (GitHub Actions)",
+    "statsmodels MixedLM independent Python reconstruction"
+  ],
+  "source_artifact": {
+    "workflow_url": "https://github.com/zuizui0223/balance/actions/runs/38920401664",
+    "artifact_id": 12054043845,
+    "raw_files_sha256": {
+      "Pelabon et al FE file 1.txt": "31aa3cfea166eb229f60f4abc9e752f50170540cf83f08d118c6cb70c7c1ff09",
+      "Pelabon et al FE file 2.txt": "6a741987565fa1b0a7e717cdedbe9e46501fb81e631bbe09f7fdafb8fd6137f4"
+    },
+    "raw_n_seed_rows_used": 1103,
+    "raw_n_mothers": 36,
+    "archive_generated_readout_sha256": "e4ab1715806b18e9469c9e98f764e995fe1b1f0dce4eebcf6418fa30830d5237",
+    "archive_generated_ml_csv_sha256": "f3604419501d234b9a6b7f919ea7f254ad14e68d1a53509e90ecc22a7a7be268",
+    "archive_generated_reml_csv_sha256": "1e6605411adafcc47cdf4a136218542626c8fb3c7afb053e3a729f077ff899af"
+  },
+  "six_source_candidate_models": [
+    {
+      "model": "ped_seedset_treat",
+      "original_aic": 6006.35,
+      "replay_aic": 6153.997157,
+      "delta": 147.647157
+    },
+    {
+      "model": "ped_treat",
+      "original_aic": 6005.72,
+      "replay_aic": 6152.411839,
+      "delta": 146.691839
+    },
+    {
+      "model": "ped_seedset",
+      "original_aic": 6070.67,
+      "replay_aic": 6221.642142,
+      "delta": 150.972142
+    },
+    {
+      "model": "seedset_only",
+      "original_aic": 6221.11,
+      "replay_aic": 6375.332163,
+      "delta": 154.222163
+    },
+    {
+      "model": "ped_only",
+      "original_aic": 6070.15,
+      "replay_aic": 6221.636195,
+      "delta": 151.486195
+    },
+    {
+      "model": "intercept",
+      "original_aic": 6222.85,
+      "replay_aic": 6373.459822,
+      "delta": 150.609822
+    }
+  ],
+  "primary_reml_fixed_effects": [
+    {
+      "term": "treatcodebag",
+      "original": -2.03,
+      "replay": -1.841252,
+      "replay_se": 0.318239
+    },
+    {
+      "term": "treatcodecut",
+      "original": -1.34,
+      "replay": -1.177281,
+      "replay_se": 0.32256
+    },
+    {
+      "term": "treatcodecutcont",
+      "original": 0.29,
+      "replay": 0.712982,
+      "replay_se": 0.321516
+    },
+    {
+      "term": "ped",
+      "original": 13.77,
+      "replay": 14.228079,
+      "replay_se": 1.009443
+    }
+  ],
+  "residual_variance_comparison": {
+    "source_varident_aic": 5987.3,
+    "source_homoscedastic_aic": 6005.6,
+    "source_improvement": -18.3,
+    "replay_varident_aic": 6131.600024,
+    "replay_homoscedastic_aic": 6152.411839,
+    "replay_improvement": -20.811815
+  },
+  "interpretation_limits": {
+    "six_source_table2_aic_matches_within_one_unit": false,
+    "python_R_interimplementation_agreement": true,
+    "historical_R_2_15_2_exact_reproduction": false,
+    "source_original_R_script_recovered": false,
+    "undocumented_exclusion_or_covariance_decisions_ruled_out": false,
+    "source_publication_error_proven": false,
+    "common_net_fitness_and_structural_BALANCE_identified": false,
+    "new_independent_biological_cluster": false,
+    "best_next_step": "Request 2015 original analysis scripts, exact row filters, variance weighting, and historical sessionInfo; test independent blossom nested covariance as an explicitly separate sensitivity"
+  }
+}
