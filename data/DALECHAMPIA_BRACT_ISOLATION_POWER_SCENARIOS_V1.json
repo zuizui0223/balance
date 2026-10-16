@@ -1,0 +1,54 @@
+{
+  "schema_version": "DALECHAMPIA_BRACT_ISOLATION_POWER_SCENARIOS_V1",
+  "status": "HYPOTHETICAL_SENSITIVITY_NOT_FIELD_POWER_VALIDATED",
+  "assumptions": {
+    "two_arms_matched_on_each_mother": true,
+    "blossoms_randomly_assigned_within_mother": true,
+    "no_interference_between_blossoms": true,
+    "equal_blossom_effect_variance_between_arms": true,
+    "mature_seed_fitness_equivalence_assumed": false,
+    "bract_local_effect_size_empirically_known": false,
+    "pilot_method_selectivity_already_passed": false,
+    "test_alpha": 0.05,
+    "target_power": 0.8,
+    "max_maternal_plants": 2000
+  },
+  "scenarios": [
+    {
+      "scenario_id": "weak_half_mg_one_blossom",
+      "hypothetical_effect_mg": 0.5,
+      "blossoms_per_arm_per_mother": 1,
+      "usable_measured_seeds_per_blossom": 8
+    },
+    {
+      "scenario_id": "one_mg_one_blossom",
+      "hypothetical_effect_mg": 1,
+      "blossoms_per_arm_per_mother": 1,
+      "usable_measured_seeds_per_blossom": 8
+    },
+    {
+      "scenario_id": "foil_magnitude_only_one_blossom",
+      "hypothetical_effect_mg": 1.83,
+      "blossoms_per_arm_per_mother": 1,
+      "usable_measured_seeds_per_blossom": 8
+    },
+    {
+      "scenario_id": "foil_magnitude_only_two_blossoms",
+      "hypothetical_effect_mg": 1.83,
+      "blossoms_per_arm_per_mother": 2,
+      "usable_measured_seeds_per_blossom": 8
+    },
+    {
+      "scenario_id": "foil_magnitude_only_two_blossoms_four_seeds",
+      "hypothetical_effect_mg": 1.83,
+      "blossoms_per_arm_per_mother": 2,
+      "usable_measured_seeds_per_blossom": 4
+    },
+    {
+      "scenario_id": "three_mg_two_blossoms",
+      "hypothetical_effect_mg": 3,
+      "blossoms_per_arm_per_mother": 2,
+      "usable_measured_seeds_per_blossom": 8
+    }
+  ]
+}
