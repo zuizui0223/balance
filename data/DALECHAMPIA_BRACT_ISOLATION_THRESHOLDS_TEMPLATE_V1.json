@@ -6,6 +6,7 @@
   "calibration_justification": "NOT_FROZEN: specify instrument calibration/physical justifications for EVERY tolerance before viewing seed or isotope data",
   "minimum_matched_independent_plants": null,
   "thresholds": {
+    "minimum_valid_reference_PAR_umol_m2_s": null,
     "minimum_selective_bract_PAR_reduction_fraction": null,
     "maximum_sham_bract_PAR_change_fraction": null,
     "maximum_sham_fruit_PAR_change_fraction": null,
