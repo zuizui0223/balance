@@ -32,6 +32,7 @@ def spec():
         "minimum_matched_independent_plants":3,
         "thresholds":{
             "minimum_selective_bract_PAR_reduction_fraction":.65,
+            "minimum_valid_reference_PAR_umol_m2_s":10.,
             "maximum_sham_bract_PAR_change_fraction":.08,
             "maximum_sham_fruit_PAR_change_fraction":.08,
             "maximum_relative_fruit_PAR_change_vs_sham_fraction":.10,
@@ -194,6 +195,16 @@ def test_exact_method_only_csv_header_and_runner_sha256(tmp_path):
     bad=csvbytes.replace(b"allocation_sha256",b"seed_mass")
     with pytest.raises(ValueError,match="exact method-only CSV"):
         parse_method_csv(bad)
+
+
+def test_low_baseline_light_is_method_HOLD_not_apparent_strong_reduction():
+    x=data()
+    x[1]["bract_par_before"]=4.0
+    out=evaluate_bract_local_optical_pilot(spec(),x)
+    assert out["status"]=="METHOD_SELECTIVITY_HOLD"
+    assert "PRETREATMENT_PAR_BELOW_CALIBRATED_REFERENCE" in (
+        out["pairwise_method_receipts"][0]["physical_method_failures"]
+    )
 
 
 def test_nonfinite_zero_baseline_and_boolean_numeric_errors():
