@@ -19,6 +19,7 @@ import csv
 import hashlib
 import io
 import math
+import re
 from collections import Counter, defaultdict
 
 SCHEMA = "DALECHAMPIA_POSTANTHESIS_METHOD_AND_DRYAD_V2"
@@ -210,11 +211,18 @@ def _table(raw: bytes, expected_fields: list[str], label: str):
         raise ValueError(f"{label} empty verified source file")
     # These older Dryad .txt exports are delimited text; tolerate CRLF and BOM.
     sample = text[:4096]
-    try:
-        dialect = csv.Sniffer().sniff(sample, delimiters="\t,;")
-    except csv.Error as exc:
-        raise ValueError(f"{label} delimiter not resolved; review exact source layout") from exc
-    reader = csv.DictReader(io.StringIO(text), dialect=dialect)
+    # The original archived files are tab-delimited. Sniffer may reject
+    # an otherwise perfectly valid two-row TSV; a verified tab-separated
+    # header is a stronger delimiter declaration than a heuristic guess.
+    header = text.splitlines()[0]
+    if "\t" in header:
+        reader = csv.DictReader(io.StringIO(text), delimiter="\t")
+    else:
+        try:
+            dialect = csv.Sniffer().sniff(sample, delimiters="\t,;")
+        except csv.Error as exc:
+            raise ValueError(f"{label} delimiter not resolved; review exact source layout") from exc
+        reader = csv.DictReader(io.StringIO(text), dialect=dialect)
     names = reader.fieldnames or []
     norm = lambda s: s.strip().casefold().replace("_", "").replace(" ", "")
     found = {norm(k): k for k in names if k is not None}
@@ -227,6 +235,37 @@ def _table(raw: bytes, expected_fields: list[str], label: str):
     if not rows or any(None in r for r in rows):
         raise ValueError(f"{label} empty records or unexpected field overflow")
     return rows, found, norm
+
+
+def parse_source_decimal(value: object, label: str, *, allow_missing: bool = True) -> float | None:
+    """Strict original numeric formatting: seed masses use decimal commas.
+
+    Historical seed file 1 is Latin-1 tab-delimited with values such as
+    "38,83". Gas-exchange file 2 uses periods. Neither convention allows a
+    thousands separator, arbitrary comma stripping, imputation, or booleans.
+    """
+    if value is None:
+        if allow_missing:
+            return None
+        raise ValueError(f"{label} cannot be missing")
+    if not isinstance(value, str):
+        raise ValueError(f"{label} must be original source text")
+    raw = value.strip()
+    if raw.casefold() in {"", "na", "nan", "null"}:
+        if allow_missing:
+            return None
+        raise ValueError(f"{label} cannot be missing")
+    if not re.fullmatch(r"[+-]?(?:\d+(?:[.,]\d+)?|\.\d+)", raw):
+        raise ValueError(f"{label} invalid decimal format in original source")
+    if "," in raw:
+        raw = raw.replace(",", ".")
+    try:
+        out = float(raw)
+    except (ValueError, OverflowError) as exc:
+        raise ValueError(f"{label} not numeric") from exc
+    if not math.isfinite(out):
+        raise ValueError(f"{label} must be finite")
+    return out
 
 
 def _nonblank(row, found, normalized, label):
@@ -264,6 +303,8 @@ def verify_exact_dryad_bytes(contract: dict, file_bytes: dict[str, bytes]) -> di
     plants: defaultdict[str, set[str]] = defaultdict(set)
     seen_seeds = set()
     missing_mass = 0
+    nonmissing_by_arm = Counter()
+    below_20_by_arm = Counter()
     for row in rows:
         female = _nonblank(row, fields, normalize("FemaleID"), "FemaleID")
         blossom = _nonblank(row, fields, normalize("crossID"), "crossID")
@@ -281,16 +322,16 @@ def verify_exact_dryad_bytes(contract: dict, file_bytes: dict[str, bytes]) -> di
         seen_seeds.add(seed_key)
         row_counts[code] += 1
         plants[code].add(female)
-        mass = row.get(fields[normalize("seedmass")])
-        if mass is None or not str(mass).strip() or str(mass).strip().casefold() in {"nan","na","null"}:
-            missing_mass+=1
+        m = parse_source_decimal(row.get(fields[normalize("seedmass")]),
+                                 "seedmass")
+        if m is None:
+            missing_mass += 1
         else:
-            try:
-                m=float(str(mass).strip())
-            except (ValueError, OverflowError) as exc:
-                raise ValueError("non-numeric source seed mass") from exc
-            if not math.isfinite(m) or m < 0:
-                raise ValueError("nonfinite/negative source seed mass")
+            if m < 0:
+                raise ValueError("negative source seed mass")
+            nonmissing_by_arm[code] += 1
+            if m < 20.0:
+                below_20_by_arm[code] += 1
     g_rows, g_fields, g_normalize = _table(
         file_bytes[FILE_IDENTITIES[46164][0]], by_file[46164]["expected_fields"],
         "2015 gas-exchange file")
@@ -309,6 +350,20 @@ def verify_exact_dryad_bytes(contract: dict, file_bytes: dict[str, bytes]) -> di
         "raw_seed_records": len(rows),
         "raw_seed_missing_mass": missing_mass,
         "raw_treatment_seed_rows": dict(sorted(row_counts.items())),
+        "raw_treatment_nonmissing_seed_mass_rows": {
+            a: nonmissing_by_arm[a] for a in ARMS
+        },
+        "raw_treatment_numeric_mass_below_20_mg": {
+            a: below_20_by_arm[a] for a in ARMS
+        },
+        "recorded_mass_counts_match_published_seeds": (
+            dict(nonmissing_by_arm) == SOURCE_SEED_COUNTS
+        ),
+        "numeric_below_20_counts_match_published_abortions": (
+            dict(below_20_by_arm) == SOURCE_ABORTED_COUNTS
+        ),
+        "morphological_abortions_independently_read_from_raw": False,
+        "historical_seedmass_decimal_format": "LATIN1_TAB_DECIMAL_COMMA",
         "raw_treatment_maternal_plants": {
             a: len(plants[a]) for a in ARMS
         },
