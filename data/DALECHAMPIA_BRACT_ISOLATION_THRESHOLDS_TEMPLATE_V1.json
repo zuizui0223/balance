@@ -1,0 +1,24 @@
+{
+  "schema_version": "DALECHAMPIA_BRACT_ISOLATION_PILOT_V1",
+  "status": "NOT_FROZEN_REQUIRED_PRE_OUTCOME",
+  "context_id": "UNSET_POPULATION_SEASON",
+  "randomization_sha256": "NOT_FROZEN_RANDOMIZATION",
+  "calibration_justification": "NOT_FROZEN: specify instrument calibration/physical justifications for EVERY tolerance before viewing seed or isotope data",
+  "minimum_matched_independent_plants": null,
+  "thresholds": {
+    "minimum_valid_reference_PAR_umol_m2_s": null,
+    "minimum_selective_bract_PAR_reduction_fraction": null,
+    "maximum_sham_bract_PAR_change_fraction": null,
+    "maximum_sham_fruit_PAR_change_fraction": null,
+    "maximum_relative_fruit_PAR_change_vs_sham_fraction": null,
+    "maximum_absolute_fruit_temperature_drift_C": null,
+    "maximum_absolute_fruit_RH_drift_percentage_points": null,
+    "maximum_pair_time_discrepancy_minutes": null
+  },
+  "scope_exclusions": {
+    "contains_reproductive_outcomes": false,
+    "source_carbon_flow_verified": false,
+    "structural_BALANCE_identified": false,
+    "chronology_independently_verified": false
+  }
+}
