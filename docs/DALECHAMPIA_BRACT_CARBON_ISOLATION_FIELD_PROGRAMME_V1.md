@@ -28,7 +28,7 @@ Use **two independently assigned blossoms within every maternal plant**:
 
 Record before/after **bract PAR**, **fruit/interior PAR**, fruit temperature and relative humidity, time since treatment, intact physical closure and any visible handling damage. Sham and targeted blossoms must be measured at matched times on the same mother. Evaluate targeted after/before photon ratios **relative to the contemporaneous paired sham**; also screen sham stability, fruit-temperature/humidity drifts and all tissue injuries.
 
-The following thresholds must be justified from **independent pre-outcome instrument calibration**, not from the fertility results: minimum bract photon reduction; maximum fruit photon change relative to sham; sham light stability; maximum thermal/humidity change; time matching; minimum independent maternal blocks. **There are no fabricated "universally acceptable" thresholds in this repository.**
+The following thresholds must be justified from **independent pre-outcome instrument calibration**, not from the fertility results: minimum baseline bract/fruit PAR above calibrated instrument detection limit (in micromol photons m^-2 s^-1); minimum bract photon reduction; maximum fruit photon change relative to sham; sham light stability; maximum thermal/humidity change; time matching; minimum independent maternal blocks. **There are no fabricated "universally acceptable" thresholds in this repository.**
 
 The executable scope check is balance_domain/dalechampia_bract_isolation.py, used by scripts/evaluate_dalechampia_bract_isolation.py with:
 - data/DALECHAMPIA_BRACT_ISOLATION_THRESHOLDS_TEMPLATE_V1.json — intentionally NOT_FROZEN, invalid until true calibration;
