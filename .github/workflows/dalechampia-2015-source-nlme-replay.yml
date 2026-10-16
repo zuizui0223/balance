@@ -1,0 +1,67 @@
+name: Dalechampia 2015 original R nlme model replay
+'on':
+  push:
+    branches:
+      - analysis/dalechampia-source-nlme-replay-20261016
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  authentic-nlme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+      - name: Install Python audit and original R nlme package
+        run: |
+          python -m pip install -e '.[dev]'
+          Rscript -e 'if (!requireNamespace("nlme", quietly=TRUE)) install.packages("nlme", repos="https://cloud.r-project.org"); stopifnot(requireNamespace("nlme", quietly=TRUE)); print(R.version.string); print(utils::packageVersion("nlme"))'
+          python -m pytest -q tests/test_dalechampia_2015_source_nlme_adjudication.py
+      - name: Retrieve and authenticate both original published Dryad source files
+        run: |
+          python scripts/retrieve_dalechampia_2015_dryad_bytes.py \
+            --contract data/DALECHAMPIA_POSTANTHESIS_METHOD_AND_DRYAD_V2.json \
+            --source-dir release/generated/original_dalechampia_files \
+            --out release/generated/DALECHAMPIA_2015_ORIGINAL_DRYAD_SOURCE_RECEIPT_V1.json
+      - name: Fit all six original model candidates with nlme ML and REML
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt=json.loads(Path("release/generated/DALECHAMPIA_2015_ORIGINAL_DRYAD_SOURCE_RECEIPT_V1.json").read_text())
+          ready=receipt["status"]=="ORIGINAL_DRYAD_BYTES_AND_ROW_SUPPORT_VERIFIED_NO_MODEL" and receipt["raw_file_bytes_verified"] is True
+          Path("release/generated/DALECHAMPIA_NLME_SOURCE_READY.flag").write_text("READY" if ready else "HOLD")
+          print("Original Dryad source ready for R nlme:", ready)
+          PY
+          if [ "$(cat release/generated/DALECHAMPIA_NLME_SOURCE_READY.flag)" = "READY" ]; then
+            Rscript scripts/replay_dalechampia_2015_source_nlme.R \
+              'release/generated/original_dalechampia_files/Pelabon et al FE file 1.txt' \
+              release/generated/DALECHAMPIA_2015_NLME_MODELS_V1.csv \
+              release/generated/DALECHAMPIA_2015_NLME_REML_EFFECTS_V1.csv
+            python -m scripts.adjudicate_dalechampia_2015_nlme \
+              --contract data/DALECHAMPIA_2015_PUBLISHED_NLME_REPLAY_CONTRACT_V1.json \
+              --models-csv release/generated/DALECHAMPIA_2015_NLME_MODELS_V1.csv \
+              --effects-csv release/generated/DALECHAMPIA_2015_NLME_REML_EFFECTS_V1.csv \
+              --seed-file 'release/generated/original_dalechampia_files/Pelabon et al FE file 1.txt' \
+              --gas-file 'release/generated/original_dalechampia_files/Pelabon et al FE file 2.txt' \
+              --out release/generated/DALECHAMPIA_2015_PUBLISHED_NLME_REPLAY_READOUT_V1.json
+          else
+            echo 'OFFICIAL_SOURCE_DOWNLOAD_HOLD: no substitute raw source or positive model comparison'
+          fi
+      - name: Upload source, models, and ML versus source-AIC readout
+        uses: actions/upload-artifact@v4
+        with:
+          name: dalechampia-2015-source-nlme-six-model-audit
+          path: |
+            release/generated/DALECHAMPIA_2015_ORIGINAL_DRYAD_SOURCE_RECEIPT_V1.json
+            release/generated/DALECHAMPIA_2015_NLME_MODELS_V1.csv
+            release/generated/DALECHAMPIA_2015_NLME_REML_EFFECTS_V1.csv
+            release/generated/DALECHAMPIA_2015_PUBLISHED_NLME_REPLAY_READOUT_V1.json
+          if-no-files-found: error
+          retention-days: 30
