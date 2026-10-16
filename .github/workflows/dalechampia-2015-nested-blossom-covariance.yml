@@ -1,0 +1,67 @@
+name: Dalechampia 2015 maternal vs nested blossom covariance
+'on':
+  push:
+    branches:
+      - analysis/dalechampia-nested-blossom-variance-20261016
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  nested-raw-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+      - name: Verify native R and exact source comparison guards
+        run: |
+          python -m pip install -e '.[dev]'
+          Rscript -e 'if (!requireNamespace("nlme", quietly=TRUE)) install.packages("nlme", repos="https://cloud.r-project.org"); stopifnot(requireNamespace("nlme",quietly=TRUE)); print(utils::packageVersion("nlme"))'
+          python -m pytest -q tests/test_dalechampia_nested_nlme.py
+      - name: Authenticate 2015 Dryad seed and gas files
+        run: |
+          python scripts/retrieve_dalechampia_2015_dryad_bytes.py \
+            --contract data/DALECHAMPIA_POSTANTHESIS_METHOD_AND_DRYAD_V2.json \
+            --source-dir release/generated/original_dalechampia_files \
+            --out release/generated/DALECHAMPIA_2015_ORIGINAL_DRYAD_SOURCE_RECEIPT_V1.json
+      - name: Compare maternal-only versus mother-blossom nested covariance
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          report=json.loads(Path("release/generated/DALECHAMPIA_2015_ORIGINAL_DRYAD_SOURCE_RECEIPT_V1.json").read_text())
+          ready=report["status"]=="ORIGINAL_DRYAD_BYTES_AND_ROW_SUPPORT_VERIFIED_NO_MODEL" and report["raw_file_bytes_verified"] is True
+          Path("release/generated/NESTED_COVARIANCE_ORIGINAL_SOURCE_READY.flag").write_text("READY" if ready else "HOLD")
+          print("Original source nesting test available:", ready)
+          PY
+          if [ "$(cat release/generated/NESTED_COVARIANCE_ORIGINAL_SOURCE_READY.flag)" = "READY" ]; then
+            Rscript scripts/replay_dalechampia_2015_nested_nlme.R \
+              'release/generated/original_dalechampia_files/Pelabon et al FE file 1.txt' \
+              release/generated/DALECHAMPIA_2015_NESTED_NLME_COVARIANCE_MODELS_V1.csv \
+              release/generated/DALECHAMPIA_2015_NESTED_NLME_TREATMENT_EFFECTS_V1.csv
+            python -m scripts.adjudicate_dalechampia_nested_nlme \
+              --contract data/DALECHAMPIA_2015_NESTED_BLOSSOM_COVARIANCE_CONTRACT_V1.json \
+              --models-csv release/generated/DALECHAMPIA_2015_NESTED_NLME_COVARIANCE_MODELS_V1.csv \
+              --effects-csv release/generated/DALECHAMPIA_2015_NESTED_NLME_TREATMENT_EFFECTS_V1.csv \
+              --seed-file 'release/generated/original_dalechampia_files/Pelabon et al FE file 1.txt' \
+              --gas-file 'release/generated/original_dalechampia_files/Pelabon et al FE file 2.txt' \
+              --out release/generated/DALECHAMPIA_2015_NESTED_BLOSSOM_COVARIANCE_READOUT_V1.json
+          else
+            echo 'SOURCE_DOWNLOAD_HOLD; no covariance result inferred from synthetic substitutes'
+          fi
+      - name: Preserve original-source covariance readouts without raw source rows
+        uses: actions/upload-artifact@v4
+        with:
+          name: dalechampia-2015-maternal-vs-blossom-nested-original-source
+          path: |
+            release/generated/DALECHAMPIA_2015_ORIGINAL_DRYAD_SOURCE_RECEIPT_V1.json
+            release/generated/DALECHAMPIA_2015_NESTED_NLME_COVARIANCE_MODELS_V1.csv
+            release/generated/DALECHAMPIA_2015_NESTED_NLME_TREATMENT_EFFECTS_V1.csv
+            release/generated/DALECHAMPIA_2015_NESTED_BLOSSOM_COVARIANCE_READOUT_V1.json
+          if-no-files-found: error
+          retention-days: 30
