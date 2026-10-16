@@ -70,7 +70,15 @@ for (id in candidate_order) {
       opt = "optim", msMaxIter = 300, niterEM = 40, returnObject = FALSE
     )
   )
-  reml <- update(ml, method = "REML")
+  # Fit REML directly: update.lme may evaluate the unqualified saved
+  # lme.formula call outside an attached nlme search-path environment.
+  reml <- nlme::lme(
+    fixed = fixed_formula, random = ~1 | FemaleID,
+    data = df, method = "REML", na.action = na.fail,
+    control = nlme::lmeControl(
+      opt = "optim", msMaxIter = 300, niterEM = 40, returnObject = FALSE
+    )
+  )
   if (ml$dims$N != nrow(df) || reml$dims$N != nrow(df)) {
     stop("lme silently changed source analysis row count")
   }
