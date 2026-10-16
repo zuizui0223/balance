@@ -1,0 +1,185 @@
+{
+  "schema_version": "DALECHAMPIA_2015_BLOSSOM_CLUSTERED_FROZEN_V1",
+  "status": "POSTHOC_EXACT_DRYAD_SENSITIVITY_NOT_PUBLISHED_MODEL",
+  "source_dataset_doi": "10.5061/dryad.nb675",
+  "original_source_file_sha256": {
+    "Pelabon et al FE file 1.txt": "31aa3cfea166eb229f60f4abc9e752f50170540cf83f08d118c6cb70c7c1ff09",
+    "Pelabon et al FE file 2.txt": "6a741987565fa1b0a7e717cdedbe9e46501fb81e631bbe09f7fdafb8fd6137f4"
+  },
+  "comparison_definition": {
+    "stage": "four weeks post hand pollination, prior to full seed maturity",
+    "primary_subset": "numeric_ge20_proxy, descriptive mimic of reported embryo abortion counts",
+    "sensitivity_subset": "all_nonmissing includes small seeds",
+    "original_morphological_abortion_reconstructed": false,
+    "intervention_unit": "blossom; bag encloses ENTIRE blossom with foil",
+    "observational_unit": "mean measured seed mass within each blossom",
+    "uncertainty_cluster": "maternal plant",
+    "design_covariates": [
+      "peduncle_diameter",
+      "maternal_plant_fixed_effects"
+    ],
+    "additional_covariate_sensitivity": "seedset",
+    "intervals": "asymptotic_normal_Wald_with_finite_maternal_cluster_covariance_correction",
+    "this_is_source_published_nlme_reproduction": false
+  },
+  "source_published_reference": {
+    "reported_seedmass_treatment_minus_control_mg": {
+      "bag_minus_cont": -2.03,
+      "cut_minus_cont": -1.34,
+      "cutcont_minus_cont": 0.29
+    },
+    "reported_seedmass_treatment_se_mg": 0.32,
+    "source_2015_AIC_ped_treat_plant_random": 6005.72,
+    "direct_AIC_comparison_to_current_fixed_mother_models_allowed": false
+  },
+  "models": {
+    "numeric_ge20_proxy__ped_only": {
+      "n_seed_rows": 1103,
+      "n_blossoms": 132,
+      "n_maternal_plants": 36,
+      "with_seedset_covariate": false,
+      "effects": {
+        "bag_minus_cont": {
+          "mean_difference_mg": -1.841293,
+          "maternal_cluster_robust_se_mg": 1.03078,
+          "asymptotic_wald_95_interval_mg": [
+            -3.861585,
+            0.178999
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cut_minus_cont": {
+          "mean_difference_mg": -1.158367,
+          "maternal_cluster_robust_se_mg": 1.091493,
+          "asymptotic_wald_95_interval_mg": [
+            -3.297654,
+            0.980919
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cutcont_minus_cont": {
+          "mean_difference_mg": 0.687466,
+          "maternal_cluster_robust_se_mg": 1.145785,
+          "asymptotic_wald_95_interval_mg": [
+            -1.55823,
+            2.933163
+          ],
+          "witnesses_zero_in_interval": true
+        }
+      }
+    },
+    "numeric_ge20_proxy__plus_seedset": {
+      "n_seed_rows": 1103,
+      "n_blossoms": 132,
+      "n_maternal_plants": 36,
+      "with_seedset_covariate": true,
+      "effects": {
+        "bag_minus_cont": {
+          "mean_difference_mg": -1.749058,
+          "maternal_cluster_robust_se_mg": 1.074815,
+          "asymptotic_wald_95_interval_mg": [
+            -3.855658,
+            0.357541
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cut_minus_cont": {
+          "mean_difference_mg": -1.119691,
+          "maternal_cluster_robust_se_mg": 1.097757,
+          "asymptotic_wald_95_interval_mg": [
+            -3.271256,
+            1.031874
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cutcont_minus_cont": {
+          "mean_difference_mg": 0.736718,
+          "maternal_cluster_robust_se_mg": 1.199669,
+          "asymptotic_wald_95_interval_mg": [
+            -1.614589,
+            3.088025
+          ],
+          "witnesses_zero_in_interval": true
+        }
+      }
+    },
+    "all_nonmissing__ped_only": {
+      "n_seed_rows": 1220,
+      "n_blossoms": 142,
+      "n_maternal_plants": 37,
+      "with_seedset_covariate": false,
+      "effects": {
+        "bag_minus_cont": {
+          "mean_difference_mg": -2.178122,
+          "maternal_cluster_robust_se_mg": 1.302053,
+          "asymptotic_wald_95_interval_mg": [
+            -4.730098,
+            0.373854
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cut_minus_cont": {
+          "mean_difference_mg": -1.86878,
+          "maternal_cluster_robust_se_mg": 1.181304,
+          "asymptotic_wald_95_interval_mg": [
+            -4.184093,
+            0.446533
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cutcont_minus_cont": {
+          "mean_difference_mg": 0.40418,
+          "maternal_cluster_robust_se_mg": 1.293385,
+          "asymptotic_wald_95_interval_mg": [
+            -2.130808,
+            2.939168
+          ],
+          "witnesses_zero_in_interval": true
+        }
+      }
+    },
+    "all_nonmissing__plus_seedset": {
+      "n_seed_rows": 1220,
+      "n_blossoms": 142,
+      "n_maternal_plants": 37,
+      "with_seedset_covariate": true,
+      "effects": {
+        "bag_minus_cont": {
+          "mean_difference_mg": -2.730774,
+          "maternal_cluster_robust_se_mg": 1.230592,
+          "asymptotic_wald_95_interval_mg": [
+            -5.14269,
+            -0.318858
+          ],
+          "witnesses_zero_in_interval": false
+        },
+        "cut_minus_cont": {
+          "mean_difference_mg": -1.832807,
+          "maternal_cluster_robust_se_mg": 1.060025,
+          "asymptotic_wald_95_interval_mg": [
+            -3.910418,
+            0.244803
+          ],
+          "witnesses_zero_in_interval": true
+        },
+        "cutcont_minus_cont": {
+          "mean_difference_mg": -0.319854,
+          "maternal_cluster_robust_se_mg": 1.444724,
+          "asymptotic_wald_95_interval_mg": [
+            -3.15146,
+            2.511752
+          ],
+          "witnesses_zero_in_interval": true
+        }
+      }
+    }
+  },
+  "inference_limits": {
+    "multiple_analyses_exploratory_not_confirmatory": true,
+    "most_models_have_wide_uncertainty": true,
+    "source_published_mixed_model_reproduced": false,
+    "carbon_isotope_transfer_identified": false,
+    "structural_balance_occupancy_identified": false,
+    "added_independent_biological_clusters": 0
+  }
+}
