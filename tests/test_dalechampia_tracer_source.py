@@ -83,8 +83,8 @@ def observations(n=3):
                     1.125 if mimic else 1.101
                 ),
                 "bract_postchase_atom_percent_13c":3.10 if target else 1.101,
-                "seed_assay_sd_atom_percent":.004,
-                "bract_assay_sd_atom_percent":.004,
+                "seed_ape_sd_atom_percent":.004,
+                "bract_ape_sd_atom_percent":.004,
                 "bract_gas_excess_auc_atompercent_hours":120. if target else 0.,
                 "fruit_gas_excess_auc_atompercent_hours":.2 if target else (
                     .6 if mimic else 0.
@@ -168,7 +168,7 @@ def test_mimic_labelling_bract_or_ambient_contamination_holds():
 
 def test_analytical_noise_or_negative_background_excess_is_not_false_positive():
     x=observations()
-    x[1]["seed_assay_sd_atom_percent"]=.5
+    x[1]["seed_ape_sd_atom_percent"]=.5
     out=screen_bract_13c_source(plan(),x)
     assert "TARGET_SEED_ENRICHMENT_NOT_ABOVE_UNLABELLED_SHAM" in (
         out["per_block_source_screen"][0]["source_discrimination_method_failures"]
