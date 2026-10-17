@@ -204,7 +204,7 @@ def test_dont_impute_missing_block_or_replace_allocation():
         screen_bract_13c_source(plan(),x[:-1])
     x=observations()
     x[0]["allocation_sha256"]="f"*64
-    with pytest.raises(ValueError,match="allocation differs"):
+    with pytest.raises(ValueError,match="tracer assignment differs"):
         screen_bract_13c_source(plan(),x)
     x=observations()
     x[1]["mature_seed_mass_mg"]=25
