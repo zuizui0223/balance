@@ -334,11 +334,11 @@ def screen_bract_13c_source(plan:dict, observations:list[dict]) -> dict:
                      "seed_assay_sd_atom_percent",
                      t["minimum_seed_excess_over_fruit_mimic_atom_percent"]):
             fail.append("TARGET_SEED_ENRICHMENT_NOT_ABOVE_FRUIT_LEAK_MIMIC")
-        if not clear(bract_sham-bract_mimic,sham,mimic,
-                     "bract_assay_sd_atom_percent",0) and (
-            bract_mimic-bract_sham >
-            z*math.hypot(sham["bract_assay_sd_atom_percent"],
-                         mimic["bract_assay_sd_atom_percent"])
+        # Fruit gas mimic should not inadvertently label the bract; a high
+        # bract excess invalidates its interpretation as a fruit-only control.
+        if bract_mimic-bract_sham > z*math.hypot(
+            sham["bract_assay_sd_atom_percent"],
+            mimic["bract_assay_sd_atom_percent"],
         ):
             fail.append("LEAK_MIMIC_BRACT_ALSO_ENRICHED")
         results.append({
@@ -369,7 +369,7 @@ def screen_bract_13c_source(plan:dict, observations:list[dict]) -> dict:
         "n_distinct_maternal_plants":len(seen_plants),
         "n_individual_blossoms":len(seen_blossoms),
         "minimum_independent_blocks_met":enough,
-        "original_isotope_experimental_data_supplied":True,
+        "numeric_isotope_records_supplied_unverified_by_external_source":True,
         "per_block_source_screen":results,
         "assay_uncertainty_only_not_biological_CI":True,
         "external_chamber_calibration_verified":False,
