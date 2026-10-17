@@ -36,7 +36,9 @@ FIELDS=(
     "postpollination_day","chase_hours",
     "seed_background_atom_percent_13c","bract_background_atom_percent_13c",
     "seed_postchase_atom_percent_13c","bract_postchase_atom_percent_13c",
-    "seed_assay_sd_atom_percent","bract_assay_sd_atom_percent",
+    # These are propagated *APE* analytical uncertainties (including
+    # matched pretreatment baseline error), NOT post-chase assay SD alone.
+    "seed_ape_sd_atom_percent","bract_ape_sd_atom_percent",
     "bract_gas_excess_auc_atompercent_hours",
     "fruit_gas_excess_auc_atompercent_hours",
     "ambient_gas_excess_auc_atompercent_hours",
@@ -72,7 +74,7 @@ ATOM_FIELDS={
     "seed_postchase_atom_percent_13c","bract_postchase_atom_percent_13c",
 }
 POSITIVE_SD_FIELDS={
-    "seed_assay_sd_atom_percent","bract_assay_sd_atom_percent",
+    "seed_ape_sd_atom_percent","bract_ape_sd_atom_percent",
 }
 GAS_FIELDS={
     "bract_gas_excess_auc_atompercent_hours",
@@ -323,22 +325,22 @@ def screen_bract_13c_source(plan:dict, observations:list[dict]) -> dict:
             return difference > max(minimum,measurement_uncertainty)
 
         if not clear(bract_target-bract_sham,target,sham,
-                     "bract_assay_sd_atom_percent",
+                     "bract_ape_sd_atom_percent",
                      t["minimum_bract_source_excess_atom_percent"]):
             fail.append("BRACT_SOURCE_TISSUE_NOT_ENRICHED_ABOVE_SHAM")
         if not clear(seed_target-seed_sham,target,sham,
-                     "seed_assay_sd_atom_percent",
+                     "seed_ape_sd_atom_percent",
                      t["minimum_seed_excess_over_sham_atom_percent"]):
             fail.append("TARGET_SEED_ENRICHMENT_NOT_ABOVE_UNLABELLED_SHAM")
         if not clear(seed_target-seed_mimic,target,mimic,
-                     "seed_assay_sd_atom_percent",
+                     "seed_ape_sd_atom_percent",
                      t["minimum_seed_excess_over_fruit_mimic_atom_percent"]):
             fail.append("TARGET_SEED_ENRICHMENT_NOT_ABOVE_FRUIT_LEAK_MIMIC")
         # Fruit gas mimic should not inadvertently label the bract; a high
         # bract excess invalidates its interpretation as a fruit-only control.
         if bract_mimic-bract_sham > z*math.hypot(
-            sham["bract_assay_sd_atom_percent"],
-            mimic["bract_assay_sd_atom_percent"],
+            sham["bract_ape_sd_atom_percent"],
+            mimic["bract_ape_sd_atom_percent"],
         ):
             fail.append("LEAK_MIMIC_BRACT_ALSO_ENRICHED")
         results.append({
