@@ -1,0 +1,34 @@
+{
+  "schema_version": "DALECHAMPIA_BRACT_13C_SOURCE_DISCRIMINATION_V1",
+  "status": "NOT_FROZEN_REQUIRES_EXTERNAL_CALIBRATION",
+  "context_id": "UNSET_EXPERIMENT_DATE_AND_GREEN_BRACT_STAGE",
+  "assignment_sha256": "NO_FROZEN_RANDOMIZATION",
+  "chamber_calibration_sha256": "NO_CHAMBER_CALIBRATION",
+  "assay_calibration_sha256": "NO_ISOTOPE_LAB_CALIBRATION",
+  "minimum_independent_randomized_blocks": null,
+  "thresholds": {
+    "minimum_bract_source_excess_atom_percent": null,
+    "minimum_seed_excess_over_sham_atom_percent": null,
+    "minimum_seed_excess_over_fruit_mimic_atom_percent": null,
+    "minimum_assay_contrast_z": null,
+    "minimum_target_bract_gas_exposure_auc": null,
+    "minimum_positive_mimic_fruit_gas_exposure_auc": null,
+    "minimum_mimic_to_target_fruit_exposure_ratio": null,
+    "maximum_target_fruit_to_bract_gas_exposure_ratio": null,
+    "maximum_sham_mimic_bract_gas_exposure_auc": null,
+    "maximum_ambient_gas_exposure_auc": null,
+    "maximum_chase_time_span_hours": null,
+    "maximum_postpollination_stage_span_days": null,
+    "maximum_fruit_temperature_span_C": null,
+    "maximum_fruit_RH_span_percentage_points": null
+  },
+  "source_dose_comparability_rationale": "NOT_FROZEN: Pre-register a fruit-specific bract-free exposure mimic, gas concentration trajectory comparability and physiological uptake assumptions before tracer sampling.",
+  "limitations": {
+    "same_mother_isotope_arms_allowed": false,
+    "external_freeze_chronology_verified": false,
+    "dose_to_assimilation_monotonicity_verified": false,
+    "bract_to_seed_carbon_route_causally_identified": false,
+    "mature_seed_fitness_effect_identified": false,
+    "structural_BALANCE_identified": false
+  }
+}
