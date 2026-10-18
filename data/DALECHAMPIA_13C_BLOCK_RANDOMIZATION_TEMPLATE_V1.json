@@ -1,0 +1,21 @@
+{
+  "schema_version": "DALECHAMPIA_13C_BLOCK_RANDOMIZATION_INFERENCE_V1",
+  "status": "NOT_FROZEN_REQUIRES_EXTERNALLY_DATED_PREOUTCOME_REGISTRATION",
+  "context_id": "UNSET_STUDY_POPULATION_GREEN_BRACT_STAGE",
+  "calibration_plan_sha256": "NOT_CALIBRATED",
+  "primary_contrast": "BRACT_13CO2_PULSE_MINUS_FRUIT_LEAK_MIMIC_SEED_APE",
+  "test_sidedness": "TWO_SIDED",
+  "two_sided_alpha": 0.05,
+  "max_exact_blocks": 16,
+  "monte_carlo_draws": 100000,
+  "monte_carlo_seed": 20261018,
+  "blocks_with_zero_effect_or_failed_QC_dropped": false,
+  "scope_exclusions": {
+    "randomization_chronology_verified": false,
+    "plant_interference_ignored": false,
+    "calibrated_uptake_monotonicity_verified": false,
+    "causal_bract_to_seed_carbon_source_identified": false,
+    "bract_specific_mature_seed_fitness_identified": false,
+    "structural_BALANCE_occupancy_identified": false
+  }
+}
