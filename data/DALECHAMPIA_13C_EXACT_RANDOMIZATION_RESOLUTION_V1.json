@@ -1,0 +1,95 @@
+{
+  "schema_version": "DALECHAMPIA_13C_BLOCK_PERMUTATION_RESOLUTION_V1",
+  "status": "EXACT_RANDOMIZATION_COMBINATORICS_NOT_BIOLOGICAL_POWER",
+  "alpha_two_sided": 0.05,
+  "independent_maternal_plants_per_complete_three_arm_block": 3,
+  "minimum_blocks_with_possible_two_sided_p_below_or_equal_alpha": 6,
+  "minimum_independent_maternal_plants_at_resolution_floor": 18,
+  "not_actual_power_or_biological_effect": true,
+  "rows": [
+    {
+      "n_independent_blocks": 3,
+      "n_independent_maternal_plants": 9,
+      "exact_sign_assignments": 8,
+      "minimum_attainable_two_sided_p": 0.25,
+      "two_sided_significance_mathematically_possible": false
+    },
+    {
+      "n_independent_blocks": 4,
+      "n_independent_maternal_plants": 12,
+      "exact_sign_assignments": 16,
+      "minimum_attainable_two_sided_p": 0.125,
+      "two_sided_significance_mathematically_possible": false
+    },
+    {
+      "n_independent_blocks": 5,
+      "n_independent_maternal_plants": 15,
+      "exact_sign_assignments": 32,
+      "minimum_attainable_two_sided_p": 0.0625,
+      "two_sided_significance_mathematically_possible": false
+    },
+    {
+      "n_independent_blocks": 6,
+      "n_independent_maternal_plants": 18,
+      "exact_sign_assignments": 64,
+      "minimum_attainable_two_sided_p": 0.03125,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 7,
+      "n_independent_maternal_plants": 21,
+      "exact_sign_assignments": 128,
+      "minimum_attainable_two_sided_p": 0.015625,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 8,
+      "n_independent_maternal_plants": 24,
+      "exact_sign_assignments": 256,
+      "minimum_attainable_two_sided_p": 0.0078125,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 9,
+      "n_independent_maternal_plants": 27,
+      "exact_sign_assignments": 512,
+      "minimum_attainable_two_sided_p": 0.00390625,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 10,
+      "n_independent_maternal_plants": 30,
+      "exact_sign_assignments": 1024,
+      "minimum_attainable_two_sided_p": 0.001953125,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 11,
+      "n_independent_maternal_plants": 33,
+      "exact_sign_assignments": 2048,
+      "minimum_attainable_two_sided_p": 0.0009765625,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 12,
+      "n_independent_maternal_plants": 36,
+      "exact_sign_assignments": 4096,
+      "minimum_attainable_two_sided_p": 0.00048828125,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 13,
+      "n_independent_maternal_plants": 39,
+      "exact_sign_assignments": 8192,
+      "minimum_attainable_two_sided_p": 0.000244140625,
+      "two_sided_significance_mathematically_possible": true
+    },
+    {
+      "n_independent_blocks": 14,
+      "n_independent_maternal_plants": 42,
+      "exact_sign_assignments": 16384,
+      "minimum_attainable_two_sided_p": 0.0001220703125,
+      "two_sided_significance_mathematically_possible": true
+    }
+  ]
+}
