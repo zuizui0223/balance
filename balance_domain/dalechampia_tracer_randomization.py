@@ -189,7 +189,7 @@ def _signflip_exact(differences:list[float],*,alpha:float)->dict:
         "one_sided_positive_p_descriptive":extreme_positive/total,
         "p_value_monte_carlo_standard_error":None,
         "plus_one_randomization_correction_used":False,
-        "p_value_less_than_alpha":extreme_two/total<alpha,
+        "p_value_at_or_below_alpha":extreme_two/total<=alpha,
     }
 
 
@@ -219,7 +219,7 @@ def _signflip_monte_carlo(differences:list[float],*,alpha:float,
             p_two*(1-p_two)/(draws+1)
         ),
         "plus_one_randomization_correction_used":True,
-        "p_value_less_than_alpha":p_two<alpha,
+        "p_value_at_or_below_alpha":p_two<=alpha,
     }
 
 
