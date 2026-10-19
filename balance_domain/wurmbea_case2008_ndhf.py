@@ -90,6 +90,28 @@ def parse_fasta(fasta: str, accession: str) -> tuple[str, str]:
     return header, seq
 
 
+
+def accession_voucher_header(header: str, expected_voucher: str) -> dict:
+    """Compare the *deposited sequence* voucher to the printed Table A1 voucher.
+
+    A verified GenBank accession is NOT a verified source-voucher identity.
+    The exact MR2/MR3 psbBTNH discrepancy is held, never silently swapped.
+    """
+    m = re.search(r"\\bvoucher\\s+M\\.\\s*Ramsey\\s+(\\d+)\\b", header, re.I)
+    a = re.search(r"\\bvoucher\\s+A\\.\\s*Case\\s+(\\d+)\\b", header, re.I)
+    observed = ("MR" + m.group(1)) if m else (("AC" + a.group(1)) if a else None)
+    return {
+        "expected_source_voucher": expected_voucher,
+        "archive_voucher": observed,
+        "status": (
+            "MATCHED_SOURCE_VOUCHER" if observed == expected_voucher
+            else ("ARCHIVE_VOUCHER_UNSPECIFIED" if observed is None
+                  else "HOLD_ARCHIVE_SOURCE_VOUCHER_CONFLICT")
+        ),
+    }
+
+
+
 def pair_distance(seq_a: str, seq_b: str) -> dict:
     """Global pairwise alignment with explicitly defined gapping; descriptive only.
 
@@ -197,9 +219,16 @@ def run(
             accession = r["ndhf_accession"]
             try:
                 header, seq = parse_fasta(tasks[accession].result(), accession)
+                identity = accession_voucher_header(header, r["voucher"])
+                if identity["status"] == "HOLD_ARCHIVE_SOURCE_VOUCHER_CONFLICT":
+                    raise ValueError(
+                        "GenBank voucher differs from published Table A1: "
+                        + str(identity)
+                    )
                 sequences[accession] = seq
                 records.append({
                     "accession": accession, "voucher": r["voucher"],
+                    "archive_voucher_check": identity,
                     "header": header, "sequence_length": len(seq),
                     "sequence_sha256": hashlib.sha256(seq.encode()).hexdigest(),
                 })
@@ -215,6 +244,14 @@ def run(
         "schema": "BALANCE_WURMBEA_CASE2008_GENBANK_NDHF_V1",
         "source_manifest_sha256": source_sha,
         "verified_records": records,
+        "archive_voucher_matched": sum(
+            x["archive_voucher_check"]["status"] == "MATCHED_SOURCE_VOUCHER"
+            for x in records
+        ),
+        "archive_voucher_unspecified": [
+            x["accession"] for x in records
+            if x["archive_voucher_check"]["status"] == "ARCHIVE_VOUCHER_UNSPECIFIED"
+        ],
         "failed_accessions": failures,
         "observational_cohort_definition": "original 22 Australasian Case 2008 vouchers with categorical source-coded M/D states",
         "full_four_locus_phylogeny_replayed": False,
