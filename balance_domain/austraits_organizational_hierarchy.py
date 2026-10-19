@@ -100,6 +100,124 @@ def _source_independent_genus_balance(sex: dict[str, str], pollen: dict[str, str
     }
 
 
+def _flower_source_and_genus_sensitivity(
+    rows: list[dict[str, str]], flower: dict[str, str],
+    pollen: dict[str, str],
+) -> dict:
+    """New post-open source stratum and genus-equal flower-morphology QC."""
+    qualified = {
+        n: v for n, v in flower.items()
+        if n in pollen and v in ("BISEXUAL_FLOWER", "UNISEXUAL_FLOWER")
+    }
+    by_genus: dict[str, dict[str, list[float]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    for name, status in sorted(qualified.items()):
+        by_genus[name.split()[0]][pollen[name]].append(
+            float(status == "UNISEXUAL_FLOWER")
+        )
+    per_mode = {
+        mode: [
+            _mean(group[mode]) for group in by_genus.values()
+            if group.get(mode)
+        ]
+        for mode in POLLEN_MODES
+    }
+    crossing = [
+        key for key, obs in by_genus.items()
+        if obs.get("INSECT") and obs.get("WIND")
+    ]
+    within = [
+        _mean(by_genus[g]["WIND"]) - _mean(by_genus[g]["INSECT"])
+        for g in crossing
+    ]
+    # The entire source-key stratum is post-open. It only checks whether
+    # observed differences are dominated by different trait providers.
+    provenance: dict[str, dict[str, set[str]]] = defaultdict(
+        lambda: defaultdict(set)
+    )
+    for r in rows:
+        name = r["taxon_name"]
+        if name in qualified and r["trait_name"] in (
+            "flower_structural_sex_type", "pollination_syndrome"
+        ):
+            provenance[name][r["trait_name"]].add(r["dataset_key"])
+
+    strata: dict[str, list[str]] = defaultdict(list)
+    multisource = 0
+    for name in sorted(qualified):
+        fields = provenance[name]
+        flower_sources = fields["flower_structural_sex_type"]
+        pollen_sources = fields["pollination_syndrome"]
+        if len(flower_sources) != 1 or len(pollen_sources) != 1:
+            multisource += 1
+            continue
+        key = next(iter(flower_sources)) + " -> " + next(iter(pollen_sources))
+        strata[key].append(name)
+
+    strata_out = {}
+    for key, names in sorted(strata.items()):
+        arms = {
+            mode: [n for n in names if pollen[n] == mode]
+            for mode in POLLEN_MODES
+        }
+        supported = _frozen_support(arms)
+        rates = {
+            mode: (
+                sum(qualified[n] == "UNISEXUAL_FLOWER" for n in arms[mode])
+                / len(arms[mode])
+                if arms[mode] else None
+            )
+            for mode in POLLEN_MODES
+        }
+        strata_out[key] = {
+            "qualified_species": len(names),
+            "arms": {
+                mode: {
+                    "species": len(arms[mode]),
+                    "genera": len({n.split()[0] for n in arms[mode]}),
+                    "flower_unisexual_fraction": rates[mode],
+                }
+                for mode in POLLEN_MODES
+            },
+            "status": (
+                "EXPLORATORY_DESCRIPTIVE_COMPARISON"
+                if supported else "HOLD_INSUFFICIENT_COMMON_SUPPORT"
+            ),
+            "wind_minus_insect": (
+                rates["WIND"] - rates["INSECT"] if supported else None
+            ),
+        }
+    return {
+        "genus_equal_weight": {
+            "genera_by_mode": {
+                mode: len(per_mode[mode]) for mode in POLLEN_MODES
+            },
+            "flower_unisexual_fraction_by_mode": {
+                mode: _mean(per_mode[mode]) for mode in POLLEN_MODES
+            },
+            "wind_minus_insect": (
+                _mean(per_mode["WIND"]) - _mean(per_mode["INSECT"])
+                if per_mode["WIND"] and per_mode["INSECT"] else None
+            ),
+            "genera_with_both_modes": len(crossing),
+            "within_genus_signs": {
+                "positive": sum(d > 1e-12 for d in within),
+                "negative": sum(d < -1e-12 for d in within),
+                "zero": sum(abs(d) <= 1e-12 for d in within),
+            },
+            "within_genus_mean": _mean(within),
+            "not_phylogenetically_adjusted": True,
+        },
+        "source_provider_strata": {
+            "single_source_key_species": len(qualified) - multisource,
+            "multiple_dataset_keys_excluded": multisource,
+            "by_source_pair": strata_out,
+        },
+        "post_open_diagnostic_only": True,
+    }
+
+
 def analyze_organizational_hierarchy(rows: list[dict[str, str]]) -> dict:
     """Report real source overlap, morphology-level association and mismatches."""
     sex, sex_quality = _safe_species_value(rows, "sex_type", SEX_MODES)
@@ -213,6 +331,8 @@ def analyze_organizational_hierarchy(rows: list[dict[str, str]]) -> dict:
                 fraction_unisexual("WIND") - fraction_unisexual("INSECT")
                 if readiness else None
             ),
+            "postopen_provenance_genus_diagnostics":
+                _flower_source_and_genus_sensitivity(rows, flower, pollen),
         },
         "sex_system_x_flower_structure_x_pollen": {
             "same_exact_binomial_species": len(triple),
@@ -227,6 +347,21 @@ def analyze_organizational_hierarchy(rows: list[dict[str, str]]) -> dict:
             "status": (
                 "EXPLORATORY_DESCRIPTIVE_COMPARISON"
                 if triple_ready else "HOLD_INSUFFICIENT_COMMON_SUPPORT"
+            ),
+            "separated_organization_fraction_by_pollen": {
+                mode: (
+                    sum(
+                        organizational[name] != "WITHIN_FLOWER_SHARED"
+                        for name in complete[mode]
+                    ) / len(complete[mode])
+                    if complete[mode] else None
+                )
+                for mode in POLLEN_MODES
+            },
+            "wind_minus_insect_fraction": (
+                sum(organizational[n] != "WITHIN_FLOWER_SHARED" for n in complete["WIND"]) / len(complete["WIND"])
+                - sum(organizational[n] != "WITHIN_FLOWER_SHARED" for n in complete["INSECT"]) / len(complete["INSECT"])
+                if triple_ready else None
             ),
         },
         "genus_balanced_sex_system_pollen": _source_independent_genus_balance(
