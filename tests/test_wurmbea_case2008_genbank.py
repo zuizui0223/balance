@@ -27,16 +27,16 @@ def test_case2008_manifest_all_population_terminals_protected():
 def test_source_sequence_accession_header_and_lengths_are_strict():
     expected = "EU044643"
     header, seq = parse_fasta(
-        f">ENA|{expected}|{expected}.1 Wurmbea biglandulosa ndhF\\n" + "ACGT"*130, expected
+        f">ENA|{expected}|{expected}.1 Wurmbea biglandulosa ndhF\n" + "ACGT"*130, expected
     )
     assert len(seq) == 520
     assert expected in header
     with pytest.raises(ValueError, match="pinned"):
-        parse_fasta(">ENA|EU999999|EU999999.1 Wurmbea biglandulosa\\n" + "ACGT"*130, expected)
+        parse_fasta(">ENA|EU999999|EU999999.1 Wurmbea biglandulosa\n" + "ACGT"*130, expected)
     with pytest.raises(ValueError, match="Wurmbea"):
-        parse_fasta(">ENA|EU044643|EU044643.1 Animalia something\\n" + "ACGT"*130, expected)
+        parse_fasta(">ENA|EU044643|EU044643.1 Animalia something\n" + "ACGT"*130, expected)
     with pytest.raises(ValueError, match="short"):
-        parse_fasta(f">ENA|{expected}|{expected}.1 Wurmbea\\nACGT", expected)
+        parse_fasta(f">ENA|{expected}|{expected}.1 Wurmbea\nACGT", expected)
 
 
 def test_ndhf_pairwise_alignment_handles_indel_and_ambiguous():
@@ -55,7 +55,7 @@ def test_ndhf_pairwise_alignment_handles_indel_and_ambiguous():
 def test_complete_controlled_accession_replay_no_phylogenetic_origin(tmp_path):
     def fake_fetch(accession):
         dna = "A"*600 if accession != "EU044645" else "A"*599+"G"
-        return f">ENA|{accession}|{accession}.1 Wurmbea control ndhF\\n{dna}"
+        return f">ENA|{accession}|{accession}.1 Wurmbea control ndhF\n{dna}"
     source=run(tmp_path,fetcher=fake_fetch)
     assert source["status"]=="VOUCHER_NDHF_METADATA_RECOVERED_NO_HISTORICAL_CAUSATION"
     assert source["ndhf_accessions_recovered"] == 22
@@ -73,7 +73,7 @@ def test_missing_accession_is_hold_not_false_negative(tmp_path):
     def fetch_with_one_missing(a):
         if a=="EU044634":
             raise ValueError("source temporarily unavailable")
-        return f">ENA|{a}|{a}.1 Wurmbea control ndhF\\n"+("G"*650)
+        return f">ENA|{a}|{a}.1 Wurmbea control ndhF\n"+("G"*650)
     report=run(tmp_path,fetcher=fetch_with_one_missing)
     assert report["status"]=="HOLD_INCOMPLETE_SEQUENCE_RECOVERY"
     assert report["ndhf_accessions_missing"]==["EU044634"]
