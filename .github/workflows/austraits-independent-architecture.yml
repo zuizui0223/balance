@@ -86,6 +86,15 @@ jobs:
           print("raw diff wind minus insect:", pilot["raw_difference_wind_minus_insect"])
           print("genera with both modes:", pilot["genera_with_both_pollen_modes"])
           print("within-genus mean diff:", pilot["mean_within_genus_difference"])
+          print("POSTOPEN genus sign counts:", pilot["postopen_genus_overlap_signs"])
+          post = pilot["postopen_source_cohort_sensitivity"]
+          print("POSTOPEN source-qualifying species:", post["admitted_single_source_pair_species"])
+          print("POSTOPEN multi-source excluded species:", post["multiple_datasets_in_either_trait"])
+          print("POSTOPEN dominant source dataset pairs:", post["top_sex_source_to_pollen_source_pairs"])
+          print("POSTOPEN pollination-dataset-specific comparisons:")
+          for study, outcome in post["by_pollen_source"].items():
+              print(f"  {study}: {outcome}")
+          print("NOTE: post-open source/genus sensitivity is exploratory QC only.")
 
           with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as f:
               f.write("## Independent AusTraits structural-opportunity source audit\n\n")
