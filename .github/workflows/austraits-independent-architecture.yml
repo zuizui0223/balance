@@ -10,6 +10,13 @@ on:
       - "balance_domain/island_austraits_fetch.py"
       - "scripts/run_austraits_architecture_macro.py"
       - "tests/test_austraits_architecture_macro.py"
+  pull_request:
+    paths:
+      - ".github/workflows/austraits-independent-architecture.yml"
+      - "balance_domain/austraits_architecture_macro.py"
+      - "balance_domain/island_austraits_fetch.py"
+      - "scripts/run_austraits_architecture_macro.py"
+      - "tests/test_austraits_architecture_macro.py"
   workflow_dispatch:
 
 permissions:
