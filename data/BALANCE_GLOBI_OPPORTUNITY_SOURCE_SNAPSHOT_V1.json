@@ -1,0 +1,77 @@
+{
+  "schema_version": "BALANCE_GLOBI_OPPORTUNITY_SOURCE_SNAPSHOT_V1",
+  "status": "LIVE_PUBLIC_GLOBI_INTERACTION_TEXT_SNAPSHOT_NO_CONFLICT_DATA",
+  "retrieval_date": "2026-10-19",
+  "api": "https://api.globalbioticinteractions.org/interaction.csv",
+  "api_documentation": "https://www.globalbioticinteractions.org/how-to",
+  "api_nonversioned_and_live_queries_unstable": true,
+  "text_extraction_is_not_original_http_binary_archive": true,
+  "source_method": "TinyFish public page text extraction of GloBI interaction.csv; committed UTF-8 response text by source query",
+  "limit_parameter": 500,
+  "study_sampling_frame": "FOUR_SOURCE_SELECTED_BALANCE_PLANT_CASES_NOT_SPECIES_FIRST_GLOBAL_FRAME",
+  "coverage_interpretation": "ONLY INTERACTION OPPORTUNITY OR SOURCE COVERAGE; NEVER DIRECT SELECTION CONFLICT",
+  "taxa": [
+    {
+      "focal_query_taxon": "Polemonium viscosum",
+      "snapshot_path": "data/external/globi/2026-10-19/Polemonium_viscosum_interaction.csv",
+      "source_query_url": "https://api.globalbioticinteractions.org/interaction.csv?targetTaxon=Polemonium%20viscosum&limit=500",
+      "git_blob_sha1": "a9ecd1f32798433c9132e76175da44fe3a251c61",
+      "expected_total_rows": 30,
+      "expected_exact_target_rows": 28,
+      "expected_other_target_rows": 2,
+      "taxonomic_resolution_status": "EXACT_SPECIES_ONLY",
+      "accepted_focal_taxon_authority": "NOT_INDEPENDENTLY_VETTED_AT_AUTHOR_LEVEL"
+    },
+    {
+      "focal_query_taxon": "Narcissus assoanus",
+      "snapshot_path": "data/external/globi/2026-10-19/Narcissus_assoanus_interaction.csv",
+      "source_query_url": "https://api.globalbioticinteractions.org/interaction.csv?targetTaxon=Narcissus%20assoanus&limit=500",
+      "git_blob_sha1": "5d242ea7cf64a4cf845ac2a8ca218d8ea818aa03",
+      "expected_total_rows": 2,
+      "expected_exact_target_rows": 2,
+      "expected_other_target_rows": 0,
+      "taxonomic_resolution_status": "EXACT_SPECIES_ONLY",
+      "accepted_focal_taxon_authority": "NOT_INDEPENDENTLY_VETTED_AT_AUTHOR_LEVEL"
+    },
+    {
+      "focal_query_taxon": "Solanum rostratum",
+      "snapshot_path": "data/external/globi/2026-10-19/Solanum_rostratum_interaction.csv",
+      "source_query_url": "https://api.globalbioticinteractions.org/interaction.csv?targetTaxon=Solanum%20rostratum&limit=500",
+      "git_blob_sha1": "5dc926d307fbd9feff61063ab287ed9e6c8594a7",
+      "expected_total_rows": 96,
+      "expected_exact_target_rows": 0,
+      "expected_other_target_rows": 96,
+      "taxonomic_resolution_status": "HOMONYM_AUCTOR_AMBIGUOUS_NO_AUTOMERGE",
+      "accepted_focal_taxon_authority": "Solanum rostratum Dunal"
+    },
+    {
+      "focal_query_taxon": "Ipomopsis aggregata",
+      "snapshot_path": "data/external/globi/2026-10-19/Ipomopsis_aggregata_interaction.csv",
+      "source_query_url": "https://api.globalbioticinteractions.org/interaction.csv?targetTaxon=Ipomopsis%20aggregata&limit=500",
+      "git_blob_sha1": "4646831b950f6ad444bad386d893748cf006ef4d",
+      "expected_total_rows": 126,
+      "expected_exact_target_rows": 67,
+      "expected_other_target_rows": 59,
+      "taxonomic_resolution_status": "EXACT_SPECIES_ONLY",
+      "accepted_focal_taxon_authority": "NOT_INDEPENDENTLY_VETTED_AT_AUTHOR_LEVEL"
+    }
+  ],
+  "solanum_taxonomic_homonym_audit": {
+    "query_name": "Solanum rostratum",
+    "focal_accepted_name": "Solanum rostratum Dunal",
+    "focal_accepted_POWO": "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:820804-1",
+    "distinct_synonym_homonym": "Solanum rostratum L'Hér. ex Dunal",
+    "distinct_synonym_status": "SYNONYM_OF_SOLANUM_ANGUSTIFOLIUM_MILL",
+    "POWO_misresolved_homonym": "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:820803-1",
+    "api_reported_target_name": "Solanum angustifolium",
+    "original_target_authorship_returned_by_GloBI": false,
+    "target_records_automatically_assigned_to_focal_rostratum_Dunal": 0,
+    "source_conflict_state_inferred_from_db": false
+  },
+  "all_taxon_name_mismatches_retained_for_audit": true,
+  "no_interaction_means_absence_of_ecological_agent": false,
+  "source_species_richness_from_aggregated_higher_taxon_rows_identified": false,
+  "empirical_direct_SCH_conflict_identified": false,
+  "net_architecture_BALANCE_occupancy_identified": false,
+  "novel_independent_biological_clusters_added": 0
+}
