@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import shutil
+import json
+import subprocess
+import sys
 
 import pytest
 
@@ -113,3 +116,15 @@ def test_unknown_architecture_class_fails_closed(tmp_path):
     path.write_text(content.replace("TEMPORAL_SEPARATION,false", "MADE_UP_CLASS,false", 1), encoding="utf-8")
     with pytest.raises(ValueError, match="architecture mode"):
         analyze(tmp_path)
+
+
+def test_real_cli_runs_in_read_only_stdout_mode():
+    script = REPO_ROOT / "scripts/audit_source_stratified_trait_architecture.py"
+    result = subprocess.run(
+        [sys.executable, str(script)],
+        cwd=REPO_ROOT, capture_output=True, text=True, check=True,
+    )
+    parsed = json.loads(result.stdout)
+    assert parsed["u2"]["status_counts"]["POSITIVE"] == 8
+    assert parsed["plant_pilot"]["conflict_positive_structural_record_bounds"]["possible_upper"] == 6
+    assert parsed["not_pooled"] is True
