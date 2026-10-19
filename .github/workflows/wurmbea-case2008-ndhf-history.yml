@@ -5,6 +5,9 @@ on:
     paths:
       - ".github/workflows/wurmbea-case2008-ndhf-history.yml"
       - "balance_domain/wurmbea_case2008_ndhf.py"
+      - "balance_domain/wurmbea_case2008_four_locus.py"
+      - "data/WURMBEA_CASE_2008_FOCAL_FOUR_LOCUS_VOUCHERS.csv"
+      - "tests/test_wurmbea_case2008_multilocus.py"
       - "balance_domain/wurmbea_fitness_threshold.py"
       - "data/WURMBEA_CASE_2008_TABLE_A1_NDHF_VOUCHERS.csv"
       - "scripts/audit_wurmbea_case2008.py"
@@ -26,7 +29,7 @@ jobs:
       - name: Validate exact source manifests, pairwise alignment and no-causal-promotion
         run: |
           python -m pip install 'biopython>=1.84,<2' pytest
-          python -m pytest -q tests/test_wurmbea_case2008_genbank.py
+          python -m pytest -q tests/test_wurmbea_case2008_genbank.py tests/test_wurmbea_case2008_multilocus.py
 
   public-archive-replay:
     needs: source-guard
@@ -54,6 +57,17 @@ jobs:
           p=Path("/tmp/balance-wurmbea-genbank-2008")
           nd=json.loads((p/"wurmbea_case2008_ndhf_source_receipt.json").read_text())
           th=json.loads((p/"wurmbea_case2008_conditional_thresholds.json").read_text())
+          multi=json.loads((p/"wurmbea_case2008_focal_four_locus_readout.json").read_text())
+          print("Focal original 4-locus accession status:",multi["status"])
+          print("Expected/recovered source 4-locus records:",multi["source_unique_accessions_expected"],multi["accessions_verified"])
+          print("Original source missing marker:",multi["original_table_missing_marker"])
+          for group, datum in multi["focal_groups"].items():
+              print("FOCAL MULTILOCUS",group,datum["source_M_D"])
+              for pair in datum["pairwise_descriptions"]:
+                  print(" ",pair["vouchers"],pair["source_states"],"loci",pair["compared_loci"],
+                        "mismatches",pair["total_pairwise_mismatches"],"sites",pair["total_pairwise_aligned_comparable_sites"],
+                        "same in observed loci",pair["observed_identity_across_all_compared_loci"])
+                  print("     per locus:",pair["loci"])
           print("SOURCE ndhF status:",nd["status"])
           print("Published voucher M/D:",nd["study_sex_state_vouchers"])
           print("Exact accessions expected/recovered:",nd["ndhf_accessions_expected"],nd["ndhf_accessions_recovered"])
@@ -73,9 +87,13 @@ jobs:
               f.write(f"- Original source: {nd['source']['doi']}, Table A1, single ndhF\n")
               f.write(f"- registered: {nd['ndhf_accessions_expected']} / recovered: {nd['ndhf_accessions_recovered']}\n")
               f.write(f"- source state: \`{nd['status']}\`\n")
-              f.write("- No 4-locus tree, reconstructed origins, or causal architectural payoff.\n")
+              f.write(f"- source focal 4-locus accessions recovered: {multi['accessions_verified']}/23\\n")
+              f.write(f"- four-locus result: {multi['status']}\\n")
+              f.write("- No reconstructed phylogeny, inferred origins, or causal architectural payoff.\n")
           if nd["status"]!="VOUCHER_NDHF_METADATA_RECOVERED_NO_HISTORICAL_CAUSATION":
               raise SystemExit("HOLD: source retrieval incomplete; no genetic result promotion")
+          if multi["status"]!="FOCAL_MULTILOCUS_SOURCE_VERIFIED_DESCRIPTIVE_ONLY":
+              raise SystemExit("HOLD: focal four-locus source retrieval incomplete")
           PY
       - name: Preserve source-verified aggregate, even on incomplete recovery
         if: always()
