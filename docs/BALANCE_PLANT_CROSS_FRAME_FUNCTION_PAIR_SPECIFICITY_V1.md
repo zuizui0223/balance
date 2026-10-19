@@ -33,7 +33,7 @@ Records across frames = 69; only **67 distinct recorded dependency groups**, bec
 
 **Ipomopsis aggregata**:
 - U1 U1_025: herbivory/compensation is linked to reproductive ecology but does **not** identify two opposing optima on one herbivore–pollinator plant trait axis in its source design.
-- U2 U2_021: self-pollen versus compatible outcross reproductive function is a **positive interference conflict** under the source screen; experiments find reduced outcross fertility/seed set after mixed self and cross pollen (see [Waser & Price 1991, American Journal of Botany](https://doi.org/10.1002/j.1537-2197.1991.tb14511.x)). Its U2 architecture is classified as **SHARED_INTEGRATED**; a causal differentiated alternative is not demonstrated in that cited study.
+- U2 U2_015: self-pollen versus compatible outcross reproductive function is a **positive interference conflict** under the source screen; experiments find reduced outcross fertility/seed set after mixed self and cross pollen (see [Waser & Price 1991, American Journal of Botany](https://doi.org/10.1002/j.1537-2197.1991.tb14511.x)). Its U2 architecture is classified as **SHARED_INTEGRATED**; a causal differentiated alternative is not demonstrated in that cited study.
 - Thus neither a label of “conflicted species” nor “conflict-free species” is justified without naming the functional pair and tested coordinate.
 
 **Inference supported:** evidence for functional conflict depends on which function pair, plant trait and source experiment were observed. Both same-species mismatches survive review-record deduplication because they are *genuinely different biological questions*. A U1 value of **NO_DEMONSTRATED_CONFLICT is NOT a proof that the conflict is absent**.
