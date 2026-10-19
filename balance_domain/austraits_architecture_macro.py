@@ -259,7 +259,9 @@ def analyze_selected_csv(selected_csv: Path, manifest: dict) -> dict:
     # New after the first published source readout: the original strict
     # sex-system × pollination estimand is retained unchanged.
     from .austraits_organizational_hierarchy import analyze_organizational_hierarchy
+    from .austraits_lineage_frontier import analyze_candidate_lineages
     structure_hierarchy = analyze_organizational_hierarchy(raw)
+    candidate_frontier = analyze_candidate_lineages(raw)
     result = {
         "schema": "BALANCE_AUSTRAITS_INDEPENDENT_STRUCTURAL_OPPORTUNITY_V1",
         "status": "OPEN_PUBLIC_TRAIT_COVERAGE_NOT_DIRECT_CONFLICT",
@@ -273,6 +275,7 @@ def analyze_selected_csv(selected_csv: Path, manifest: dict) -> dict:
         "trait_coverage": coverage,
         "sex_system_pollination_syndrome_pilot": _pair_analysis(raw),
         "postopen_organizational_hierarchy": structure_hierarchy,
+        "postopen_genus_candidate_frontier": candidate_frontier,
         "interpretation": {
             "sex_type": "species reproductive sex system (not direct trait conflict or module construction cost)",
             "flower_structural_sex_type": "flower-level structural status (not identical to species sex system)",
