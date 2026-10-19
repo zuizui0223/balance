@@ -100,6 +100,13 @@ def _screen_summary(rows: list[dict[str, str]], *, relpath: str, sha: str) -> di
         "conflict_positive_structural_unresolved": sum(
             r["structural_module_division"] == "unresolved" for r in positives
         ),
+        "conflict_positive_structural_record_bounds": {
+            "confirmed_lower": sum(r["structural_module_division"] == "true" for r in positives),
+            "possible_upper": sum(
+                r["structural_module_division"] in {"true", "unresolved"} for r in positives
+            ),
+            "denominator_source_rows": len(positives),
+        },
         "conflict_positive_by_function_family": {
             family: {
                 "source_rows": len(group),
@@ -107,6 +114,9 @@ def _screen_summary(rows: list[dict[str, str]], *, relpath: str, sha: str) -> di
                 "four_class": _four_class_counts(group),
                 "structural_confirmed": sum(
                     r["structural_module_division"] == "true" for r in group
+                ),
+                "structural_unresolved": sum(
+                    r["structural_module_division"] == "unresolved" for r in group
                 ),
             }
             for family, group in sorted(by_family.items())
