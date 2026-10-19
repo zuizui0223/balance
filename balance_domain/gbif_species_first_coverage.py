@@ -81,6 +81,11 @@ def audit_real_species_first_coverage(
         raise ValueError("GloBI cannot be relabelled strict structural BALANCE")
     if network.get("n_gbif_taxa_selected")!=len(species["species"]):
         raise ValueError("selected versus source GloBI denominator drift")
+    expected_frame_hash=hashlib.sha256(json.dumps(
+        sampling_contract,sort_keys=True
+    ).encode()).hexdigest()
+    if species.get("frame_sha256")!=expected_frame_hash:
+        raise ValueError("GBIF pre-interaction selection contract digest mismatch")
     by_key={x["gbif_species_key"]:x for x in species["species"]}
     if len(by_key)!=48:
         raise ValueError("GBIF selected keys not unique")
@@ -105,6 +110,42 @@ def audit_real_species_first_coverage(
             raise ValueError("GBIF original family page source altered")
         if original.get("limit")!=20 or len(original.get("results",[]))!=20:
             raise ValueError("GBIF page size unexpectedly changed")
+
+        family=f["family"]
+        source_candidates=[]
+        for item in original["results"]:
+            canonical=item.get("canonicalName")
+            parts=canonical.split(" ") if isinstance(canonical,str) else []
+            eligible=(
+                item.get("taxonomicStatus")=="ACCEPTED" and
+                item.get("rank")=="SPECIES" and
+                item.get("nameType")=="SCIENTIFIC" and
+                item.get("kingdom")=="Plantae" and
+                item.get("family")==family and
+                item.get("familyKey")==f["gbif_family_key"] and
+                item.get("synonym") is False and
+                item.get("extinct") is not True and
+                type(item.get("key")) is int and
+                item.get("speciesKey")==item["key"] and
+                len(parts)==2 and parts[0].isalpha() and
+                parts[0][0].isupper() and parts[0][1:].islower() and
+                parts[1].isalpha() and parts[1].islower()
+            )
+            if eligible:
+                source_candidates.append(item)
+        seed=sampling_contract["deterministic_seed"]
+        ranked=sorted(source_candidates,key=lambda x:hashlib.sha256(
+            f"{seed}:SPECIES:{family}:{x['key']}".encode("ascii")
+        ).hexdigest())
+        expected=ranked[:4]
+        actual=[x for x in species["species"] if x["family"]==family]
+        if len(actual)!=4 or f["selected_species"]!=4:
+            raise ValueError("GBIF species quota/source sample changed")
+        for original_item,derived in zip(expected,actual):
+            if (original_item["key"]!=derived["gbif_species_key"] or
+                original_item["canonicalName"]!=derived["canonical_name"] or
+                derived.get("authorship")!=original_item.get("authorship")):
+                raise ValueError("species selection differs from original GBIF source page SHA256 ranking")
         # Source hash is computed from genuine original HTTP response bytes;
         # not TinyFish or markdown text extracted from JSON.
         if not isinstance(raw,bytes) or not raw:
