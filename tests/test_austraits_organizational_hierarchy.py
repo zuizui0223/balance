@@ -91,3 +91,38 @@ def test_conflicting_flower_source_states_never_create_causal_transition():
     assert x["sex_system_x_flower_structure"]["same_exact_binomial_species"] == 5
     assert x["flower_structure_x_pollen_mode"]["same_exact_binomial_species"] == 5
     assert x["not_historical_origins"]
+
+
+def test_flower_level_source_strata_and_genus_weight_do_not_force_comparisons():
+    data = analyze_organizational_hierarchy(make_rows())
+    obj = data["flower_structure_x_pollen_mode"][
+        "postopen_provenance_genus_diagnostics"
+    ]
+    genus = obj["genus_equal_weight"]
+    assert genus["genera_by_mode"] == {"INSECT": 2, "WIND": 3}
+    assert genus["genera_with_both_modes"] == 2
+    assert abs(genus["wind_minus_insect"] - (1 / 6)) < 1e-12
+    assert genus["within_genus_signs"] == {
+        "positive": 1, "negative": 0, "zero": 1
+    }
+    source = obj["source_provider_strata"]
+    assert source["single_source_key_species"] == 5
+    assert source["multiple_dataset_keys_excluded"] == 0
+    assert source["by_source_pair"][
+        "Synthetic_Original_Source -> Synthetic_Original_Source"
+    ]["status"] == "HOLD_INSUFFICIENT_COMMON_SUPPORT"
+    assert data["sex_system_x_flower_structure_x_pollen"][
+        "wind_minus_insect_fraction"
+    ] is None
+
+
+def test_flower_source_ambiguity_never_fills_competing_source_strata():
+    rows = make_rows()
+    duplicate = rec("Aster alba", "flower_structural_sex_type", "bisexual", 1001)
+    duplicate["dataset_key"] = "Another_Source"
+    rows.append(duplicate)
+    diagnostic = analyze_organizational_hierarchy(rows)[
+        "flower_structure_x_pollen_mode"
+    ]["postopen_provenance_genus_diagnostics"]["source_provider_strata"]
+    assert diagnostic["single_source_key_species"] == 4
+    assert diagnostic["multiple_dataset_keys_excluded"] == 1
