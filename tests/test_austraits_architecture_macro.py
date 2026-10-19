@@ -78,6 +78,13 @@ def test_species_first_strict_states_exclude_ambiguities(tmp_path):
     assert pair["source_species_denominator"]["unmapped_single_raw_label_species"] == 1
     assert pair["source_species_denominator"]["non_binomial_source_rows_excluded"] == 1
     assert pair["genera_with_both_pollen_modes"] == 1
+    assert pair["postopen_genus_overlap_signs"] == {
+        "positive": 1, "negative": 0, "zero": 0,
+    }
+    source_sensitivity = pair["postopen_source_cohort_sensitivity"]
+    assert source_sensitivity["admitted_single_source_pair_species"] == 2
+    assert source_sensitivity["multiple_datasets_in_either_trait"] == 0
+    assert source_sensitivity["by_pollen_source"]["Example_Study_1"]["status"] == "HOLD_INSUFFICIENT_COMMON_SUPPORT"
     assert pair["status"] == "HOLD_INSUFFICIENT_COMMON_SUPPORT"
     assert pair["raw_difference_wind_minus_insect"] is None
     assert pair["sex_system_by_mode"] == {
@@ -132,3 +139,20 @@ def test_minimum_arm_and_genus_gate_not_significance():
     result=_pair_analysis(rows)
     assert result["status"] == "HOLD_INSUFFICIENT_COMMON_SUPPORT"
     assert result["qualified_exact_species_overlap"] == 0
+
+
+def test_primary_species_contrast_invariant_to_duplicate_source_provenance():
+    rows=[
+        _record("Rosa alba","sex_type","hermaphrodite",1),
+        _record("Rosa alba","pollination_syndrome","insect",2),
+        _record("Rosa rubra","sex_type","dioecious",3),
+        _record("Rosa rubra","pollination_syndrome","wind",4),
+    ]
+    first=_pair_analysis(rows)
+    duplicate=_record("Rosa alba","sex_type","hermaphrodite",5)
+    duplicate["dataset_key"]="Independent_Study_2"
+    enriched=_pair_analysis(rows+[duplicate])
+    assert enriched["qualified_exact_species_overlap"] == first["qualified_exact_species_overlap"]
+    assert enriched["sex_system_by_mode"] == first["sex_system_by_mode"]
+    assert enriched["postopen_source_cohort_sensitivity"]["admitted_single_source_pair_species"] == 1
+    assert enriched["postopen_source_cohort_sensitivity"]["multiple_datasets_in_either_trait"] == 1
