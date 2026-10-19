@@ -150,3 +150,35 @@ def test_full_selection_history_preserves_all_taxa_even_no_interactions():
                for x in out["species_coverage"])==48
     assert out["author_level_taxon_link_verified_from_GloBI"] is False
     assert out["index_target_guild_richness_estimable_from_broad_taxon_rows"] is False
+
+
+def test_published_48_species_static_source_table_matches_independent_reaudit():
+    import csv
+    stored=json.loads((
+        ROOT/"data/BALANCE_GBIF_GLOBI_SPECIES_FIRST_STATIC_COVERAGE_V1.json"
+    ).read_text(encoding="utf-8"))
+    with (ROOT/"data/BALANCE_GBIF_GLOBI_SPECIES_FIRST_48_SPECIES_V1.csv").open(
+        encoding="utf-8",newline=""
+    ) as fd:
+        rows=list(csv.DictReader(fd))
+    rebuilt=audit_source_files(ROOT)
+    assert stored["schema_version"]=="BALANCE_GBIF_GLOBI_SPECIES_FIRST_STATIC_COVERAGE_V1"
+    assert stored["status"]=="SOURCE_COMPUTED_OBSERVATIONAL_DATABASE_COVERAGE_ONLY"
+    assert stored["totals"]["n_species"]==rebuilt["n_gbif_accepted_taxa_selected"]==48
+    assert stored["totals"]["n_exact_name_species"]==rebuilt[
+        "n_species_with_exact_target_name_relation"]==16
+    assert stored["totals"]["n_exact_target_name_rows"]==rebuilt[
+        "n_exact_target_name_rows"]==188
+    assert stored["totals"]["n_same_GBIF_key_rows"]==rebuilt[
+        "n_exact_target_and_direct_GBIF_key_rows"]==88
+    assert stored["totals"]["n_species_with_flower_labels"]==rebuilt[
+        "n_taxa_with_flower_visit_or_pollinate_label"]==1
+    assert stored["totals"]["family_no_record"]==rebuilt[
+        "n_families_without_any_exact_target_name_relation"]==5
+    assert len(rows)==len(stored["species"])==48
+    assert {int(row["gbif_species_key"]) for row in rows}=={
+        x["gbif_species_key"] for x in rebuilt["species_coverage"]
+    }
+    assert stored["direct_trait_fitness_conflict_observations"]==0
+    assert stored["strict_structural_BALANCE_occurrences"]==0
+    assert all(x["retrieval_status"]!="GLOBI_SOURCE_HOLD" for x in stored["species"])
