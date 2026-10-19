@@ -9,7 +9,7 @@
   "source_method": "TinyFish public page text extraction of GloBI interaction.csv; committed UTF-8 response text by source query",
   "limit_parameter": 500,
   "study_sampling_frame": "FOUR_SOURCE_SELECTED_BALANCE_PLANT_CASES_NOT_SPECIES_FIRST_GLOBAL_FRAME",
-  "coverage_interpretation": "ONLY INTERACTION OPPORTUNITY OR SOURCE COVERAGE; NEVER DIRECT SELECTION CONFLICT",
+  "coverage_interpretation": "ONLY EXACT TARGET-TAXON-SIDE INTERACTION OPPORTUNITY OR SOURCE COVERAGE; NEVER DIRECT SELECTION CONFLICT",
   "taxa": [
     {
       "focal_query_taxon": "Polemonium viscosum",
@@ -50,8 +50,8 @@
       "source_query_url": "https://api.globalbioticinteractions.org/interaction.csv?targetTaxon=Ipomopsis%20aggregata&limit=500",
       "git_blob_sha1": "4646831b950f6ad444bad386d893748cf006ef4d",
       "expected_total_rows": 126,
-      "expected_exact_target_rows": 67,
-      "expected_other_target_rows": 59,
+      "expected_exact_target_rows": 66,
+      "expected_other_target_rows": 60,
       "taxonomic_resolution_status": "EXACT_SPECIES_ONLY",
       "accepted_focal_taxon_authority": "NOT_INDEPENDENTLY_VETTED_AT_AUTHOR_LEVEL"
     }
@@ -73,5 +73,6 @@
   "source_species_richness_from_aggregated_higher_taxon_rows_identified": false,
   "empirical_direct_SCH_conflict_identified": false,
   "net_architecture_BALANCE_occupancy_identified": false,
-  "novel_independent_biological_clusters_added": 0
+  "novel_independent_biological_clusters_added": 0,
+  "source_name_matches_outside_target_side_do_not_count_as_target_query_matches": true
 }
