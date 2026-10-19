@@ -5,6 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
+
+# Work from the checkout without assuming an editable pip installation.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from balance_domain.plant_architecture_source_patterns import analyze
 
