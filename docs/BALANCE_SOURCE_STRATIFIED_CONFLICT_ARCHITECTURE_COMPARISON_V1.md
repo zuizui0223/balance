@@ -29,6 +29,8 @@ U2 conflict-positive review-source subset **8/22 source rows**. Of the eight sou
 
 The structural-status field for these eight is **seven `false`, one `unresolved`, zero `true`**: "0 confirmed" is **not** "structural modules experimentally disproved in all eight." The source reviews are rich in male–female interference and therefore cannot establish population prevalence.
 
+Leaving the one unknown structural status unconstrained gives a **record-level logical interval of 0–1 structurally divided candidates among these eight source-positive U2 rows**. This is not a population interval, confidence interval, or evidence of a missed causal origin.
+
 ## Result B: Architecture complexity does not identify the opposing-demand cause
 
 In the remaining **14 U2 records labelled `NO_DEMONSTRATED_CONFLICT`**:
@@ -54,6 +56,8 @@ Among **16 conflict-positive PILOT source rows**:
 | Sexual interference | **5** | **1** | 4 nonstructural/mosaic |
 | Pollinator–prey | **1** | **0** | 1 spatial separation |
 | **Total (selected PILOT rows only)** | **16** | **4** | **12** |
+
+Across all sixteen positive PILOT rows, structural-status receipts are **four `true`, ten `false`, two `unresolved`**. The source-record logical interval is therefore **4–6 of 16**, not a forced point prevalence estimate. In this selected PILOT, all seven positive pollinator–antagonist rows have explicitly nonstructural states, while all three pollen reward–gamete rows have source-coded structural division; the contrast persists under the missing-status envelope but remains inseparable from the way studies entered the pilot.
 
 These apparent **7/7 versus 3/3 contrasts are *not* an unbiased comparison**. The Pollen reward–gamete studies were identified partly because division-of-labour morphologies were of interest, while pollinator–antagonist cases intentionally sampled integrated floral traits. Morphology and source ascertainment are inseparable. The correct biological interpretation is a **candidate function-pair-specific architectural pattern**, not a fitted evolutionary law, odds ratio or population-level difference.
 
