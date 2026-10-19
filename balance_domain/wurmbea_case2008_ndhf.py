@@ -80,7 +80,7 @@ def parse_fasta(fasta: str, accession: str) -> tuple[str, str]:
     if sum(s.startswith(">") for s in rows) != 1:
         raise ValueError("One accession must yield exactly one sequence")
     header = rows[0]
-    if not re.search(rf"(?<![A-Z0-9]){re.escape(accession)}(?:\\.[0-9]+)?(?![0-9])", header, re.I):
+    if not re.search(rf"(?<![A-Z0-9]){re.escape(accession)}(?:\.[0-9]+)?(?![0-9])", header, re.I):
         raise ValueError(f"Response not pinned to original accession {accession}")
     if "Wurmbea" not in header and "wurmbea" not in header.lower():
         raise ValueError(f"Expected Wurmbea named taxon in {accession}")
@@ -203,7 +203,7 @@ def run(
                     "header": header, "sequence_length": len(seq),
                     "sequence_sha256": hashlib.sha256(seq.encode()).hexdigest(),
                 })
-            except (HTTPError, URLError, ValueError, UnicodeError, TimeoutError) as error:
+            except (HTTPError, URLError, ValueError, UnicodeError, TimeoutError, OSError) as error:
                 failures.append({
                     "accession": accession,
                     "failure_type": type(error).__name__,
