@@ -15,7 +15,7 @@
   "page_size": 20,
   "species_quota_per_family": 4,
   "within_page_ranking_rule": "sort eligible accepted binomial species by sha256((seed+':SPECIES:'+family+':'+str(gbif_species_key)).encode()).hexdigest() ascending, retain first 4",
-  "eligibility": "GBIF rank SPECIES, taxonomicStatus ACCEPTED, kingdom Plantae, exact familyKey, canonicalName consists of two Latin name tokens with no hybrids or infraspecific qualifiers, non-extinct, taxon key and authorship retained",
+  "eligibility": "GBIF rank SPECIES, taxonomicStatus ACCEPTED, kingdom Plantae, exact familyKey, two-token canonicalName without hybrid markers, extinct IS NOT explicitly true (missing extinct remains UNKNOWN and is recorded), taxon key and authorship retained",
   "on_shortfall": "do not replace from a second page after examining any interactions; retain family shortfall",
   "on_gbif_failure": "retain explicit family source HOLD; do not replace with known pollinated species",
   "GloBI_query_to_start_only_after_species_frame_is_frozen": true,
@@ -170,5 +170,7 @@
       "page_url": "https://api.gbif.org/v1/species/search?rank=SPECIES&status=ACCEPTED&higherTaxonKey=5014&limit=20&offset=4840",
       "species_quota": 4
     }
-  ]
+  ],
+  "extinction_status_handling": "do not convert missing extinct flag to a false biological status; exclude only explicitly extinct=true and preserve unknown in selected record",
+  "amendment": "Pre-GloBI source-field clarification after inspecting GBIF JSON missing extinct keys, BEFORE selected species interaction queries"
 }
