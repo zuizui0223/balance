@@ -2,6 +2,10 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## Independent species-first floral substrate expansion (2026-10-19)
+
+[AusTraits v7.0.0 source-independent architecture/opportunity contract](docs/BALANCE_AUSTRAITS_INDEPENDENT_STRUCTURAL_OPPORTUNITY_V1.md) freezes an external, checksum-verified public floral trait source and exact species-level coding **without selecting taxa because a functional trade-off or modular morphology has been reported**. It compares observed sexual-system organization with independently source-coded wind/insect pollination, with strict attrition and genus-support requirements, but never treats trait co-occurrence as SCH conflict, SLK structural cost, or historical modularization. The live acquisition runs as a separate GitHub Action; BALANCE V4 outcome files and the current manuscripts remain unchanged.
+
 ## Programme structure
 
 ```text
