@@ -35,6 +35,9 @@ def test_real_u2_and_pilot_are_kept_separate():
     }
     assert u2["conflict_positive_structural_true"] == 0
     assert u2["conflict_positive_structural_unresolved"] == 1
+    assert u2["conflict_positive_structural_record_bounds"] == {
+        "confirmed_lower": 0, "possible_upper": 1, "denominator_source_rows": 8,
+    }
     assert (pilot["source_rows"], pilot["distinct_dependency_groups"]) == (29, 28)
     assert pilot["status_counts"] == {
         "ALIGNED_NO_CONFLICT": 1,
@@ -43,6 +46,9 @@ def test_real_u2_and_pilot_are_kept_separate():
         "UNRESOLVED": 4,
     }
     assert pilot["conflict_positive_structural_true"] == 4
+    assert pilot["conflict_positive_structural_record_bounds"] == {
+        "confirmed_lower": 4, "possible_upper": 6, "denominator_source_rows": 16,
+    }
     assert pilot["conflict_positive_by_function_family"]["POLLINATOR_ANTAGONIST"]["four_class"] == {
         "SHARED": 7,
     }
@@ -50,6 +56,8 @@ def test_real_u2_and_pilot_are_kept_separate():
         "STRUCTURAL_MODULE_DIVISION": 3,
     }
     assert pilot["conflict_positive_by_function_family"]["SEXUAL_INTERFERENCE"]["structural_confirmed"] == 1
+    assert pilot["conflict_positive_by_function_family"]["SEXUAL_INTERFERENCE"]["structural_unresolved"] == 2
+    assert pilot["conflict_positive_by_function_family"]["POLLINATOR_ANTAGONIST"]["structural_unresolved"] == 0
 
 
 def test_species_only_join_is_prohibited_by_overlap_output():
