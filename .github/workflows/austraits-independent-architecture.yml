@@ -104,6 +104,11 @@ jobs:
           print("POSTOPEN flower sex x pollen mode:", secondary["flower_structure_x_pollen_mode"])
           print("POSTOPEN triple source intersection:", secondary["sex_system_x_flower_structure_x_pollen"])
           print("POSTOPEN genus-balanced sex system:", secondary["genus_balanced_sex_system_pollen"])
+          flower_source = secondary["flower_structure_x_pollen_mode"]["postopen_provenance_genus_diagnostics"]
+          print("POSTOPEN flower-sex x pollen GENUS BALANCE:", flower_source["genus_equal_weight"])
+          print("POSTOPEN flower-sex x pollen SOURCE STRATA:", flower_source["source_provider_strata"])
+          print("POSTOPEN consistent three-level sex/pollen FRACTIONS:", secondary["sex_system_x_flower_structure_x_pollen"]["separated_organization_fraction_by_pollen"])
+          print("POSTOPEN consistent three-level sex/pollen DIFFERENCE:", secondary["sex_system_x_flower_structure_x_pollen"]["wind_minus_insect_fraction"])
           assert secondary["not_direct_functional_conflict"] is True
           assert secondary["not_historical_origins"] is True
 
@@ -117,9 +122,9 @@ jobs:
               f.write(f"- strict wind/insect sex-system species: {pilot['qualified_exact_species_overlap']:,}\n")
               f.write(f"- result readiness: \`{pilot['status']}\`\n")
               f.write("- source data describe morphology/opportunity, **not causal trade-off or evolved structure**.\n")
-              f.write(f"- post-open organism x flower sex overlap: {secondary['sex_system_x_flower_structure']['same_exact_binomial_species']:,}\\n")
-              f.write(f"- post-open flower sex x pollen overlap: {secondary['flower_structure_x_pollen_mode']['same_exact_binomial_species']:,}\\n")
-              f.write(f"- post-open genus-equal wind-minus-insect difference: {secondary['genus_balanced_sex_system_pollen']['wind_minus_insect_equal_genus']}\\n")
+              f.write(f"- post-open organism x flower sex overlap: {secondary['sex_system_x_flower_structure']['same_exact_binomial_species']:,}\n")
+              f.write(f"- post-open flower sex x pollen overlap: {secondary['flower_structure_x_pollen_mode']['same_exact_binomial_species']:,}\n")
+              f.write(f"- post-open genus-equal wind-minus-insect difference: {secondary['genus_balanced_sex_system_pollen']['wind_minus_insect_equal_genus']}\n")
           PY
       - name: Preserve immutable source manifest and non-redistributed summary only
         uses: actions/upload-artifact@v4
