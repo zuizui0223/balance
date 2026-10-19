@@ -185,7 +185,7 @@ def test_historical_alias_is_explicit_and_not_fuzzy_name_merging():
     for row in broken:
         if row["dependency_group"]=="Solanum_rostratum_historical":
             row["dependency_group"]="Solanum_lycocarpum_historical"
-    with pytest.raises(ValueError,match="overlap of U2 complete review"):
+    with pytest.raises(ValueError,match="U2 source conflict/architecture group identities"):
         analyze_flower_multiplex(broken,source,pilot,reg)
     broken=copy.deepcopy(pilot)
     for row in broken:
