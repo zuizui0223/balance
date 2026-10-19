@@ -42,6 +42,15 @@ U2_POSITIVE_MODES={
     "TEMPORAL_AND_SPATIAL_SEPARATION":1,
     "POLYMORPHIC_OR_MOSAIC":1,
 }
+HISTORICAL_TAXON_LABEL_ALIASES={
+    # Todd's 1882 Cassia chamaecrista label is retained beside the
+    # current Chamaecrista fasciculata species name. Never generalize
+    # this exception to fuzzy name matching or phylogenetic synonyms.
+    "Chamaecrista_fasciculata_historical":(
+        "Chamaecrista fasciculata",
+        "Chamaecrista fasciculata (Todd: Cassia chamaecrista)",
+    ),
+}
 U2_NEGATIVE_MODES={
     "POLYMORPHIC_OR_MOSAIC":9,
     "SPATIAL_SEPARATION":1,
@@ -103,7 +112,10 @@ def analyze_cross_frame_rows(
         if from_source["conflict_status"]!=a["conflict_status"]:
             raise ValueError(f"U2 conflict/architecture source disagreement for {group}")
         if from_source["taxon_raw"]!=a["system_taxon"]:
-            raise ValueError(f"U2 taxon identity discordance for {group}")
+            if (group not in HISTORICAL_TAXON_LABEL_ALIASES or
+                    (from_source["taxon_raw"],a["system_taxon"]) !=
+                    HISTORICAL_TAXON_LABEL_ALIASES[group]):
+                raise ValueError(f"U2 taxon identity discordance for {group}")
         if a["conflict_family"]!="SEXUAL_INTERFERENCE":
             raise ValueError("U2 shared function pair changed to a different mechanism")
 
