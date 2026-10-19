@@ -73,7 +73,7 @@ def test_missing_source_sequence_blocks_completeness(tmp_path):
         ident=_archive_voucher_name(mapping[acc])
         return f">ENA|{acc}|{acc}.1 Wurmbea voucher {ident} plastid gene\n"+("T"*550)
     r=run(tmp_path,fetcher=fetch)
-    assert r["status"]=="HOLD_INCOMPLETE_FOCAL_MULTILOCUS_SOURCE"
+    assert r["status"]=="HOLD_INCOMPLETE_OR_UNEXPECTED_VOUCHER_SOURCE"
     assert len(r["accessions_failed"])==1
     assert r["accessions_failed"][0]["accession"]=="EU044681"
     pair=next(p for p in r["focal_groups"]["Wurmbea_biglandulosa_subsp_biglandulosa"]["pairwise_descriptions"]
