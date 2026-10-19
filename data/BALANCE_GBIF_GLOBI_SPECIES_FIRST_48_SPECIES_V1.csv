@@ -1,0 +1,49 @@
+family,order,gbif_species_key,species,authorship,gbif_taxonomy_numOccurrences,exact_GloBI_target_name_rows,matching_GBIF_species_key_rows,other_identifier_rows,other_taxon_target_rows,literal_flower_visit_rows,retrieval_status
+Asteraceae,Asterales,10700677,Chrysanthemum bizarre,C.Z.Shen,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Asteraceae,Asterales,10700190,Hieracium pseudolachenalii,Gottschl. & Dunkel,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Asteraceae,Asterales,10702455,Piptolepis pabstii,"(G.M.Barroso) Loeuille, Semir & Pirani",0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Asteraceae,Asterales,10701291,Ramaliella musilii,"(Velen.) Zaika, Sukhor. & N.Kilian",0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Brassicaceae,Brassicales,3050480,Brayopsis calycina,(Desv.) Gilg & Muschl.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Brassicaceae,Brassicales,3050474,Brayopsis monimocalyx,(Gilg & Muschl. ex Hosseus) O.E.Schulz,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Brassicaceae,Brassicales,3050681,Hormathophylla longicaulis,(Boiss.) Cullen & T.R.Dudley,0,4,0,4,0,2,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Brassicaceae,Brassicales,3050640,Schimpera arabica,Hochst. & Steud. ex Steud.,0,4,0,4,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Ericaceae,Ericales,4174514,Rhododendron haematophthalmum,Sleumer,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Ericaceae,Ericales,4174466,Rhododendron hanceanum,Hemsl.,0,8,0,8,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Ericaceae,Ericales,4174539,Rhododendron vesiculiferum,Tagg,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Ericaceae,Ericales,4174513,Vaccinium convallariiflorum,J.J.Sm.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Fabaceae,Fabales,5349269,Pterocarpus amazonum,(Mart. ex Benth.) Amshoff,0,1,0,1,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Fabaceae,Fabales,5349239,Pterocarpus brenanii,Barbosa & Torre,0,3,0,3,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Fabaceae,Fabales,5349249,Pterocarpus hockii,De Wild.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Fabaceae,Fabales,5349254,Pterocarpus lucens,Lepr. ex Guill. & Perr.,0,1,0,1,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Lamiaceae,Lamiales,8045124,Monarda aristata,"Benth., 1834",0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Lamiaceae,Lamiales,8056112,Muniria megalophylla,(Munir) N.Streiber & B.J.Conn,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Lamiaceae,Lamiales,8057963,Phlomis tomentosa,Regel,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Lamiaceae,Lamiales,8040934,Thymus sudeticus,Opiz ex Rchb.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Myrtaceae,Myrtales,5417941,Eugenia abbreviata,Urb.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Myrtaceae,Myrtales,5417949,Eugenia neolaurifolia,Sobral,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Myrtaceae,Myrtales,5417913,Eugenia pusilla,N.E.Br.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Myrtaceae,Myrtales,5417907,Eugenia stenoxipha,Urb.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Orchidaceae,Asparagales,8164418,Angraecum dupontii,Pailler,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Orchidaceae,Asparagales,8162134,Epidendrum hirtzipaniculatum,Hágsater & E.Santiago,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Orchidaceae,Asparagales,8162593,Epidendrum tessellatum,"Bateman, 1838",0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Orchidaceae,Asparagales,8158987,Gymnadenia tenuiflora,"Lindl., 1832",0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Poaceae,Poales,2703334,Anthoxanthum arcticum,Veldkamp,0,11,0,11,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Poaceae,Poales,2703315,Dendrocalamus asper,(Schult.f.) Backer,0,18,0,18,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Poaceae,Poales,2703457,Oryza barthii,A.Chev.,0,9,0,9,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Poaceae,Poales,2703367,Ptilagrostis porteri,(Rydb.) W.A.Weber,0,1,1,0,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Ranunculaceae,Ranunculales,7702761,Aconitum kashmiricum,Stapf ex Coventry,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Ranunculaceae,Ranunculales,7672344,Aconitum woroschilowii,Luferov,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Ranunculaceae,Ranunculales,7677301,Aquilegia sicula,(Strobl) E.Nardi,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Ranunculaceae,Ranunculales,7690734,Delphinium langxianense,W.T.Wang,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Rosaceae,Rosales,3028700,Alchemilla elongata,Eckl. & Zeyh.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Rosaceae,Rosales,3028697,Alchemilla insignis,Juz.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Rosaceae,Rosales,3028684,Alchemilla johnstonii,Oliv.,0,1,0,1,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Rosaceae,Rosales,3028696,Alchemilla stricticaulis,Juz. ex Lipsch.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Rubiaceae,Gentianales,2904933,Coussarea caroliana,Standl.,0,2,0,2,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Rubiaceae,Gentianales,2904972,Deppea oaxacana,Lorence,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Rubiaceae,Gentianales,2904962,Deppea purpusii,Standl.,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Rubiaceae,Gentianales,2904942,Macrosphyra brachysiphon,Wernham,0,0,0,0,0,0,NO_EXACT_TARGET_NAME_ASSOCIATIONS_IN_RESPONSE
+Solanaceae,Solanales,2931646,Solanum abutiloides,(Griseb.) Bitter & Lillo,0,12,0,12,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Solanaceae,Solanales,2931631,Solanum asperolanatum,Ruiz & Pav.,0,103,87,16,42,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Solanaceae,Solanales,2931638,Solanum roblense,Bitter,0,2,0,2,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
+Solanaceae,Solanales,2931659,Solanum supinum,Dunal,0,8,0,8,0,0,EXACT_TARGET_NAME_ASSOCIATIONS_FOUND
