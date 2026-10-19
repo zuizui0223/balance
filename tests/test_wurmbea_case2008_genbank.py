@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from balance_domain.wurmbea_case2008_ndhf import (
-    source_manifest, parse_fasta, pair_distance, analyze, run
+    source_manifest, parse_fasta, pair_distance, analyze, run, accession_voucher_header
 )
 from balance_domain.wurmbea_fitness_threshold import (
     analyze_thresholds, classify_advantage,
@@ -94,3 +94,19 @@ def test_published_3_7_to_1_4_threshold_dependency_is_not_K_or_phi():
     with pytest.raises(ValueError):
         classify_advantage(-1, 1)
     assert "independent new modular architecture construction or maintenance cost" in result["claims_that_are_not_identified"]
+
+
+def test_real_source_voucher_header_crosses_pub_table_gate():
+    correct=accession_voucher_header(
+        ">ENA|EU044644|EU044644.1 Wurmbea voucher M. Ramsey 2", "MR2"
+    )
+    assert correct["status"] == "MATCHED_SOURCE_VOUCHER"
+    wrong=accession_voucher_header(
+        ">ENA|EU044681|EU044681.1 Wurmbea voucher M. Ramsey 3", "MR2"
+    )
+    assert wrong["status"] == "HOLD_ARCHIVE_SOURCE_VOUCHER_CONFLICT"
+    assert wrong["archive_voucher"] == "MR3"
+    legacy=accession_voucher_header(
+        ">ENA|AF547012|AF547012.1 Wurmbea pygmaea", "AC77"
+    )
+    assert legacy["status"] == "ARCHIVE_VOUCHER_UNSPECIFIED"
