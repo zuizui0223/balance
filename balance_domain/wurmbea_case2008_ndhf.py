@@ -97,8 +97,8 @@ def accession_voucher_header(header: str, expected_voucher: str) -> dict:
     A verified GenBank accession is NOT a verified source-voucher identity.
     The exact MR2/MR3 psbBTNH discrepancy is held, never silently swapped.
     """
-    m = re.search(r"\\bvoucher\\s+M\\.\\s*Ramsey\\s+(\\d+)\\b", header, re.I)
-    a = re.search(r"\\bvoucher\\s+A\\.\\s*Case\\s+(\\d+)\\b", header, re.I)
+    m = re.search(r"\bvoucher\s+M\.\s*Ramsey\s+(\d+)\b", header, re.I)
+    a = re.search(r"\bvoucher\s+A\.\s*Case\s+(\d+)\b", header, re.I)
     observed = ("MR" + m.group(1)) if m else (("AC" + a.group(1)) if a else None)
     return {
         "expected_source_voucher": expected_voucher,
