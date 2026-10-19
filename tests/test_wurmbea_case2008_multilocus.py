@@ -40,7 +40,7 @@ def test_locus_absence_not_imputed_even_with_identical_sequences():
 def test_original_source_candidate_regression_explicit_mismatch(tmp_path):
     def fake(acc):
         seq="C"*550 if acc!="EU044681" else "C"*549+"A"
-        return f">ENA|{acc}|{acc}.1 Wurmbea comparative plastid region\\n{seq}"
+        return f">ENA|{acc}|{acc}.1 Wurmbea comparative plastid region\n{seq}"
     r=run(tmp_path,fetcher=fake)
     assert r["status"]=="FOCAL_MULTILOCUS_SOURCE_VERIFIED_DESCRIPTIVE_ONLY"
     assert r["accessions_verified"]==23
@@ -58,7 +58,7 @@ def test_missing_source_sequence_blocks_completeness(tmp_path):
     def fetch(acc):
         if acc=="EU044681":
             raise ValueError("source temporarily missing")
-        return f">ENA|{acc}|{acc}.1 Wurmbea plastid gene\\n"+("T"*550)
+        return f">ENA|{acc}|{acc}.1 Wurmbea plastid gene\n"+("T"*550)
     r=run(tmp_path,fetcher=fetch)
     assert r["status"]=="HOLD_INCOMPLETE_FOCAL_MULTILOCUS_SOURCE"
     assert len(r["accessions_failed"])==1
