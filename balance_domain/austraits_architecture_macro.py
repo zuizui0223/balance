@@ -155,6 +155,62 @@ def _pair_analysis(rows: list[dict[str, str]], *, minimum_per_arm: int = 20,
         - separated_fraction(genus_pair[genus]["INSECT"])
         for genus in mixed
     ]
+    # Post-open provenance/common-support sensitivity only. Do not change
+    # the original strict WIND/INSECT estimand after inspecting its result.
+    pollen_sources: dict[str, set[str]] = defaultdict(set)
+    sex_sources: dict[str, set[str]] = defaultdict(set)
+    for r in rows:
+        name = r["taxon_name"]
+        if name not in paired:
+            continue
+        if r["trait_name"] == "pollination_syndrome":
+            pollen_sources[name].add(r["dataset_key"])
+        if r["trait_name"] == "sex_type":
+            sex_sources[name].add(r["dataset_key"])
+    single_source_pollen: dict[str, list[str]] = defaultdict(list)
+    source_pairs: Counter[str] = Counter()
+    multiple_source = 0
+    for name in paired:
+        psrc = pollen_sources[name]
+        ssrc = sex_sources[name]
+        if len(psrc) == 1 and len(ssrc) == 1:
+            poll_key = next(iter(psrc))
+            sex_key = next(iter(ssrc))
+            single_source_pollen[poll_key].append(name)
+            source_pairs[f"{sex_key} -> {poll_key}"] += 1
+        else:
+            multiple_source += 1
+
+    by_pollen_source = {}
+    for key, names in sorted(single_source_pollen.items()):
+        source_arms = {
+            mode: [s for s in names if paired[s][1] == mode]
+            for mode in ("INSECT", "WIND")
+        }
+        source_genera = {
+            mode: len({name.split()[0] for name in source_arms[mode]})
+            for mode in ("INSECT", "WIND")
+        }
+        ready = all(len(source_arms[mode]) >= minimum_per_arm
+                    and source_genera[mode] >= minimum_genera_per_arm
+                    for mode in ("INSECT", "WIND"))
+        by_pollen_source[key] = {
+            "species": len(names),
+            "by_arm": {
+                mode: {
+                    "species": len(source_arms[mode]),
+                    "genera": source_genera[mode],
+                    "separated_fraction": separated_fraction(source_arms[mode]),
+                }
+                for mode in ("INSECT", "WIND")
+            },
+            "status": "EXPLORATORY_DESCRIPTIVE_COMPARISON" if ready else "HOLD_INSUFFICIENT_COMMON_SUPPORT",
+            "wind_minus_insect": (
+                separated_fraction(source_arms["WIND"])
+                - separated_fraction(source_arms["INSECT"])
+                if ready else None
+            ),
+        }
     return {
         "estimand": "descriptive species sexual-system separation by exact raw pollen-syndrome insect vs wind",
         "status": "EXPLORATORY_DESCRIPTIVE_COMPARISON" if enough else "HOLD_INSUFFICIENT_COMMON_SUPPORT",
@@ -176,6 +232,18 @@ def _pair_analysis(rows: list[dict[str, str]], *, minimum_per_arm: int = 20,
         ),
         "genera_with_both_pollen_modes": len(mixed),
         "mean_within_genus_difference": sum(within) / len(within) if within else None,
+        "postopen_genus_overlap_signs": {
+            "positive": sum(x > 1e-12 for x in within),
+            "negative": sum(x < -1e-12 for x in within),
+            "zero": sum(abs(x) <= 1e-12 for x in within),
+        },
+        "postopen_source_cohort_sensitivity": {
+            "admitted_single_source_pair_species": len(paired) - multiple_source,
+            "multiple_datasets_in_either_trait": multiple_source,
+            "top_sex_source_to_pollen_source_pairs": dict(source_pairs.most_common(20)),
+            "by_pollen_source": by_pollen_source,
+            "not_a_preregistered_main_effect": True,
+        },
         "not_a_pooled_random_effect_or_causal_parameter": True,
     }
 
