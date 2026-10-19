@@ -42,13 +42,13 @@ def fake_accepted_taxonomy_fetch(frame_doc):
             key=match["gbif_family_key"]*1000+i
             vals.append({
                 "key":key,"speciesKey":key,
-                "canonicalName":"Fictiva "+latin,
+                "canonicalName":"G"+match["family"].lower()+" "+latin,
                 "family":match["family"],
                 "familyKey":match["gbif_family_key"],
                 "rank":"SPECIES","kingdom":"Plantae",
                 "taxonomicStatus":"ACCEPTED",
                 "nameType":"SCIENTIFIC","synonym":False,
-                "scientificName":"Fictiva "+latin+" Mock.","authorship":"Mock.",
+                "scientificName":"G"+match["family"].lower()+" "+latin+" Mock.","authorship":"Mock.",
                 "numOccurrences":0,"order":match["order"],
             })
         vals[0]["extinct"]=True
