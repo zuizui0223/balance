@@ -56,6 +56,37 @@ Rules:
 3. Closely related taxa are not assumed independent. Taxonomic and, where available, phylogenetic dependence is retained for modelling.
 4. One publication may contribute multiple rows only when the rows satisfy the cluster-independence rule above.
 
+## Ecological unit repair: more than one conflict per species
+
+Original published evidence from **Polemonium viscosum** demonstrates why a
+comparative ledger cannot have one conflict/architecture label per taxon.
+Galen et al. (1989) experimentally identified self-pollen versus cross-pollen
+interference, where pollen-stigma presentation can be temporally and spatially
+separated. Galen & Cuba (2001) tested an INDEPENDENT conflict between
+bumblebee attraction and ant predation on integrated corolla length/flare.
+The same species has two positive source-identified functional conflicts on
+different anatomical and ecological coordinates. This is not an evolutionary
+state switch between two architectures.
+
+**Narcissus assoanus** adds an exposure dimension: a controlled experiment
+revealed self-pollen interference while the same 2004 study detected no
+corresponding male or female field fitness effect. A future, outcome-blind
+database should independently code the following exposure evidence:
+- POTENTIAL_UNDER_FORCED_EXPOSURE: cost under experimental collision;
+- REALIZED_IN_FIELD_CONTEXT: naturally detected cost under registered test;
+- NOT_DETECTED_IN_REGISTERED_FIELD_TEST: tested without detected cost,
+  which is NOT proof that the true cost is zero;
+- NO_DIRECT_TEST or UNRESOLVED: no suitable source evidence.
+
+These are PROPOSED future macro coding classes, NOT newly field-observed
+effects or changes to the frozen screens. Repeated function pairs for one
+species share species/phylogenetic dependency groups. Fitness components
+from different years, species, organs or source tests are never pooled
+as one common net architectural comparison.
+
+Original-source four-species audit:
+docs/BALANCE_PLANT_CONFLICT_MULTIPLEX_ECOLOGY_V1.md.
+
 ## Sampling frame
 
 The current 17-cluster reality-pattern ledger is a recurrence map and is intentionally enriched for informative cases. It is **not** the macro sampling frame.
