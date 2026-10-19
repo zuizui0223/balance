@@ -37,10 +37,21 @@ def test_locus_absence_not_imputed_even_with_identical_sequences():
     assert q["complete_all_four_loci"] is True
 
 
+def _accession_voucher_map():
+    rows,_=read_focal_manifest()
+    return {r[l]:r["voucher"] for r in rows for l in LOCUS_NAMES if r[l]}
+
+
+def _archive_voucher_name(v):
+    return "M. Ramsey "+v[2:] if v.startswith("MR") else "A. Case "+v[2:]
+
+
 def test_original_source_candidate_regression_explicit_mismatch(tmp_path):
+    mapping=_accession_voucher_map()
     def fake(acc):
         seq="C"*550 if acc!="EU044681" else "C"*549+"A"
-        return f">ENA|{acc}|{acc}.1 Wurmbea comparative plastid region\n{seq}"
+        ident=_archive_voucher_name(mapping[acc])
+        return f">ENA|{acc}|{acc}.1 Wurmbea voucher {ident} comparative plastid region\n{seq}"
     r=run(tmp_path,fetcher=fake)
     assert r["status"]=="FOCAL_MULTILOCUS_SOURCE_VERIFIED_DESCRIPTIVE_ONLY"
     assert r["accessions_verified"]==23
@@ -55,10 +66,12 @@ def test_original_source_candidate_regression_explicit_mismatch(tmp_path):
 
 
 def test_missing_source_sequence_blocks_completeness(tmp_path):
+    mapping=_accession_voucher_map()
     def fetch(acc):
         if acc=="EU044681":
             raise ValueError("source temporarily missing")
-        return f">ENA|{acc}|{acc}.1 Wurmbea plastid gene\n"+("T"*550)
+        ident=_archive_voucher_name(mapping[acc])
+        return f">ENA|{acc}|{acc}.1 Wurmbea voucher {ident} plastid gene\n"+("T"*550)
     r=run(tmp_path,fetcher=fetch)
     assert r["status"]=="HOLD_INCOMPLETE_FOCAL_MULTILOCUS_SOURCE"
     assert len(r["accessions_failed"])==1
@@ -67,3 +80,31 @@ def test_missing_source_sequence_blocks_completeness(tmp_path):
               if p["vouchers"]==["MR2","MR4"])
     assert pair["loci"]["psbb_tnh"]["status"]=="HOLD_MISSING_VERIFIED_SEQUENCE"
     assert pair["complete_all_four_loci"] is False
+
+
+def test_real_case_table_archive_MR2_MR3_swap_is_held_not_silent(tmp_path):
+    mapping=_accession_voucher_map()
+    def source_for(acc):
+        actual=mapping[acc]
+        if acc=="EU044681":
+            actual="MR3"
+        if acc=="EU044680":
+            actual="MR2"
+        ident=_archive_voucher_name(actual)
+        return f">ENA|{acc}|{acc}.1 Wurmbea voucher {ident} plastid gene\n"+("T"*550)
+    report=run(tmp_path,fetcher=source_for)
+    assert report["status"] == "SOURCE_TABLE_ARCHIVE_DISCORDANCE_HELD"
+    assert report["fasta_accessions_downloaded"]==23
+    assert report["exact_source_voucher_identity_matches"]==21
+    assert set(x["accession"] for x in report["source_voucher_conflicts_held"])=={
+        "EU044681","EU044680",
+    }
+    strict=report["focal_groups"]["Wurmbea_biglandulosa_subsp_biglandulosa"]
+    focus=next(x for x in strict["pairwise_descriptions"] if x["vouchers"]==["MR2","MR4"])
+    assert focus["compared_loci"]==2
+    assert focus["loci"]["psbb_tnh"]["status"]=="HOLD_MISSING_VERIFIED_SEQUENCE"
+    alt=report["genbank_voucher_assignment_sensitivity"]
+    assert alt["status"]=="POSTOPEN_ARCHIVE_VOUCHER_ASSIGNMENT_SENSITIVITY_NOT_PRIMARY"
+    adjusted=alt["focal_groups"]["Wurmbea_biglandulosa_subsp_biglandulosa"]
+    focus2=next(x for x in adjusted["pairwise_descriptions"] if x["vouchers"]==["MR2","MR4"])
+    assert focus2["compared_loci"]==3
