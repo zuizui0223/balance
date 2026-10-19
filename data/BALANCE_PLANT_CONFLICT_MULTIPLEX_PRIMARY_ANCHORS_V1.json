@@ -1,0 +1,131 @@
+{
+  "schema_version": "BALANCE_PLANT_CONFLICT_MULTIPLEX_PRIMARY_ANCHORS_V1",
+  "status": "SOURCE_REPORTED_CROSS_CONTEXT_ANCHORS_NO_RAW_REANALYSIS",
+  "sampling_frame_a": "U2_BARRETT_2002",
+  "sampling_frame_b": "PLANT_PILOT_V1",
+  "review_and_pilot_nonexchangeable": true,
+  "selected_cases_are_intersections_of_COMPLETE_SOURCE_UNIVERSES_NOT_PREVALENCE": true,
+  "independent_double_adjudication_complete": false,
+  "source_effects_on_different_fitness_and_tissue_scales_not_poolable": true,
+  "direct_structural_BALANCE_occupancy_identified": false,
+  "new_independent_biological_clusters": 0,
+  "cases": [
+    {
+      "dependency_group": "Narcissus_assoanus",
+      "expected_u2": "NO_DEMONSTRATED_CONFLICT",
+      "expected_pilot": "POSITIVE",
+      "expected_u2_arch": "POLYMORPHIC_OR_MOSAIC",
+      "expected_pilot_arch": "POLYMORPHIC_OR_MOSAIC",
+      "interpretive_class": "WITHIN_FUNCTION_PAIR_LATER_EXPERIMENTAL_POTENTIAL_VERSUS_FIELD",
+      "source_anchors": [
+        {
+          "doi": "10.1046/j.1365-2540.2000.00651.x",
+          "role": "EARLIER_SOURCE_DIMORPHISM_NOT_DIRECT_INTERFERENCE",
+          "confirmed_claim": "Earlier morph and reproductive fitness survey did not itself isolate causal male-female interference"
+        },
+        {
+          "doi": "10.1111/j.1420-9101.2004.00767.x",
+          "role": "LATER_CONTROLLED_AND_FIELD_COMPARISON",
+          "confirmed_claim": "Under controlled glasshouse pollination, simultaneous self/cross pollen lowers seed set by 20 percent and 24 h prior self pollen lowers it by 60 percent; no detectable male or female fitness cost from self-interference in natural field settings",
+          "quantified_source_values": {
+            "simultaneous_self_cross_vs_cross_seed_reduction_percent": 20,
+            "prior_self_24h_then_cross_seed_reduction_percent": 60
+          },
+          "field_status": "NO_DETECTED_MATERNAL_OR_PATERNAL_FITNESS_EFFECT",
+          "morph_specific_functional_avoidance": {
+            "long_styled": "PROTANDRY_REDUCED_EARLY_STIGMA_RECEPTIVITY",
+            "short_styled": "HERKOGAMY_SPATIAL_STIGMA_ANTHER_SEPARATION"
+          }
+        }
+      ],
+      "source_contexts_distinct": true,
+      "quant_effects_combine_across_studies": false,
+      "architecture_changed_over_time_identified": false,
+      "natural_conflict_absence_proven": false
+    },
+    {
+      "dependency_group": "Polemonium_viscosum",
+      "expected_u2": "POSITIVE",
+      "expected_pilot": "POSITIVE",
+      "expected_u2_arch": "TEMPORAL_AND_SPATIAL_SEPARATION",
+      "expected_pilot_arch": "SHARED_INTEGRATED",
+      "interpretive_class": "DUAL_POSITIVE_DIFFERENT_FUNCTIONS_DIFFERENT_STRUCTURES",
+      "source_anchors": [
+        {
+          "doi": "10.1002/j.1537-2197.1989.tb15152.x",
+          "role": "SEXUAL_SELF_VERSUS_OUTCROSS_POLLEN_INTERFERENCE",
+          "confirmed_claim": "One year, 24 h prior self pollen reduced compatible pollen germination and seed set; next year germination impairment did not translate to detected seed set reduction",
+          "quantified_source_values": {
+            "year_one_self_precedence_hours": 24,
+            "first_year_compatible_pollen_germination_reduction_percent": 32,
+            "first_year_seed_set_reduction_percent": 40
+          },
+          "targeted_structure": "POLLEN_STIGMA_PRESENTATION",
+          "organization": "TEMPORAL_AND_SPATIAL_SEPARATION"
+        },
+        {
+          "doi": "10.1111/j.0014-3820.2001.tb01313.x",
+          "role": "POLLINATOR_ATTRACTION_VS_ANT_PREDATION_TRADEOFF",
+          "confirmed_claim": "Corolla tube constriction decreases ant entry but also decreases bumblebee pollen receipt and seed set; length-flare genetically correlated",
+          "quantified_source_values": {
+            "genetic_corolla_length_flare_correlation": 0.7
+          },
+          "targeted_structure": "COROLLA_LENGTH_AND_FLARE",
+          "organization": "SHARED_INTEGRATED"
+        }
+      ],
+      "source_contexts_distinct": true,
+      "quant_effects_combine_across_studies": false,
+      "same_physical_flower_architecture_for_two_tests": false,
+      "lifetime_whole_plant_net_structural_fitness_identified": false
+    },
+    {
+      "dependency_group": "Ipomopsis_aggregata",
+      "expected_u2": "POSITIVE",
+      "expected_pilot": "UNRESOLVED",
+      "expected_u2_arch": "SHARED_INTEGRATED",
+      "expected_pilot_arch": "SHARED_INTEGRATED",
+      "interpretive_class": "POSITIVE_SEXUAL_INTERFERENCE_VS_NECTAR_ROBBER_UNRESOLVED",
+      "source_anchors": [
+        {
+          "doi": "10.1002/j.1537-2197.1991.tb14511.x",
+          "role": "SEXUAL_SELF_POLLEN_INTERFERES_OUTCROSS",
+          "confirmed_claim": "Controlled mixed self and cross pollen treatments indicate reduced cross reproductive performance from incompatible self pollen"
+        },
+        {
+          "doi": "10.1086/499377",
+          "role": "POLLINATOR_VS_NECTAR_ROBBER_SOURCE",
+          "confirmed_claim": "Pilot macro source is still unresolved for the registered direct common floral coordinate conflict with robbers"
+        }
+      ],
+      "source_contexts_distinct": true,
+      "quant_effects_combine_across_studies": false,
+      "unresolved_robber_conflict_not_zero": true
+    },
+    {
+      "dependency_group": "Solanum_rostratum",
+      "historical_u2_dependency_group": "Solanum_rostratum_historical",
+      "expected_u2": "NO_DEMONSTRATED_CONFLICT",
+      "expected_pilot": "POSITIVE",
+      "expected_u2_arch": "UNRESOLVED",
+      "expected_pilot_arch": "WITHIN_FLOWER_DIVISION_OF_LABOUR",
+      "interpretive_class": "HISTORICAL_NONTEST_VS_MODERN_DIFFERENT_FUNCTION_POSITIVE",
+      "source_anchors": [
+        {
+          "id": "Todd_1882_American_Naturalist",
+          "role": "HISTORICAL_MORPHOLOGICAL_HETERANTHERY_OBSERVATION",
+          "confirmed_claim": "Heteranthery noted, no source-identified direct male-female sexual-interference experiment"
+        },
+        {
+          "doi": "10.1111/j.1420-9101.2009.01693.x",
+          "role": "POLLEN_FOOD_VS_GAMETE_EXPORT_ROUTING",
+          "confirmed_claim": "Flight-cage bumblebee observations support preferential feeding-anther manipulation and greater pollen export from pollinating anthers, a positive different functional-pair routing mechanism"
+        }
+      ],
+      "source_contexts_distinct": true,
+      "quant_effects_combine_across_studies": false,
+      "negative_historical_sexual_interference_proven": false,
+      "pollen_purpose_partition_not_net_fitness_S_vs_D": true
+    }
+  ]
+}
