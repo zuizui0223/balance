@@ -8,19 +8,23 @@ on:
       - ".github/workflows/austraits-independent-architecture.yml"
       - "balance_domain/austraits_architecture_macro.py"
       - "balance_domain/austraits_organizational_hierarchy.py"
+      - "balance_domain/austraits_lineage_frontier.py"
       - "balance_domain/island_austraits_fetch.py"
       - "scripts/run_austraits_architecture_macro.py"
       - "tests/test_austraits_architecture_macro.py"
       - "tests/test_austraits_organizational_hierarchy.py"
+      - "tests/test_austraits_lineage_frontier.py"
   pull_request:
     paths:
       - ".github/workflows/austraits-independent-architecture.yml"
       - "balance_domain/austraits_architecture_macro.py"
       - "balance_domain/austraits_organizational_hierarchy.py"
+      - "balance_domain/austraits_lineage_frontier.py"
       - "balance_domain/island_austraits_fetch.py"
       - "scripts/run_austraits_architecture_macro.py"
       - "tests/test_austraits_architecture_macro.py"
       - "tests/test_austraits_organizational_hierarchy.py"
+      - "tests/test_austraits_lineage_frontier.py"
   workflow_dispatch:
 
 permissions:
@@ -42,7 +46,7 @@ jobs:
       - name: Validate frozen-source and no-causal-promotion guards
         run: |
           python -m pip install pytest
-          python -m pytest -q tests/test_austraits_architecture_macro.py tests/test_austraits_organizational_hierarchy.py
+          python -m pytest -q tests/test_austraits_architecture_macro.py tests/test_austraits_organizational_hierarchy.py tests/test_austraits_lineage_frontier.py
 
   acquire-and-summarize:
     needs: validate
@@ -109,6 +113,11 @@ jobs:
           print("POSTOPEN flower-sex x pollen SOURCE STRATA:", flower_source["source_provider_strata"])
           print("POSTOPEN consistent three-level sex/pollen FRACTIONS:", secondary["sex_system_x_flower_structure_x_pollen"]["separated_organization_fraction_by_pollen"])
           print("POSTOPEN consistent three-level sex/pollen DIFFERENCE:", secondary["sex_system_x_flower_structure_x_pollen"]["wind_minus_insect_fraction"])
+          candidates = report["postopen_genus_candidate_frontier"]
+          print("POSTOPEN SPECIES SEX congeneric candidates:", candidates["species_sex_system_candidate_lineages"])
+          print("POSTOPEN FLOWER STRUCTURAL SEX congeneric candidates:", candidates["flower_structural_sex_candidate_lineages"])
+          assert candidates["source_trait_records_redistributed"] is False
+          assert candidates["status"] == "SOURCE_CANDIDATE_SCREEN_NOT_ORIGIN_INFERENCE"
           assert secondary["not_direct_functional_conflict"] is True
           assert secondary["not_historical_origins"] is True
 
@@ -125,6 +134,9 @@ jobs:
               f.write(f"- post-open organism x flower sex overlap: {secondary['sex_system_x_flower_structure']['same_exact_binomial_species']:,}\n")
               f.write(f"- post-open flower sex x pollen overlap: {secondary['flower_structure_x_pollen_mode']['same_exact_binomial_species']:,}\n")
               f.write(f"- post-open genus-equal wind-minus-insect difference: {secondary['genus_balanced_sex_system_pollen']['wind_minus_insect_equal_genus']}\n")
+              f.write(f"- potential same-genus organism sex-system contrasts: {candidates['species_sex_system_candidate_lineages']['candidate_genera_meeting_two_per_state']}\n")
+              f.write(f"- potential same-genus flower-level sex contrasts: {candidates['flower_structural_sex_candidate_lineages']['candidate_genera_meeting_two_per_state']}\n")
+              f.write("- These are descriptive congeneric candidates, NOT historical transition counts.\n")
           PY
       - name: Preserve immutable source manifest and non-redistributed summary only
         uses: actions/upload-artifact@v4
