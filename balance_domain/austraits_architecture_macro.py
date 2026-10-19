@@ -256,6 +256,10 @@ def analyze_selected_csv(selected_csv: Path, manifest: dict) -> dict:
     if set(manifest.get("requested_trait_names", [])) != SELECTED_TRAITS:
         raise ValueError("Selected trait list differs from frozen source contract")
     coverage = {t: _categorical_counts(raw,t) for t in sorted(SELECTED_TRAITS)}
+    # New after the first published source readout: the original strict
+    # sex-system × pollination estimand is retained unchanged.
+    from .austraits_organizational_hierarchy import analyze_organizational_hierarchy
+    structure_hierarchy = analyze_organizational_hierarchy(raw)
     result = {
         "schema": "BALANCE_AUSTRAITS_INDEPENDENT_STRUCTURAL_OPPORTUNITY_V1",
         "status": "OPEN_PUBLIC_TRAIT_COVERAGE_NOT_DIRECT_CONFLICT",
@@ -268,6 +272,7 @@ def analyze_selected_csv(selected_csv: Path, manifest: dict) -> dict:
         "source_name_coverage": len({r["taxon_name"] for r in raw}),
         "trait_coverage": coverage,
         "sex_system_pollination_syndrome_pilot": _pair_analysis(raw),
+        "postopen_organizational_hierarchy": structure_hierarchy,
         "interpretation": {
             "sex_type": "species reproductive sex system (not direct trait conflict or module construction cost)",
             "flower_structural_sex_type": "flower-level structural status (not identical to species sex system)",
