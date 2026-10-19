@@ -16,7 +16,8 @@ from urllib.error import HTTPError, URLError
 from typing import Callable
 
 from .wurmbea_case2008_ndhf import (
-    REPO_ROOT, fetch_ena, parse_fasta, pair_distance, source_manifest
+    REPO_ROOT, fetch_ena, parse_fasta, pair_distance,
+    source_manifest, accession_voucher_header
 )
 
 FOUR_LOCUS_PATH = "data/WURMBEA_CASE_2008_FOCAL_FOUR_LOCUS_VOUCHERS.csv"
@@ -114,26 +115,76 @@ def run(
     rows, sha = read_focal_manifest(base)
     pairs = [(r["voucher"],l,r[l]) for r in rows for l in LOCUS_NAMES if r[l]]
     seqs = {}
+    downloaded = {}
     records = []
     failures = []
+    identity_holds = []
     with ThreadPoolExecutor(max_workers=4) as pool:
         tasks={acc:pool.submit(fetcher,acc) for _,_,acc in pairs}
         for voucher,locus,acc in pairs:
             try:
                 header,seq=parse_fasta(tasks[acc].result(),acc)
-                seqs[acc]=seq
+                identity=accession_voucher_header(header,voucher)
+                downloaded[acc]=seq
                 records.append({
                     "voucher":voucher,"locus":locus,"accession":acc,
                     "length":len(seq),"sequence_sha256":hashlib.sha256(seq.encode()).hexdigest(),
                     "original_archive_header":header,
+                    "source_voucher_validation":identity,
                 })
+                if identity["status"]!="MATCHED_SOURCE_VOUCHER":
+                    identity_holds.append({
+                        "source_voucher":voucher,"locus":locus,"accession":acc,
+                        **identity,
+                    })
+                else:
+                    seqs[acc]=seq
             except (HTTPError,URLError,OSError,TimeoutError,UnicodeError,ValueError) as e:
                 failures.append({
                     "voucher":voucher,"locus":locus,"accession":acc,
                     "error":type(e).__name__,"message":str(e)[:220],
                 })
     results = contrast_pairs(rows,seqs)
-    state="FOCAL_MULTILOCUS_SOURCE_VERIFIED_DESCRIPTIVE_ONLY" if len(seqs)==23 else "HOLD_INCOMPLETE_FOCAL_MULTILOCUS_SOURCE"
+    # Post-open source-quality branch. The 2008 printed table and ENA archive
+    # swap *exactly two* psbBTNH voucher labels. Do not silently repair the
+    # primary Table A1 dataset. A separate metadata-voucher allocation
+    # sensitivity is allowed only for this completely frozen 2-record swap.
+    expected_holds = {
+        ("MR2", "psbb_tnh", "EU044681", "MR3"),
+        ("MR3", "psbb_tnh", "EU044680", "MR2"),
+    }
+    observed_holds = {
+        (x["source_voucher"],x["locus"],x["accession"],x["archive_voucher"])
+        for x in identity_holds
+    }
+    sensitivity = {
+        "status": "NOT_APPLICABLE",
+        "reason": "no exact known two-record voucher swap evidenced"
+    }
+    if observed_holds == expected_holds and len(downloaded)==23:
+        copied = [dict(r) for r in rows]
+        for row in copied:
+            if row["voucher"]=="MR2":
+                row["psbb_tnh"]="EU044680"
+            if row["voucher"]=="MR3":
+                row["psbb_tnh"]="EU044681"
+        sensitivity = {
+            "status":"POSTOPEN_ARCHIVE_VOUCHER_ASSIGNMENT_SENSITIVITY_NOT_PRIMARY",
+            "proposed_assignments":{
+                "MR2:psbb_tnh":"EU044680",
+                "MR3:psbb_tnh":"EU044681",
+            },
+            "focal_groups":contrast_pairs(copied,downloaded),
+            "not_a_reconstruction_of_published_gene_tree":True,
+        }
+    state = (
+        "FOCAL_MULTILOCUS_SOURCE_VERIFIED_DESCRIPTIVE_ONLY"
+        if len(seqs)==23 else (
+            "SOURCE_TABLE_ARCHIVE_DISCORDANCE_HELD"
+            if observed_holds==expected_holds and len(downloaded)==23
+            else "HOLD_INCOMPLETE_OR_UNEXPECTED_VOUCHER_SOURCE"
+        )
+    )
     report = {
         "schema":"BALANCE_WURMBEA_CASE2008_FOCAL_4LOCUS_V1",
         "status":state,
@@ -141,12 +192,17 @@ def run(
         "focal_manifest_sha256":sha,
         "source_unique_accessions_expected":23,
         "accessions_verified":len(seqs),
+        "fasta_accessions_downloaded":len(downloaded),
+        "source_voucher_conflicts_held":identity_holds,
+        "exact_source_voucher_identity_matches":len(seqs),
+        "genbank_voucher_assignment_sensitivity":sensitivity,
         "accessions_failed":failures,
         "original_table_missing_marker":"MR4:trnLF",
         "focal_groups":results,
         "verified_record_metadata":records,
         "no_phylogenetic_tree_estimated":True,
         "no_ancestral_transition_counts_estimated":True,
+        "source_table_voucher_identity_not_assumed_from_accession":True,
         "no_nuclear_evidence":True,
         "single_plastid_haplotype_genealogy_not_species_phylogeny":True,
         "sequence_bytes_redistributed":False,
