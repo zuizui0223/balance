@@ -2,6 +2,10 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## Wurmbea population-genetic causal gate (2026-10-19)
+
+[Case et al. (2008) source-voucher genetic replay and inheritance-conditional female fitness](docs/BALANCE_WURMBEA_GENBANK_HISTORY_AND_FITNESS_GATE_V1.md) restores **22 exact Australian ndhF GenBank accession/voucher/sexual-state observations** from the original Table A1, including both sexual-system states of *W. biglandulosa* and *W. dioica* subspecies. It tests public sequence recoverability and explicitly distinguishes maternal seed-fitness ratios (3.7 versus 1.4) from true architecture cost and ancestral transitions. A separate source-verification GitHub Action is required before any new genetic result can be claimed; this lane does not modify the frozen BALANCE plant V4 model.
+
 ## Programme structure
 
 ```text
