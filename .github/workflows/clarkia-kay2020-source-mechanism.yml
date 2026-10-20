@@ -6,11 +6,16 @@ on:
       - ".github/workflows/clarkia-kay2020-source-mechanism.yml"
       - "balance_domain/clarkia_kay2020_source.py"
       - "balance_domain/clarkia_published_receipts.py"
+      - "balance_domain/pollen_architecture_mechanism_crosscheck.py"
+      - "data/BALANCE_PLANT_U3_MATCHED_EXTRACTION_V1.csv"
+      - "data/BALANCE_PLANT_U3_DEPENDENCE_V1.csv"
       - "data/CLARKIA_KAY2020_PUBLISHED_STATISTIC_RECEIPTS_V1.json"
       - "scripts/audit_clarkia_kay2020_dryad.py"
       - "scripts/audit_clarkia_published_receipts.py"
+      - "scripts/audit_pollen_architecture_mechanisms.py"
       - "tests/test_clarkia_kay2020_source.py"
       - "tests/test_clarkia_published_receipts.py"
+      - "tests/test_pollen_architecture_mechanism_crosscheck.py"
       - "docs/BALANCE_CLARKIA_COMPETING_MECHANISMS_V1.md"
   workflow_dispatch:
 
@@ -31,6 +36,7 @@ jobs:
           python -m pip install pytest
           python -m pytest -q tests/test_clarkia_kay2020_source.py
           python -m pytest -q tests/test_clarkia_published_receipts.py
+          python -m pytest -q tests/test_pollen_architecture_mechanism_crosscheck.py
 
   audit-dryad-metadata:
     needs: trust-boundary
@@ -92,6 +98,25 @@ jobs:
           print("Published delivery log effect=-0.3507; exp=",r["published_stigma_delivery"]["exponentiated_published_log_coefficient"],"p=0.27 (NOT demonstrated difference/equivalence)")
           print("Clarkia source outcome is NOT equivalent to Solanum reward-versus-export differentiation.")
           PY
+      - name: Unpool original Clarkia vs U3 functional mechanisms with source hashes
+        run: |
+          python scripts/audit_pollen_architecture_mechanisms.py --out /tmp/balance_clarkia_u3_mechanism_crosscheck.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("/tmp/balance_clarkia_u3_mechanism_crosscheck.json")
+          x=json.loads(p.read_text(encoding="utf-8"))
+          assert x["distinct_source_taxa"]==10
+          assert x["dependence_blocks_in_combined_selected_comparison"]==4
+          assert x["no_binary_morphology_determines_mechanism"] is True
+          assert all(x["constructive_morphology_nonidentifiability"].values())
+          assert x["no_identified_same_axis_conflict_loss"] is True
+          assert x["no_genetically_inherited_transition_or_historical_causality"] is True
+          print("Source-selected morphology X ecological mechanism:",x["selected_morphology_by_mechanism"])
+          print("U3 PASS pairs:",x["u3_pass_pairs"],"dependence blocks:",x["u3_taxonomic_dependence_blocks"])
+          print("Clarkia original study programmes:",x["clarkia_independent_original_papers"])
+          print("No general prevalence, environmental effect or historical trait origin inferred")
+          PY
       - name: Archive original-source metadata-only receipt
         uses: actions/upload-artifact@v4
         with:
@@ -99,5 +124,6 @@ jobs:
           path: |
             /tmp/balance_kay2020_metadata_only.json
             /tmp/balance_kay2020_published_receipts.json
+            /tmp/balance_clarkia_u3_mechanism_crosscheck.json
           if-no-files-found: error
           retention-days: 30
