@@ -9,7 +9,7 @@ description = "Chapter 2 theory and analysis for persistence inside the compromi
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "biopython>=1.84,<2"]
 caruso = ["xlrd>=2.0.1,<3"]
 peucedanum = ["openpyxl>=3.1,<4", "xlrd>=2.0.1,<3"]
 pedicularis = ["openpyxl>=3.1,<4"]

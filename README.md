@@ -2,6 +2,10 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## Wurmbea population-genetic causal gate (2026-10-19)
+
+[Case et al. (2008) source-voucher genetic replay and inheritance-conditional female fitness](docs/BALANCE_WURMBEA_GENBANK_HISTORY_AND_FITNESS_GATE_V1.md), with its [verified 22 ndhF / 23 focal-locus source-audit result and explicit MR2/MR3 metadata HOLD](docs/BALANCE_WURMBEA_CASE2008_REAL_GENBANK_VOUCHER_QC_RESULT_20261019.md), restores **22 exact Australian ndhF GenBank accession/voucher/sexual-state observations** from the original Table A1, including both sexual-system states of *W. biglandulosa* and *W. dioica* subspecies. It tests public sequence recoverability and explicitly distinguishes maternal seed-fitness ratios (3.7 versus 1.4) from true architecture cost and ancestral transitions. The GitHub Action actually recovered 22/22 source ndhF accessions and 23/23 focal locus accessions; **two focal psbBTNH Table A1 ↔ ENA voucher assignments disagree**, so the strict MR2(M)–MR4(D) comparison is 0/1,628 aligned A/C/G/T sites across two verified loci; a separate post-open ENA-voucher allocation sensitivity is 1/3,709 over three loci. Neither is a historically reconstructed origin. The frozen BALANCE plant V4 model remains untouched.
+
 ## Programme structure
 
 ```text

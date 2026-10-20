@@ -50,7 +50,7 @@ jobs:
 
       - name: Install test tooling
         run: |
-          python -m pip install --upgrade pip pytest
+          python -m pip install --upgrade pip pytest 'biopython>=1.84,<2'
 
       - name: Run repository tests
         run: |
