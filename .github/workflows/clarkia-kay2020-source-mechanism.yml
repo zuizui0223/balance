@@ -6,7 +6,7 @@ on:
       - ".github/workflows/clarkia-kay2020-source-mechanism.yml"
       - "balance_domain/clarkia_kay2020_source.py"
       - "balance_domain/clarkia_published_receipts.py"
-      - "data/CLARKIA_KAY2020_PUBLISHED_STATISTIC_RECEIPTS_V1.csv"
+      - "data/CLARKIA_KAY2020_PUBLISHED_STATISTIC_RECEIPTS_V1.json"
       - "scripts/audit_clarkia_kay2020_dryad.py"
       - "scripts/audit_clarkia_published_receipts.py"
       - "tests/test_clarkia_kay2020_source.py"
@@ -30,9 +30,7 @@ jobs:
         run: |
           python -m pip install pytest
           python -m pytest -q tests/test_clarkia_kay2020_source.py
-          if test -f tests/test_clarkia_published_receipts.py; then
-            python -m pytest -q tests/test_clarkia_published_receipts.py
-          fi
+          python -m pytest -q tests/test_clarkia_published_receipts.py
 
   audit-dryad-metadata:
     needs: trust-boundary
@@ -74,10 +72,32 @@ jobs:
               f.write("- Dryad archive API 401, public file_stream 403; result **HOLD_AUTH_REQUIRED** rather than biological negative\\n")
               f.write("- BombusTrials2018.csv mentioned in paper's file descriptions but absent from 29-file original dataset\\n")
           PY
+      - name: Verify original paper's *published* statistics and derived ratios
+        run: |
+          python scripts/audit_clarkia_published_receipts.py --out /tmp/balance_kay2020_published_receipts.json
+          python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+          r=json.loads(Path("/tmp/balance_kay2020_published_receipts.json").read_text())
+          assert r["status"]=="ORIGINAL_ARTICLE_SUMMARY_NOT_REANALYZED_DATA"
+          assert r["source_original_study_programmes"]==1
+          assert abs(r["published_exposed_pollen"]["no_dosing_over_dosing_ratio_computed"]-4.6/1.9)<1e-12
+          assert abs(r["published_stigma_delivery"]["exponentiated_published_log_coefficient"]-math.exp(-.3507))<1e-12
+          assert r["published_stigma_delivery"]["causal_effect_positive_certified"] is False
+          assert r["published_stigma_delivery"]["strict_equivalence_certified"] is False
+          assert r["actual_developmental_origin_from_conflict_established"] is False
+          print("Original paper timing 11 spp, F=75.71, p=0.002")
+          print("Exposed pollen no-dose vs dose, 4.6/1.9 mm =",r["published_exposed_pollen"]["no_dosing_over_dosing_ratio_computed"])
+          print("Published delivery log effect=-0.3507; exp=",r["published_stigma_delivery"]["exponentiated_published_log_coefficient"],"p=0.27 (NOT demonstrated difference/equivalence)")
+          print("Clarkia source outcome is NOT equivalent to Solanum reward-versus-export differentiation.")
+          PY
       - name: Archive original-source metadata-only receipt
         uses: actions/upload-artifact@v4
         with:
           name: clarkia-kay2020-metadata-hold-${{ github.run_id }}
-          path: /tmp/balance_kay2020_metadata_only.json
+          path: |
+            /tmp/balance_kay2020_metadata_only.json
+            /tmp/balance_kay2020_published_receipts.json
           if-no-files-found: error
           retention-days: 30
