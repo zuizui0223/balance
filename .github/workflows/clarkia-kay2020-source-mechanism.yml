@@ -1,12 +1,16 @@
-name: Clarkia original Dryad mechanisms source audit
+name: Clarkia Kay 2020 original-source metadata and mechanism audit
 
 on:
   pull_request:
     paths:
       - ".github/workflows/clarkia-kay2020-source-mechanism.yml"
       - "balance_domain/clarkia_kay2020_source.py"
+      - "balance_domain/clarkia_published_receipts.py"
+      - "data/CLARKIA_KAY2020_PUBLISHED_STATISTIC_RECEIPTS_V1.csv"
       - "scripts/audit_clarkia_kay2020_dryad.py"
+      - "scripts/audit_clarkia_published_receipts.py"
       - "tests/test_clarkia_kay2020_source.py"
+      - "tests/test_clarkia_published_receipts.py"
       - "docs/BALANCE_CLARKIA_COMPETING_MECHANISMS_V1.md"
   workflow_dispatch:
 
@@ -16,71 +20,64 @@ permissions:
 jobs:
   trust-boundary:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Test source and original-data identity without network
+      - name: Verify original DOI, version/digest declarations and source-result distinction
         run: |
           python -m pip install pytest
           python -m pytest -q tests/test_clarkia_kay2020_source.py
+          if test -f tests/test_clarkia_published_receipts.py; then
+            python -m pytest -q tests/test_clarkia_published_receipts.py
+          fi
 
-  inspect-originals:
+  audit-dryad-metadata:
     needs: trust-boundary
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Download public Kay2020 original Dryad archive and source-hash files
+      - name: Retrieve published Dryad 29-file source metadata (not OAuth-protected raw data)
         run: |
           python scripts/audit_clarkia_kay2020_dryad.py \
-            --out /tmp/balance_kay2020_clarkia_schema.json > /tmp/balance_kay2020_clarkia_stdout.txt
-      - name: Audit source membership and expose bounded sampling schema
+            --out /tmp/balance_kay2020_metadata_only.json > /tmp/balance_kay2020_stdout.json
+      - name: Source hold is not absence of a biological effect
         run: |
           python - <<'PY'
           import json
           import os
           from pathlib import Path
-          r=json.loads(Path("/tmp/balance_kay2020_clarkia_schema.json").read_text())
+          r=json.loads(Path("/tmp/balance_kay2020_metadata_only.json").read_text())
+          assert r["status"]=="HOLD_PUBLIC_METADATA_ONLY_SOURCE_BYTES_REQUIRE_AUTH"
           assert r["paper_doi"]=="10.1098/rspb.2020.2593"
           assert r["dataset_doi"]=="10.5061/dryad.8cz8w9gmp"
-          assert r["source_file_count"]==29
-          assert r["source_files_verified"]==7
           assert r["dataset_version_id"]==97733
-          assert r["download_mode"]=="PUBLIC_LANDING_FILE_STREAM_SHA256_MATCHED"
-          assert r["no_new_evolutionary_causal_origin"] is True
-          print("DRYAD ORIGINAL DATASET",r["dataset_doi"],"version",r["dataset_version_number"])
-          print("source version/file identifiers",r["dataset_version_id"],r["download_mode"])
-          print("all registered source files",r["source_file_count"])
-          print("selected SHA256-verified source files",r["source_files_verified"])
-          print("greenhouse trial data file listed",not r["original_bombustrials2018_csv_missing"])
-          for path,info in r["source_files"].items():
-              if path in {
-                  "clarkia_phenotype_heteranthery.csv","time_lapse_data.csv",
-                  "pollen_data.csv","pollen_available.csv","cungseeds.csv",
-                  "cungmanipulative.csv","clarkiaits.nex"
-              }:
-                  print("SOURCE_SCHEMA",path,json.dumps(info,ensure_ascii=False,sort_keys=True))
-          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as h:
-              h.write("## Clarkia independent causal-alternative source\n\n")
-              h.write(f"- Study DOI: {r['paper_doi']}\n")
-              h.write(f"- Dataset DOI: {r['dataset_doi']}\n")
-              h.write(f"- Version: {r['dataset_version_number']}\n")
-              h.write(f"- pinned original version ID: {r['dataset_version_id']}\\n")
-              h.write(f"- source SHA256-verified selected files: {r['source_files_verified']}\\n")
-              h.write(f"- greenhouse trial CSV absent from archive: {r['original_bombustrials2018_csv_missing']}\\n")
-              h.write("- Original data retrieved; schema only (no novel effect yet).\n")
+          assert r["source_file_count"]==29
+          assert len(r["original_file_digest_metadata_unverified_against_bytes"])==7
+          assert r["source_files_verified"]==0
+          assert r["source_rows_or_effect_sizes_computed"]==0
+          assert r["original_bombustrials2018_csv_missing"] is True
+          print("DRYAD SOURCE METADATA",r["dataset_doi"],r["dataset_version_id"])
+          print("Declared original digest/size metadata:")
+          for name,entry in r["original_file_digest_metadata_unverified_against_bytes"].items():
+              print("  ",name,entry["id"],entry["size"],entry["sha256"])
+          print("HOLD: source bytes require authorization; no raw effect was recomputed.")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as f:
+              f.write("## Clarkia Kay 2020 original source admission\\n\\n")
+              f.write("- Dataset 10.5061/dryad.8cz8w9gmp version 97733: 29 source files, seven target file digests **declared by Dryad**, NOT independently byte-verified\\n")
+              f.write("- Dryad archive API 401, public file_stream 403; result **HOLD_AUTH_REQUIRED** rather than biological negative\\n")
+              f.write("- BombusTrials2018.csv mentioned in paper's file descriptions but absent from 29-file original dataset\\n")
           PY
-      - name: Preserve source schema, hashes and data identity only
-        if: always()
+      - name: Archive original-source metadata-only receipt
         uses: actions/upload-artifact@v4
         with:
-          name: balance-clarkia-kay2020-original-source-${{ github.run_id }}
-          path: /tmp/balance_kay2020_clarkia_schema.json
-          if-no-files-found: warn
+          name: clarkia-kay2020-metadata-hold-${{ github.run_id }}
+          path: /tmp/balance_kay2020_metadata_only.json
+          if-no-files-found: error
           retention-days: 30
