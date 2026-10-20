@@ -165,12 +165,93 @@ def inspect_archive(download: bytes, metadata: dict) -> dict:
     return selection
 
 
+
+# Dataset version 97733 and its public 29-file manifest were verified on
+# Dryad on 2026-10-20. API archive/file download requires OAuth; landing-
+# page file_stream endpoints remain public but all bytes must match API SHA.
+PINNED_VERSION=97733
+VERSION_FILES_URL=f"{API}/versions/{PINNED_VERSION}/files?per_page=100"
+
+
+def _public_registry(payload: dict) -> dict:
+    rows=(payload.get("_embedded") or {}).get("stash:files")
+    if payload.get("total") != 29 or not isinstance(rows,list) or len(rows)!=29:
+        raise ValueError("Pinned Dryad 29-file manifest unavailable or changed")
+    by_name={}
+    for row in rows:
+        key=_member_basename(row.get("path",""))
+        if not key or key in by_name:
+            raise ValueError("Duplicate or unnamed Dryad source file")
+        by_name[key]=row
+    if not SOURCE_FILES.issubset(by_name):
+        raise ValueError("Required Clarkia source tables are absent")
+    out={}
+    for name in sorted(SOURCE_FILES):
+        row=by_name[name]
+        href=((row.get("_links") or {}).get("self") or {}).get("href","")
+        if not href.startswith("/api/v2/files/") or not href.rsplit("/",1)[-1].isdigit():
+            raise ValueError("Unrecognized source file ID")
+        digest=str(row.get("digest","")).lower()
+        if row.get("digestType","").lower() not in {"sha-256","sha256"} or len(digest)!=64:
+            raise ValueError("No source-authored file SHA256")
+        size=int(row.get("size") or 0)
+        if size<=0 or size>25_000_000:
+            raise ValueError("Source file size outside budget")
+        out[name]={"id":href.rsplit("/",1)[-1],"sha256":digest,
+                   "size":size,"name":row["path"]}
+    return {"files":out,"source_original_file_count":len(by_name),
+            "bombustrials2018_csv_missing":"bombustrials2018.csv" not in by_name}
+
+
+def inspect_public_files(blobs: dict[str,bytes], metadata: dict, manifest: dict) -> dict:
+    if str(metadata.get("identifier","")).lower()!="doi:"+DATA_DOI:
+        raise ValueError("Dryad dataset DOI changed")
+    files=manifest["files"]
+    if set(files)!=set(blobs):
+        raise ValueError("Unexpected original file set")
+    verified={}
+    for name,blob in blobs.items():
+        info=files[name]
+        if len(blob)!=info["size"] or hashlib.sha256(blob).hexdigest()!=info["sha256"]:
+            raise ValueError("Dryad source digest/size verification failed: "+name)
+        val=inspect_file(info["name"],blob)
+        val["dryad_file_id"]=info["id"]
+        val["original_declared_sha256_matched"]=True
+        verified[name]=val
+    return {
+        "schema":"BALANCE_CLARKIA_KAY2020_DRYAD_SOURCE_ACQUISITION_V1",
+        "status":"PUBLIC_DRYAD_FILE_STREAM_SOURCE_VERIFIED_NO_NEW_FIT_YET",
+        "paper_doi":PAPER_DOI,"dataset_doi":DATA_DOI,
+        "dataset_version_id":PINNED_VERSION,
+        "dataset_version_number":metadata.get("versionNumber"),
+        "dataset_title":metadata.get("title"),
+        "dataset_licence":metadata.get("license"),
+        "download_mode":"PUBLIC_LANDING_FILE_STREAM_SHA256_MATCHED",
+        "source_file_count":manifest["source_original_file_count"],
+        "source_files_verified":len(verified),
+        "full_dataset_downloaded":False,
+        "download_zip_sha256":None,
+        "source_files":dict(sorted(verified.items())),
+        "original_bombustrials2018_csv_missing":manifest["bombustrials2018_csv_missing"],
+        "scope":"Outcome-discovered independent Clarkia original source, not random genus sample",
+        "no_new_evolutionary_causal_origin":True,
+        "published_conclusions_not_new_effect_estimates":True,
+    }
+
+
 def fetch_and_inspect(output_path: Path) -> dict:
-    metadata=_json(DATASET_URL)
-    data=_fetch_bytes(DOWNLOAD_URL,MAX_ZIP_BYTES)
-    result=inspect_archive(data,metadata)
+    meta=_json(DATASET_URL)
+    latest=((meta.get("_links") or {}).get("stash:version") or {}).get("href")
+    if latest!=f"/api/v2/versions/{PINNED_VERSION}":
+        raise ValueError("Dryad public source version ID changed")
+    listing=_public_registry(_json(VERSION_FILES_URL))
+    blobs={}
+    for name,entry in listing["files"].items():
+        url=f"https://datadryad.org/downloads/file_stream/{entry['id']}"
+        blobs[name]=_fetch_bytes(url,25_000_000)
+    result=inspect_public_files(blobs,meta,listing)
     output_path.parent.mkdir(parents=True,exist_ok=True)
-    with output_path.open("x",encoding="utf-8") as f:
-        json.dump(result,f,indent=2,sort_keys=True,ensure_ascii=False)
-        f.write("\n")
+    with output_path.open("x",encoding="utf-8") as handle:
+        json.dump(result,handle,indent=2,sort_keys=True,ensure_ascii=False)
+        handle.write("\n")
     return result
