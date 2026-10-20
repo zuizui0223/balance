@@ -133,10 +133,12 @@
       "observed_components": [
         "SECONDARY_STYLE_POLLEN_PRESENTATION",
         "ONTOGENETIC_MALE_TO_FEMALE_PHASE",
+        "EXPERIMENTALLY_PLASTIC_MALE_AND_FEMALE_PHASE_DURATION",
         "POLLINATOR_DEPENDENT_LOW_EFFICIENCY_BEE_SIRING_EFFECT"
       ],
       "clock_axes": [
         "FLORAL_DEVELOPMENTAL_SEX_PHASE",
+        "POLLEN_REMOVAL_OR_DEPOSITION_FEEDBACK",
         "ECOLOGICAL_POLLINATOR_AVAILABILITY"
       ],
       "source_contexts_not_matched": true,
@@ -146,7 +148,7 @@
           "url": "https://doi.org/10.3732/ajb.89.4.587",
           "type": "ORIGINAL_PAPER_PUBLIC_HTML_METHODS",
           "context": "DEVELOPMENTAL_STYLE_HAIR_POLLEN_PRESENTATION",
-          "observation": "Anthers release pollen onto style collecting hairs before anthesis; these hairs retract during anthesis, and stigmatic lobes open afterwards. This is developmental protandry, not experimentally established reversible cue-memory plasticity."
+          "observation": "In a greenhouse experiment, removing pollen shortened the morphological male phase and depositing pollen shortened the morphological female phase. In a field survey, male and female functions saturated within hours, yet morphological sex phases persisted beyond functional saturation. The same species has stamens shedding pollen onto collecting hairs before anthesis; the stigma opens after hair retraction. This is a cue-responsive developmental schedule, NOT a reversible alternation back to an earlier floral phase or a demonstrated new module origin."
         },
         {
           "source_id": "Lau_Galloway_2004",
@@ -156,7 +158,7 @@
           "observation": "Low-efficiency halictid pollen visitors reduced siring success when effective Bombus visits were scarce, but not when effective pollinators were abundant; pollen colour affected visitor attraction. The fitness contrast and developmental mechanism come from different studies."
         }
       ],
-      "unresolved": "Neither study independently demonstrates that protandry or hair retracting apparatus evolved in response to pollen theft, or provides matched alternative-architecture fitness costs."
+      "unresolved": "Experimentally demonstrated phenological plasticity modifies the time spent in an existing developmental phase, but does not demonstrate an individually reversible sex-phase trajectory, a full reproductive fitness advantage over fixed timing, or evolved novelty induced by pollen thieves. The low-efficiency-bee siring evidence is from a separate 2004 study."
     }
   ]
 }
