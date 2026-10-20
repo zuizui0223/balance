@@ -2,6 +2,10 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## Outcome-blind real pollen-theft source expansion (2026-10-21)
+
+[U6 source-defined 21-group temporal opportunity and taxonomic identity audit](docs/BALANCE_U6_SOURCE_OPPORTUNITY_AND_TAXON_ALIAS_AUDIT_V1.md) verifies that 18 source conflicts are tagged simultaneous, three sequential; all 21 share a source pollen pool, so within-U6 module/spatial predictor contrasts cannot be identified. It independently checks 42 original **UNSTARTED** coder rows and 63 **SCREENED but unadjudicated** predictor receipts without opening confirmatory structural outcomes. Existing taxonomic dependence already conservatively links *Impatiens capensis* with U1 and *Melastoma affine* with U3 *M. malabathricum* based on accepted-name synonymy; **19/21 are U6-only relative to these known identity matches**, not 19 phylogenetic origins. No new adaptive structure prevalence or historical causal claim is made.
+
 ## Programme structure
 
 ```text
