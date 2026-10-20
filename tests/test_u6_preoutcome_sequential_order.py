@@ -107,6 +107,6 @@ def test_original_two_coder_outcomes_remain_blinded(tmp_path):
     path=tmp_path/CODERS
     lines=path.read_text(encoding="utf-8")
     assert ",UNRESOLVED," in lines
-    path.write_text(lines.replace(",UNRESOLVED,","SHARED,",1),encoding="utf-8")
+    path.write_text(lines.replace(",UNRESOLVED,",",SHARED,",1),encoding="utf-8")
     with pytest.raises(ValueError,match="pre-outcome audit must not open"):
         analyze(tmp_path)
