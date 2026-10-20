@@ -1,0 +1,73 @@
+name: BALANCE source-selected timing vs architecture audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/plant-timing-architecture-common-support.yml"
+      - "balance_domain/plant_function_timing_architecture_gate.py"
+      - "balance_domain/plant_architecture_source_patterns.py"
+      - "data/BALANCE_PLANT_U2_SCREENING_V1.csv"
+      - "data/BALANCE_PLANT_MACRO_PILOT_V1.csv"
+      - "data/BALANCE_PLANT_U3_MATCHED_EXTRACTION_V1.csv"
+      - "data/BALANCE_PLANT_U3_DEPENDENCE_V1.csv"
+      - "scripts/audit_plant_function_timing_architecture_gate.py"
+      - "tests/test_plant_function_timing_architecture_gate.py"
+      - "docs/BALANCE_TIMING_FUNCTION_ARCHITECTURE_COMMON_SUPPORT_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Exact-screen-source validation, missingness and dependence checks
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_plant_function_timing_architecture_gate.py
+      - name: Write bounded source results with input hashes
+        run: |
+          python scripts/audit_plant_function_timing_architecture_gate.py \
+            --out /tmp/balance_timing_architecture_source.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          r=json.loads(Path("/tmp/balance_timing_architecture_source.json").read_text())
+          assert r["claim_level"]=="REAL_ORIGINAL_SOURCE_SCREEN_DESCRIPTIVE_ONLY"
+          assert r["universe_pooled"] is False
+          assert r["full_conditional_timing_to_structure_effect_identified"] is False
+          assert r["U2"]["positive_source_rows"]==8
+          assert r["PLANT_PILOT"]["positive_source_rows"]==16
+          assert r["PLANT_PILOT"]["simultaneous_source_tag_count"]==8
+          assert r["PLANT_PILOT"]["within_function_family_complete_timing_structural_2x2"]==[]
+          assert r["U3"]["independent_frozen_dependence_blocks"]==3
+          assert r["no_source_receipt_for_reversible_same_individual_policy"] is True
+          assert r["no_source_receipt_for_matched_S_P_D_total_fitness"] is True
+          assert r["no_source_receipt_for_heritable_module_origin"] is True
+          print("U2 conflict positive timing:",r["U2"]["positive_source_timing_codes"])
+          print("Pilot simultaneous source architecture:",r["PLANT_PILOT"]["simultaneous_source_architecture_codes"])
+          print("No complete within-function-family 2x2 timing/structural source table.")
+          print("Four U3 PASS pairs, three dependence blocks, no reversible-PLASTIC receipt.")
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("## Original-source timing x architecture support audit\n\n")
+              f.write("- U2: 8 positive/22 sources; 1 simultaneous source tag (shared)\n")
+              f.write("- Pilot: 16 positive/29 source rows; 8 simultaneous tags (4 shared, 3 within-flower, 1 spatial)\n")
+              f.write("- U3: 4 PASS source pairs within 3 frozen dependence blocks\n")
+              f.write("- Conditional 2×2 source support within biological function pairs: **0 complete**\n")
+              f.write("- **NOT** source-derived C/K/PLASTIC, historical origin or representative prevalence.\n")
+          PY
+      - name: Archive source-hash audit only
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-timing-architecture-screen-${{ github.run_id }}
+          path: /tmp/balance_timing_architecture_source.json
+          if-no-files-found: error
+          retention-days: 30

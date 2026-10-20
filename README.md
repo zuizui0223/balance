@@ -2,6 +2,14 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## Source-stratified real-data ecology (2026-10-19)
+
+[Conflict does not automatically imply structural differentiation: screened U2 and plant-pilot comparison](docs/BALANCE_SOURCE_STRATIFIED_CONFLICT_ARCHITECTURE_COMPARISON_V1.md) is a **read-only exploratory** comparison on actual original-study source screens. The U2 review's eight direct conflict-positive groups include four shared and three nonstructurally separated systems; the selected plant pilot's sixteen conflict-positive rows include four with source-coded structural module division, concentrated by function-pair ascertainment. Taxon-name overlaps are not pooled across different function pairs. **No direct structural fitness worldline, population prevalence, V4 confirmatory effect or historical causal origin has been recovered.** The runnable audit and tests are isolated from the prospectively frozen V4 coding/fits.
+
+### Source-selected timing and anatomy support (2026-10-20)
+
+[New within-function-family common-support audit](docs/BALANCE_TIMING_FUNCTION_ARCHITECTURE_COMMON_SUPPORT_V1.md) separates original screening tags for `SIMULTANEOUS` from quantified same-coordinate overlap, shows U2 and pilot descriptive timing/architecture cross-tabs **without pooling selection-biased source universes**, and recovers **zero complete function-family-conditional 2×2 timing×structural source-support tables** among positive pilot records. U3's four matched comparisons occupy only three frozen dependence blocks. Its nonheterantherous controls demonstrate that conflict and function routing can persist without stamen morphological dimorphism. **No source screen measured the SHARED/PLASTIC/FIXED worldlines or historical modularity origin.** Machine-readable source hashes and fail-closed tests accompany the report.
+
 ## Programme structure
 
 ```text
