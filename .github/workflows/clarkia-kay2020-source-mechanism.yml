@@ -49,11 +49,16 @@ jobs:
           r=json.loads(Path("/tmp/balance_kay2020_clarkia_schema.json").read_text())
           assert r["paper_doi"]=="10.1098/rspb.2020.2593"
           assert r["dataset_doi"]=="10.5061/dryad.8cz8w9gmp"
-          assert r["source_file_count"]>=7
+          assert r["source_file_count"]==29
+          assert r["source_files_verified"]==7
+          assert r["dataset_version_id"]==97733
+          assert r["download_mode"]=="PUBLIC_LANDING_FILE_STREAM_SHA256_MATCHED"
           assert r["no_new_evolutionary_causal_origin"] is True
           print("DRYAD ORIGINAL DATASET",r["dataset_doi"],"version",r["dataset_version_number"])
-          print("source ZIP SHA256",r["download_zip_sha256"])
-          print("source files",r["source_file_count"])
+          print("source version/file identifiers",r["dataset_version_id"],r["download_mode"])
+          print("all registered source files",r["source_file_count"])
+          print("selected SHA256-verified source files",r["source_files_verified"])
+          print("greenhouse trial data file listed",not r["original_bombustrials2018_csv_missing"])
           for path,info in r["source_files"].items():
               if path in {
                   "clarkia_phenotype_heteranthery.csv","time_lapse_data.csv",
@@ -66,7 +71,9 @@ jobs:
               h.write(f"- Study DOI: {r['paper_doi']}\n")
               h.write(f"- Dataset DOI: {r['dataset_doi']}\n")
               h.write(f"- Version: {r['dataset_version_number']}\n")
-              h.write(f"- SHA256: \`{r['download_zip_sha256']}\`\n")
+              h.write(f"- pinned original version ID: {r['dataset_version_id']}\\n")
+              h.write(f"- source SHA256-verified selected files: {r['source_files_verified']}\\n")
+              h.write(f"- greenhouse trial CSV absent from archive: {r['original_bombustrials2018_csv_missing']}\\n")
               h.write("- Original data retrieved; schema only (no novel effect yet).\n")
           PY
       - name: Preserve source schema, hashes and data identity only
