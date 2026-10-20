@@ -1,0 +1,162 @@
+{
+  "schema": "BALANCE_U6_FIRST6_ORIGINAL_PHENOMENOLOGY_V1",
+  "scope": "FIRST_SIX_FROZEN_U6_GROUPS_IN_ORIGINAL_ORDER_NO_REPLACEMENT",
+  "status": "PUBLIC_ORIGINAL_ABSTRACT_LEVEL_EVIDENCE_NOT_INDEPENDENT_CODER",
+  "codebook_exclusion": "No architecture_mode, module_substrate, conflict_timing_geometry or conflict_spatial_geometry is recoded or opened; no human CODER_A/B identity used.",
+  "first_six": [
+    {
+      "dependency_group": "Actinidia_deliciosa",
+      "evidence_status": "ORIGINAL_ABSTRACT_AND_INDEPENDENT_FLORAL_ANATOMY",
+      "observed_components": [
+        "LAB_POLLEN_CONSUMPTION",
+        "BETWEEN_PLANT_SEXUAL_ORGANIZATION"
+      ],
+      "clock_axes": [
+        "LAB_FEEDING_RATE",
+        "PLANT_SEX_SYSTEM"
+      ],
+      "source_contexts_not_matched": true,
+      "source_records": [
+        {
+          "source_id": "Kirk_1987_thrips",
+          "url": "https://doi.org/10.1111/j.1365-2311.1987.tb00982.x",
+          "type": "PUBLISHED_ORIGINAL_ABSTRACT",
+          "context": "LAB_DIET_POLLEN_CONSUMPTION",
+          "observation": "Thrips feeding experiment used pollen of Actinidia deliciosa (and Echium plantagineum); reported 29–843 grains per thrips per day across treatments and extrapolated possible crop fitness costs. This was a laboratory feeding assay, not direct field confirmation of a new floral module."
+        },
+        {
+          "source_id": "Howpage_Vithanage_SpoonerHart_1998",
+          "url": "https://doi.org/10.1006/anbo.1998.0615",
+          "type": "PUBLISHED_ORIGINAL_ARTICLE_TEXT",
+          "context": "FLORAL_PISTIL_ANATOMY_OTHER_STUDY",
+          "observation": "Kiwifruit is dioecious, with male pollen-producing and female ovule-producing vines; pistil anatomy/pollen tube distribution tested in a separate study, not linked experimentally to thrips selection."
+        }
+      ],
+      "unresolved": "No same-context genetic sex architecture comparison, natural pollen theft rate or matched male/female fitness; plant-wide sex segregation cannot be inferred as an evolved response to thrips feeding."
+    },
+    {
+      "dependency_group": "Amomum_subulatum",
+      "evidence_status": "ORIGINAL_STUDY_OPEN_REPOSITORY_ABSTRACT",
+      "observed_components": [
+        "VISITOR_CONTACT_FILTER_VIA_FLOWER_ENTRANCE",
+        "EFFECTIVE_BUMBLEBEE_VS_HONEYBEE_POLLEN_ROBBER"
+      ],
+      "clock_axes": [
+        "WITHIN_VISIT_CONTACT_GEOMETRY"
+      ],
+      "source_contexts_not_matched": false,
+      "source_records": [
+        {
+          "source_id": "Sinu_Shivanna_2007",
+          "url": "https://repository.ias.ac.in/49075/",
+          "type": "ORIGINAL_PAPER_PUBLIC_REPOSITORY_ABSTRACT",
+          "context": "SAME_FIELD_STUDY_2005_2006",
+          "observation": "A narrow passage between anther–stigma column and labellum forces Bombus haemorrhoidalis to touch anther and stigma during entry; Apis cerana collects pollen without stigmatic contact and is a pollen robber."
+        }
+      ],
+      "unresolved": "Presence of functional filtering by a flower is not an assay of independent evolved module construction, same-trait pure functional optima, or architecture maintenance cost."
+    },
+    {
+      "dependency_group": "Aphelandra_golfodulcensis",
+      "evidence_status": "PRIMARY_PAPER_IDENTITY_SECONDARY_PUBLIC_ABSTRACT_SUMMARY",
+      "observed_components": [
+        "HUMMINGBIRD_POLLINATION_VS_STINGLESS_BEE_POLLEN_THEFT",
+        "FLOWER_DAMAGE"
+      ],
+      "clock_axes": [
+        "DIEL_VISITOR_ACTIVITY_RECOVERED_PARTIALLY",
+        "UNRESOLVED_FLORAL_ARCHITECTURE"
+      ],
+      "source_contexts_not_matched": false,
+      "source_records": [
+        {
+          "source_id": "McDade_Kinsman_1980",
+          "url": "https://doi.org/10.1111/j.1558-5646.1980.tb04033.x",
+          "type": "PRIMARY_PAPER_WITH_SECONDARY_PUBLIC_SUMMARY",
+          "context": "SAME_ORIGINAL_FIELD_PROGRAMME",
+          "observation": "Published original study compares hummingbird pollination with Trigona pollen theft and florivory; public summary reports most flowers visited by pollen collecting bees by mid-morning and substantial style damage. Exact primary paper anatomy/functional separation not retrieved."
+        }
+      ],
+      "unresolved": "Primary full method/anatomy missing from reviewed source; do not code SHARED, SEPARATED or temporal-developmental modules."
+    },
+    {
+      "dependency_group": "Banksia_menziesii",
+      "evidence_status": "ORIGINAL_STUDY_PUBLIC_ABSTRACT",
+      "observed_components": [
+        "BEETLE_POLLEN_REMOVAL_WITHOUT_STIGMA_DEPOSITION",
+        "FLOWER_OPENING_RATE_ASSOCIATION",
+        "BIRD_BEE_DIFFERENT_POLLINATION_EFFECTIVENESS"
+      ],
+      "clock_axes": [
+        "INFLORESCENCE_FLORET_OPENING_ACROSS_DAYS",
+        "WITHIN_VISIT_CONTACT_ROUTE"
+      ],
+      "source_contexts_not_matched": false,
+      "source_records": [
+        {
+          "source_id": "Ramsey_1988",
+          "url": "https://doi.org/10.1007/BF00379609",
+          "type": "ORIGINAL_PAPER_PUBLIC_ABSTRACT",
+          "context": "POLLINATOR_VISIT_FIELD_COMPARISON",
+          "observation": "Staphylinid beetles removed pollen but did not deposit it onto stigmas; beetle abundance related to florets opening per day; bees visited more frequently than birds, yet bird-visited inflorescences had much higher fruit set. Evolutionary selection for bird-associated floret opening was proposed, not directly reconstructed."
+        }
+      ],
+      "unresolved": "Opening florets across days is not proof of temporally programmed pollen dosing evolved to repel beetles; without time-aligned plant male fitness and alternatives no W_D-W_S."
+    },
+    {
+      "dependency_group": "Bromelia_antiacantha",
+      "evidence_status": "ORIGINAL_STUDY_PUBLIC_ABSTRACT",
+      "observed_components": [
+        "DIEL_BEE_AND_HUMMINGBIRD_VISITOR_SEQUENCE",
+        "EARLY_POLLEN_AND_NECTAR_THEFT",
+        "MULTIPLE_FLOWERS_OPEN_PER_DAY"
+      ],
+      "clock_axes": [
+        "DAILY_VISITOR_TIMING",
+        "INFLORESCENCE_FLOWER_OPENING_ACROSS_DAYS"
+      ],
+      "source_contexts_not_matched": false,
+      "source_records": [
+        {
+          "source_id": "Canela_Sazima_2005",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16025414/",
+          "type": "ORIGINAL_PAPER_PUBLIC_ABSTRACT",
+          "context": "FIELD_ANTHESIS_NEKTAR_AND_VISITATION",
+          "observation": "Inflorescences produce 10–35 newly opening flowers per day; nectar peaks at 04:00–06:00; bees primarily visit in the morning while hummingbirds contribute mostly afternoon visits; Trigona spinipes steals pollen/nectar early, frequently excluding hummingbirds. The temporal visitor pattern is observational, not a manipulated new pollen-release organ."
+        }
+      ],
+      "unresolved": "Do not equate diel arrival order with pollen-source simultaneous-conflict classification, reversible cue plasticity, or permanently differentiated module."
+    },
+    {
+      "dependency_group": "Campanula_americana",
+      "evidence_status": "TWO_DISTINCT_ORIGINAL_STUDY_ABSTRACTS",
+      "observed_components": [
+        "SECONDARY_STYLE_POLLEN_PRESENTATION",
+        "ONTOGENETIC_MALE_TO_FEMALE_PHASE",
+        "POLLINATOR_DEPENDENT_LOW_EFFICIENCY_BEE_SIRING_EFFECT"
+      ],
+      "clock_axes": [
+        "FLORAL_DEVELOPMENTAL_SEX_PHASE",
+        "ECOLOGICAL_POLLINATOR_AVAILABILITY"
+      ],
+      "source_contexts_not_matched": true,
+      "source_records": [
+        {
+          "source_id": "Evanhoe_Galloway_2002",
+          "url": "https://doi.org/10.3732/ajb.89.4.587",
+          "type": "ORIGINAL_PAPER_PUBLIC_HTML_METHODS",
+          "context": "DEVELOPMENTAL_STYLE_HAIR_POLLEN_PRESENTATION",
+          "observation": "Anthers release pollen onto style collecting hairs before anthesis; these hairs retract during anthesis, and stigmatic lobes open afterwards. This is developmental protandry, not experimentally established reversible cue-memory plasticity."
+        },
+        {
+          "source_id": "Lau_Galloway_2004",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/15549400/",
+          "type": "ORIGINAL_PAPER_PUBLIC_ABSTRACT",
+          "context": "TWO_POPULATION_EXPERIMENTAL_ARRAYS_LOW_EFFICIENCY_BEE_SIRING",
+          "observation": "Low-efficiency halictid pollen visitors reduced siring success when effective Bombus visits were scarce, but not when effective pollinators were abundant; pollen colour affected visitor attraction. The fitness contrast and developmental mechanism come from different studies."
+        }
+      ],
+      "unresolved": "Neither study independently demonstrates that protandry or hair retracting apparatus evolved in response to pollen theft, or provides matched alternative-architecture fitness costs."
+    }
+  ]
+}
