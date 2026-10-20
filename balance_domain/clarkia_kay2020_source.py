@@ -239,17 +239,52 @@ def inspect_public_files(blobs: dict[str,bytes], metadata: dict, manifest: dict)
     }
 
 
+
+def inspect_metadata_only(metadata: dict, registry: dict) -> dict:
+    """Admit a public 29-file Dryad manifest without claiming data-byte access.
+
+    Anonymous Dryad REST downloads return HTTP 401 and public file_stream
+    links return HTTP 403 in this executor. Repeated retry would not identify
+    biological effects. The SHA256 values are *declared*, not verified against
+    downloaded bytes. A future user-authorized raw copy can be admitted
+    separately through inspect_public_files with its own byte validation.
+    """
+    if str(metadata.get("identifier","")).lower()!="doi:"+DATA_DOI:
+        raise ValueError("Original source identity mismatch")
+    return {
+        "schema":"BALANCE_CLARKIA_KAY2020_DRYAD_SOURCE_ACQUISITION_V1",
+        "status":"HOLD_PUBLIC_METADATA_ONLY_SOURCE_BYTES_REQUIRE_AUTH",
+        "paper_doi":PAPER_DOI,
+        "dataset_doi":DATA_DOI,
+        "dataset_version_id":PINNED_VERSION,
+        "dataset_version_number":metadata.get("versionNumber"),
+        "dataset_title":metadata.get("title"),
+        "dataset_licence":metadata.get("license"),
+        "source_file_count":registry["source_original_file_count"],
+        "required_source_files":sorted(SOURCE_FILES),
+        "original_file_digest_metadata_unverified_against_bytes":registry["files"],
+        "source_files_verified":0,
+        "source_rows_or_effect_sizes_computed":0,
+        "full_dataset_downloaded":False,
+        "raw_download_failure":"HTTP 401 API ZIP; HTTP 403 public file_stream as verified in independent GitHub Actions attempts",
+        "original_bombustrials2018_csv_missing":
+            registry["bombustrials2018_csv_missing"],
+        "absence_of_downloaded_bytes_is_not_biological_null":True,
+        "scope":"outcome-discovered study; no source original-data effect fit",
+        "no_new_evolutionary_causal_origin":True,
+    }
+
+
 def fetch_and_inspect(output_path: Path) -> dict:
     meta=_json(DATASET_URL)
     latest=((meta.get("_links") or {}).get("stash:version") or {}).get("href")
     if latest!=f"/api/v2/versions/{PINNED_VERSION}":
         raise ValueError("Dryad public source version ID changed")
     listing=_public_registry(_json(VERSION_FILES_URL))
-    blobs={}
-    for name,entry in listing["files"].items():
-        url=f"https://datadryad.org/downloads/file_stream/{entry['id']}"
-        blobs[name]=_fetch_bytes(url,25_000_000)
-    result=inspect_public_files(blobs,meta,listing)
+    # Full archive API and human-facing file-stream requests are access
+    # restricted in unauthenticated Actions. Stop at proven metadata rather
+    # than repeatedly try a 401/403 endpoint or claim a computed effect.
+    result=inspect_metadata_only(meta,listing)
     output_path.parent.mkdir(parents=True,exist_ok=True)
     with output_path.open("x",encoding="utf-8") as handle:
         json.dump(result,handle,indent=2,sort_keys=True,ensure_ascii=False)
