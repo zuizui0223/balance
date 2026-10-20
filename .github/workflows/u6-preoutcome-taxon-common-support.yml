@@ -7,6 +7,11 @@ on:
       - "balance_domain/u6_preoutcome_common_support.py"
       - "scripts/audit_u6_preoutcome_common_support.py"
       - "tests/test_u6_preoutcome_common_support.py"
+      - "balance_domain/u6_preoutcome_sequential_order.py"
+      - "data/BALANCE_U6_SEQUENTIAL_VISITOR_ORDER_SOURCE_V1.csv"
+      - "scripts/audit_u6_preoutcome_sequential_order.py"
+      - "tests/test_u6_preoutcome_sequential_order.py"
+      - "docs/BALANCE_U6_SEQUENTIAL_VISITOR_ORDER_V1.md"
       - "data/BALANCE_U6_PREOUTCOME_TAXON_OVERLAP_SOURCE_V1.csv"
       - "docs/BALANCE_U6_SOURCE_OPPORTUNITY_AND_TAXON_ALIAS_AUDIT_V1.md"
   workflow_dispatch:
@@ -26,7 +31,7 @@ jobs:
       - name: Test frozen Pass-1 blind admission, source predictors, and accepted taxon concept
         run: |
           python -m pip install "pytest>=8,<10"
-          python -m pytest -q tests/test_u6_preoutcome_common_support.py
+          python -m pytest -q tests/test_u6_preoutcome_common_support.py tests/test_u6_preoutcome_sequential_order.py
       - name: Source-only non-promoted result
         run: |
           python scripts/audit_u6_preoutcome_common_support.py \
@@ -60,10 +65,40 @@ jobs:
               f.write("- 19 exclusive U6 taxon blocks, 1 exact U1 overlap, 1 accepted-species U3 concept overlap\n")
               f.write("- 0/42 coder rows completed, 0/63 independently adjudicated predictor receipts, **no outcome effect**\n")
           PY
+      - name: Refine the 3 original sequential source cases by theft-before vs transfer-before
+        run: |
+          python scripts/audit_u6_preoutcome_sequential_order.py \
+            --out /tmp/balance_u6_sequential_order.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          v=json.loads(Path("/tmp/balance_u6_sequential_order.json").read_text())
+          assert v["source_roster"]=={
+              "u6_admitted_groups":21, "timing_simultaneous":18, "timing_sequential":3,
+          }
+          assert v["original_source_directions"]=={
+              "THEFT_BEFORE_EFFECTIVE_TRANSFER":2,
+              "EFFECTIVE_TRANSFER_BEFORE_THEFT":1,
+          }
+          assert v["no_blinded_U6_architecture_coding_performed"] is True
+          assert v["preoutcome_V4_anatomical_responses_read"] is False
+          assert v["new_heritable_module_origin_established"] is False
+          print("Source visitor chronology is two pre-transfer theft cases and one post-transfer theft case.")
+          for entry in v["per_group_original_source_receipts"]:
+              print("ORIGINAL SOURCE:",entry["dependency_group"],entry["chronology"],
+                    entry["source_doi"],entry["source_effect_receipt"])
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as out:
+              out.write("- Three sequential original studies: **2 theft-before-effective-transfer; 1 transfer-before-later-theft**\n")
+              out.write("- Source time-order polarity is not pollen-dosing architecture, effect size or historical origin.\n")
+          PY
       - name: Preserve provenance-only result
         uses: actions/upload-artifact@v4
         with:
           name: balance-u6-preoutcome-support-${{ github.run_id }}
-          path: /tmp/balance_u6_preoutcome_source.json
+          path: |
+            /tmp/balance_u6_preoutcome_source.json
+            /tmp/balance_u6_sequential_order.json
           if-no-files-found: error
           retention-days: 30
