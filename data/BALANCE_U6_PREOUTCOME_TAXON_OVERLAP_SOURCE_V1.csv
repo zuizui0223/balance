@@ -1,0 +1,3 @@
+u6_dependency_group,overlap_universe,overlap_record_id,source_taxon_name,other_universe_taxon_name,overlap_level,accepted_taxon_concept,authority_url,biological_populations_identical,adjudication_disposition
+Impatiens_capensis,U1,U1_024,Impatiens capensis,Impatiens capensis,EXACT_BINOMIAL,Impatiens capensis,https://github.com/zuizui0223/balance/blob/main/data/BALANCE_PLANT_U6_CROSS_UNIVERSE_DEPENDENCE_V1.csv,NOT_TESTED,CONSERVATIVE_SHARED_SPECIES_BLOCK
+Melastoma_affine,U3,U3_PAIR_MELMA_001,Melastoma affine D.Don,Melastoma malabathricum L.,POWO_ACCEPTED_SPECIES_CONCEPT,Melastoma malabathricum subsp. malabathricum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:570553-1,NOT_TESTED,CONSERVATIVE_SHARED_TAXON_CONCEPT_BLOCK
