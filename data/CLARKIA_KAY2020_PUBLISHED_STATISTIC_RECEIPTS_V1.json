@@ -1,0 +1,132 @@
+{
+  "schema": "BALANCE_CLARKIA_KAY2020_PUBLISHED_STATISTICS_V1",
+  "source": {
+    "paper_doi": "10.1098/rspb.2020.2593",
+    "open_text": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7779490/",
+    "dataset_doi": "10.5061/dryad.8cz8w9gmp",
+    "dryad_version_id": 97733
+  },
+  "provenance_status": "PUBLISHED_ARTICLE_TEXT_NOT_RAW_DATA_REANALYSIS",
+  "publication_biological_design": {
+    "genus": "Clarkia",
+    "evolutionary_ancestry": "source-inferred single origin and two losses of visible heteranthery; transition directions subject to source phylogeny",
+    "comparison_population": "congeneric phylogeny plus focal C. cylindrica pollen fate and C. unguiculata dosing/visitor manipulations",
+    "sample_framework": "mechanism-test study, not outcome-blind global species cohort"
+  },
+  "receipts": [
+    {
+      "id": "EVOL_BEE",
+      "endpoint": "phylogenetic heteranthery×bee-pollination association",
+      "unit": "source trait phylogeny",
+      "source_report": {
+        "p": 0.055
+      },
+      "inference": "near-conventional threshold only; association not experimental timing/origin"
+    },
+    {
+      "id": "EVOL_ANTHER_MOVEMENT",
+      "endpoint": "phylogenetic heteranthery×anther movement",
+      "unit": "source trait phylogeny",
+      "source_report": {
+        "p": 0.004
+      },
+      "inference": "movement association within source phylogeny; not causal origin"
+    },
+    {
+      "id": "TIMING_11_SPECIES",
+      "endpoint": "anther whorl pollen availability timing overlap",
+      "unit": "six heterantherous vs five nonheterantherous greenhouse-grown source species",
+      "source_report": {
+        "n_heterantherous": 6,
+        "n_other": 5,
+        "F": 75.71,
+        "p": 0.002
+      },
+      "inference": "source reports less temporal overlap in heterantherous species; not a genomic transition"
+    },
+    {
+      "id": "POLLEN_FATE_CYLINDRICA",
+      "endpoint": "outer-anther pollen fraction on bee scopa vs floral stigma",
+      "unit": "scopa/stigma observations from same Clarkia cylindrica study",
+      "source_report": {
+        "t": -1.401,
+        "p": 0.17
+      },
+      "inference": "no detected destination contrast; does NOT demonstrate equivalence or absence of partial specialization"
+    },
+    {
+      "id": "POLLEN_FATE_TOTAL_COVARIATE",
+      "endpoint": "outer-anther fraction vs sample total pollen",
+      "unit": "same observational pollen-fate cohort",
+      "source_report": {
+        "slope": 0.0001943,
+        "se": 0.00006506,
+        "p": 0.005
+      },
+      "inference": "reported positive correlation; dependency with fate observations"
+    },
+    {
+      "id": "MORPH_BEE_COLOUR",
+      "endpoint": "outer-anther filament paint colour vs pollen-collecting visit fraction",
+      "unit": "captive bumblebee trial arrays",
+      "source_report": {
+        "red_fraction": 0.6,
+        "yellow_fraction": 0.75,
+        "p_colour": 0.01
+      },
+      "inference": "bee handling depends on colour, but no independent structure origin"
+    },
+    {
+      "id": "DOSE_EXPOSED_POLLEN",
+      "endpoint": "exposed pollen along C. unguiculata outer anthers",
+      "unit": "20 flowers per treatment; source greenhouse trial",
+      "source_report": {
+        "no_dose_mm": 4.6,
+        "dose_mm": 1.9,
+        "F": 483.17,
+        "p_upper_bound": 0.001
+      },
+      "inference": "more exposed pollen under fully dehisced/no-dosing treatment; distinct from exported pollen"
+    },
+    {
+      "id": "DOSE_EXPORTED_POLLEN",
+      "endpoint": "stigma pollen deposition after foraging bouts; no-dosing relative to dosing",
+      "unit": "13 dosing vs 15 no-dosing arrays, one bumblebee per array",
+      "source_report": {
+        "dosing_arrays": 13,
+        "no_dosing_arrays": 15,
+        "no_dosing_log_ratio": -0.3507,
+        "p": 0.27,
+        "reported_approx_reduction_no_dose": 0.3
+      },
+      "inference": "no statistically detected transport improvement for dosing; log coefficient negative for no-dosing, not proof of benefit/equivalence"
+    },
+    {
+      "id": "DOSE_BEE_PROVISIONS",
+      "endpoint": "bee corbicular pollen mass after foraging bouts",
+      "unit": "same 13 vs 15 greenhouse arrays (one bee per array)",
+      "source_report": {
+        "dose_mg": 6.7,
+        "no_dose_mg": 6.5,
+        "F": 0.01,
+        "p": 0.923
+      },
+      "inference": "no detected difference in mass, not strict equivalence"
+    },
+    {
+      "id": "FIELD_TIMED_ANTHER_REMOVAL",
+      "endpoint": "bee visitation after outer-whorl removal at different flower times",
+      "unit": "same C. unguiculata plant/visitor field programme",
+      "source_report": {
+        "early_outer_no_detected_effect": true,
+        "afternoon_outer_removal_visits_reduced_fraction": 0.45
+      },
+      "inference": "outer whorl visitor function can change with flower age; exact effect SE not in current paper receipt"
+    }
+  ],
+  "independent_original_study_count": 1,
+  "quantitative_meta_pool_eligible": false,
+  "no_same_fitness_S_P_D_worldlines": true,
+  "no_inherited_new_module_causal_origin": true,
+  "source_data_raw_access_status": "HOLD_RAW_FILES_401_403"
+}
