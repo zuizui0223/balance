@@ -139,6 +139,20 @@ def _source_u3(base: Path) -> dict[str, Any]:
     if any(r["architecture_mode"]!="WITHIN_FLOWER_DIVISION_OF_LABOUR"
            or r["pollen_fate_conflict_status"]!="POSITIVE" for r in cases):
         raise ValueError("U3 source case architecture and positive conflict changed")
+    # Existing unresolved controls are source-frozen. Their states may only
+    # change after independent literature adjudication, not by recoding a
+    # morphology proxy in this descriptive analysis.
+    frozen_unknown = {
+        "Osbeckia chinensis": ("UNRESOLVED","UNRESOLVED"),
+        "Senna covesii": ("POSITIVE","UNRESOLVED"),
+    }
+    for taxon,(conflict,architecture) in frozen_unknown.items():
+        record=next((x for x in controls if x["taxon"]==taxon),None)
+        if record is None or (
+            record["pollen_fate_conflict_status"],
+            record["architecture_mode"]
+        )!=(conflict,architecture):
+            raise ValueError("U3 frozen unresolved-control state changed without source adjudication")
     unresolved=[r["taxon"] for r in controls if r["pollen_fate_conflict_status"]=="UNRESOLVED"]
     control_positive=[r for r in controls if r["pollen_fate_conflict_status"]=="POSITIVE"]
     return {
