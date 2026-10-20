@@ -108,9 +108,8 @@ def test_u3_unresolved_control_cannot_be_relabelled_zero_in_source(tmp_path):
     path.write_text(data.replace("Osbeckia chinensis,UNRESOLVED,",
                                  "Osbeckia chinensis,SHARED_INTEGRATED,",1),
                     encoding="utf-8")
-    r=analyze(tmp_path)
-    assert r["U3"]["unresolved_controls"]==["Osbeckia chinensis"]
-    assert r["U3"]["control_conflict_positive"]==3
+    with pytest.raises(ValueError,match="frozen unresolved-control state"):
+        analyze(tmp_path)
 
 
 def test_same_timing_tag_never_promotes_to_direct_conflict_or_plastic_policy():
