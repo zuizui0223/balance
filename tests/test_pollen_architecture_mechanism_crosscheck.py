@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from balance_domain.pollen_architecture_mechanism_crosscheck import (
-    analyze, ROOT, RECEIPT, U3, DEP, CLARKIA_SOURCE,
+    analyze, ROOT, U3, DEP, CLARKIA_SOURCE,
 )
 
 
