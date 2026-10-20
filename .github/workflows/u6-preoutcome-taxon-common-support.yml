@@ -1,0 +1,69 @@
+name: BALANCE U6 pre-outcome taxonomy and opportunity audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/u6-preoutcome-taxon-common-support.yml"
+      - "balance_domain/u6_preoutcome_common_support.py"
+      - "scripts/audit_u6_preoutcome_common_support.py"
+      - "tests/test_u6_preoutcome_common_support.py"
+      - "data/BALANCE_U6_PREOUTCOME_TAXON_OVERLAP_SOURCE_V1.csv"
+      - "docs/BALANCE_U6_SOURCE_OPPORTUNITY_AND_TAXON_ALIAS_AUDIT_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-source-admission:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test frozen Pass-1 blind admission, source predictors, and accepted taxon concept
+        run: |
+          python -m pip install "pytest>=8,<10"
+          python -m pytest -q tests/test_u6_preoutcome_common_support.py
+      - name: Source-only non-promoted result
+        run: |
+          python scripts/audit_u6_preoutcome_common_support.py \
+            --out /tmp/balance_u6_preoutcome_source.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          x=json.loads(Path("/tmp/balance_u6_preoutcome_source.json").read_text())
+          assert x["admitted_conflict_first_dependency_groups"]==21
+          assert x["source_predictor_receipts"]==63
+          assert x["source_predicted_geometry"]["conflict_timing_geometry"]=={
+              "SIMULTANEOUS":18,"SEQUENTIAL_WITHIN_UNIT":3
+          }
+          assert x["frozen_taxon_dependency_actions"]=={
+              "U6_ONLY":19,"SHARED_SPECIES_BLOCK":1,
+              "SHARED_TAXON_CONCEPT_BLOCK":1,
+          }
+          assert x["double_coder_architecture_receipts"]["independently_adjudicated_architecture_groups"]==0
+          assert x["registered_primary_V4_outcomes_accessed"] is False
+          assert x["qualified_u6_structure_effects"]==0
+          print("Reviewed original-reference source cohort:",x["anchor_reference_universe"])
+          print("Source-only 21 group taxon action blocks:",x["frozen_taxon_dependency_actions"])
+          print("Source-screened temporal exposure:",x["source_predicted_geometry"]["conflict_timing_geometry"])
+          print("No V4 outcomes opened, NO positive architecture coefficient fitted")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as f:
+              f.write("## U6 original source-only opportunity and taxonomy audit\n\n")
+              f.write("- 157 review references, 21 frozen groups (9 unresolved candidate refs retained)\n")
+              f.write("- 21/21 module source pools SINGLE, 21/21 same spatial unit; 18 simultaneous, 3 sequential **screening-only** timing states\n")
+              f.write("- 19 exclusive U6 taxon blocks, 1 exact U1 overlap, 1 accepted-species U3 concept overlap\n")
+              f.write("- 0/42 coder rows completed, 0/63 independently adjudicated predictor receipts, **no outcome effect**\n")
+          PY
+      - name: Preserve provenance-only result
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-u6-preoutcome-support-${{ github.run_id }}
+          path: /tmp/balance_u6_preoutcome_source.json
+          if-no-files-found: error
+          retention-days: 30
