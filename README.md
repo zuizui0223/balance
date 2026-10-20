@@ -2,6 +2,10 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## The same floral morphology need not encode the same ecological function (2026-10-21)
+
+[Kay et al. (2020) Clarkia versus U3 Solanum/Senna original-source crosscheck](docs/BALANCE_HETERANTHERY_MORPHOLOGY_FUNCTION_TIME_NONBIJECTION_V1.md) now has an [executable source-linked mechanism readout](scripts/audit_pollen_architecture_mechanisms.py). Among **10 intentionally selected source taxa**, four morphologically heterantherous U3 cases have within-flower reward/export role separation, while two heterantherous *Clarkia* study cases favor **delayed pollen dosing**. Nonheterantherous U3 controls retain one within-flower division, one among-flower division and two unresolved routes. The source-selected taxa occupy four conservative functional/taxonomic dependence blocks, **not independent evolutionary origins**. Dryad original file metadata were verified, but Kay raw bytes are access-restricted (HTTP 401/403), so the Clarkia numerical observations use original article values, not recomputed data. Neither the flagship nor frozen plant V4 was modified.
+
 ## Programme structure
 
 ```text
