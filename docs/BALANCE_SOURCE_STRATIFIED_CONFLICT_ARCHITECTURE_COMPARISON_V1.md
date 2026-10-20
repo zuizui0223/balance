@@ -96,6 +96,18 @@ Thus selection on an **existing shared phenological trait** differs across the e
 
 **Biological interpretation:** ecological partner treatments can change the direction/magnitude of measured phenotypic selection **without measuring or demonstrating a new structural architecture**. Trait phenotype was **not randomized** by the original experimental regime; do not promote these gradients to a randomized `do(z)` fitness surface, pure-component optimum, causal conflict load `L`, or structural transition. This is a concrete ecological bridge between SCH's measured selection sensitivity and BALANCE's shared-state case coding, under an honest one-study dependency count.
 
+## Scientific bridge to the revised flagship: routing state is neither reversible plasticity nor module origin
+
+The [new SLK generic three-strategy G1–G9 identification gate](https://github.com/zuizui0223/slk/blob/integration/plasticity-functional-routing-gates-20261020/docs/THREE_STRATEGY_VALUE_AND_ORIGIN_GATE_V1.md) formally distinguishes *shared*, *reversible plastic response* and *genetically differentiated architecture* before comparing net architecture value. The existing BALANCE data support only some descriptive routing states:
+
+- U3's **four** PASS case-control comparisons belong to **three** distinct frozen dependence blocks (Solanum, Melastomateae, Senna); the two Senna pairs are NOT phylogenetic replications. All **four cases** and **three of four nonheterantherous controls** have source-positive pollen reward/gamete transport conflict; *Osbeckia chinensis* remains unresolved rather than negative.
+- **Same visible morph, different routing:** nonheterantherous *Solanum lycocarpum* partitions function among floral units, whereas nonheterantherous *Senna spectabilis* has within-flower pollen-fate division, independently recorded in separate source blocks.
+- **Same route, different visible morph:** heterantherous *Senna alata* and nonheterantherous *Senna spectabilis* both exhibit source-tested within-flower pollen division. Visible stamen dimorphism cannot identify whether function is divided, let alone how that division evolved.
+
+Nothing in U3's source-extracted `TEMPORAL_SEPARATION`, `AMONG_FLOWER_MODULE_DIVISION` or `WITHIN_FLOWER_DIVISION_OF_LABOUR` implies *within-individual cue-reversible plasticity*, a verified nuclear genotype architecture or a historical origin. The mathematical `C` and `K` quantities of PAYOFF's plastic-vs-module comparison are not estimated from these rows.
+
+In particular, U3's control arms were *selected to contrast heteranthery*: the source-qualified contrast rejects deterministic morphology proxies but cannot estimate representative frequencies, an ecological conflict-to-module coefficient, selection strength or evolutionary transition probabilities. The next independent sample should be defined by taxon and pollen function-pair **before** reading the observed anther/routing outcome, and score morphology, route and reversible regulation as separate source-dependent traits.
+
 ## Updated core predictions; evidence needed next
 
 1. **Shared conflict can persist** — already directly observed as a source-screen pattern; to attribute persistence to high architecture costs, measure feasible structural alternatives and their fitness **on the same scale and ecological context**.
