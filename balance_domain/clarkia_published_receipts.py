@@ -60,7 +60,7 @@ def analyze(path: Path=ROOT/RECEIPT) -> dict:
     return{
         "schema":"BALANCE_CLARKIA_PUBLISHED_COMPETING_FUNCTION_MECHANISMS_V1",
         "status":"ORIGINAL_ARTICLE_SUMMARY_NOT_REANALYZED_DATA",
-        "source":{"paper_doi":data["source"]["paper_doi"],"dryad_doi":data["source"]["dataset_di"] if "dataset_di" in data["source"] else data["source"]["dataset_doi"]},
+        "source":{"paper_doi":data["source"]["paper_doi"],"dryad_doi":data["source"]["dataset_doi"]},
         "source_original_study_programmes":1,
         "published_compared_anther_timing_species":11,
         "published_timing_phylo_ANOVA_F":timing["F"],
@@ -71,7 +71,8 @@ def analyze(path: Path=ROOT/RECEIPT) -> dict:
                                     "no_dosing_over_dosing_ratio_computed":ratio,
                                     "original_F":doses["F"],"original_p_less_than":doses["p_upper_bound"]},
         "published_stigma_delivery":{"no_dosing_vs_dosing_log_ratio":delivery["no_dosing_log_ratio"],
-                                     "no_dosing_vs_dosing_ratio_computed":observed_stigma_ratio,
+                                     "exponentiated_published_log_coefficient":observed_stigma_ratio,
+                                     "not_unconditionally_a_raw_count_ratio":True,
                                      "original_p":delivery["p"],
                                      "causal_effect_positive_certified":False,
                                      "strict_equivalence_certified":False},
