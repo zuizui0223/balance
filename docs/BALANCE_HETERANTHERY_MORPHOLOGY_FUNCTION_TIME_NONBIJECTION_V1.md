@@ -53,6 +53,12 @@ Therefore macro floral-trait coding should cross **anatomical differentiation ×
 
 To test the strong central evolutionary question, the next empirical question is **not** whether two anther types exist. It is whether a verified conflict in a *specific functional coordinate* made new organs with specified route/timing properties yield larger net reproductive fitness than viable shared, reversible and other temporally programmed alternatives—and whether the resulting new heritable architecture subsequently arose.
 
+## Separate conflict-first check: visitor chronology is not floral pollen-dosing architecture
+
+BALANCE also has the [frozen 21-group U6 consumptive-emasculation source universe](https://github.com/zuizui0223/balance/blob/audit/u6-preoutcome-taxonomy-20261021/docs/BALANCE_U6_SOURCE_OPPORTUNITY_AND_TAXON_ALIAS_AUDIT_V1.md), admitted by pollen-theft evidence before any morphology coding. In this upstream source screen, the source pollen pool is one common unit in 21/21 cases and original conflict timing is coded simultaneous in 18, sequential in three: *Clusia arrudae*, *Crescentia alata*, and *Tolmiea menziesii*. These **three source-ordered visitor arrivals do not establish scheduled anther opening**, do not demonstrate a genetically acquired temporal pollen reservoir and cannot be counted as replicated Clarkia-type floral ontogenies.
+
+All 42 U6 independent architecture coding slots remain unstarted, so adding U6 cannot yet measure whether the directly screened pollen-theft systems exhibit shared, timed, or structurally divided anthers. Conversely, the present outcome-selected Clarkia/U3 10-taxon table must never be injected to fill the U6 missing response states. Canonical U6 taxonomy includes a held *Melastoma affine*–*M. malabathricum* accepted-species overlap with U3 (plus the *Impatiens capensis* U1 exact-species overlap); cross-study species independence must be audited before interpreting any new comparative association.
+
 ## Unresolved source-access limit and execution
 
 Dryad's public API provided [dataset](https://doi.org/10.5061/dryad.8cz8w9gmp) version **97733**, 29 file names and source-declared SHA256 values. Anonymous raw retrieval returned **HTTP 401 (API ZIP)** and **403 (public file_stream)**. The published deposit includes a greenhouse analysis script `BombusTrials2018.R`, but the named input CSV is absent from the 29-file manifest. We did **not** download raw records, replicate author model fits or estimate new controlled effects.
