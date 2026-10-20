@@ -54,6 +54,10 @@ A separate original high/low resource manipulation in *Wurmbea* by Vaughton & Ra
 
 **Causal consequence:** test whether the ecological regime changes the distribution of **reversibly expressed sexual states** before interpreting population structure or cpDNA variants as fixed evolutionary states. The next experimental design must separate `sex_expression_within_individual`, `inherited_nuclear_sex_architecture`, and `phylogenetic_origin` as three different response variables. The original 1999 and 2011 studies are **two source programmes**, not 2008 cpDNA source experimental replications.
 
+### Source-level context: plasticity costs differ across sex systems
+
+The independently organized [original *Wurmbea* sex allocation source comparison](BALANCE_WURMBEA_FUNCTIONAL_COST_HETEROGENEITY_V1.md) records the **same study's** three sexual-system populations with both males and hermaphrodites. Phenotypic males made ~2x as much pollen per flower as hermaphrodites in subdioecious *W. dioica* but ~40% less in two *W. biglandulosa* populations. Negative partial associations of female perfect-flower expression with male pollen/flower size were confined to the subdioecious population. This is a **source-supported heterogeneity of male-component payoff proxies**, not independent multiple-source confirmation of a genetic cost of plasticity, a matched lifetime-fitness balance, or evidence of sexual-system origins.
+
 ## Ecological payoff gate remains separate
 
 The **source-published** maternal seed-fitness advantage of females relative to fruiting males in *W. dioica* was **3.7 versus 1.4** after manipulated male outcrossing. [Ramsey et al. 2006](https://doi.org/10.1111/j.1420-9101.2006.01129.x). That is a `2.64`-fold relative ratio change, not a general fecundity or population invasion measurement.
