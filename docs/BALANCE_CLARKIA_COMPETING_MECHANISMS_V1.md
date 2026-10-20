@@ -38,22 +38,48 @@ The route matters. For SCH, an external reward/transfer pollen-use conflict is s
 
 **Crucial historical limit:** the study's lineage reconstruction supports a history of heteranthery's visible features, not the historical causal direction from an experimentally measured fitness conflict to the origination of independently functional stamen modules. Evolutionary routes such as selection for pollen persistence/male competition, preexisting developmental anisotropy, phylogenetic sorting and demographic change remain different alternatives.
 
-## First executable public-source gate
+## Published numeric results: a positive alternative mechanism, with important null-test limits
 
-[Source acquisition code](../balance_domain/clarkia_kay2020_source.py) uses the published dataset's exact Dryad DOI, downloads the public source archive, and requires seven predetermined files from the original experiment and phylogeny:
+The [article-text source receipt](../data/CLARKIA_KAY2020_PUBLISHED_STATISTIC_RECEIPTS_V1.json) and its [reproducible arithmetic audit](../balance_domain/clarkia_published_receipts.py) preserve quantities that the **2020 paper itself** reports. These were **not estimated from newly accessible Dryad row-level data**.
+
+| Mechanism prediction | Original source observation/statistic | Admissible conclusion |
+| --- | --- | --- |
+| Delay between anther whorls | Greenhouse timing of **6 heterantherous versus 5 nonheterantherous species**, phylogenetic ANOVA `F=75.71, p=.002` | Source-reported lower dehiscence-time overlap in heterantherous Clarkia supports **temporal staging** |
+| Exclusive pollen reward/export roles | Both whorls supply pollen to bee scopae and stigmas; scopa–stigma proportion test `t=-1.401, p=.17` | **No detected** destination specialization, **not** a test proving equivalence |
+| Pollen amount potentially available | Fully dehisced/no-dosing treatment **4.6 mm** exposed pollen versus gradual/dosing **1.9 mm**, `F=483.17, p<.001`; ratio **2.421** | Manipulated/flower-age-related difference in **pollen exposure**, not proof of more pollen exported |
+| Pollen arriving on receptive stigmas | Original negative-binomial model reports no-dose log effect `-0.3507, p=.27`; exponentiated coefficient **~0.704**; **13** dosing and **15** no-dosing flower arrays | Point direction is compatible with no-dose receiving less, but **no significant improvement in stigma deposition by dosing** is identified. Link-dependent coefficient is not raw pollen-count ratio |
+| Pollen groomed/provisioned by bees | Corbicular pollen **6.7 mg** dosing versus **6.5 mg** no dosing; `p=.923` | No detected difference, **not evidence of equivalence** |
+| Evolutionary correlation | Heteranthery–bee pollination `p=.055`; heteranthery–anther movement `p=.004` in published phylogenetic comparisons | Distinct source associations, **not the historical causal origin of new functional modules** |
+
+**Important experimental limitation:** In the source greenhouse trial, fully dehisced/no-dosing flowers were **one day older** than dosing flowers; the experiment does not exclusively manipulate pollen availability while holding every aspect of flower age constant. The test uses one bumblebee per array; the **array**, not individual pollen grains or stigmas alone, defines the treatment unit. The authors' interpretation favors gradual pollen presentation on the *joint evidence*, not on a statistically significant 30% stigma-delivery increase.
+
+The source paper describes one likely ancestral gain and two losses of Clarkia heteranthery, *not* multiple independent new origins. These historical branches do not establish that pollen consumption versus transport conflict historically caused the new morphology.
+
+## Public Dryad data-access result: metadata PASS, raw experiment HOLD
+
+[Read-only Dryad source audit](../balance_domain/clarkia_kay2020_source.py) was actually executed against the 2020 archive. The public metadata identify **dataset version 97733 with 29 deposited files**. Seven original targeted filenames and their **author-declared SHA256 and file sizes** can be checked against the live metadata, including:
 `Clarkia_Phenotype_Heteranthery.csv`, `ClarkiaITS.nex`, `time_lapse_data.csv`, `pollen_data.csv`, `pollen_available.csv`, `CungSeeds.csv`, `CungManipulative.csv`.
 
-It records archive and input-file hashes, exact original column names, row counts, preview source fields and low-cardinality categories. The script does **not** reinterpret raw data, calculate a significance test or substitute an unknown value for negative evidence yet. A source mismatch or missing file **fails closed**; no third-party full dataset is committed. After obtaining real source schema and provenance, a separate locked analysis can test timing, pollen-fate channel and export manipulation. Predeclared interpretation:
-- source `p>=0.05` **not equal** proof of no functional specialization;
-- anther whorl/cue positions **not equal** biological functions until pollen fates are experimentally determined;
-- source phylogeny **not equal** historical causality;
-- a selected Clarkia genus **not equal** a representative global macro frame.
+However, Dryad's REST `datasets/.../download` returned **401**, and its human-facing `downloads/file_stream/...` returned **403** from the unauthenticated GitHub runner. The Dryad API documentation confirms raw file/archive downloads can require OAuth credentials. Accordingly, **no raw table rows, raw hashes verified against actual bytes, row-level confidence intervals, or re-estimated ecological effects are claimed**. The metadata-only JSON is a **source-admission HOLD**, not a negative biological result. A locally supplied authorized copy can later be independently SHA256-verified without changing the original inference contract.
 
-## Execution
+There is an additional **source completeness** caveat: the deposited file inventory lists `BombusTrials2018.R`, and the source's usage notes refer to `BombusTrials2018.csv`, but the CSV is **absent from the published 29-file version**. Thus the particular pollen-dosing trial cannot currently be reconstructed from its registered experimental rows through this source lane. Do not invent its missing inputs.
+
+## Publication and biological causal ceiling
+
+The cross-system, two-original-study observation is defensible:
+- ***Solanum rostratum*:** source experiments support functional specialization between feeding and pollinating anthers;
+- ***Clarkia*:** source experiments support timing/gradual pollen dosing, with no **detected** whorl specialization in the studied species.
+
+These two data programmes invalidate a deterministic equation of **heteranthery morphology = functional division of pollen roles**. They do **not** yield a representative probability of a mechanism, a comparable common-fitness `R-K`, or an independent estimate of conflict-caused morphological origin.
+
+For PAYOFF/SLK, **programmed irreversible developmental staggering** is distinct both from reversible cue-memory plasticity and from independently coexpressed structural function separation. A biological three-option model **SHARED / PLASTIC / FIXED MODULE** must not relabel temporal dosing as memory-based plasticity. For the full empirical ecology, time-partitioned developmental pollen release is a **fourth feasible strategy class** whose time-resolved costs and gamete exports would need independent measurement.
+
+Reproduction commands:
 
 ```bash
-python -m pytest -q tests/test_clarkia_kay2020_source.py
-python scripts/audit_clarkia_kay2020_dryad.py --out /tmp/clarkia_source_schema.json
+python -m pytest -q tests/test_clarkia_kay2020_source.py tests/test_clarkia_published_receipts.py
+python scripts/audit_clarkia_kay2020_dryad.py --out /tmp/clarkia_metadata_only.json
+python scripts/audit_clarkia_published_receipts.py --out /tmp/clarkia_published_receipts.json
 ```
 
-GitHub Actions for this separate source lane runs the original-data admission and creates a bounded auditable schema-only JSON. The journal-facing SLK and BITA manuscripts and BALANCE V4 confirmatory data stay unchanged.
+No original data, BALANCE V4 confirmatory source outcomes, active SLK journal manuscript or BITA Letter has been edited. *Clarkia* was discovered from a published outcome-driven study; the independent future macro denominator still requires outcome-blind taxon/family selection.
