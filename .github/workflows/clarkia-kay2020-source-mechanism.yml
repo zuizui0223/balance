@@ -1,0 +1,79 @@
+name: Clarkia original Dryad mechanisms source audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/clarkia-kay2020-source-mechanism.yml"
+      - "balance_domain/clarkia_kay2020_source.py"
+      - "scripts/audit_clarkia_kay2020_dryad.py"
+      - "tests/test_clarkia_kay2020_source.py"
+      - "docs/BALANCE_CLARKIA_COMPETING_MECHANISMS_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trust-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test source and original-data identity without network
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_clarkia_kay2020_source.py
+
+  inspect-originals:
+    needs: trust-boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download public Kay2020 original Dryad archive and source-hash files
+        run: |
+          python scripts/audit_clarkia_kay2020_dryad.py \
+            --out /tmp/balance_kay2020_clarkia_schema.json > /tmp/balance_kay2020_clarkia_stdout.txt
+      - name: Audit source membership and expose bounded sampling schema
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/balance_kay2020_clarkia_schema.json").read_text())
+          assert r["paper_doi"]=="10.1098/rspb.2020.2593"
+          assert r["dataset_doi"]=="10.5061/dryad.8cz8w9gmp"
+          assert r["source_file_count"]>=7
+          assert r["no_new_evolutionary_causal_origin"] is True
+          print("DRYAD ORIGINAL DATASET",r["dataset_doi"],"version",r["dataset_version_number"])
+          print("source ZIP SHA256",r["download_zip_sha256"])
+          print("source files",r["source_file_count"])
+          for path,info in r["source_files"].items():
+              if path in {
+                  "clarkia_phenotype_heteranthery.csv","time_lapse_data.csv",
+                  "pollen_data.csv","pollen_available.csv","cungseeds.csv",
+                  "cungmanipulative.csv","clarkiaits.nex"
+              }:
+                  print("SOURCE_SCHEMA",path,json.dumps(info,ensure_ascii=False,sort_keys=True))
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as h:
+              h.write("## Clarkia independent causal-alternative source\n\n")
+              h.write(f"- Study DOI: {r['paper_doi']}\n")
+              h.write(f"- Dataset DOI: {r['dataset_doi']}\n")
+              h.write(f"- Version: {r['dataset_version_number']}\n")
+              h.write(f"- SHA256: \`{r['download_zip_sha256']}\`\n")
+              h.write("- Original data retrieved; schema only (no novel effect yet).\n")
+          PY
+      - name: Preserve source schema, hashes and data identity only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-clarkia-kay2020-original-source-${{ github.run_id }}
+          path: /tmp/balance_kay2020_clarkia_schema.json
+          if-no-files-found: warn
+          retention-days: 30
