@@ -2,6 +2,10 @@
 
 `balance` is the middle-world theory between [`sch`](https://github.com/zuizui0223/sch) conflict identification and [`slk`](https://github.com/zuizui0223/slk) architecture value/evolutionary transport. [`bita`](https://github.com/zuizui0223/bita) is an orthogonal mechanism-identification layer rather than the owner of the architecture-value boundary.
 
+## U6 original-source ecological clock observations (2026-10-21)
+
+[Original-source descriptions for the first six frozen U6 taxa](docs/BALANCE_U6_FIRST6_ORIGINAL_ECOLOGICAL_CLOCKS_V1.md) are assembled in their **outcome-independent cohort order** without writing human CODER_A/B scores or changing U6 source screening. The source evidence includes visitor contact filtering in *Amomum*, visitor time-of-day differences in *Bromelia*, inflorescence opening ecology in *Banksia*, and controlled pollen-removal/deposition effects on floral phase duration in *Campanula*. These are **different clocks**, not 6 identified adaptive module origins. The remaining 15 U6 taxa are explicitly unreviewed in this exploration, and the original 42 independent coder rows remain `UNSTARTED/UNRESOLVED`.
+
 ## Programme structure
 
 ```text
