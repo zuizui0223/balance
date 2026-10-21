@@ -1,0 +1,68 @@
+name: U6 original source ecological clocks first six
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/u6-first-six-ecological-clocks.yml"
+      - "balance_domain/u6_source_mechanism_clocks.py"
+      - "data/BALANCE_U6_FIRST6_ORIGINAL_PHENOMENOLOGY_V1.json"
+      - "tests/test_u6_source_mechanism_clocks.py"
+      - "scripts/audit_u6_source_mechanism_clocks.py"
+      - "docs/BALANCE_U6_FIRST6_ORIGINAL_ECOLOGICAL_CLOCKS_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test frozen source order, original citations and prohibited architecture promotion
+        run: |
+          python -m pip install "pytest>=8,<10"
+          python -m pytest -q tests/test_u6_source_mechanism_clocks.py
+      - name: Reproduce bounded original-biology clock ledger
+        run: |
+          python scripts/audit_u6_source_mechanism_clocks.py \
+            --out /tmp/balance-u6-first-six-clock-receipt.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          r=json.loads(Path("/tmp/balance-u6-first-six-clock-receipt.json").read_text())
+          assert r["status"]=="SOURCE_REVIEW_ONLY_DOES_NOT_COMPLETE_ANY_U6_CODER_ROW"
+          assert r["original_frozen_admitted_groups"]==21
+          assert r["source_reviewed_initial_groups"]==6
+          assert r["source_review_remaining_groups_unreviewed"]==15
+          assert r["source_recovery_states"]=={"RESOLVED":5,"EVIDENCE_CEILING":1}
+          assert r["source_programmes_evaluated"]==8
+          assert r["source_contexts_not_matched_count"]==2
+          assert r["frozen_human_coder_rows_left_untouched"]==42
+          assert r["independent_adjudicated_architecture_groups"]==0
+          assert r["qualifying_structural_origin_effects"]==0
+          assert r["frozen_v4_outcome_file_read"] is False
+          assert r["source_timing_tag_is_not_substituted_for_any_of_these_clocks"] is True
+          print("FROZEN first-six ecological source clocks:",r["clock_axes_species_presence_counts"])
+          print("SOURCE evidence statuses:",r["source_level_count"])
+          print("No independent source architecture code / causal trait origin inferred")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as f:
+              f.write("## First-six U6 original ecological clock evidence\\n\\n")
+              f.write("- Frozen-source first six taxa (21 total), 8 article/source contexts; 5 source-resolved + 1 EVIDENCE_CEILING\\n")
+              f.write("- Visit contact vs within-day visitors vs flower development vs lab feeding are different clocks\\n")
+              f.write("- Campanula: original manipulated pollen removal/deposition altered floral phase lengths; NOT a reversible return to an earlier stage\\n")
+              f.write("- U6 original 42 CODER_A/B source rows unchanged; no architecture or V4 outcome opened\\n")
+          PY
+      - name: Upload source-attributed observation summary without source full text
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-u6-initial-six-clock-evidence-${{ github.run_id }}
+          path: /tmp/balance-u6-first-six-clock-receipt.json
+          if-no-files-found: error
+          retention-days: 30
