@@ -87,6 +87,33 @@ as one common net architectural comparison.
 Original-source four-species audit:
 docs/BALANCE_PLANT_CONFLICT_MULTIPLEX_ECOLOGY_V1.md.
 
+## First independently acquired species-first panel (2026-10-19)
+
+The first data acquisition from the official GBIF accepted-species API and
+GloBI public association API is now source-archived in
+docs/BALANCE_GBIF_GLOBI_SPECIES_FIRST_COVERAGE_V1.md.
+
+Twelve convenience-selected angiosperm families spanning 12 orders, sampled
+before GloBI lookup with a fixed SHA256 rule, produced **48 taxon names**.
+All 48 GloBI requests completed: **16 species** had a literal target-name
+association, **32 had none documented** in the fetched response, and the 16
+accounted for **188 exact-name relationship rows**. The single Solanum
+asperolanatum had 103 of those rows. Only two rows across all 48 taxa were
+labelled flower visitation and none were directly labelled pollination.
+Matching actual GBIF species keys (rather than name-only joins) retained
+88/188 rows, dominated by one species; 100 need independent taxon concept
+crosswalk.
+
+**Do not present these as ecological frequency estimates.** The initial
+families are nonrandom convenience strata, the GBIF index numOccurrences
+field is not verified occurrence-level effort, GloBI's sparse floral
+association documentation is not natural absence, and interaction records
+do not identify direct same-axis selection conflict. Source-code organism/
+flower fitness evidence belongs in a SEPARATE confirmation layer. The
+source-first accepted species names remain in the denominator regardless of
+documentation coverage. Expand via independent occurrence-effort, pollination
+network and taxonomic-author sources before modelling ecology.
+
 ## Sampling frame
 
 The current 17-cluster reality-pattern ledger is a recurrence map and is intentionally enriched for informative cases. It is **not** the macro sampling frame.
