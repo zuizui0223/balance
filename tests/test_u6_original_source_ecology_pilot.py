@@ -40,6 +40,11 @@ def test_real_selected_six_have_registered_source_only_observations():
     assert len(r["analysis_rows"])==21
     assert r["original_abstract_observations_extracted"]==6
     assert r["not_yet_extracted"]==15
+    assert r["distinct_admission_source_reference_ids"]==21
+    assert r["shared_original_source_reference_between_taxa"]=={
+        "U6_REF_078":["Actinidia_deliciosa","Echium_plantagineum"]
+    }
+    assert r["taxa_with_shared_original_source_reference_are_not_independent_studies"]
     assert r["source_timing_groups"]=={"simultaneous":18,"sequential":3}
     assert r["selected_timing_counts"]=={
         "SIMULTANEOUS":3,"SEQUENTIAL_WITHIN_UNIT":3,
