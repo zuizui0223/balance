@@ -1,0 +1,110 @@
+{
+  "schema_version": "BALANCE_GBIF_OCCURRENCE_EFFORT_48_SOURCE_MANIFEST_V1",
+  "status": "REAL_GBIF_OCCURRENCE_SEARCH_COUNTS_POST_OPEN_DESCRIPTIVE_NOT_CONFLICT",
+  "gbif_snapshot_date": "2026-10-24",
+  "globi_snapshot_date": "2026-10-19",
+  "original_species_sampling_selected_before_interactions": true,
+  "source_frame_species_first": true,
+  "family_strata_are_convenience_selected": true,
+  "original_GBIF_selected_manifest_path": "data/BALANCE_GBIF_SPECIES_FIRST_SELECTED_V1.json",
+  "original_GBIF_selected_manifest_git_blob_sha1": "d9c8a85e9001d92bfaa163120841b84c94649054",
+  "original_GloBI_static_coverage_path": "data/BALANCE_GBIF_GLOBI_SPECIES_FIRST_STATIC_COVERAGE_V1.json",
+  "original_GloBI_static_coverage_git_blob_sha1": "a3c07a36cb1fc58376c93a9d8a7bc8e09683b78d",
+  "source_batch_paths": [
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_01.json",
+      "git_blob_sha1": "219554152d533d5ad137383e7d579f49b51d3883",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_02.json",
+      "git_blob_sha1": "c57c0899ed2c2e8776a553ba1f9830ba560a1d90",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_03.json",
+      "git_blob_sha1": "2e5f615bb3090a3d4f9514aac53117cdc4ee79cd",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_04.json",
+      "git_blob_sha1": "7c03f533b7bd913e9ae7999a07df33fe46127462",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_05.json",
+      "git_blob_sha1": "b49c2411309ac5eacfa4503704c9857798096ff6",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_06.json",
+      "git_blob_sha1": "ce5053c6c0dc83587ead992336170a7929419cb7",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_07.json",
+      "git_blob_sha1": "c2caacba0ae8c29c6d19b5cca7d55f06c94ac90b",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_08.json",
+      "git_blob_sha1": "996d6d99fdbb12faf010cee51d8121f427399e33",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_09.json",
+      "git_blob_sha1": "0a704047a9643a132133dc9f8133d5a8f53def74",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_10.json",
+      "git_blob_sha1": "b1fa01adf6258efc938f707534475428d3966d81",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_11.json",
+      "git_blob_sha1": "193d0d5c8014e65522bc9ee90c42c3459572d437",
+      "expected_records": 4
+    },
+    {
+      "path": "data/external/gbif/2026-10-24/occurrence_effort_batch_12.json",
+      "git_blob_sha1": "1a5bfd9e0fc30737a4f2820b0dce5ecd984692ba",
+      "expected_records": 4
+    }
+  ],
+  "source_api": "https://api.gbif.org/v1/occurrence/search",
+  "source_query_total_url_format": "https://api.gbif.org/v1/occurrence/search?taxonKey={gbifKey}&limit=0",
+  "source_query_coordinates_url_format": "https://api.gbif.org/v1/occurrence/search?taxonKey={gbifKey}&hasCoordinate=true&limit=0",
+  "public_web_text_extraction_not_original_HTTP_bytes": true,
+  "live_GBIF_occurrence_index_not_pinned_release": true,
+  "GBIF_occurrence_counts_include_matched_descendant_taxa": true,
+  "original_GBIF_species_search_numOccurrences_is_not_occurrence_search_count": true,
+  "record_effort_proxy_not_direct_plant_interaction_evidence": true,
+  "original_denominator_never_reselected_after_GloBI": true,
+  "observed_aggregate_verification": {
+    "n_species": 48,
+    "n_families": 12,
+    "n_with_any_GBIF_occurrence": 45,
+    "total_GBIF_indexed_occurrences": 20131,
+    "total_GBIF_occurrences_with_coordinates": 13049,
+    "n_with_GloBI_exact_target_name": 16,
+    "n_without_GloBI_exact_target_name": 32,
+    "n_without_GloBI_but_with_GBIF_records": 29,
+    "median_GBIF_occurrences_GloBI_documented": 701,
+    "median_GBIF_occurrences_GloBI_undocumented": 6.5,
+    "n_families_with_both_GloBI_documented_and_not": 5,
+    "n_families_with_higher_documented_median_GBIF_occurrences": 5,
+    "n_GloBI_documented_among_family_top_two_GBIF_counts": 11,
+    "n_GloBI_documented_among_family_bottom_two_GBIF_counts": 5
+  },
+  "sampling_and_ecological_claim_limits": {
+    "no_same_coordinate_competing_fitness_gradients_measured": true,
+    "index_occurrence_count_not_true_sampling_effort_denominator": true,
+    "cross_date_comparison_not_simultaneously_indexed": true,
+    "unrecorded_GloBI_interaction_not_biological_absence": true,
+    "ecological_association_not_causal_evidence_effort": true,
+    "no_phylogenetic_or_guild_prevalence_inferred": true,
+    "strict_structural_BALANCE_occupancy_identified": false,
+    "additional_independent_biological_clusters": 0
+  }
+}

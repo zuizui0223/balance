@@ -1,0 +1,70 @@
+{
+  "schema_version": "BALANCE_GBIF_OCCURRENCE_EFFORT_SOURCE_BATCH_V1",
+  "retrieval_date": "2026-10-24",
+  "batch_index": 6,
+  "source_kind": "OFFICIAL_GBIF_OCCURRENCE_SEARCH_COUNTS_TEXT_EXTRACTED_NOT_HTTP_BYTES",
+  "n_selected_taxa": 4,
+  "original_species_selection_untouched": true,
+  "records": [
+    {
+      "gbif_species_key": 3028697,
+      "gbif_species_name": "Alchemilla insignis",
+      "gbif_family": "Rosaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028697&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":1,\"results\":[],\"facets\":[]}",
+        "count": 1
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028697&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":1,\"results\":[],\"facets\":[]}",
+        "count": 1
+      }
+    },
+    {
+      "gbif_species_key": 3028700,
+      "gbif_species_name": "Alchemilla elongata",
+      "gbif_family": "Rosaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028700&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":152,\"results\":[],\"facets\":[]}",
+        "count": 152
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028700&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":73,\"results\":[],\"facets\":[]}",
+        "count": 73
+      }
+    },
+    {
+      "gbif_species_key": 3028684,
+      "gbif_species_name": "Alchemilla johnstonii",
+      "gbif_family": "Rosaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028684&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":894,\"results\":[],\"facets\":[]}",
+        "count": 894
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028684&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":328,\"results\":[],\"facets\":[]}",
+        "count": 328
+      }
+    },
+    {
+      "gbif_species_key": 3028696,
+      "gbif_species_name": "Alchemilla stricticaulis",
+      "gbif_family": "Rosaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028696&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3028696&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      }
+    }
+  ]
+}

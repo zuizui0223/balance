@@ -1,0 +1,70 @@
+{
+  "schema_version": "BALANCE_GBIF_OCCURRENCE_EFFORT_SOURCE_BATCH_V1",
+  "retrieval_date": "2026-10-24",
+  "batch_index": 4,
+  "source_kind": "OFFICIAL_GBIF_OCCURRENCE_SEARCH_COUNTS_TEXT_EXTRACTED_NOT_HTTP_BYTES",
+  "n_selected_taxa": 4,
+  "original_species_selection_untouched": true,
+  "records": [
+    {
+      "gbif_species_key": 2703334,
+      "gbif_species_name": "Anthoxanthum arcticum",
+      "gbif_family": "Poaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703334&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":997,\"results\":[],\"facets\":[]}",
+        "count": 997
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703334&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":770,\"results\":[],\"facets\":[]}",
+        "count": 770
+      }
+    },
+    {
+      "gbif_species_key": 2703315,
+      "gbif_species_name": "Dendrocalamus asper",
+      "gbif_family": "Poaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703315&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":493,\"results\":[],\"facets\":[]}",
+        "count": 493
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703315&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":114,\"results\":[],\"facets\":[]}",
+        "count": 114
+      }
+    },
+    {
+      "gbif_species_key": 2703457,
+      "gbif_species_name": "Oryza barthii",
+      "gbif_family": "Poaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703457&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":4551,\"results\":[],\"facets\":[]}",
+        "count": 4551
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703457&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":3719,\"results\":[],\"facets\":[]}",
+        "count": 3719
+      }
+    },
+    {
+      "gbif_species_key": 2703367,
+      "gbif_species_name": "Ptilagrostis porteri",
+      "gbif_family": "Poaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703367&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":135,\"results\":[],\"facets\":[]}",
+        "count": 135
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=2703367&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":40,\"results\":[],\"facets\":[]}",
+        "count": 40
+      }
+    }
+  ]
+}
