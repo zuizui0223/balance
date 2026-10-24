@@ -1,0 +1,70 @@
+{
+  "schema_version": "BALANCE_GBIF_OCCURRENCE_EFFORT_SOURCE_BATCH_V1",
+  "retrieval_date": "2026-10-24",
+  "batch_index": 9,
+  "source_kind": "OFFICIAL_GBIF_OCCURRENCE_SEARCH_COUNTS_TEXT_EXTRACTED_NOT_HTTP_BYTES",
+  "n_selected_taxa": 4,
+  "original_species_selection_untouched": true,
+  "records": [
+    {
+      "gbif_species_key": 7690734,
+      "gbif_species_name": "Delphinium langxianense",
+      "gbif_family": "Ranunculaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7690734&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7690734&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      }
+    },
+    {
+      "gbif_species_key": 7702761,
+      "gbif_species_name": "Aconitum kashmiricum",
+      "gbif_family": "Ranunculaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7702761&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":49,\"results\":[],\"facets\":[]}",
+        "count": 49
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7702761&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":2,\"results\":[],\"facets\":[]}",
+        "count": 2
+      }
+    },
+    {
+      "gbif_species_key": 7672344,
+      "gbif_species_name": "Aconitum woroschilowii",
+      "gbif_family": "Ranunculaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7672344&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":1,\"results\":[],\"facets\":[]}",
+        "count": 1
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7672344&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      }
+    },
+    {
+      "gbif_species_key": 7677301,
+      "gbif_species_name": "Aquilegia sicula",
+      "gbif_family": "Ranunculaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7677301&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":5,\"results\":[],\"facets\":[]}",
+        "count": 5
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7677301&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":3,\"results\":[],\"facets\":[]}",
+        "count": 3
+      }
+    }
+  ]
+}
