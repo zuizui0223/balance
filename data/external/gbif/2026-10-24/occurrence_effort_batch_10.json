@@ -1,0 +1,70 @@
+{
+  "schema_version": "BALANCE_GBIF_OCCURRENCE_EFFORT_SOURCE_BATCH_V1",
+  "retrieval_date": "2026-10-24",
+  "batch_index": 10,
+  "source_kind": "OFFICIAL_GBIF_OCCURRENCE_SEARCH_COUNTS_TEXT_EXTRACTED_NOT_HTTP_BYTES",
+  "n_selected_taxa": 4,
+  "original_species_selection_untouched": true,
+  "records": [
+    {
+      "gbif_species_key": 3050474,
+      "gbif_species_name": "Brayopsis monimocalyx",
+      "gbif_family": "Brassicaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050474&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":46,\"results\":[],\"facets\":[]}",
+        "count": 46
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050474&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":22,\"results\":[],\"facets\":[]}",
+        "count": 22
+      }
+    },
+    {
+      "gbif_species_key": 3050640,
+      "gbif_species_name": "Schimpera arabica",
+      "gbif_family": "Brassicaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050640&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":1170,\"results\":[],\"facets\":[]}",
+        "count": 1170
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050640&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":775,\"results\":[],\"facets\":[]}",
+        "count": 775
+      }
+    },
+    {
+      "gbif_species_key": 3050681,
+      "gbif_species_name": "Hormathophylla longicaulis",
+      "gbif_family": "Brassicaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050681&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":518,\"results\":[],\"facets\":[]}",
+        "count": 518
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050681&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":242,\"results\":[],\"facets\":[]}",
+        "count": 242
+      }
+    },
+    {
+      "gbif_species_key": 3050480,
+      "gbif_species_name": "Brayopsis calycina",
+      "gbif_family": "Brassicaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050480&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":156,\"results\":[],\"facets\":[]}",
+        "count": 156
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=3050480&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":68,\"results\":[],\"facets\":[]}",
+        "count": 68
+      }
+    }
+  ]
+}
