@@ -1,0 +1,153 @@
+name: Independent AusTraits floral structural-opportunity audit
+
+on:
+  push:
+    branches:
+      - data/austraits-independent-architecture-20261019
+    paths:
+      - ".github/workflows/austraits-independent-architecture.yml"
+      - "balance_domain/austraits_architecture_macro.py"
+      - "balance_domain/austraits_organizational_hierarchy.py"
+      - "balance_domain/austraits_lineage_frontier.py"
+      - "balance_domain/island_austraits_fetch.py"
+      - "scripts/run_austraits_architecture_macro.py"
+      - "tests/test_austraits_architecture_macro.py"
+      - "tests/test_austraits_organizational_hierarchy.py"
+      - "tests/test_austraits_lineage_frontier.py"
+  pull_request:
+    paths:
+      - ".github/workflows/austraits-independent-architecture.yml"
+      - "balance_domain/austraits_architecture_macro.py"
+      - "balance_domain/austraits_organizational_hierarchy.py"
+      - "balance_domain/austraits_lineage_frontier.py"
+      - "balance_domain/island_austraits_fetch.py"
+      - "scripts/run_austraits_architecture_macro.py"
+      - "tests/test_austraits_architecture_macro.py"
+      - "tests/test_austraits_organizational_hierarchy.py"
+      - "tests/test_austraits_lineage_frontier.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: balance-independent-austraits-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate frozen-source and no-causal-promotion guards
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_austraits_architecture_macro.py tests/test_austraits_organizational_hierarchy.py tests/test_austraits_lineage_frontier.py
+
+  acquire-and-summarize:
+    # A single source-verified acquisition runs on the named research-branch
+    # push (or explicit workflow_dispatch), not again for every PR metadata
+    # or document-only change. All PRs still validate the scientific parser.
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download exact public AusTraits v7 and verify Zenodo checksum
+        run: |
+          python scripts/run_austraits_architecture_macro.py \
+            --out-dir /tmp/balance_austraits_independent_v7 \
+            > /tmp/balance_austraits_run_stdout.json
+      - name: Audit receipt and publish bounded descriptive findings
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/balance_austraits_independent_v7")
+          report = json.loads((root / "austraits_structural_opportunity_readout.json").read_text())
+          manifest = json.loads((root / "austraits_structural_opportunity_manifest.json").read_text())
+          assert report["archive_checksum_verified"]
+          assert report["release_version"] == "7.0.0"
+          assert manifest["archive_sha256"] == report["archive_sha256"]
+          assert report["status"] == "OPEN_PUBLIC_TRAIT_COVERAGE_NOT_DIRECT_CONFLICT"
+          pilot = report["sex_system_pollination_syndrome_pilot"]
+          print("AusTraits independent source-qualified sample")
+          print("release DOI:", report["release_doi"])
+          print("raw archive SHA256:", report["archive_sha256"])
+          print("source rows:", manifest["input_rows_in_discovered_table"])
+          print("selected trait rows:", report["standardized_selected_rows"])
+          print("unique source taxon names:", report["source_name_coverage"])
+          print("trait coverage:")
+          for key, datum in report["trait_coverage"].items():
+              print(f"  {key}: {datum['source_rows']} values, {datum['distinct_taxon_names']} named taxa")
+              print(f"    top raw: {datum['top_raw_labels']}")
+          print("strict sex × pollen mode overlap:", pilot["qualified_exact_species_overlap"])
+          print("comparison status:", pilot["status"])
+          print("wind/insect summaries:", pilot["by_pollen_mode"])
+          print("cross-tab:", pilot["sex_system_by_mode"])
+          print("raw diff wind minus insect:", pilot["raw_difference_wind_minus_insect"])
+          print("genera with both modes:", pilot["genera_with_both_pollen_modes"])
+          print("within-genus mean diff:", pilot["mean_within_genus_difference"])
+          print("POSTOPEN genus sign counts:", pilot["postopen_genus_overlap_signs"])
+          post = pilot["postopen_source_cohort_sensitivity"]
+          print("POSTOPEN source-qualifying species:", post["admitted_single_source_pair_species"])
+          print("POSTOPEN multi-source excluded species:", post["multiple_datasets_in_either_trait"])
+          print("POSTOPEN dominant source dataset pairs:", post["top_sex_source_to_pollen_source_pairs"])
+          print("POSTOPEN pollination-dataset-specific comparisons:")
+          for study, outcome in post["by_pollen_source"].items():
+              print(f"  {study}: {outcome}")
+          print("NOTE: post-open source/genus sensitivity is exploratory QC only.")
+          secondary = report["postopen_organizational_hierarchy"]
+          print("POSTOPEN flower/organism source levels:", secondary["sex_system_x_flower_structure"])
+          print("POSTOPEN flower sex x pollen mode:", secondary["flower_structure_x_pollen_mode"])
+          print("POSTOPEN triple source intersection:", secondary["sex_system_x_flower_structure_x_pollen"])
+          print("POSTOPEN genus-balanced sex system:", secondary["genus_balanced_sex_system_pollen"])
+          flower_source = secondary["flower_structure_x_pollen_mode"]["postopen_provenance_genus_diagnostics"]
+          print("POSTOPEN flower-sex x pollen GENUS BALANCE:", flower_source["genus_equal_weight"])
+          print("POSTOPEN flower-sex x pollen SOURCE STRATA:", flower_source["source_provider_strata"])
+          print("POSTOPEN consistent three-level sex/pollen FRACTIONS:", secondary["sex_system_x_flower_structure_x_pollen"]["separated_organization_fraction_by_pollen"])
+          print("POSTOPEN consistent three-level sex/pollen DIFFERENCE:", secondary["sex_system_x_flower_structure_x_pollen"]["wind_minus_insect_fraction"])
+          candidates = report["postopen_genus_candidate_frontier"]
+          print("POSTOPEN SPECIES SEX congeneric candidates:", candidates["species_sex_system_candidate_lineages"])
+          print("POSTOPEN FLOWER STRUCTURAL SEX congeneric candidates:", candidates["flower_structural_sex_candidate_lineages"])
+          assert candidates["source_trait_records_redistributed"] is False
+          assert candidates["status"] == "SOURCE_CANDIDATE_SCREEN_NOT_ORIGIN_INFERENCE"
+          assert secondary["not_direct_functional_conflict"] is True
+          assert secondary["not_historical_origins"] is True
+
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as f:
+              f.write("## Independent AusTraits structural-opportunity source audit\n\n")
+              f.write(f"- public fixed release: {report['release_doi']}\n")
+              f.write(f"- archive SHA256: \`{report['archive_sha256']}\`\n")
+              f.write(f"- source rows: {manifest['input_rows_in_discovered_table']:,}\n")
+              f.write(f"- selected source rows: {report['standardized_selected_rows']:,}\n")
+              f.write(f"- source taxon names: {report['source_name_coverage']:,}\n")
+              f.write(f"- strict wind/insect sex-system species: {pilot['qualified_exact_species_overlap']:,}\n")
+              f.write(f"- result readiness: \`{pilot['status']}\`\n")
+              f.write("- source data describe morphology/opportunity, **not causal trade-off or evolved structure**.\n")
+              f.write(f"- post-open organism x flower sex overlap: {secondary['sex_system_x_flower_structure']['same_exact_binomial_species']:,}\n")
+              f.write(f"- post-open flower sex x pollen overlap: {secondary['flower_structure_x_pollen_mode']['same_exact_binomial_species']:,}\n")
+              f.write(f"- post-open genus-equal wind-minus-insect difference: {secondary['genus_balanced_sex_system_pollen']['wind_minus_insect_equal_genus']}\n")
+              f.write(f"- potential same-genus organism sex-system contrasts: {candidates['species_sex_system_candidate_lineages']['candidate_genera_meeting_two_per_state']}\n")
+              f.write(f"- potential same-genus flower-level sex contrasts: {candidates['flower_structural_sex_candidate_lineages']['candidate_genera_meeting_two_per_state']}\n")
+              f.write("- These are descriptive congeneric candidates, NOT historical transition counts.\n")
+          PY
+      - name: Preserve immutable source manifest and non-redistributed summary only
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-independent-austraits-v7-${{ github.run_id }}
+          path: |
+            /tmp/balance_austraits_independent_v7/austraits_structural_opportunity_manifest.json
+            /tmp/balance_austraits_independent_v7/austraits_structural_opportunity_readout.json
+          if-no-files-found: error
+          retention-days: 60
