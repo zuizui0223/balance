@@ -94,6 +94,7 @@ def analyze(base:Path=ROOT)->dict[str,Any]:
     predicates,pred_sha=_load(base,PREDICTORS)
     timing={}
     module={}
+    spatial=set()
     for x in predicates:
         group=x["cluster_id"]
         if group not in groups or x["adjudication_status"]!="SCREENED":
@@ -110,11 +111,12 @@ def analyze(base:Path=ROOT)->dict[str,Any]:
                 raise ValueError("source pollen pool changed")
             module[group]=x["reported_value"]
         elif key=="conflict_spatial_geometry":
-            if x["reported_value"]!="SAME_UNIT":
-                raise ValueError("source spatial geometry changed")
+            if x["reported_value"]!="SAME_UNIT" or group in spatial:
+                raise ValueError("source spatial geometry changed or duplicate source group")
+            spatial.add(group)
         else:
             raise ValueError("unrecognized original source predictor")
-    if len(predicates)!=63 or set(timing)!=groups or set(module)!=groups:
+    if len(predicates)!=63 or set(timing)!=groups or set(module)!=groups or spatial!=groups:
         raise ValueError("three source predictors per each frozen group required")
     sequential=sorted(k for k,v in timing.items() if v=="SEQUENTIAL_WITHIN_UNIT")
     concurrent=sorted(k for k,v in timing.items() if v=="SIMULTANEOUS")
@@ -156,6 +158,7 @@ def analyze(base:Path=ROOT)->dict[str,Any]:
         all_rows.append({
             "dependency_group":name,
             "original_source_ref":packet_by[name]["source_reference_ids"],
+            "original_primary_source_bibliography":packet_by[name]["primary_source_basis"],
             "source_recovery_status":src["source_recovery_status"],
             "original_timing_exposure_code":timing[name],
             "original_source_pollen_pool":module[name],
