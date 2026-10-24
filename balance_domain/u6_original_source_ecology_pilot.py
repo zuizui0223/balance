@@ -11,7 +11,7 @@ A/B must remain blind to this pilot until their registered coding is locked.
 """
 from __future__ import annotations
 
-from collections import Counter
+from collections import Counter, defaultdict
 import csv
 import hashlib
 import json
@@ -151,6 +151,20 @@ def analyze(base:Path=ROOT)->dict[str,Any]:
         if row["provisional_ecological_interpretation"].startswith(FORBIDDEN_RESULT_MARKERS):
             raise ValueError("source ecological note cannot masquerade as frozen outcome")
 
+    by_reference=defaultdict(set)
+    for name in universe:
+        for reference_id in packet_by[name]["source_reference_ids"].split(";"):
+            if not reference_id.startswith("U6_REF_"):
+                raise ValueError("registered U6 source-reference identifier invalid")
+            by_reference[reference_id].add(name)
+    shared_source_programmes={
+        k:sorted(v) for k,v in by_reference.items() if len(v)>1
+    }
+    if shared_source_programmes!={"U6_REF_078":[
+        "Actinidia_deliciosa","Echium_plantagineum"
+    ]}:
+        raise ValueError("Original U6 primary study reuse across source taxa changed")
+
     all_rows=[]
     for name in universe:
         src=recovery_by[name]
@@ -193,6 +207,9 @@ def analyze(base:Path=ROOT)->dict[str,Any]:
             "SIMULTANEOUS":len(concurrent[:3]),
         },
         "original_abstract_observations_extracted":len(pilot),
+        "distinct_admission_source_reference_ids":len(by_reference),
+        "shared_original_source_reference_between_taxa":shared_source_programmes,
+        "taxa_with_shared_original_source_reference_are_not_independent_studies":True,
         "not_yet_extracted":21-len(pilot),
         "provisional_ecological_mechanisms_described_not_as_natural_rates":dict(sorted(cases.items())),
         "analysis_rows":all_rows,
