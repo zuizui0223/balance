@@ -189,6 +189,9 @@ def _reference_by_family(groups:dict[str,list[dict]],field:str)->dict:
             "family":family,
             "n_species":4,
             "n_name_documented":n_doc,
+            "all_four_sampled_species_same_genus":(
+                len({r["species"].split()[0] for r in members})==1
+            ),
             "contributes_to_within_family_reference":0<n_doc<4,
             "documented_rank_sum":observed/2,
             "conditional_rank_sum_expectation":expected2/2,
