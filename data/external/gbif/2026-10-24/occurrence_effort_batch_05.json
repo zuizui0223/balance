@@ -1,0 +1,70 @@
+{
+  "schema_version": "BALANCE_GBIF_OCCURRENCE_EFFORT_SOURCE_BATCH_V1",
+  "retrieval_date": "2026-10-24",
+  "batch_index": 5,
+  "source_kind": "OFFICIAL_GBIF_OCCURRENCE_SEARCH_COUNTS_TEXT_EXTRACTED_NOT_HTTP_BYTES",
+  "n_selected_taxa": 4,
+  "original_species_selection_untouched": true,
+  "records": [
+    {
+      "gbif_species_key": 8057963,
+      "gbif_species_name": "Phlomis tomentosa",
+      "gbif_family": "Lamiaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8057963&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":4,\"results\":[],\"facets\":[]}",
+        "count": 4
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8057963&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      }
+    },
+    {
+      "gbif_species_key": 8040934,
+      "gbif_species_name": "Thymus sudeticus",
+      "gbif_family": "Lamiaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8040934&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":31,\"results\":[],\"facets\":[]}",
+        "count": 31
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8040934&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":15,\"results\":[],\"facets\":[]}",
+        "count": 15
+      }
+    },
+    {
+      "gbif_species_key": 8056112,
+      "gbif_species_name": "Muniria megalophylla",
+      "gbif_family": "Lamiaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8056112&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":12,\"results\":[],\"facets\":[]}",
+        "count": 12
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8056112&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":11,\"results\":[],\"facets\":[]}",
+        "count": 11
+      }
+    },
+    {
+      "gbif_species_key": 8045124,
+      "gbif_species_name": "Monarda aristata",
+      "gbif_family": "Lamiaceae",
+      "total": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8045124&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":false,\"count\":2,\"results\":[],\"facets\":[]}",
+        "count": 2
+      },
+      "with_coordinates": {
+        "requested_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8045124&hasCoordinate=true&limit=0",
+        "original_source_text": "{\"offset\":0,\"limit\":0,\"endOfRecords\":true,\"count\":0,\"results\":[],\"facets\":[]}",
+        "count": 0
+      }
+    }
+  ]
+}
