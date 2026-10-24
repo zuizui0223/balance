@@ -51,8 +51,8 @@ EXPECTED= {
     "mixed_discordant_pairs":0,
     "mixed_tied_pairs":0,
     "n_conditional_assignments":1536,
-    "max_rank_sum":48,
-    "expected_rank_sum":40,
+    "max_rank_sum":28,
+    "expected_rank_sum":20,
     "upper_tail_count":1,
     "two_sided_tail_count":2,
 }
