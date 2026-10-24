@@ -75,7 +75,7 @@ def test_ecological_observation_not_a_biological_structure_label():
     assert "dioecious" in observed["Clusia_arrudae"]["floral_observation"].lower()
     assert "protandry" in observed["Tolmiea_menziesii"]["floral_observation"]
     assert "narrow passage" in observed["Amomum_subulatum"]["floral_observation"]
-    assert "four trees" in observed["Crescentia_alata"]["functional_time_observation"]
+    assert "four-tree" in observed["Crescentia_alata"]["functional_time_observation"]
     assert observed["Aphelandra_golfodulcensis"]["source_recovery_status"]=="EVIDENCE_CEILING"
     assert "pollen" in observed["Actinidia_deliciosa"]["ecological_observation"]
     assert all(x["independent_A_B_coding_performed_by_this_audit"] is False
