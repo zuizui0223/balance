@@ -61,6 +61,10 @@ def test_all_16_within_family_documented_undocumented_pairs_concordant():
         "Fabaceae":3,"Rosaceae":3,"Rubiaceae":3,"Brassicaceae":4,"Ericaceae":3
     }
     assert all(x["pairwise_documented_lower"]==0 for x in mixed.values())
+    assert {family for family,x in mixed.items()
+            if x["all_four_sampled_species_same_genus"]}=={
+                "Fabaceae","Rosaceae"
+            }
     assert len(stat["family_data"])==12
 
 
