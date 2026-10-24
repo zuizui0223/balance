@@ -1,0 +1,76 @@
+name: GBIF species-first angiosperm panel and independent GloBI coverage
+'on':
+  push:
+    branches:
+      - data/gbif-twelve-families-species-first-panel-20261019
+    paths:
+      - .github/workflows/gbif-species-first-globi-panel.yml
+      - scripts/acquire_gbif_globi_species_first.py
+      - tests/test_gbif_species_first_acquisition.py
+      - data/BALANCE_GBIF_SPECIES_FIRST_CROSS_ORDER_PANEL_V1.json
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  acquire-public-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 19
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate outcome-blind family strata and offline source-loss guards
+        run: |
+          python -m pip install -e '.[dev]'
+          python -m pytest -q tests/test_gbif_species_first_acquisition.py
+      - name: Directly fetch original official public GBIF taxon windows then GloBI opportunities
+        run: |
+          python scripts/acquire_gbif_globi_species_first.py \
+            --frame data/BALANCE_GBIF_SPECIES_FIRST_CROSS_ORDER_PANEL_V1.json \
+            --output-root .
+      - name: Assert denominators and noncausal boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          selected=json.loads(Path('data/BALANCE_GBIF_SPECIES_FIRST_SELECTED_V1.json').read_text())
+          network=json.loads(Path('data/BALANCE_GBIF_GLOBI_SPECIES_FIRST_READOUT_V1.json').read_text())
+          assert selected['selection_rule_frozen_before_GloBI_interactions'] is True
+          assert network['n_gbif_taxa_selected']==selected['n_species_selected']
+          assert len(network['per_species'])==selected['n_species_selected']
+          assert network['no_direct_plant_fitness_selection_result'] is True
+          assert network['strict_structural_BALANCE_occupancy_identified'] is False
+          print('GBIF accepted species:',selected['n_species_selected'])
+          print('Taxonomic family success:',selected['n_families_with_complete_quota'],'of',selected['n_family_strata'])
+          print('GloBI successful source queries:',network['n_queries_completed'])
+          print('GloBI strict-target opportunities:',network['total_exact_target_name_relation_rows'])
+          print('GloBI unobserved or unavailable taxa retained:',network['n_GloBI_fetch_holds'])
+          PY
+      - name: Preserve all original source bytes and missingness in a bounded artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gbif-species-first-12-families-globi-opportunities
+          path: |
+            data/BALANCE_GBIF_SPECIES_FIRST_SELECTED_V1.json
+            data/BALANCE_GBIF_GLOBI_SPECIES_FIRST_READOUT_V1.json
+            data/external/gbif/2026-10-19/species_first_*.json
+            data/external/globi/2026-10-19/species_first_*.csv
+          if-no-files-found: error
+          retention-days: 30
+      - name: Commit authenticated public data snapshot onto the source-sampling branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/BALANCE_GBIF_SPECIES_FIRST_SELECTED_V1.json \
+                  data/BALANCE_GBIF_GLOBI_SPECIES_FIRST_READOUT_V1.json \
+                  data/external/gbif/2026-10-19/species_first_*.json
+          git add data/external/globi/2026-10-19/species_first_*.csv || true
+          if git diff --cached --quiet; then
+            echo 'No new public-source data to commit'
+          else
+            git commit -m 'Archive actual GBIF 12-family species-first sample and GloBI public interaction opportunities'
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
