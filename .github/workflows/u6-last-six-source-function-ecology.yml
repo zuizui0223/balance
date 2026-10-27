@@ -1,0 +1,70 @@
+name: U6 final six original ecological source notes with coder lockdown
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/u6-last-six-source-function-ecology.yml"
+      - "data/BALANCE_U6_LAST6_SOURCE_FUNCTION_ECOLOGY_V1.csv"
+      - "balance_domain/u6_last6_source_function_ecology.py"
+      - "scripts/audit_u6_last6_source_function_ecology.py"
+      - "tests/test_u6_last6_source_function_ecology.py"
+      - "docs/BALANCE_U6_LAST6_ORIGINAL_SOURCE_ECOLOGY_ADMISSION_LIMITS_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Original admission, source provenance, and original CODER_A/B embargo tests
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_u6_last6_source_function_ecology.py
+          python -m pytest -q tests/test_u6_next6_source_function_ecology.py
+      - name: Generate reproducible non-causal source provenance
+        run: |
+          python scripts/audit_u6_last6_source_function_ecology.py \
+            --out /tmp/balance_u6_last6_source.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          r=json.loads(Path("/tmp/balance_u6_last6_source.json").read_text())
+          assert r["frozen_taxon_groups"]==21
+          assert r["added_new_original_source_notes"]==6
+          assert r["main_plus_stacked_ecology_taxa"]==18
+          assert r["main_plus_stacked_groups_not_in_this_branch"]==[
+              "Banksia_menziesii","Bromelia_antiacantha","Campanula_americana"]
+          assert r["cross_branch_provisional_distinct_source_taxa"]==21
+          assert r["cross_branch_provisional_not_canonical"] is True
+          assert r["zeamays_pollen_predator_food_without_plant_fitness_source_review_required"] is True
+          assert r["independently_completed_architecture_slots"]==0
+          assert r["original_V4_confirmatory_architecture_opened"] is False
+          assert r["genetically_evolved_new_module_origins_demonstrated"] is False
+          print("Final six source taxa:",r["final_six_original_source_selected"])
+          print("Stacked branch source notes:",r["main_plus_stacked_ecology_taxa"])
+          print("Other branch contains the three remaining original first-six clock taxa:",r["main_plus_stacked_groups_not_in_this_branch"])
+          print("Cross-branch PROVISIONAL source coverage:",r["cross_branch_provisional_distinct_source_taxa"])
+          print("Zea 2004 predator diet source-admission qualification HOLD")
+          print("No A/B architecture coding or causal evolutionary origins established")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as f:
+              f.write("## Final six U6 ecological source notes — not blind architecture coding\n\n")
+              f.write("- Stacked branch original-source descriptions: **18/21** frozen U6 groups\n")
+              f.write("- Only across an **unmerged old draft source-clock branch**: **21/21 provisional original ecological descriptions**\n")
+              f.write("- Zea wind-pollen ingestion by predatory beetles: plant functional-conflict admission **HOLD**\n")
+              f.write("- Original independent CODER_A/B completed: **0/42**; no V4 outcomes opened\n")
+          PY
+      - name: Archive source-only hashes, not full external article content
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-u6-last6-source-ecology-${{ github.run_id }}
+          path: /tmp/balance_u6_last6_source.json
+          if-no-files-found: error
+          retention-days: 30
