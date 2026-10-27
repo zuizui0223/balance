@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/u6-last-six-source-function-ecology.yml"
       - "data/BALANCE_U6_LAST6_SOURCE_FUNCTION_ECOLOGY_V1.csv"
+      - "data/BALANCE_U6_IMPORTED_FIRST6_CLOCK_ONLY_THREE_V1.json"
       - "balance_domain/u6_last6_source_function_ecology.py"
       - "scripts/audit_u6_last6_source_function_ecology.py"
       - "tests/test_u6_last6_source_function_ecology.py"
@@ -44,6 +45,8 @@ jobs:
               "Banksia_menziesii","Bromelia_antiacantha","Campanula_americana"]
           assert r["cross_branch_provisional_distinct_source_taxa"]==21
           assert r["cross_branch_provisional_not_canonical"] is True
+          assert r["co_located_source_ecology_taxa"]==21
+          assert r["imported_old_clock_is_nonadjudicating"] is True
           assert r["zeamays_pollen_predator_food_without_plant_fitness_source_review_required"] is True
           assert r["independently_completed_architecture_slots"]==0
           assert r["original_V4_confirmatory_architecture_opened"] is False
@@ -52,12 +55,14 @@ jobs:
           print("Stacked branch source notes:",r["main_plus_stacked_ecology_taxa"])
           print("Other branch contains the three remaining original first-six clock taxa:",r["main_plus_stacked_groups_not_in_this_branch"])
           print("Cross-branch PROVISIONAL source coverage:",r["cross_branch_provisional_distinct_source_taxa"])
+          print("Co-located non-coder ecology coverage:",r["co_located_source_ecology_taxa"])
+          print("Older original source blob:",r["imported_old_source_blob_sha"])
           print("Zea 2004 predator diet source-admission qualification HOLD")
           print("No A/B architecture coding or causal evolutionary origins established")
           with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as f:
               f.write("## Final six U6 ecological source notes — not blind architecture coding\n\n")
               f.write("- Stacked branch original-source descriptions: **18/21** frozen U6 groups\n")
-              f.write("- Only across an **unmerged old draft source-clock branch**: **21/21 provisional original ecological descriptions**\n")
+              f.write("- Old original source-clock notes imported with their source blob SHA; **21/21 co-located source-only ecology descriptions**; NOT independent CODER_A/B architecture.\n")
               f.write("- Zea wind-pollen ingestion by predatory beetles: plant functional-conflict admission **HOLD**\n")
               f.write("- Original independent CODER_A/B completed: **0/42**; no V4 outcomes opened\n")
           PY
