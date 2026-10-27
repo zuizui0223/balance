@@ -48,7 +48,7 @@
     "count_at_or_more_extreme_positive_rank_separation": 1,
     "one_sided_conditional_exchangeable_label_probability": 0.0006510416666666666,
     "exploratory_two_sided_doubled_tail_p": 0.0013020833333333333,
-    "source_by_family_selection_not_randomized": false
+    "source_by_family_selection_not_randomized": true
   },
   "coordinate_record_count_sensitivity": {
     "n_paired_concordant": 16,
