@@ -1,0 +1,82 @@
+{
+  "schema_version": "BALANCE_GBIF_GLOBI_FAMILY_CONDITIONAL_RANK_FREEZE_V1",
+  "status": "POSTOPEN_REAL_PUBLIC_GBIF_AND_GLOBI_COVERAGE_ASSOCIATION_NOT_BIOLOGICAL_CONFLICT",
+  "original_source_snapshot_dates": {
+    "GBIF": "2026-10-24",
+    "GloBI": "2026-10-19"
+  },
+  "frozen_species_frame": {
+    "selected_species": 48,
+    "chosen_family_strata": 12,
+    "per_family": 4
+  },
+  "target_GloBI_name_documented": 16,
+  "directly_matched_GBIF_taxon_key_documented": 2,
+  "mixed_source_name_documentation_families": [
+    {
+      "family": "Brassicaceae",
+      "documented": 2,
+      "name_documented_taxa_are_top_occurrence_ranks": true
+    },
+    {
+      "family": "Ericaceae",
+      "documented": 1,
+      "name_documented_taxa_are_top_occurrence_ranks": true
+    },
+    {
+      "family": "Fabaceae",
+      "documented": 3,
+      "name_documented_taxa_are_top_occurrence_ranks": true
+    },
+    {
+      "family": "Rosaceae",
+      "documented": 1,
+      "name_documented_taxa_are_top_occurrence_ranks": true
+    },
+    {
+      "family": "Rubiaceae",
+      "documented": 1,
+      "name_documented_taxa_are_top_occurrence_ranks": true
+    }
+  ],
+  "original_record_count_test": {
+    "label": "GloBI verbatim target-name has >=1 row",
+    "n_mixed_families": 5,
+    "n_paired_name_documented_vs_undocumented_contrasts": 16,
+    "n_pair_concordant": 16,
+    "exact_conditional_arrangements": 1536,
+    "count_at_or_more_extreme_positive_rank_separation": 1,
+    "one_sided_conditional_exchangeable_label_probability": 0.0006510416666666666,
+    "exploratory_two_sided_doubled_tail_p": 0.0013020833333333333,
+    "source_by_family_selection_not_randomized": false
+  },
+  "coordinate_record_count_sensitivity": {
+    "n_paired_concordant": 16,
+    "exact_conditional_arrangements": 1536,
+    "right_tail_probability": 0.0006510416666666666,
+    "identical_species_documentation_labels_not_independent_replication": true
+  },
+  "direct_GBIF_key_sensitivity": {
+    "n_species_with_direct_GBIF_key": 2,
+    "n_mixed_families": 2,
+    "n_paired_contrasts": 6,
+    "n_pair_concordant": 3,
+    "n_conditional_label_placements": 16,
+    "one_sided_right_tail_conditional_p": 0.625,
+    "doubled_tail_conditional_p": 1
+  },
+  "design_and_inference_limits": {
+    "association_is_postopen_exploratory": true,
+    "exchangeability_within_family_not_verified": true,
+    "families_not_random_angiosperm_sample": true,
+    "source_observation_counts_not_independent_effort_days": true,
+    "family_rank_model_omits_genus_phylogenetic_nonindependence": true,
+    "species_taxonomic_name_match_not_author_confirmed": true,
+    "direct_GBIF_taxon_key_match_is_not_independent_taxonomic_concept_authorship_verification": true,
+    "GloBI_unrecorded_not_ecological_absence": true,
+    "GBIF_occurrence_counts_not_population_abundance": true,
+    "no_pollinator_or_antagonist_effect_measured": true,
+    "strict_structural_BALANCE_occupancy_identified": false,
+    "additional_independent_biological_clusters": 0
+  }
+}
