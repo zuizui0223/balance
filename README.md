@@ -16,6 +16,10 @@
 
 [Original-source ecology of six additional architecture-blind U6 taxa](docs/BALANCE_U6_NEXT6_ORIGINAL_FUNCTION_LOCATION_AUDIT_V1.md) now follows a deterministic **concurrent ranks 7–12** sample beyond the merged first-six and the separate first-six-clock draft. Main ecological observations cover **12/21 frozen U6 taxa**; a strictly provisional cross-draft total is **15/21**, not independent source programmes or completed anatomy coding. The most important source-stage contrast is original *Melastoma affine*: honeybees remove already-deposited **stigmatic pollen**, unlike thrips or pollen collectors removing **anther pollen**. *Impatiens capensis* source experiments show behavioural state can change pollen-transfer efficiency; *Grevillea barklyana* source pollinator exclusion shows greater than 50% reduced fruit set when bird pollinators are excluded but honeybees can access the flowers. These are original-study ecological observations, not `Phi`, new heritable module origins, or an alternative to independently blinded architecture coding. Existing V4 outcomes and all **42 unstarted** original U6 A/B coder rows remain untouched.
 
+## U6 final source-only ecological extraction (2026-10-28)
+
+[Last six frozen U6 original-study ecological descriptions and admission ceilings](docs/BALANCE_U6_LAST6_ORIGINAL_SOURCE_ECOLOGY_ADMISSION_LIMITS_V1.md) finish the *stacked branch's* original ecological source notes for **18/21** taxa. A **separate unmerged earlier first-six-clock branch** contains the three additional taxa, giving **21/21 only as provisional, non-adjudicated cross-branch coverage**, NOT independently coded anatomy or source-replayed complete datasets. A key new review need is *Zea mays*: the frozen source studies ladybird predators eating shed wind pollen, with no independently verified impact on plant pollen transfer or seed/siring fitness. Its Pass-1 membership remains frozen and the issue is recorded as **EVIDENCE_CEILING_ADMISSION_ELIGIBILITY_REVIEW_REQUIRED** rather than a retrospective exclusion. No U6 blind `CODER_A/B` architecture labels (0/42) or V4 outcomes are modified.
+
 ## Programme structure
 
 ```text
