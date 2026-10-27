@@ -24,6 +24,8 @@ from .u6_next6_source_function_ecology import (
 )
 
 LAST6="data/BALANCE_U6_LAST6_SOURCE_FUNCTION_ECOLOGY_V1.csv"
+IMPORTED_CLOCK="data/BALANCE_U6_IMPORTED_FIRST6_CLOCK_ONLY_THREE_V1.json"
+CLOCK_SOURCE_SHA="d0e3bca8906fa46214b20973ac0d72a0cbe8dddf"
 LANE="LAST_SIX_LEXICOGRAPHIC_SIMULTANEOUS_AFTER_PRIOR_SOURCE_LANES"
 FROZEN_EXPECTED={
     "Nothofagus_pumilio","Passiflora_foetida","Prockia_crucis",
@@ -151,6 +153,40 @@ def analyze(base: Path=ROOT) -> dict[str,Any]:
     if source_research_lacking_on_stacked_branch!=concurrent[3:6]:
         raise ValueError("Unmerged original first-six clock branch identity changed")
 
+    # Reuse (without re-adjudicating) the three prior FIRST-SIX source notes
+    # already authored on another still-unmerged branch. Their source blob
+    # identity remains immutable; this transfer is a source-extractor copy,
+    # *not* a first or second blinded architectural code.
+    clock_blob=(base/IMPORTED_CLOCK).read_bytes()
+    imported=json.loads(clock_blob.decode("utf-8"))
+    expected_clock=set(source_research_lacking_on_stacked_branch)
+    entries=imported.get("original_evidence_notes")
+    if (imported.get("schema")!="BALANCE_U6_IMPORTED_ORIGINAL_FIRST6_CLOCK_THREE_V1"
+            or imported.get("status")!="SOURCE_NOTES_COPIED_FROM_UNMERGED_OLDER_DRAFT_NOT_BLINDED_ARCHITECTURE"
+            or imported.get("original_blob_sha")!=CLOCK_SOURCE_SHA
+            or imported.get("source_rows_copied")!=3
+            or imported.get("formal_u6_architecture_assigned") is not False
+            or imported.get("independent_coder_A_or_B") is not False
+            or imported.get("V4_architecture_results_opened") is not False
+            or not isinstance(entries,list) or len(entries)!=3
+            or {x["dependency_group"] for x in entries}!=expected_clock):
+        raise ValueError("Original three clock-source notes cannot be misread as independent V4 coding")
+    for entry in entries:
+        if (not entry.get("source_records")
+                or not entry.get("observed_components")
+                or not entry.get("clock_axes")
+                or not entry.get("unresolved")):
+            raise ValueError("Transferred original source context is incomplete")
+        if any(
+            not row.get("url","").startswith("https://")
+            or not row.get("observation")
+            for row in entry["source_records"]
+        ):
+            raise ValueError("Transferred source locator or biological notes unavailable")
+    combined_names=main_taxa|expected_clock
+    if combined_names!=all_taxa or len(combined_names)!=21:
+        raise ValueError("Source-only co-located ecology denominator not 21")
+
     dep,dep_hash=_read(base/DEPENDENCE)
     depmap={r["u6_dependency_group"]:r for r in dep}
     if len(depmap)!=21:
@@ -178,11 +214,17 @@ def analyze(base: Path=ROOT) -> dict[str,Any]:
         "main_plus_stacked_groups_not_in_this_branch":source_research_lacking_on_stacked_branch,
         "cross_branch_provisional_distinct_source_taxa":len(cross_branch),
         "cross_branch_provisional_not_canonical":True,
+        "co_located_source_ecology_taxa":len(combined_names),
+        "imported_old_source_only_clock_taxa":sorted(expected_clock),
+        "imported_old_source_blob_sha":CLOCK_SOURCE_SHA,
+        "imported_old_clock_is_nonadjudicating":True,
+        "combined_source_evidence_biological_replicates_not_counted":True,
         "public_original_or_primary_abstract_evidence_ceiling_taxa":sorted(EVIDENCE_CEILINGS),
         "original_studies_collapsed_by_taxon":True,
         "zeamays_pollen_predator_food_without_plant_fitness_source_review_required":True,
         "known_pollen_stage_types":dict(sorted(Counter(r["functional_location"] for r in sources).items())),
-        "source_sha256":{LAST6:source_hash,FREEZE:hashlib.sha256((base/FREEZE).read_bytes()).hexdigest(),
+        "source_sha256":{LAST6:source_hash,IMPORTED_CLOCK:hashlib.sha256(clock_blob).hexdigest(),
+                         FREEZE:hashlib.sha256((base/FREEZE).read_bytes()).hexdigest(),
                          PREDICTORS:receipt_hash,PACKET:packet_hash,PILOT:prior_hash,
                          DEPENDENCE:dep_hash,CODER:coder_hash},
         "original_independent_coder_slots":len(coder),
