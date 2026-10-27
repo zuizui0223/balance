@@ -7,12 +7,12 @@ import pytest
 
 from balance_domain.u6_last6_source_function_ecology import (
     ROOT,FREEZE,PACKET,PREDICTORS,PILOT,NEXT6,
-    DEPENDENCE,CODER,LAST6,analyze,
+    DEPENDENCE,CODER,LAST6,IMPORTED_CLOCK,analyze,
 )
 
 
 def copied_sources(tmp_path):
-    for path in (FREEZE,PACKET,PREDICTORS,PILOT,NEXT6,DEPENDENCE,CODER,LAST6):
+    for path in (FREEZE,PACKET,PREDICTORS,PILOT,NEXT6,DEPENDENCE,CODER,LAST6,IMPORTED_CLOCK):
         dest=tmp_path/path
         dest.parent.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(ROOT/path,dest)
@@ -44,6 +44,11 @@ def test_last_six_actual_source_provenance_and_provisional_bookkeeping():
     ]
     assert z["cross_branch_provisional_distinct_source_taxa"]==21
     assert z["cross_branch_provisional_not_canonical"] is True
+    assert z["co_located_source_ecology_taxa"]==21
+    assert z["imported_old_source_only_clock_taxa"]==[
+        "Banksia_menziesii","Bromelia_antiacantha","Campanula_americana"
+    ]
+    assert z["imported_old_clock_is_nonadjudicating"] is True
     assert z["original_independent_coder_slots"]==42
     assert z["independently_completed_architecture_slots"]==0
     assert z["original_V4_confirmatory_architecture_opened"] is False
@@ -135,4 +140,27 @@ def test_cannot_fill_morphological_lookalike_as_new_structural_origin(tmp_path):
         row["independent_coder_authorship"]="CODER_B"
     alter(tmp_path/LAST6,edit)
     with pytest.raises(ValueError,match="coder authorship"):
+        analyze(tmp_path)
+
+
+
+def test_imported_draft_original_source_only_notes_cannot_claim_blind_coder(tmp_path):
+    import json
+    copied_sources(tmp_path)
+    p=tmp_path/IMPORTED_CLOCK
+    d=json.loads(p.read_text(encoding="utf-8"))
+    d["independent_coder_A_or_B"]=True
+    p.write_text(json.dumps(d),encoding="utf-8")
+    with pytest.raises(ValueError,match="cannot be misread as independent V4 coding"):
+        analyze(tmp_path)
+
+
+def test_imported_draft_source_provenance_and_membership_must_be_verifiable(tmp_path):
+    import json
+    copied_sources(tmp_path)
+    p=tmp_path/IMPORTED_CLOCK
+    d=json.loads(p.read_text(encoding="utf-8"))
+    d["original_evidence_notes"][0]["dependency_group"]="Zea_mays"
+    p.write_text(json.dumps(d),encoding="utf-8")
+    with pytest.raises(ValueError,match="cannot be misread as independent V4 coding"):
         analyze(tmp_path)
