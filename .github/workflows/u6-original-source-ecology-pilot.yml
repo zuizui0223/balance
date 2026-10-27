@@ -1,0 +1,66 @@
+name: BALANCE U6 original-source ecology extraction, not architecture coding
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/u6-original-source-ecology-pilot.yml"
+      - "balance_domain/u6_original_source_ecology_pilot.py"
+      - "data/BALANCE_U6_ORIGINAL_SOURCE_ECOLOGY_PILOT_V1.csv"
+      - "scripts/audit_u6_original_source_ecology_pilot.py"
+      - "tests/test_u6_original_source_ecology_pilot.py"
+      - "docs/BALANCE_U6_SIX_ORIGINAL_SOURCE_ECOLOGY_EXTRACTION_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  six-original-source-ecology-not-architecture-adjudication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate 21-group freeze and the six source-only ecology abstracts
+        run: |
+          python -m pip install "pytest>=8,<10"
+          python -m pytest -q tests/test_u6_original_source_ecology_pilot.py
+      - name: Generate source-hashed outcome-blind audit receipt
+        run: |
+          python scripts/audit_u6_original_source_ecology_pilot.py \
+            --out /tmp/balance_u6_original_ecology_pilot.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          data=json.loads(Path("/tmp/balance_u6_original_ecology_pilot.json").read_text())
+          assert data["admitted_groups"]==21
+          assert data["original_abstract_observations_extracted"]==6
+          assert data["not_yet_extracted"]==15
+          assert data["selected_timing_counts"]=={
+              "SIMULTANEOUS":3,"SEQUENTIAL_WITHIN_UNIT":3
+          }
+          assert data["sealed_V4_architecture_outcome_opened"] is False
+          assert data["independent_A_B_architecture_labels_written"]==0
+          assert data["historical_evolutionary_causality_established"] is False
+          print("Original source ecology pilot groups:",data["pilot_selected_groups"])
+          print("Registered frozen source ecologies:",data["provisional_ecological_mechanisms_described_not_as_natural_rates"])
+          print("Source-admission recovery statuses:",data["original_source_recovery_statuses"])
+          print("This experiment NEVER masquerades as independent A or B coder.")
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("## U6 original-source ecological evidence pilot\n\n")
+              f.write("- 21 architecture-blind original admission groups preserved\n")
+              f.write("- Six original ecology abstracts extracted: all 3 sequential + first 3 simultaneous alphabetic groups\n")
+              f.write("- No A/B independent architecture label or V4 model opened\n")
+              f.write("- Observed ecological routes are candidates, NOT new genetically evolved module origins\n")
+          PY
+      - name: Preserve original-source SHA256 and literature readout only
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-u6-source-observation-pilot-${{ github.run_id }}
+          path: /tmp/balance_u6_original_ecology_pilot.json
+          if-no-files-found: error
+          retention-days: 30
