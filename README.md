@@ -12,6 +12,10 @@
 
 [Six source-grounded U6 pollen-conflict observations](docs/BALANCE_U6_SIX_ORIGINAL_SOURCE_ECOLOGY_EXTRACTION_V1.md) were extracted using the frozen source-admission universe: all 3 `SEQUENTIAL_WITHIN_UNIT` groups and the first 3 alphabetic `SIMULTANEOUS` groups. They reveal already-observed **visitor access geometry, pollen exposure and reproductive phase timing, and destructive pollen removal** without inferring new genetically derived modules. One original Kirk (1987) study covers both *Actinidia deliciosa* and *Echium plantagineum*, so those taxa are **not independent research programmes**. Six observations are source-extractor notes only; **the A/B 42 original architecture coding slots remain untouched**, as does the V4 source outcome freeze and flagship manuscript.
 
+## U6 second-six ecological source extraction (2026-10-28)
+
+[Original-source ecology of six additional architecture-blind U6 taxa](docs/BALANCE_U6_NEXT6_ORIGINAL_FUNCTION_LOCATION_AUDIT_V1.md) now follows a deterministic **concurrent ranks 7–12** sample beyond the merged first-six and the separate first-six-clock draft. Main ecological observations cover **12/21 frozen U6 taxa**; a strictly provisional cross-draft total is **15/21**, not independent source programmes or completed anatomy coding. The most important source-stage contrast is original *Melastoma affine*: honeybees remove already-deposited **stigmatic pollen**, unlike thrips or pollen collectors removing **anther pollen**. *Impatiens capensis* source experiments show behavioural state can change pollen-transfer efficiency; *Grevillea barklyana* source pollinator exclusion shows greater than 50% reduced fruit set when bird pollinators are excluded but honeybees can access the flowers. These are original-study ecological observations, not `Phi`, new heritable module origins, or an alternative to independently blinded architecture coding. Existing V4 outcomes and all **42 unstarted** original U6 A/B coder rows remain untouched.
+
 ## Programme structure
 
 ```text

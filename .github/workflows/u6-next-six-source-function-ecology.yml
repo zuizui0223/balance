@@ -1,0 +1,71 @@
+name: U6 second six original ecological functions source-only audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/u6-next-six-source-function-ecology.yml"
+      - "data/BALANCE_U6_NEXT6_SOURCE_FUNCTION_ECOLOGY_V1.csv"
+      - "balance_domain/u6_next6_source_function_ecology.py"
+      - "scripts/audit_u6_next6_source_function_ecology.py"
+      - "tests/test_u6_next6_source_function_ecology.py"
+      - "docs/BALANCE_U6_NEXT6_ORIGINAL_FUNCTION_LOCATION_AUDIT_V1.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-source-provenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate exact source eligibility, accepted-species overlap, and coder blackout
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_u6_next6_source_function_ecology.py
+      - name: Produce source SHA256 and explicit functional-locus result
+        run: |
+          python scripts/audit_u6_next6_source_function_ecology.py \
+            --out /tmp/balance_u6_next6_ecology_receipt.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          r=json.loads(Path("/tmp/balance_u6_next6_ecology_receipt.json").read_text())
+          assert r["frozen_admitted_u6_taxa"]==21
+          assert r["additional_six_source_extracted"]==6
+          assert r["distinct_main_branch_source_observation_groups"]==12
+          assert r["provisional_cross_branch_selected_total"]==15
+          assert r["post_deposition_stigma_pollen_removal_taxa"]==["Melastoma_affine"]
+          assert r["primary_1995_hamelia_effect_not_read_or_recomputed"] is True
+          assert r["independent_coder_architecture_labels_added"]==0
+          assert r["v4_outcome_file_opened"] is False
+          assert r["same_coordinate_conflict_loss_identified"] is False
+          assert r["historical_evolutionary_origins_estimated"] is False
+          print("Six new source taxa:",r["new_selected_source_groups"])
+          print("Shared Kirk original reference:",r["admission_source_id_reused_across_taxa"])
+          print("Pollen-loss stage:",r["source_location_types"])
+          print("Source alias blocks:",r["source_known_taxonomic_dependence"])
+          print("Main first-six + new six:",r["distinct_main_branch_source_observation_groups"])
+          print("Cross-draft coverage provisional:",r["provisional_cross_branch_selected_total"])
+          print("Original independent A/B codings: 0; no V4 architecture responses opened.")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf-8") as f:
+              f.write("## U6 six further ecology source observations — NON-CODER\n\n")
+              f.write("- Main ecological source observations: 12/21 frozen U6 taxa; cross-draft selected source coverage 15/21 (not merged)\n")
+              f.write("- Important original source mechanism: Melastoma honeybees remove POST-deposition stigma pollen; not source-anther theft\n")
+              f.write("- Same Kirk 1987 source reused for Actinidia and Echium; not separate original programmes\n")
+              f.write("- Hamelia original 1995 numeric endpoint remains unverified\n")
+              f.write("- Formal independent U6 coding **0/42 completed**, no admitted V4 outcome effect or historical origin.\n")
+          PY
+      - name: Preserve source-hash summary without raw literature redistribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-u6-next6-source-ecology-${{ github.run_id }}
+          path: /tmp/balance_u6_next6_ecology_receipt.json
+          if-no-files-found: error
+          retention-days: 30
