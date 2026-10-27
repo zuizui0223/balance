@@ -137,7 +137,7 @@ def analyze(base: Path=ROOT) -> dict[str,Any]:
         if row["functional_location"] not in ALLOWED_LOCATIONS:
             raise ValueError("Unrecognized observed ecological resource location")
         if row["formal_u6_architecture_assigned"]!="NOT_ASSIGNED_BY_EXTRACTOR":
-            raise ValueError("Ecological extraction must never be a four-class coder")
+            raise ValueError("Ecological extraction cannot be a four-class coder")
         if row["independent_coder_authorship"]!="NO_AI_EXTRACTOR_NOT_CODER_A_OR_B":
             raise ValueError("Source extractor cannot impersonate independent blind coder")
         for field in ("source_type","ecological_mechanism","original_observation",
