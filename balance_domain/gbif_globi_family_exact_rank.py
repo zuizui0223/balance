@@ -165,7 +165,7 @@ def exact_family_label_reference(
         "post_open_exploratory_statistic_not_confirmatory":True,
         "no_causal_documentation_impact_identified":True,
         "no_true_biological_noninteraction_identified":True,
-        "no_SHC_fitness_or_structural_BALANCE_identified":True,
+        "no_SCH_fitness_or_structural_BALANCE_identified":True,
     }
 
 
