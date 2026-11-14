@@ -98,7 +98,7 @@ def test_source_extractor_is_not_independent_architecture_coder(tmp_path):
         rows[0]["architecture_mode"]="SHARED"
         rows[0]["coding_status"]="COMPLETED"
     alter(tmp_path/CODER,coder)
-    with pytest.raises(ValueError,match="NOT opened"):
+    with pytest.raises(ValueError,match="No coded U6 architecture outcomes"):
         analyze(tmp_path)
 
 
@@ -129,7 +129,7 @@ def test_preselected_last_six_source_timing_must_not_be_changed(tmp_path):
                     and x["predictor"]=="conflict_timing_geometry")
         target["reported_value"]="SEQUENTIAL_WITHIN_UNIT"
     alter(tmp_path/PREDICTORS,edit)
-    with pytest.raises(ValueError,match="Original source timing denominator"):
+    with pytest.raises(ValueError,match="Frozen U6 timing predictor frequencies changed"):
         analyze(tmp_path)
 
 
