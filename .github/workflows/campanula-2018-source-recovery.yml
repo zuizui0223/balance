@@ -1,0 +1,58 @@
+name: Campanula 2018 original source recovery
+
+on:
+  push:
+    branches: [analysis/campanula-stage-efficiency-20261114]
+    paths: [.github/workflows/campanula-2018-source-recovery.yml]
+  pull_request:
+    paths: [.github/workflows/campanula-2018-source-recovery.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  recover-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Acquire exact published CC0 workbook and preserve provenance
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, json, pathlib, urllib.request
+          output = pathlib.Path('artifacts/campanula_2018_original')
+          output.mkdir(parents=True, exist_ok=False)
+          url = 'https://zenodo.org/records/4969330/files/Koski%20et%20al.%202018_Data_ProcRoySoc.xlsx?download=1'
+          expected = '2d26307743e8a22384781854b8f2f33b'
+          request = urllib.request.Request(url, headers={'User-Agent': 'BALANCE-source-recovery/1.0'})
+          with urllib.request.urlopen(request, timeout=90) as response:
+              raw = response.read(2000000)
+              final_url = response.url
+          actual = hashlib.md5(raw).hexdigest()
+          if actual != expected:
+              raise ValueError(f'Published workbook MD5 mismatch: {actual}; refusing analysis')
+          (output / 'Koski_2018_original.xlsx').write_bytes(raw)
+          receipt = {
+              'dataset_doi': '10.5061/dryad.5nj81nf',
+              'paper_doi': '10.1098/rspb.2018.0635',
+              'source_record': 'https://zenodo.org/records/4969330',
+              'retrieval_url': url, 'final_url': final_url,
+              'retrieved_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'bytes': len(raw), 'md5': actual,
+              'sha256': hashlib.sha256(raw).hexdigest(),
+              'license': 'CC0-1.0 as reported by source record',
+              'claim': 'Original bytes acquired; no fitted result, no new independent species, no V4 coding'
+          }
+          (output / 'SOURCE_RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print(json.dumps(receipt, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: campanula-2018-checksum-verified-original
+          path: artifacts/campanula_2018_original/
+          if-no-files-found: error
+          retention-days: 30
