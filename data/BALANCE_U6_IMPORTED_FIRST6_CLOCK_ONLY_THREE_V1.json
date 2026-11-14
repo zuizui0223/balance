@@ -1,0 +1,101 @@
+{
+  "schema": "BALANCE_U6_IMPORTED_ORIGINAL_FIRST6_CLOCK_THREE_V1",
+  "status": "SOURCE_NOTES_COPIED_FROM_UNMERGED_OLDER_DRAFT_NOT_BLINDED_ARCHITECTURE",
+  "original_repository": "zuizui0223/balance",
+  "original_branch": "exploration/u6-source-mechanism-clocks-20261021",
+  "original_file": "data/BALANCE_U6_FIRST6_ORIGINAL_PHENOMENOLOGY_V1.json",
+  "original_blob_sha": "d0e3bca8906fa46214b20973ac0d72a0cbe8dddf",
+  "original_study_scope": "FIRST_SIX_FROZEN_U6_GROUPS_IN_ORIGINAL_ORDER_NO_REPLACEMENT",
+  "source_rows_copied": 3,
+  "excluded_original_overlapping_cases": [
+    "Actinidia_deliciosa",
+    "Amomum_subulatum",
+    "Aphelandra_golfodulcensis"
+  ],
+  "original_evidence_notes": [
+    {
+      "dependency_group": "Banksia_menziesii",
+      "evidence_status": "ORIGINAL_STUDY_PUBLIC_ABSTRACT",
+      "observed_components": [
+        "BEETLE_POLLEN_REMOVAL_WITHOUT_STIGMA_DEPOSITION",
+        "FLOWER_OPENING_RATE_ASSOCIATION",
+        "BIRD_BEE_DIFFERENT_POLLINATION_EFFECTIVENESS"
+      ],
+      "clock_axes": [
+        "INFLORESCENCE_FLORET_OPENING_ACROSS_DAYS",
+        "WITHIN_VISIT_CONTACT_ROUTE"
+      ],
+      "source_contexts_not_matched": false,
+      "source_records": [
+        {
+          "source_id": "Ramsey_1988",
+          "url": "https://doi.org/10.1007/BF00379609",
+          "type": "ORIGINAL_PAPER_PUBLIC_ABSTRACT",
+          "context": "POLLINATOR_VISIT_FIELD_COMPARISON",
+          "observation": "Staphylinid beetles removed pollen but did not deposit it onto stigmas; beetle abundance related to florets opening per day; bees visited more frequently than birds, yet bird-visited inflorescences had much higher fruit set. Evolutionary selection for bird-associated floret opening was proposed, not directly reconstructed."
+        }
+      ],
+      "unresolved": "Opening florets across days is not proof of temporally programmed pollen dosing evolved to repel beetles; without time-aligned plant male fitness and alternatives no W_D-W_S."
+    },
+    {
+      "dependency_group": "Bromelia_antiacantha",
+      "evidence_status": "ORIGINAL_STUDY_PUBLIC_ABSTRACT",
+      "observed_components": [
+        "DIEL_BEE_AND_HUMMINGBIRD_VISITOR_SEQUENCE",
+        "EARLY_POLLEN_AND_NECTAR_THEFT",
+        "MULTIPLE_FLOWERS_OPEN_PER_DAY"
+      ],
+      "clock_axes": [
+        "DAILY_VISITOR_TIMING",
+        "INFLORESCENCE_FLOWER_OPENING_ACROSS_DAYS"
+      ],
+      "source_contexts_not_matched": false,
+      "source_records": [
+        {
+          "source_id": "Canela_Sazima_2005",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/16025414/",
+          "type": "ORIGINAL_PAPER_PUBLIC_ABSTRACT",
+          "context": "FIELD_ANTHESIS_NEKTAR_AND_VISITATION",
+          "observation": "Inflorescences produce 10–35 newly opening flowers per day; nectar peaks at 04:00–06:00; bees primarily visit in the morning while hummingbirds contribute mostly afternoon visits; Trigona spinipes steals pollen/nectar early, frequently excluding hummingbirds. The temporal visitor pattern is observational, not a manipulated new pollen-release organ."
+        }
+      ],
+      "unresolved": "Do not equate diel arrival order with pollen-source simultaneous-conflict classification, reversible cue plasticity, or permanently differentiated module."
+    },
+    {
+      "dependency_group": "Campanula_americana",
+      "evidence_status": "TWO_DISTINCT_ORIGINAL_STUDY_ABSTRACTS",
+      "observed_components": [
+        "SECONDARY_STYLE_POLLEN_PRESENTATION",
+        "ONTOGENETIC_MALE_TO_FEMALE_PHASE",
+        "EXPERIMENTALLY_PLASTIC_MALE_AND_FEMALE_PHASE_DURATION",
+        "POLLINATOR_DEPENDENT_LOW_EFFICIENCY_BEE_SIRING_EFFECT"
+      ],
+      "clock_axes": [
+        "FLORAL_DEVELOPMENTAL_SEX_PHASE",
+        "POLLEN_REMOVAL_OR_DEPOSITION_FEEDBACK",
+        "ECOLOGICAL_POLLINATOR_AVAILABILITY"
+      ],
+      "source_contexts_not_matched": true,
+      "source_records": [
+        {
+          "source_id": "Evanhoe_Galloway_2002",
+          "url": "https://doi.org/10.3732/ajb.89.4.587",
+          "type": "ORIGINAL_PAPER_PUBLIC_HTML_METHODS",
+          "context": "DEVELOPMENTAL_STYLE_HAIR_POLLEN_PRESENTATION",
+          "observation": "In a greenhouse experiment, removing pollen shortened the morphological male phase and depositing pollen shortened the morphological female phase. In a field survey, male and female functions saturated within hours, yet morphological sex phases persisted beyond functional saturation. The same species has stamens shedding pollen onto collecting hairs before anthesis; the stigma opens after hair retraction. This is a cue-responsive developmental schedule, NOT a reversible alternation back to an earlier floral phase or a demonstrated new module origin."
+        },
+        {
+          "source_id": "Lau_Galloway_2004",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/15549400/",
+          "type": "ORIGINAL_PAPER_PUBLIC_ABSTRACT",
+          "context": "TWO_POPULATION_EXPERIMENTAL_ARRAYS_LOW_EFFICIENCY_BEE_SIRING",
+          "observation": "Low-efficiency halictid pollen visitors reduced siring success when effective Bombus visits were scarce, but not when effective pollinators were abundant; pollen colour affected visitor attraction. The fitness contrast and developmental mechanism come from different studies."
+        }
+      ],
+      "unresolved": "Experimentally demonstrated phenological plasticity modifies the time spent in an existing developmental phase, but does not demonstrate an individually reversible sex-phase trajectory, a full reproductive fitness advantage over fixed timing, or evolved novelty induced by pollen thieves. The low-efficiency-bee siring evidence is from a separate 2004 study."
+    }
+  ],
+  "formal_u6_architecture_assigned": false,
+  "independent_coder_A_or_B": false,
+  "V4_architecture_results_opened": false
+}
