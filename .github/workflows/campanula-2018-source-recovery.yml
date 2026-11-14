@@ -3,9 +3,17 @@ name: Campanula 2018 original source recovery
 on:
   push:
     branches: [analysis/campanula-stage-efficiency-20261114]
-    paths: [.github/workflows/campanula-2018-source-recovery.yml]
+    paths:
+      - .github/workflows/campanula-2018-source-recovery.yml
+      - scripts/analyze_campanula_2018_visitation.py
+      - tests/test_campanula_2018_visitation.py
+      - data/external/campanula_2018/**
   pull_request:
-    paths: [.github/workflows/campanula-2018-source-recovery.yml]
+    paths:
+      - .github/workflows/campanula-2018-source-recovery.yml
+      - scripts/analyze_campanula_2018_visitation.py
+      - tests/test_campanula_2018_visitation.py
+      - data/external/campanula_2018/**
 
 permissions:
   contents: read
@@ -45,14 +53,21 @@ jobs:
               'bytes': len(raw), 'md5': actual,
               'sha256': hashlib.sha256(raw).hexdigest(),
               'license': 'CC0-1.0 as reported by source record',
-              'claim': 'Original bytes acquired; no fitted result, no new independent species, no V4 coding'
+              'claim': 'One existing taxon; optional exploratory population reanalysis; no V4 coding'
           }
           (output / 'SOURCE_RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
           print(json.dumps(receipt, indent=2))
           PY
+      - name: Replay optional numerical analysis and regression tests
+        run: |
+          python -m pip install 'numpy==2.3.5' 'scipy==1.17.0' 'statsmodels==0.14.6' 'pytest>=8,<10'
+          python -m pytest -q tests/test_campanula_2018_visitation.py
+          python scripts/analyze_campanula_2018_visitation.py --out-dir artifacts/campanula_2018_analysis
       - uses: actions/upload-artifact@v4
         with:
-          name: campanula-2018-checksum-verified-original
-          path: artifacts/campanula_2018_original/
+          name: campanula-2018-source-and-analysis
+          path: |
+            artifacts/campanula_2018_original/
+            artifacts/campanula_2018_analysis/
           if-no-files-found: error
           retention-days: 30
