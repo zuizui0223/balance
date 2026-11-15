@@ -1,0 +1,61 @@
+{
+  "schema": "BALANCE_ZURICH_FOUR_SPECIES_EXPLORATORY_RECEIPT_V1",
+  "source_dataset_doi": "10.16904/envidat.676",
+  "source_zip_sha256": "b1ea0dc54d0c6e33bfacb44d7285377ec3e113807cc945fc2dfbfcc3e534bcc9",
+  "acquisition_workflow": "https://github.com/zuizui0223/balance/actions/runs/43672888698",
+  "note": "Exploratory local numerical reanalysis. 4 taxa from one 24-garden study; no direct architecture fitness, no V4 confirmatory outcome.",
+  "source_windows": 670,
+  "nominal_visit_matrix_rows": 21120,
+  "matched_species_window_rows": 2680,
+  "all_visitors": 5794,
+  "matched_visitors": 5767,
+  "unmatched_visitors": 27,
+  "unmatched_positive_rows": 6,
+  "nectar_robber_flags": 256,
+  "models": {
+    "Daucus_carota": {
+      "total_rmse": 0.25254051257651305,
+      "composition_rmse": 0.2035595182672067,
+      "improvement": 0.19395301692225098,
+      "flower_present_improvement": 0.18070125332759512,
+      "pooling_alternative_improvement": 0.23077287071743335,
+      "unmatched_visitor_sensitivity": 0.19470245523914986,
+      "improved_gardens": 11
+    },
+    "Raphanus_sativus": {
+      "total_rmse": 0.057444452002714745,
+      "composition_rmse": 0.05750337966744456,
+      "improvement": -0.0010258199473645035,
+      "flower_present_improvement": -0.007723834430964027,
+      "pooling_alternative_improvement": -0.010897758832599136,
+      "unmatched_visitor_sensitivity": -0.0004110521131972522,
+      "improved_gardens": 12
+    },
+    "Onobrychis_viciifolia": {
+      "total_rmse": 0.14034467910501364,
+      "composition_rmse": 0.14746508574081588,
+      "improvement": -0.05073513781362782,
+      "flower_present_improvement": 0.012362077416707917,
+      "pooling_alternative_improvement": -0.10575280229865425,
+      "unmatched_visitor_sensitivity": -0.06353517380778029,
+      "improved_gardens": 10
+    },
+    "Symphytum_officinale": {
+      "total_rmse": 0.1759804443162585,
+      "composition_rmse": 0.16469058385737023,
+      "improvement": 0.06415406270141588,
+      "flower_present_improvement": 0.0023353979822168247,
+      "pooling_alternative_improvement": 0.109213649421815,
+      "unmatched_visitor_sensitivity": 0.05601619599523633,
+      "improved_gardens": 11
+    }
+  },
+  "audit_flag": "Unobserved matrix time slots may not be treated as known zero visitation; 27 unmatched captured visitors retained in sensitivity only",
+  "independent_gardens": 24,
+  "independent_study_programmes": 1,
+  "original_modeling_year": 2016,
+  "subsequent_authors_analytical_article": "10.1111/1365-2664.70384",
+  "v4_architecture_codes_opened": false,
+  "structural_architecture_fitness_measured": false,
+  "source_original_archive_sha_is_author_identical": "Original official EnviDat file SHA256 verified against downloaded bytes; not an independent depositor checksum."
+}
