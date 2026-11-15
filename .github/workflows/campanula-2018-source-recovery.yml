@@ -6,13 +6,17 @@ on:
     paths:
       - .github/workflows/campanula-2018-source-recovery.yml
       - scripts/analyze_campanula_2018_visitation.py
+      - scripts/audit_campanula_2018_spatial_quality.py
       - tests/test_campanula_2018_visitation.py
+      - tests/test_campanula_2018_spatial_quality.py
       - data/external/campanula_2018/**
   pull_request:
     paths:
       - .github/workflows/campanula-2018-source-recovery.yml
       - scripts/analyze_campanula_2018_visitation.py
+      - scripts/audit_campanula_2018_spatial_quality.py
       - tests/test_campanula_2018_visitation.py
+      - tests/test_campanula_2018_spatial_quality.py
       - data/external/campanula_2018/**
 
 permissions:
@@ -61,13 +65,15 @@ jobs:
       - name: Replay optional numerical analysis and regression tests
         run: |
           python -m pip install 'numpy==2.3.5' 'scipy==1.17.0' 'statsmodels==0.14.6' 'pytest>=8,<10'
-          python -m pytest -q tests/test_campanula_2018_visitation.py
+          python -m pytest -q tests/test_campanula_2018_visitation.py tests/test_campanula_2018_spatial_quality.py
           python scripts/analyze_campanula_2018_visitation.py --out-dir artifacts/campanula_2018_analysis
+          python scripts/audit_campanula_2018_spatial_quality.py --out-dir artifacts/campanula_2018_spatial_quality
       - uses: actions/upload-artifact@v4
         with:
           name: campanula-2018-source-and-analysis
           path: |
             artifacts/campanula_2018_original/
             artifacts/campanula_2018_analysis/
+            artifacts/campanula_2018_spatial_quality/
           if-no-files-found: error
           retention-days: 30
