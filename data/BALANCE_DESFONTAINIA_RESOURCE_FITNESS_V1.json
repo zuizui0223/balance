@@ -1,0 +1,83 @@
+{
+  "schema": "BALANCE_DESFONTAINIA_RESOURCE_FITNESS_DISCONNECT_AUDIT_V1",
+  "source_doi": "10.5281/zenodo.18895003",
+  "paper_doi": "10.1002/ece3.73933",
+  "source_md5": "e7e59a06cc3eb7aed636620a85a1ea98",
+  "seed": {
+    "n_shrubs": 40,
+    "treatment_grain": "one original flower per treatment per shrub",
+    "mean_seeds_by_treatment": {
+      "minusP_minusR": 5.175,
+      "plusP_minusR": 26.125,
+      "plusP_plusR": 31.35
+    },
+    "seed_presence_by_treatment": {
+      "minusP_minusR": 2,
+      "plusP_minusR": 32,
+      "plusP_plusR": 28
+    },
+    "paired_seed_difference_plusR_minusR": {
+      "mean": 5.225,
+      "t_95_interval": [
+        -12.850034871116927,
+        23.300034871116928
+      ],
+      "paired_bootstrap95_interval": [
+        -12.275,
+        22.4
+      ],
+      "n_higher_n_lower_n_equal": [
+        19,
+        19,
+        2
+      ],
+      "percentage_of_plusP_minusR_mean": 20.0
+    },
+    "paired_seed_presence_difference_plusR_minusR": {
+      "mean": -0.1,
+      "paired_bootstrap95_interval": [
+        -0.3,
+        0.1
+      ],
+      "discordant_noR_positive_R_negative": 10,
+      "discordant_noR_negative_R_positive": 6
+    },
+    "paired_pollinator_access_minus_exclusion": {
+      "mean": 20.95,
+      "t_95_interval": [
+        8.806088189233996,
+        33.093911810766
+      ]
+    }
+  },
+  "nectar": {
+    "n_flower_rows": 400,
+    "n_paired_shrubs": 40,
+    "missing_volume_by_status": {
+      "Robada": 14,
+      "No dañada": 20
+    },
+    "mean_pierced_ul": 0.481025,
+    "mean_undamaged_ul": 4.448854166666667,
+    "pierced_to_undamaged_mean_ratio": 0.1081233463672762,
+    "within_shrub_difference_pierced_minus_undamaged_ul": -3.9678291666666667,
+    "paired_mean_difference_t95_interval": [
+      -5.450789525592345,
+      -2.4848688077409884
+    ],
+    "paired_mean_difference_bootstrap95_interval": [
+      -5.437670833333334,
+      -2.5888291666666667
+    ]
+  },
+  "source_evidence_ceiling": {
+    "equivalence_of_seed_output_demonstrated": false,
+    "fully_randomized_robbery_intention_to_treat": false,
+    "missing_minusP_plusR_factorial_cell": true,
+    "same_flower_nectar_and_seed_causal_mediation_identified": false,
+    "male_reproductive_fitness_measured": false,
+    "architecture_WD_minus_WS_identified": false,
+    "V4_independent_architecture_coder_data_opened": false
+  },
+  "interpretation": "Post-publication independent paired-shrub reanalysis; +P+R selected naturally robbed open flowers whereas +P-R was a taped bud, so no clean randomized robbery effect. CI spanning harm and benefit is not equivalence. Original submitted R GLMM code and final published GEE must not be represented as numerically identical."
+}
