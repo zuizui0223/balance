@@ -1,0 +1,62 @@
+name: Desfontainia 2026 independent original source recovery
+on:
+  push:
+    branches: [analysis/balance-desfontainia-reproductive-gate-20261115]
+    paths: [.github/workflows/desfontainia-2026-source.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Retrieve Zenodo original XLSX/R with independent published MD5 and metadata
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request, urllib.parse, hashlib, json, pathlib, datetime, zipfile, io
+          out=pathlib.Path("artifacts/desfontainia_2026_original");out.mkdir(parents=True,exist_ok=True)
+          api="https://zenodo.org/api/records/18895003"
+          req=urllib.request.Request(api,headers={"User-Agent":"BALANCE-ecology-source-audit/1.0"})
+          with urllib.request.urlopen(req,timeout=90) as resp: metadata=json.load(resp)
+          if metadata.get("id")!=18895003:raise ValueError("Zenodo record identity changed")
+          expected={
+            "Raw Data Desfontainia fulgens.xlsx":"e7e59a06cc3eb7aed636620a85a1ea98",
+            "analysis_desfontainia_fulgens.R":"9fd405c399ecad9c3fe54d1cd70b21c0",
+            "README.md":"26430e11763882fa47e6025eb77f1d58",
+          }
+          fmetadata={z["key"]:z for z in metadata["files"]}
+          manifest=[]
+          for filename,md5 in expected.items():
+              if filename not in fmetadata:raise ValueError("Source file missing: "+filename)
+              url=fmetadata[filename]["links"]["self"]
+              req=urllib.request.Request(url,headers={"User-Agent":"BALANCE-ecology-source-audit/1.0"})
+              with urllib.request.urlopen(req,timeout=120) as resp:
+                  raw=resp.read(3000000);resolved=resp.url
+              if not raw or hashlib.md5(raw).hexdigest()!=md5:
+                  raise ValueError("Original source failed independent Zenodo MD5: "+filename)
+              if filename.endswith(".xlsx") and not zipfile.is_zipfile(io.BytesIO(raw)):
+                  raise ValueError("Expected XLSX original not ZIP")
+              (out/filename).write_bytes(raw)
+              manifest.append({"file":filename,"size_bytes":len(raw),"md5":md5,
+                               "sha256":hashlib.sha256(raw).hexdigest(),
+                               "source_url":url,"resolved_url":resolved})
+          receipt={"schema":"BALANCE_DESFONTAINIA_2026_ORIGINAL_RECEIPT_V1",
+             "dataset_doi":"10.5281/zenodo.18895003","paper_doi":"10.1002/ece3.73933",
+             "retrieved_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+             "sources":manifest,"reproductive_fitness_estimand_opened":False,
+             "V4_21_taxa_and_42_independent_coders_untouched":True}
+          (out/"SOURCE_RECEIPT.json").write_text(json.dumps(receipt,indent=2)+"\n")
+          print(json.dumps(receipt,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desfontainia-2026-original-and-checksum
+          path: artifacts/desfontainia_2026_original/
+          if-no-files-found: error
+          retention-days: 30
