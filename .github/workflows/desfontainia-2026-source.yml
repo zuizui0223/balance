@@ -2,7 +2,12 @@ name: Desfontainia 2026 independent original source recovery
 on:
   push:
     branches: [analysis/balance-desfontainia-reproductive-gate-20261115]
-    paths: [.github/workflows/desfontainia-2026-source.yml]
+    paths:
+      - .github/workflows/desfontainia-2026-source.yml
+      - scripts/audit_desfontainia_fitness_gate.py
+      - tests/test_desfontainia_fitness_gate.py
+      - data/BALANCE_DESFONTAINIA_RESOURCE_FITNESS_V1.json
+      - docs/BALANCE_DESFONTAINIA_RESOURCE_FITNESS_STAGE_GATE_V1.md
   workflow_dispatch:
 permissions:
   contents: read
@@ -53,6 +58,23 @@ jobs:
              "V4_21_taxa_and_42_independent_coders_untouched":True}
           (out/"SOURCE_RECEIPT.json").write_text(json.dumps(receipt,indent=2)+"\n")
           print(json.dumps(receipt,indent=2))
+          PY
+      - name: Independently replay 40-shrub original numbers and negative inference gates
+        shell: bash
+        env:
+          BALANCE_DESFONTAINIA_SOURCE: artifacts/desfontainia_2026_original/Raw Data Desfontainia fulgens.xlsx
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_desfontainia_fitness_gate.py
+          python scripts/audit_desfontainia_fitness_gate.py --source "$BALANCE_DESFONTAINIA_SOURCE" --out artifacts/desfontainia_2026_original/RESULTS.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          fresh=json.loads(Path('artifacts/desfontainia_2026_original/RESULTS.json').read_text())
+          frozen=json.loads(Path('data/BALANCE_DESFONTAINIA_RESOURCE_FITNESS_V1.json').read_text())
+          if fresh!=frozen:
+              raise ValueError('Source-replayed 40-shrub audit differs from frozen text receipt')
+          print('Exact original-source numerical replay agrees with checked-in frozen JSON')
           PY
       - uses: actions/upload-artifact@v4
         with:
