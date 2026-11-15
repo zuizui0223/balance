@@ -1,0 +1,154 @@
+{
+  "schema": "BALANCE_APPLE_GROUP_CV_UNCERTAINTY_V1",
+  "original_source_doi": "10.5061/dryad.t75c4",
+  "source_md5": "5445fb585421e6d9b1f5b5869342bbb4",
+  "source_sha256": "cf335f63c5c89389e7b014be89489b36986f3344c8e19f0aae6505af9d27222f",
+  "n_orchard_years_original": 47,
+  "n_orchard_years_usable": 36,
+  "n_independent_orchards": 21,
+  "untouched_original_2011_missing_year": 11,
+  "independent_research_programmes": 1,
+  "independent_plant_species": 1,
+  "draws": 20000,
+  "seed": 20261115,
+  "comparisons": {
+    "main_year_and_frost_adjusted": {
+      "n_orchards": 21,
+      "n_orchard_years": 36,
+      "baseline_predictors": [
+        "year",
+        "frost",
+        "total"
+      ],
+      "extension_predictors": [
+        "year",
+        "frost",
+        "total",
+        "share",
+        "rich"
+      ],
+      "baseline_rmse_orchard_equal": 0.12174759865694665,
+      "extension_rmse_orchard_equal": 0.11351361642449186,
+      "gain_fraction": 0.0676315781443545,
+      "orchards_with_lower_loss": 12,
+      "paired_bootstrap_ci95": [
+        -0.1832286844094492,
+        0.18665362686456158
+      ],
+      "paired_bootstrap_probability_positive": 0.7649,
+      "largest_positive_orchard": 20,
+      "largest_positive_loss_change": 0.030588191518446384,
+      "net_orchard_loss_change": 0.04067986996429218
+    },
+    "year_only_no_frost": {
+      "n_orchards": 21,
+      "n_orchard_years": 36,
+      "baseline_predictors": [
+        "year",
+        "total"
+      ],
+      "extension_predictors": [
+        "year",
+        "total",
+        "share",
+        "rich"
+      ],
+      "baseline_rmse_orchard_equal": 0.15211770171268085,
+      "extension_rmse_orchard_equal": 0.13828860408153607,
+      "gain_fraction": 0.09091050860908423,
+      "orchards_with_lower_loss": 11,
+      "paired_bootstrap_ci95": [
+        -0.1938160172397494,
+        0.247460279050039
+      ],
+      "paired_bootstrap_probability_positive": 0.77875,
+      "largest_positive_orchard": 20,
+      "largest_positive_loss_change": 0.06744245945357495,
+      "net_orchard_loss_change": 0.08433720026609459
+    },
+    "year_2012_frost_adjusted": {
+      "n_orchards": 17,
+      "n_orchard_years": 17,
+      "baseline_predictors": [
+        "frost",
+        "total"
+      ],
+      "extension_predictors": [
+        "frost",
+        "total",
+        "share",
+        "rich"
+      ],
+      "baseline_rmse_orchard_equal": 0.16157636209507578,
+      "extension_rmse_orchard_equal": 0.13057253754532988,
+      "gain_fraction": 0.19188341752305593,
+      "orchards_with_lower_loss": 11,
+      "paired_bootstrap_ci95": [
+        -0.23070952256226954,
+        0.3912905191662154
+      ],
+      "paired_bootstrap_probability_positive": 0.874,
+      "largest_positive_orchard": 18,
+      "largest_positive_loss_change": 0.09062895421269221,
+      "net_orchard_loss_change": 0.15398146485649192
+    },
+    "year_2013_only": {
+      "n_orchards": 19,
+      "n_orchard_years": 19,
+      "baseline_predictors": [
+        "total"
+      ],
+      "extension_predictors": [
+        "total",
+        "share",
+        "rich"
+      ],
+      "baseline_rmse_orchard_equal": 0.05594773793160959,
+      "extension_rmse_orchard_equal": 0.06005200580517999,
+      "gain_fraction": -0.07335896008141463,
+      "orchards_with_lower_loss": 7,
+      "paired_bootstrap_ci95": [
+        -0.1782045142842642,
+        0.011166325051115452
+      ],
+      "paired_bootstrap_probability_positive": 0.0408,
+      "largest_positive_orchard": 17,
+      "largest_positive_loss_change": 0.0011672442217382742,
+      "net_orchard_loss_change": -0.009045786409664778
+    }
+  },
+  "main_year_and_frost_adjusted": {
+    "n_orchards": 21,
+    "n_orchard_years": 36,
+    "baseline_predictors": [
+      "year",
+      "frost",
+      "total"
+    ],
+    "extension_predictors": [
+      "year",
+      "frost",
+      "total",
+      "share",
+      "rich"
+    ],
+    "baseline_rmse_orchard_equal": 0.12174759865694665,
+    "extension_rmse_orchard_equal": 0.11351361642449186,
+    "gain_fraction": 0.0676315781443545,
+    "orchards_with_lower_loss": 12,
+    "paired_bootstrap_ci95": [
+      -0.1832286844094492,
+      0.18665362686456158
+    ],
+    "paired_bootstrap_probability_positive": 0.7649,
+    "largest_positive_orchard": 20,
+    "largest_positive_loss_change": 0.030588191518446384,
+    "net_orchard_loss_change": 0.04067986996429218
+  },
+  "paired_bootstrap_not_full_model_refit": true,
+  "year_and_frost_associations_not_randomized": true,
+  "bee_abundance_not_per_flower_visitation": true,
+  "frozen_V4_modified": false,
+  "no_direct_BALANCE_architecture_worldline": true,
+  "claim_ceiling": "Exploratory error stability of original out-of-orchard predictions; not direct structural architecture selection or cross-species effect-size meta-analysis"
+}
