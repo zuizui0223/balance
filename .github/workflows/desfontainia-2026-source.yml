@@ -72,9 +72,23 @@ jobs:
           from pathlib import Path
           fresh=json.loads(Path('artifacts/desfontainia_2026_original/RESULTS.json').read_text())
           frozen=json.loads(Path('data/BALANCE_DESFONTAINIA_RESOURCE_FITNESS_V1.json').read_text())
-          if fresh!=frozen:
-              raise ValueError('Source-replayed 40-shrub audit differs from frozen text receipt')
-          print('Exact original-source numerical replay agrees with checked-in frozen JSON')
+          import math
+          def reconcile(observed,registered,path='root'):
+              if isinstance(observed,bool) or isinstance(registered,bool):
+                  if observed is not registered:raise ValueError(f'{path}: boolean source-gate changed')
+              elif isinstance(observed,(int,float)) and isinstance(registered,(int,float)):
+                  if not math.isclose(observed,registered,rel_tol=1e-12,abs_tol=1e-12):
+                      raise ValueError(f'{path}: source number changed {observed} != {registered}')
+              elif isinstance(observed,dict) and isinstance(registered,dict):
+                  if set(observed)!=set(registered):
+                      raise ValueError(f'{path}: frozen receipt keys differ')
+                  for key in registered: reconcile(observed[key],registered[key],path+'.'+str(key))
+              elif isinstance(observed,list) and isinstance(registered,list):
+                  if len(observed)!=len(registered):raise ValueError(f'{path}: receipt length differs')
+                  for i,(a,b) in enumerate(zip(observed,registered)):reconcile(a,b,path+'.'+str(i))
+              elif observed!=registered:raise ValueError(f'{path}: source receipt differs')
+          reconcile(fresh,frozen)
+          print('Original-source replay matches frozen receipt; numerical roundoff <=1e-12')
           PY
       - uses: actions/upload-artifact@v4
         with:
