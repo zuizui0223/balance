@@ -88,7 +88,7 @@ def audit(source:Path,draws:int=20000,seed:int=20261115):
             'net_orchard_loss_change':float(diff.sum()),
         }
     return {'schema':'BALANCE_APPLE_GROUP_CV_UNCERTAINTY_V1',
-            'original_source_doi':src.DOC_DOI, 'source_md5':src.EXPECTED_MD5,
+            'original_source_doi':'10.5061/dryad.t75c4', 'source_md5':'5445fb585421e6d9b1f5b5869342bbb4',
             'source_sha256':sha,'n_orchard_years_original':47,
             'n_orchard_years_usable':36,'n_independent_orchards':21,
             'untouched_original_2011_missing_year':11,
