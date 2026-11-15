@@ -145,6 +145,35 @@ def cv_predict(X, y, splits):
     return predicted, train_count
 
 
+def _posthoc_state_stress(population, rate_fields):
+    """Observed extreme-row deletion is diagnostic, never a new primary fit."""
+    import numpy as np
+    max_pop = max(population, key=lambda r: r['Pollen Limitation 2016'])['Population']
+    zero_pops = sorted(r['Population'] for r in population
+                       if r['Pollen Limitation 2016'] == 0)
+
+    def one(omitted):
+        selected = [r for r in population if r['Population'] not in omitted]
+        rates = np.array([[r[k] for k in rate_fields] for r in selected], float)
+        y = np.sqrt(np.array([r['Pollen Limitation 2016'] for r in selected]))
+        total = rates.sum(axis=1)
+        reduced = np.column_stack([np.ones(len(y)), np.log(total + .1)])
+        full = np.column_stack([reduced, rates[:, 1:] / total[:, None]])
+        split = make_group_splits([r['Population'].split('_', 1)[0] for r in selected])
+        pred_reduced, _ = cv_predict(reduced, y, split)
+        pred_full, _ = cv_predict(full, y, split)
+        rmse_reduced = float(np.sqrt(np.mean((pred_reduced - y) ** 2)))
+        rmse_full = float(np.sqrt(np.mean((pred_full - y) ** 2)))
+        return {'omitted': sorted(omitted), 'population_count': len(selected),
+                'state_count': len(split), 'total_RMSE': rmse_reduced,
+                'total_plus_composition_RMSE': rmse_full,
+                'relative_composition_RMSE_reduction': 1 - rmse_full / rmse_reduced}
+
+    return {'max_archived_PL': one([max_pop]),
+            'max_PL_and_two_archived_zeros': one([max_pop] + zero_pops),
+            'posthoc_not_p_value_or_outlier_correction': True}
+
+
 def analyze():
     import numpy as np
     original = original_module()
@@ -222,6 +251,7 @@ def analyze():
         'CV_per_pop_across_all_groups': True,
         'CV_geography_only_internal_not_external': True,
         'state_wins_for_composition': win_state,
+        'posthoc_extreme_population_stress': _posthoc_state_stress(population, original.RATE_FIELDS),
         'state_composition_rmse_reduction_relative_to_total': 1-state['total_plus_composition']['rmse']/state['total']['rmse'],
         'buffer250_composition_rmse_reduction_relative_to_total': 1-buffer['total_plus_composition']['rmse']/buffer['total']['rmse'],
         'cv': cv,

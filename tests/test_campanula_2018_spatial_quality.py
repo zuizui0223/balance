@@ -117,3 +117,16 @@ def test_duplicate_test_index_fails_closed():
     y=np.arange(5.0)
     with pytest.raises(ValueError,match='Repeated'):
         m.cv_predict(X,y,[(np.array([0,1,2]),np.array([3,3]))])
+
+
+def test_original_extremes_posthoc_state_holdout_stress_is_not_hidden():
+    pytest.importorskip('numpy')
+    m=module()
+    out=m.analyze()['posthoc_extreme_population_stress']
+    assert out['max_archived_PL']['omitted'] == ['MN_117']
+    assert out['max_archived_PL']['population_count']==22
+    assert out['max_archived_PL']['relative_composition_RMSE_reduction']==pytest.approx(0.1166,abs=1e-3)
+    assert out['max_PL_and_two_archived_zeros']['omitted']==['MN_117','PA_27','TN_19']
+    assert out['max_PL_and_two_archived_zeros']['population_count']==20
+    assert out['max_PL_and_two_archived_zeros']['relative_composition_RMSE_reduction']==pytest.approx(0.0665,abs=1e-3)
+    assert out['posthoc_not_p_value_or_outlier_correction'] is True

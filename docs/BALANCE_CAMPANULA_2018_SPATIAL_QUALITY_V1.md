@@ -35,6 +35,19 @@ Relative total-versus-composition pooled holdout RMSE reduction: **15.40%** for 
 
 The single-visit seed-quality scalar does **not** outperform total visitation under the tested transformations and holdout geometries. This does **not** show that pollinator efficiency is ecologically irrelevant: it shows that a simple raw-mean-weighted scalar, with substantial site confounding and no timing/competition adjustment, is inadequate here. Visitor composition and separate group rates are predictive in this selected data set, but population observational models do not identify the cause.
 
+
+## Post-hoc outcome-extreme deletion stress (not a confirmatory test)
+
+Because the archived PL distribution includes one unusually high population (**MN_117**, PL ≈ 0.923) and two exact zeros (**PA_27**, **TN_19**), a separately **post-hoc**, observation-removing state-group refit was examined. These are not grounds for excluding valid original data from the primary 23-population analysis. The rule deliberately uses observed outcomes and is **not** a preregistered robustness threshold, an independent replication, or a valid way to calculate a p-value.
+
+| Exploratory subset | n populations | n states | State-held-out total-only RMSE | State-held-out composition RMSE | Relative reduction |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| All original data (primary, no deletion) | 23 | 14 | 0.213140 | 0.180307 | 15.40% |
+| Remove highest archived PL (MN_117) | 22 | 14 | 0.188253 | 0.166295 | 11.66% |
+| Remove highest plus both archived PL zeros | 20 | 12 | 0.134912 | 0.125938 | 6.65% |
+
+The direction of the held-out advantage survives these particular deletions, but its size **attenuates**. Thus the 15.4% headline is a full-sample predictive result, not a claim of an invariant or population-general 15% ecological effect. The zero responses are recorded outcomes, not automatically measurement errors.
+
 ## Scientific interpretation and non-inference
 
 The incremental result is a **within-taxon association** that persists in the declared grouped/spatial holdouts. It strengthens the ecological motivation for keeping **functional composition** separate from **total interaction intensity**. It does not demonstrate that small bees are inherently harmful in all contexts, that active same-trait directional conflict `L` is measured from the visitation table, that an architectural alternative is genetically accessible, or that a structural shared-versus-differentiated fitness difference `W_D* - W_S*` has been observed.
