@@ -1,10 +1,12 @@
 name: Zurich 2025 original four-species source audit
 on:
   push:
-    branches: [analysis/balance-zurich-four-species-20261115]
+    branches: [analysis/balance-zurich-four-species-20261115, analysis/apple-orchard-independent-20261115]
     paths:
       - .github/workflows/zurich-four-species-original.yml
       - scripts/analyze_zurich_four_species.py
+      - scripts/audit_zurich_crossplant_proxy.py
+      - tests/test_zurich_crossplant_proxy.py
       - tests/test_zurich_four_species.py
       - docs/BALANCE_ZURICH_FOUR_SPECIES_COMPOSITION_V1.md
       - data/BALANCE_ZURICH_FOUR_SPECIES_EXPLORATORY_RECEIPT_V1.json
@@ -85,9 +87,14 @@ jobs:
           export BALANCE_ZURICH_ORIGINAL_ARCHIVE=artifacts/zurich_2025_original/EnviDat_2025_four_species_original.zip
           python -m pytest -q tests/test_zurich_four_species.py
           python scripts/analyze_zurich_four_species.py --source "$BALANCE_ZURICH_ORIGINAL_ARCHIVE" --out-dir artifacts/zurich_2025_analysis
+          python -m pytest -q tests/test_zurich_crossplant_proxy.py
+          python scripts/audit_zurich_crossplant_proxy.py --source "$BALANCE_ZURICH_ORIGINAL_ARCHIVE" --out-dir artifacts/zurich_2025_crossplant
       - uses: actions/upload-artifact@v4
         with:
           name: zurich-2025-original-four-species
-          path: artifacts/zurich_2025_original/
+          path: |
+            artifacts/zurich_2025_original/
+            artifacts/zurich_2025_analysis/
+            artifacts/zurich_2025_crossplant/
           if-no-files-found: error
           retention-days: 30
