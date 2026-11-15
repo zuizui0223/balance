@@ -1,0 +1,126 @@
+{
+  "schema": "BALANCE_ZURICH_COMPOSITION_NULL_CALIBRATION_V1",
+  "source_sha256": "b1ea0dc54d0c6e33bfacb44d7285377ec3e113807cc945fc2dfbfcc9",
+  "original_source_doi": "10.16904/envidat.676",
+  "independent_research_programmes": 1,
+  "n_gardens": 24,
+  "species_order": [
+    "Carrot",
+    "Radish",
+    "Sainfoin",
+    "Comfrey"
+  ],
+  "draws": 20000,
+  "seed": 987654,
+  "species": {
+    "Carrot": {
+      "n_gardens": 24,
+      "response": "Carrot log1p seeds; other three arcsin-sqrt fruit/seed fractions",
+      "reference_guild": "other_bee",
+      "additional_guilds": [
+        "apis",
+        "other_nonbee"
+      ],
+      "rmse_total": 0.2525405125765139,
+      "rmse_total_plus_composition": 0.20355951826720578,
+      "gain_fraction": 0.1939530169222572,
+      "gardens_with_lower_loss": 11,
+      "paired_bootstrap_ci95": [
+        -0.23241396851363094,
+        0.3644439369082156
+      ],
+      "paired_bootstrap_probability_positive": 0.85785,
+      "top_positive_garden": 19,
+      "top_positive_sqerror_gain": 0.45602806652116284,
+      "net_sqerror_gain": 0.5361655923655556,
+      "residual_permutation_p_raw": 0.0012499375031248437,
+      "residual_permutation_p_fwer": 0.0074496275186240685,
+      "wild_signflip_p_raw": 0.0127993600319984,
+      "wild_signflip_p_fwer": 0.014699265036748163
+    },
+    "Radish": {
+      "n_gardens": 24,
+      "response": "Carrot log1p seeds; other three arcsin-sqrt fruit/seed fractions",
+      "reference_guild": "other_bee",
+      "additional_guilds": [
+        "apis",
+        "other_nonbee"
+      ],
+      "rmse_total": 0.05744445200271474,
+      "rmse_total_plus_composition": 0.05750337966744454,
+      "gain_fraction": -0.0010258199473642815,
+      "gardens_with_lower_loss": 12,
+      "paired_bootstrap_ci95": [
+        -0.14333077141029188,
+        0.10051591721927657
+      ],
+      "paired_bootstrap_probability_positive": 0.50105,
+      "top_positive_garden": 19,
+      "top_positive_sqerror_gain": 0.003746387002597812,
+      "net_sqerror_gain": -0.00016256657486584747,
+      "residual_permutation_p_raw": 0.16974151292435377,
+      "residual_permutation_p_fwer": 0.511724413779311,
+      "wild_signflip_p_raw": 0.2368381580920954,
+      "wild_signflip_p_fwer": 0.6460176991150443
+    },
+    "Sainfoin": {
+      "n_gardens": 24,
+      "response": "Carrot log1p seeds; other three arcsin-sqrt fruit/seed fractions",
+      "reference_guild": "other_bee",
+      "additional_guilds": [
+        "apis",
+        "robber"
+      ],
+      "rmse_total": 0.14034467910501366,
+      "rmse_total_plus_composition": 0.1474650857408159,
+      "gain_fraction": -0.05073513781362782,
+      "gardens_with_lower_loss": 10,
+      "paired_bootstrap_ci95": [
+        -0.16099489859143729,
+        0.03255724731255983
+      ],
+      "paired_bootstrap_probability_positive": 0.13045,
+      "top_positive_garden": 39,
+      "top_positive_sqerror_gain": 0.01393578186657677,
+      "net_sqerror_gain": -0.04918374142696628,
+      "residual_permutation_p_raw": 0.4152292385380731,
+      "residual_permutation_p_fwer": 0.9641517924103795,
+      "wild_signflip_p_raw": 0.4473776311184441,
+      "wild_signflip_p_fwer": 0.8836058197090145
+    },
+    "Comfrey": {
+      "n_gardens": 24,
+      "response": "Carrot log1p seeds; other three arcsin-sqrt fruit/seed fractions",
+      "reference_guild": "other_bee",
+      "additional_guilds": [
+        "robber"
+      ],
+      "rmse_total": 0.17598044431625853,
+      "rmse_total_plus_composition": 0.16469058385737015,
+      "gain_fraction": 0.06415406270141655,
+      "gardens_with_lower_loss": 11,
+      "paired_bootstrap_ci95": [
+        -0.14014052076116512,
+        0.18463895858151927
+      ],
+      "paired_bootstrap_probability_positive": 0.7694,
+      "top_positive_garden": 27,
+      "top_positive_sqerror_gain": 0.09437744906892445,
+      "net_sqerror_gain": 0.09230708089119127,
+      "residual_permutation_p_raw": 0.021898905054747262,
+      "residual_permutation_p_fwer": 0.14069296535173242,
+      "wild_signflip_p_raw": 0.07569621518924054,
+      "wild_signflip_p_fwer": 0.2616869156542173
+    }
+  },
+  "method": "True garden-leave-one-out OLS; fixed-geometry residual-permutation, shared-garden wild sign-flip, four-species max statistic, paired resampling of held-out losses",
+  "independence_note": "All four phytometers in a garden share one sampling environment; 24 resampling blocks, not 96 independent environments",
+  "not_a_randomized_p_value": true,
+  "residual_exchangeability_unverified": true,
+  "paired_bootstrap_not_full_refit_uncertainty": true,
+  "source_based_inference_not_a_direct_BALANCE_architecture_test": true,
+  "causal_intervention_test": false,
+  "frozen_V4_modified": false,
+  "no_new_direct_Ws_Wd_Phi": true,
+  "claim_ceiling": "Null-reference and prediction-stability diagnostics only; no architecture selection, structural fitness, causal visitor guild effect or unbiased generality prevalence"
+}

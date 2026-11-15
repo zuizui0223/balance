@@ -1,0 +1,79 @@
+name: BALANCE visitor composition null and site sensitivity
+on:
+  push:
+    branches: [analysis/balance-composition-null-20261115]
+    paths:
+      - .github/workflows/balance-composition-null-audit.yml
+      - scripts/audit_zurich_composition_null.py
+      - scripts/audit_apple_cv_uncertainty.py
+      - tests/test_zurich_composition_null.py
+      - tests/test_apple_cv_uncertainty.py
+      - data/BALANCE_ZURICH_COMPOSITION_NULL_V1.json
+      - data/BALANCE_APPLE_CV_UNCERTAINTY_V1.json
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-bounded-null-calibration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download and hash-audit original EnviDat and Dryad files
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import hashlib,json,urllib.request
+          out=Path('artifacts/balance_composition_null_sources')
+          out.mkdir(parents=True,exist_ok=True)
+          sources=[
+            ('zurich_original.zip','https://www.envidat.ch/dataset/d8e61f31-c2e5-4052-8784-b1624dfbfc40/resource/cef4a88c-0ef6-4327-a4a0-fc7d33b468e5/download/rejichacko_etal_2025_envidat.zip', 'sha256','b1ea0dc54d0c6e33bfacb44d7285377ec3e113807cc945fc2dfbfcc3e534bcc9'),
+            ('apple_original.xlsx','https://zenodo.org/records/4943340/files/fruitsetbees.xlsx?download=1','md5','5445fb585421e6d9b1f5b5869342bbb4')]
+          receipt={'retrieval_utc':datetime.now(timezone.utc).isoformat(),'sources':{}}
+          for name,url,method,expected in sources:
+              req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-Scientific-Source-Audit/1.0'})
+              with urllib.request.urlopen(req,timeout=120) as response:
+                  raw=response.read(70000001)
+                  effective=response.geturl()
+              if len(raw)>70000000 or len(raw)<5000:raise ValueError('Invalid original source size')
+              actual=getattr(hashlib,method)(raw).hexdigest()
+              if actual!=expected:raise ValueError('Source digest mismatch for '+name)
+              (out/name).write_bytes(raw)
+              receipt['sources'][name]={'original_url':url,'final_url':effective,'bytes':len(raw),method:actual,'sha256':hashlib.sha256(raw).hexdigest()}
+          (out/'SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Execute source-bound tests and recompute fixed null references
+        run: |
+          python -m pip install 'numpy==2.3.5' 'pytest>=8,<10'
+          export BALANCE_ZURICH_ORIGINAL_ARCHIVE=artifacts/balance_composition_null_sources/zurich_original.zip
+          export BALANCE_APPLE_ORIGINAL=artifacts/balance_composition_null_sources/apple_original.xlsx
+          python -m pytest -q tests/test_zurich_composition_null.py tests/test_apple_cv_uncertainty.py
+          python scripts/audit_zurich_composition_null.py --source "$BALANCE_ZURICH_ORIGINAL_ARCHIVE" --out artifacts/balance_composition_null_sources/zurich_recomputed.json --draws 20000 --seed 987654
+          python scripts/audit_apple_cv_uncertainty.py --source "$BALANCE_APPLE_ORIGINAL" --out artifacts/balance_composition_null_sources/apple_recomputed.json --draws 20000 --seed 20261115
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          for label,old,new in [('zurich','data/BALANCE_ZURICH_COMPOSITION_NULL_V1.json','artifacts/balance_composition_null_sources/zurich_recomputed.json'),('apple','data/BALANCE_APPLE_CV_UNCERTAINTY_V1.json','artifacts/balance_composition_null_sources/apple_recomputed.json')]:
+              a=json.loads(Path(old).read_text());b=json.loads(Path(new).read_text())
+              if a['schema']!=b['schema'] or a['seed']!=b['seed'] or a['draws']!=b['draws']:
+                  raise ValueError('Frozen schema or simulation contract changed')
+              if label=='zurich':
+                  for s in ['Carrot','Radish','Sainfoin','Comfrey']:
+                      for k in ('gain_fraction','residual_permutation_p_fwer','wild_signflip_p_fwer'):
+                          if not math.isclose(a['species'][s][k],b['species'][s][k],abs_tol=1e-9):raise ValueError('Zurich mismatch: '+s+' '+k)
+              else:
+                  for k in ('gain_fraction','baseline_rmse_orchard_equal','extension_rmse_orchard_equal'):
+                      if not math.isclose(a['main_year_and_frost_adjusted'][k],b['main_year_and_frost_adjusted'][k],abs_tol=1e-9):raise ValueError('Apple mismatch: '+k)
+          print('All frozen source-linked checks agree')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: balance-composition-null-signed-source-and-results
+          path: artifacts/balance_composition_null_sources/
+          if-no-files-found: error
+          retention-days: 30
