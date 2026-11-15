@@ -4,6 +4,8 @@ on:
     branches: [analysis/apple-orchard-independent-20261115]
     paths:
       - .github/workflows/wisconsin-apple-original.yml
+      - scripts/audit_wisconsin_apple_independent.py
+      - tests/test_wisconsin_apple_independent.py
   workflow_dispatch:
 permissions:
   contents: read
@@ -70,6 +72,12 @@ jobs:
           (base/"ORIGINAL_SHEETS.json").write_text(json.dumps(profile,indent=2,default=str)+"\n")
           print(json.dumps(profile,indent=2,default=str)[:15000])
           PY
+      - name: Reproduce orchard-grouped conditional prediction and provenance tests
+        shell: bash
+        run: |
+          python -m pip install 'numpy>=1.24,<3' 'pytest>=8,<10'
+          BALANCE_WISCONSIN_APPLE_ORIGINAL=artifacts/wisconsin_apple_original/fruitsetbees.xlsx python -m pytest -q tests/test_wisconsin_apple_independent.py
+          python scripts/audit_wisconsin_apple_independent.py --source artifacts/wisconsin_apple_original/fruitsetbees.xlsx --out artifacts/wisconsin_apple_original/ORCHARD_CONDITIONAL_RESULTS.json
       - uses: actions/upload-artifact@v4
         with:
           name: wisconsin-apple-source-original
