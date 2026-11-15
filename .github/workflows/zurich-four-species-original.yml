@@ -1,0 +1,82 @@
+name: Zurich 2025 original four-species source audit
+on:
+  push:
+    branches: [analysis/balance-zurich-four-species-20261115]
+    paths:
+      - .github/workflows/zurich-four-species-original.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Retrieve public EnviDat archived source and verify internal structure
+        shell: bash
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import hashlib, json, urllib.request, zipfile
+          url = "https://www.envidat.ch/dataset/d8e61f31-c2e5-4052-8784-b1624dfbfc40/resource/cef4a88c-0ef6-4327-a4a0-fc7d33b468e5/download/rejichacko_etal_2025_envidat.zip"
+          out = Path("artifacts/zurich_2025_original")
+          out.mkdir(parents=True, exist_ok=True)
+          req = urllib.request.Request(url, headers={"User-Agent":"BALANCE-scientific-source-audit/1.0", "Accept":"application/zip,application/octet-stream,*/*"})
+          with urllib.request.urlopen(req, timeout=120) as response:
+              raw = response.read(70000001)
+              redirected = response.geturl()
+          if len(raw) > 70000000 or len(raw) < 10000:
+              raise ValueError("Original EnviDat zip exceeds size gate or was unexpectedly small")
+          original = out / "EnviDat_2025_four_species_original.zip"
+          original.write_bytes(raw)
+          with zipfile.ZipFile(original) as z:
+              names = z.namelist()
+              if len(names) > 2000:
+                  raise ValueError("Unsafe number of source files")
+              if any(x.startswith("/") or ".." in Path(x).parts for x in names):
+                  raise ValueError("Unsafe zip path")
+              meta = [{"path":a.filename, "bytes":a.file_size, "crc32":a.CRC,
+                       "sha256":hashlib.sha256(z.read(a.filename)).hexdigest()}
+                      for a in z.infolist() if not a.is_dir()]
+              expected = ["species_temporal_flower_visitation_matrix.csv",
+                          "daucus_carota_seed_set.csv",
+                          "onobrychis_viciifolia_fruit_set.csv",
+                          "raphanus_sativus_fruit_set.csv",
+                          "symphytum_officinale_fruit_set.csv"]
+              for name in expected:
+                  if sum(Path(n).name.lower()==name.lower() for n in names)!=1:
+                      raise ValueError("Required source missing or duplicated: "+name)
+              import csv,io
+              preview={}
+              for a in z.infolist():
+                  if a.filename.lower().endswith(".csv"):
+                      data = z.read(a.filename).decode("utf-8-sig")
+                      rows = list(csv.reader(io.StringIO(data)))
+                      preview[a.filename]={"rows_excluding_header":max(0,len(rows)-1),
+                                           "headers": rows[0] if rows else [],
+                                           "sample_values":rows[1][:14] if len(rows)>1 else []}
+              (out / "CSV_SCHEMA_PREVIEW.json").write_text(json.dumps(preview,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+          receipt={"dataset_doi":"10.16904/envidat.676",
+                   "article_doi":"10.1016/j.dib.2025.112013",
+                   "source_url":url,"resolved_url":redirected,
+                   "retrieved_at_utc":datetime.now(timezone.utc).isoformat(),
+                   "archive_sha256":hashlib.sha256(raw).hexdigest(),
+                   "archive_bytes":len(raw),"file_count":len(meta),
+                   "files":meta,"observed_data_only":True,
+                   "V4_confirmatory_data_changed":False,
+                   "claim_ceiling":"Exploratory species-by-garden observation, not causal architecture fitness"}
+          (out / "SOURCE_RECEIPT.json").write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
+          print(json.dumps({k:v for k,v in receipt.items() if k!="files"},indent=2))
+          print(json.dumps(preview,indent=2,ensure_ascii=False)[:30000])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zurich-2025-original-four-species
+          path: artifacts/zurich_2025_original/
+          if-no-files-found: error
+          retention-days: 30
