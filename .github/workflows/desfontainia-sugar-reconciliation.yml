@@ -4,6 +4,8 @@ on:
     branches: [analysis/desfontainia-sugar-code-reconciliation-20261117]
     paths:
       - .github/workflows/desfontainia-sugar-reconciliation.yml
+      - scripts/audit_desfontainia_sugar_source_discrepancy.py
+      - tests/test_desfontainia_sugar_source_discrepancy.py
   workflow_dispatch:
 permissions:
   contents: read
@@ -86,6 +88,28 @@ jobs:
               raise ValueError('Source nine-shrub test not independently reproduced')
           (out/'SOURCE_AUDIT.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
           print(json.dumps(result,indent=2,ensure_ascii=False)[:15000])
+          PY
+      - name: Run source-identity and cross-stage independent regression checks
+        shell: bash
+        env:
+          BALANCE_DESFONTAINIA_SOURCE: artifacts/desfontainia-source-reconciliation/18895003_Raw Data Desfontainia fulgens.xlsx
+          BALANCE_DESFONTAINIA_R_SOURCE: artifacts/desfontainia-source-reconciliation/18895003_analysis_desfontainia_fulgens.R
+          BALANCE_DESFONTAINIA_FINAL_SOURCE: artifacts/desfontainia-source-reconciliation/20469376_Raw Data Desfontainia fulgens.xlsx
+          BALANCE_DESFONTAINIA_FINAL_R: artifacts/desfontainia-source-reconciliation/20469376_analysis_desfontainia_fulgens.R
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_desfontainia_sugar_source_discrepancy.py tests/test_desfontainia_fitness_gate.py tests/test_desfontainia_two_part_precision.py
+          python scripts/audit_desfontainia_sugar_source_discrepancy.py --source "$BALANCE_DESFONTAINIA_SOURCE" --author-r "$BALANCE_DESFONTAINIA_R_SOURCE" --final-source "$BALANCE_DESFONTAINIA_FINAL_SOURCE" --final-r "$BALANCE_DESFONTAINIA_FINAL_R" --out artifacts/desfontainia-source-reconciliation/FINAL_STAGE_RECEIPT.json
+          python - <<'PY'
+          import json
+          x=json.load(open('artifacts/desfontainia-source-reconciliation/FINAL_STAGE_RECEIPT.json'))
+          assert x['source_version_concordance']['final_paper_code_reproduces_nine_pair_statistic']
+          assert x['source_version_concordance']['same_underlying_spreadsheet_between_records']
+          assert x['unconditional_incidence_survey']['pierced_flowers']==165
+          assert x['sugar_filter_discrepancy']['author_code_5ul']['n_shrubs']==1
+          assert x['sugar_filter_discrepancy']['reported_n9_reconstruction']['n_shrubs']==9
+          assert not x['inference_firewall']['nectar_mediates_seed_robbery_causally_identified']
+          print('Verified source-version reconciliation, stage heterogeneity and original-replication independence')
           PY
       - uses: actions/upload-artifact@v4
         with:
