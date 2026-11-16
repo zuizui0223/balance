@@ -1,0 +1,83 @@
+name: Desfontainia 2026 two-part seed and equivalence audit
+
+on:
+  push:
+    branches: [analysis/balance-desfontainia-two-part-20261116]
+    paths:
+      - .github/workflows/desfontainia-two-part-precision.yml
+      - scripts/audit_desfontainia_two_part_precision.py
+      - scripts/audit_desfontainia_fitness_gate.py
+      - tests/test_desfontainia_two_part_precision.py
+      - data/BALANCE_DESFONTAINIA_TWO_PART_PRECISION_V1.json
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-source-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Retrieve exact official Zenodo source (fail closed)
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, urllib.request
+          base=pathlib.Path('artifacts/desfontainia-two-part')
+          base.mkdir(parents=True,exist_ok=True)
+          api='https://zenodo.org/api/records/18895003'
+          req=urllib.request.Request(api,headers={'User-Agent':'BALANCE-scientific-source-verification/1.0'})
+          with urllib.request.urlopen(req,timeout=75) as resp:
+              meta=json.load(resp)
+          if meta.get('id')!=18895003:raise ValueError('Zenodo record identity not verified')
+          original=next((z for z in meta['files'] if z['key']=='Raw Data Desfontainia fulgens.xlsx'),None)
+          if not original:raise ValueError('Original source XLSX not in official record')
+          req=urllib.request.Request(original['links']['self'],headers={'User-Agent':'BALANCE-scientific-source-verification/1.0'})
+          with urllib.request.urlopen(req,timeout=90) as resp:
+              raw=resp.read(2000001)
+          if not 200000<len(raw)<2000000:raise ValueError('Original XLSX byte length unexpected')
+          md5=hashlib.md5(raw).hexdigest()
+          if md5!='e7e59a06cc3eb7aed636620a85a1ea98':
+              raise ValueError('Original source MD5 does not match official publication')
+          path=base/'Raw Data Desfontainia fulgens.xlsx'
+          path.write_bytes(raw)
+          (base/'SOURCE_RECEIPT.json').write_text(json.dumps({'source_record':api,'md5':md5,'sha256':hashlib.sha256(raw).hexdigest()},indent=2)+'\n')
+          print('Original verified',md5,hashlib.sha256(raw).hexdigest())
+          PY
+      - name: Run source-gated tests and compare deterministic freeze
+        shell: bash
+        env:
+          BALANCE_DESFONTAINIA_SOURCE: artifacts/desfontainia-two-part/Raw Data Desfontainia fulgens.xlsx
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_desfontainia_fitness_gate.py tests/test_desfontainia_two_part_precision.py
+          python scripts/audit_desfontainia_two_part_precision.py --source "$BALANCE_DESFONTAINIA_SOURCE" --out artifacts/desfontainia-two-part/RECOMPUTED_TWO_PART.json
+          python - <<'PY'
+          import json,math,pathlib
+          actual=json.loads(pathlib.Path('artifacts/desfontainia-two-part/RECOMPUTED_TWO_PART.json').read_text())
+          frozen=json.loads(pathlib.Path('data/BALANCE_DESFONTAINIA_TWO_PART_PRECISION_V1.json').read_text())
+          def check(a,b,where='root'):
+              if type(a) is not type(b):
+                  # int/float only: JSON differences could arise from numerical arithmetic
+                  if type(a) in (int,float) and type(b) in (int,float) and math.isclose(a,b,rel_tol=0,abs_tol=1e-11): return
+                  raise ValueError(f'Type changed: {where}')
+              if isinstance(a,dict):
+                  if set(a)!=set(b): raise ValueError(f'Keys changed: {where}')
+                  for key in a: check(a[key],b[key],where+'.'+str(key))
+              elif isinstance(a,list):
+                  if len(a)!=len(b):raise ValueError(f'Length changed: {where}')
+                  for j,(x,y) in enumerate(zip(a,b)):check(x,y,where+f'[{j}]')
+              elif type(a) is float:
+                  if not math.isclose(a,b,rel_tol=0,abs_tol=1e-11):raise ValueError(f'Result changed at {where}: {a} != {b}')
+              elif a!=b:raise ValueError(f'Result changed at {where}: {a} != {b}')
+          check(actual,frozen)
+          print('Frozen two-part JSON matches original source replay')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desfontainia-2026-two-part-source-receipt
+          path: artifacts/desfontainia-two-part/
+          if-no-files-found: error
+          retention-days: 30

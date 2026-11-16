@@ -1,0 +1,101 @@
+{
+  "schema": "BALANCE_DESFONTAINIA_TWO_PART_PRECISION_V1",
+  "n_shrubs": 40,
+  "grain": "one distinct outcome flower per treatment, paired by shrub; treatments not randomly comparable",
+  "source_doi": "10.5281/zenodo.18895003",
+  "source_md5": "e7e59a06cc3eb7aed636620a85a1ea98",
+  "seed_presence": {
+    "protected": 32,
+    "naturally_pierced": 28
+  },
+  "positive_only_means": {
+    "protected": 32.65625,
+    "naturally_pierced": 44.785714285714285
+  },
+  "overall_means": {
+    "protected": 26.125,
+    "naturally_pierced": 31.35
+  },
+  "arithmetic_decomposition": {
+    "reference_order": "first protected success-conditional mean for change in success prevalence; then naturally pierced prevalence for positive-magnitude difference",
+    "prevalence_component": -3.265625000000003,
+    "positive_magnitude_component": 8.490624999999998,
+    "reconstructed_mean_difference": 5.224999999999994,
+    "components_are_causal_or_unique": false
+  },
+  "paired_presence": {
+    "difference": -0.10000000000000009,
+    "protected_positive_pierced_zero": 10,
+    "protected_zero_pierced_positive": 6,
+    "exact_discordance_two_sided_reference_p": 0.454498291015625
+  },
+  "paired_difference": {
+    "mean": 5.225,
+    "median": 0.0,
+    "n_positive": 19,
+    "n_negative": 19,
+    "n_equal": 2,
+    "exact_sign_two_sided_reference_p": 1.0,
+    "95ci_bounds": [
+      -12.850034871116927,
+      23.300034871116928
+    ],
+    "leave_one_shrub_out_mean_min_max": [
+      2.5128205128205128,
+      8.615384615384615
+    ]
+  },
+  "equivalence_sensitivity": {
+    "post_open_exploratory_margins_not_preregistered": true,
+    "90ci_bounds": [
+      -9.83126800255488,
+      20.28126800255488
+    ],
+    "relative_10_percent": {
+      "illustrative_half_width_seeds": 2.6125,
+      "90ci_within_bounds": false
+    },
+    "relative_20_percent": {
+      "illustrative_half_width_seeds": 5.225,
+      "90ci_within_bounds": false
+    },
+    "relative_50_percent": {
+      "illustrative_half_width_seeds": 13.0625,
+      "90ci_within_bounds": false
+    },
+    "minimum_symmetric_half_width_for_90ci": 20.28126800255488,
+    "minimum_symmetric_half_width_as_percent_protected_mean": 77.6316478566694,
+    "margins_test_only_observed_comparison_not_randomized_causal_robbery_effect": true
+  },
+  "paired_shrub_bootstrap95": {
+    "mean_delta": [
+      -11.825,
+      22.599999999999998
+    ],
+    "presence_delta": [
+      -0.29999999999999993,
+      0.09999999999999998
+    ],
+    "conditional_positive_mean_delta": [
+      -6.664576802507838,
+      31.367487684729063
+    ],
+    "prevalence_component": [
+      -10.228225806451615,
+      3.112500000000003
+    ],
+    "positive_magnitude_component": [
+      -4.570689655172414,
+      22.445689655172412
+    ]
+  },
+  "interpretation_guardrails": {
+    "absence_of_seed_cost_proven": false,
+    "causal_robbery_effect_identified": false,
+    "conditional_positive_mean_causal": false,
+    "nectar_to_seed_same_flower_mediation_identified": false,
+    "structural_BALANCE_worldline_measured": false,
+    "independent_biological_studies_added": 0,
+    "original_V4_coder_or_outcome_changed": false
+  }
+}
