@@ -4,9 +4,15 @@
 
 ## Original sources and provenance
 
-Valdivia & Orellana (2026), *Ecology and Evolution* [10.1002/ece3.73933](https://doi.org/10.1002/ece3.73933). The March 6, 2026 Zenodo submission [10.5281/zenodo.18895003](https://doi.org/10.5281/zenodo.18895003) includes a workbook MD5 `e7e59a06cc3eb7aed636620a85a1ea98` and author R script MD5 `9fd405c399ecad9c3fe54d1cd70b21c0`; both were independently read as exact source bytes. The final publication's Data Availability Statement instead points to [10.5281/zenodo.20469376](https://doi.org/10.5281/zenodo.20469376). The accompanying GitHub Actions explicitly resolves this distinct record; do not presume the March prepublication script is necessarily the final article code.
+Valdivia & Orellana (2026), *Ecology and Evolution* [10.1002/ece3.73933](https://doi.org/10.1002/ece3.73933). The March 6, 2026 Zenodo submission [10.5281/zenodo.18895003](https://doi.org/10.5281/zenodo.18895003) includes a workbook MD5 `e7e59a06cc3eb7aed636620a85a1ea98` and author R script MD5 `9fd405c399ecad9c3fe54d1cd70b21c0`; both were independently read as exact source bytes. The final publication's Data Availability Statement points to [10.5281/zenodo.20469376](https://doi.org/10.5281/zenodo.20469376), which **has now been independently verified as a distinct and updated final-paper code deposit**. Do not treat the March prepublication script as the code controlling the published paper.
 
-## New source-code discrepancy
+## Final-paper source version verified — correction to preliminary audit
+
+The final article's DOI [10.5281/zenodo.20469376](https://doi.org/10.5281/zenodo.20469376) is **public and accessible**. An independent source-authenticated GitHub Actions retrieval verified that its raw XLSX has the **same MD5** `e7e59a06cc3eb7aed636620a85a1ea98`, whereas its updated R code has MD5 `8e72799d10773c70a77089bd7efc4fab` (different from the March-submission code). The **final R code explicitly filters positive measured sugar only**, not `nectar_ul >= 5`; it constructs 9 paired shrubs and is consistent with the published t≈−2.13, p≈0.066. It also uses `geepack::geeglm` for its GEE models, whereas the March-submission R used different model implementations. Thus the earlier source-script mismatch is a **historical version difference**, **not an error in the final deposited script**. No published numeric sugar result needs retraction on this basis.
+
+The remaining question is solely whether the measurements from low-volume flowers are adequately supported by the stated approximate refractometer-volume limit, not whether the final data/code can reproduce the nine-shrub statistic. Source receipts: [GitHub original and final record reconciliation](https://github.com/zuizui0223/balance/actions/runs/43904198046).
+
+## Historical March-submission source-code discrepancy
 
 The submitted original R script reads the nectar sheet, applies `filter(nectar_ul >= 5, !is.na(sugar_pct), sugar_pct > 0)`, summarizes sugar concentrations at the shrub × pierced/undamaged level, and performs `t.test(..., paired=TRUE)`.
 
