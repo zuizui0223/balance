@@ -1,0 +1,119 @@
+name: Desfontainia published sugar-code source reconciliation
+on:
+  push:
+    branches: [analysis/desfontainia-sugar-code-reconciliation-20261117]
+    paths:
+      - .github/workflows/desfontainia-sugar-reconciliation.yml
+      - scripts/audit_desfontainia_sugar_source_discrepancy.py
+      - tests/test_desfontainia_sugar_source_discrepancy.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-identity-and-sugar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reconcile March source deposit with final-article DOI and exact sugar denominator
+        shell: bash
+        run: |
+          python -m pip install 'scipy==1.17.0' 'numpy==2.3.5'
+          python - <<'PY'
+          from pathlib import Path
+          from collections import defaultdict
+          from scipy.stats import ttest_rel, spearmanr
+          import hashlib, json, urllib.request, urllib.error, statistics, re
+          from scripts.audit_desfontainia_fitness_gate import source_sheet
+          out=Path('artifacts/desfontainia-source-reconciliation')
+          out.mkdir(parents=True,exist_ok=True)
+          ids=(18895003,20469376)
+          status={}
+          downloaded={}
+          for rid in ids:
+              url=f'https://zenodo.org/api/records/{rid}'
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'BALANCE-source-audit/1.0'}),timeout=75) as response:
+                      m=json.load(response)
+              except urllib.error.HTTPError as e:
+                  status[str(rid)]={'http_status':e.code,'available':False}
+                  continue
+              if m.get('id') != rid:raise ValueError('Unexpected Zenodo identity')
+              status[str(rid)]={'http_status':200,'available':True,'doi':m.get('doi'),
+                                'file_list':[{'key':f.get('key'),'checksum':f.get('checksum')} for f in m.get('files',[])]}
+              for item in m.get('files',[]):
+                  name=item.get('key','')
+                  if rid==18895003 and name not in ('Raw Data Desfontainia fulgens.xlsx','analysis_desfontainia_fulgens.R'):
+                      continue
+                  if rid==20469376 and not name.lower().endswith(('.r','.xlsx')):
+                      continue
+                  if item.get('size',1e10)>2000000:continue
+                  url=item['links']['self']
+                  with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'BALANCE-source-audit/1.0'}),timeout=90) as resp:
+                      b=resp.read(2000001)
+                  if len(b)>2000000:raise ValueError('Oversized source')
+                  dig=hashlib.md5(b).hexdigest()
+                  if rid==18895003:
+                      expected={'Raw Data Desfontainia fulgens.xlsx':'e7e59a06cc3eb7aed636620a85a1ea98',
+                      'analysis_desfontainia_fulgens.R':'9fd405c399ecad9c3fe54d1cd70b21c0'}[name]
+                      if dig!=expected:raise ValueError('Original source MD5 changed: '+name)
+                  save=out/(str(rid)+'_'+name)
+                  save.write_bytes(b)
+                  downloaded[(rid,name)]=save
+                  status[str(rid)].setdefault('downloaded',[]).append({'key':name,'md5':dig,'sha256':hashlib.sha256(b).hexdigest(),
+                    'has_5_ul_gate':b'nectar_ul >= 5' in b,'has_positive_nectar_gate':b'nectar_ul > 0' in b})
+          source=downloaded[(18895003,'Raw Data Desfontainia fulgens.xlsx')]
+          r=source_sheet(source,3,['Plant','Flower','Status','Nectar volumen (microliter)','Nectar concentration (% w/w)'])
+          def sugar(threshold):
+              groups=defaultdict(list)
+              for plant,flower,state,volume,sugar in r:
+                  if volume is not None and volume>0 and volume>=threshold and sugar is not None and sugar>0:
+                      groups[(int(plant),state)].append(sugar)
+              ids=sorted({i for i,status in groups if status=='Robada'} &
+                         {i for i,status in groups if status=='No dañada'})
+              if len(ids)<2:return {'n_shrubs':len(ids),'paired_t':None,'paired_p':None}
+              a=[statistics.mean(groups[(i,'Robada')]) for i in ids]
+              b=[statistics.mean(groups[(i,'No dañada')]) for i in ids]
+              test=ttest_rel(a,b)
+              return {'n_shrubs':len(ids),'paired_t':float(test.statistic),'paired_p':float(test.pvalue)}
+          result={'record_reconciliation':status,'original_source_MD5_verified':True,
+                  'sugar_threshold_0':sugar(0),'sugar_threshold_1':sugar(1),'sugar_threshold_2':sugar(2),
+                  'author_script_5uL_threshold':sugar(5)}
+          if result['sugar_threshold_0']['n_shrubs']!=9 or result['author_script_5uL_threshold']['n_shrubs']!=1:
+              raise ValueError('Source sugar denominator inconsistent with stored audit')
+          if abs(result['sugar_threshold_0']['paired_t'] + 2.12931058076894)>1e-8:
+              raise ValueError('Source nine-shrub test not independently reproduced')
+          (out/'SOURCE_AUDIT.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
+          print(json.dumps(result,indent=2,ensure_ascii=False)[:15000])
+          PY
+      - name: Run source-identity and cross-stage independent regression checks
+        shell: bash
+        env:
+          BALANCE_DESFONTAINIA_SOURCE: artifacts/desfontainia-source-reconciliation/18895003_Raw Data Desfontainia fulgens.xlsx
+          BALANCE_DESFONTAINIA_R_SOURCE: artifacts/desfontainia-source-reconciliation/18895003_analysis_desfontainia_fulgens.R
+          BALANCE_DESFONTAINIA_FINAL_SOURCE: artifacts/desfontainia-source-reconciliation/20469376_Raw Data Desfontainia fulgens.xlsx
+          BALANCE_DESFONTAINIA_FINAL_R: artifacts/desfontainia-source-reconciliation/20469376_analysis_desfontainia_fulgens.R
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_desfontainia_sugar_source_discrepancy.py tests/test_desfontainia_fitness_gate.py tests/test_desfontainia_two_part_precision.py
+          python scripts/audit_desfontainia_sugar_source_discrepancy.py --source "$BALANCE_DESFONTAINIA_SOURCE" --author-r "$BALANCE_DESFONTAINIA_R_SOURCE" --final-source "$BALANCE_DESFONTAINIA_FINAL_SOURCE" --final-r "$BALANCE_DESFONTAINIA_FINAL_R" --out artifacts/desfontainia-source-reconciliation/FINAL_STAGE_RECEIPT.json
+          python - <<'PY'
+          import json
+          x=json.load(open('artifacts/desfontainia-source-reconciliation/FINAL_STAGE_RECEIPT.json'))
+          assert x['source_version_concordance']['final_paper_code_reproduces_nine_pair_statistic']
+          assert x['source_version_concordance']['same_underlying_spreadsheet_between_records']
+          assert x['unconditional_incidence_survey']['pierced_flowers']==165
+          assert x['sugar_filter_discrepancy']['author_code_5ul']['n_shrubs']==1
+          assert x['sugar_filter_discrepancy']['reported_n9_reconstruction']['n_shrubs']==9
+          assert not x['inference_firewall']['nectar_mediates_seed_robbery_causally_identified']
+          print('Verified source-version reconciliation, stage heterogeneity and original-replication independence')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desfontainia-sugar-source-reconciliation
+          path: artifacts/desfontainia-source-reconciliation/
+          retention-days: 30
+          if-no-files-found: error
