@@ -55,7 +55,7 @@ def audit(zenodo_original:Path,zhong_original:Path,cuevas_original:Path,gelvez_o
     _pdf_source(cuevas_original,CUEVAS_SHA,(
        'Spatio-temporal variation of nectar robbing in Salvia gesneriflora',
        'filmed seven','44 h of observation in 204 flowers',
-       'primary (D. baritula)', 'secondary nectar robbers',
+       'D. baritula', 'secondary nectar robbers',
        'P = 0.276', 'P = 0.083'))
     _pdf_source(gelvez_original,GELVEZ_SHA,(
        'Nectar robbing in Collaea cipoensis', '44 flowering plants',
