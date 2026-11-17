@@ -1,0 +1,61 @@
+name: Alpinia S1 fluorescent pollen-analogue source recovery
+
+on:
+  push:
+    branches: [analysis/balance-alpinia-stage-contrast-20261117]
+    paths:
+      - .github/workflows/alpinia-2015-s1-male-transfer.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-s1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Retrieve original S1 DOC and record immutable checksum
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          import hashlib, json, pathlib, urllib.request
+          out = pathlib.Path('artifacts/alpinia-s1')
+          out.mkdir(parents=True,exist_ok=True)
+          url = 'https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0144585.s001&type=supplementary'
+          req = urllib.request.Request(url,headers={'User-Agent':'BALANCE-PLOS-scientific-source-audit/1.0'})
+          with urllib.request.urlopen(req,timeout=100) as resp:
+              raw=resp.read(1500001);mime=resp.headers.get('Content-Type','');final_url=resp.url
+          if not 2000<len(raw)<1500000 or raw.lstrip().startswith((b'<html',b'<!DOCTYPE')):
+              raise ValueError('Failed original S1 content-type/size gate')
+          original=out/'pone.0144585.s001.doc'
+          original.write_bytes(raw)
+          receipt={'source':'PLOS ONE Deng et al. 2015 DOI 10.1371/journal.pone.0144585',
+                   'original_s1':url,'resolved_url':final_url,'mime_type':mime,
+                   'source_bytes':len(raw),'source_sha256':hashlib.sha256(raw).hexdigest(),
+                   'retrieved_utc':datetime.now(timezone.utc).isoformat(),
+                   'fluorescent_analogue_is_genetic_paternity':False,
+                   'original_V4_or_independent_architecture_coder_changed':False}
+          (out/'SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Extract actual S1 text rows for schema and provenance inspection
+        shell: bash
+        run: |
+          if ! command -v antiword >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq antiword
+          fi
+          antiword artifacts/alpinia-s1/pone.0144585.s001.doc > artifacts/alpinia-s1/S1_TEXT.txt
+          test -s artifacts/alpinia-s1/S1_TEXT.txt
+          sed -n '1,190p' artifacts/alpinia-s1/S1_TEXT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alpinia-2015-fluorescent-transfer-original-s1
+          path: artifacts/alpinia-s1/
+          if-no-files-found: error
+          retention-days: 30
