@@ -1,0 +1,78 @@
+name: Ipomopsis 2015 source-stage fitness experiments
+
+on:
+  push:
+    branches: [analysis/balance-ipomopsis-pathway-recovery-20261117]
+    paths:
+      - .github/workflows/ipomopsis-2015-source-recovery.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Retrieve original 2015 Journal of Ecology experiment workbook, reject mismatched source
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request, urllib.parse, hashlib, json, pathlib, zipfile, io
+          from datetime import datetime, timezone
+          src = "https://datadryad.org/api/v2/datasets/" + urllib.parse.quote("doi:10.5061/dryad.p33fm",safe="")
+          output = pathlib.Path("artifacts/ipomopsis-2015")
+          output.mkdir(parents=True,exist_ok=True)
+          def retrieve(url,maxbytes):
+              req=urllib.request.Request(url,headers={
+                  "User-Agent":"BALANCE-independent-ecology-audit/1.0",
+                  "Accept":"application/json,application/zip,application/octet-stream,*/*"})
+              with urllib.request.urlopen(req,timeout=120) as response:
+                  data=response.read(maxbytes+1)
+                  final=response.geturl()
+              if len(data)>maxbytes:raise ValueError("Source size cap exceeded")
+              return data,final
+          meta_raw,meta_final=retrieve(src,2000000)
+          meta=json.loads(meta_raw)
+          identifier=str(meta.get("identifier",""))
+          if "dryad.p33fm" not in identifier.lower():
+              raise ValueError("Dryad identifier mismatch "+identifier)
+          original,src_final=retrieve(src+"/download",16000000)
+          if not zipfile.is_zipfile(io.BytesIO(original)):
+              raise ValueError("Download is not original ZIP archive")
+          records=[]
+          with zipfile.ZipFile(io.BytesIO(original)) as z:
+              names=[e.filename for e in z.infolist() if not e.is_dir()]
+              if any(e.startswith("/") or ".." in pathlib.PurePosixPath(e).parts for e in names):
+                  raise ValueError("unsafe original archive entries")
+              books=[e for e in names if e.lower().endswith(".xlsx") and ("Irwin" in e or "Dryad" in e)]
+              if len(books)!=1: raise ValueError("Expected one original Irwin 2015 experiment workbook")
+              for entry in z.infolist():
+                  if entry.is_dir():continue
+                  raw=z.read(entry.filename)
+                  records.append({"file":entry.filename,"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest()})
+          (output/"dryad_p33fm_original.zip").write_bytes(original)
+          receipt={"source_doi":"10.5061/dryad.p33fm",
+                   "publication_doi":"10.1111/1365-2745.12476",
+                   "source_metadata_url":src,"metadata_resolved":meta_final,
+                   "download_resolved":src_final,
+                   "retrieved_utc":datetime.now(timezone.utc).isoformat(),
+                   "metadata_sha256":hashlib.sha256(meta_raw).hexdigest(),
+                   "zip_sha256":hashlib.sha256(original).hexdigest(),
+                   "original_files":records,
+                   "status":"source_only_no_architecture_or_causal_claim_promotion",
+                   "original_21_U6_and_42_independent_coders_modified":False}
+          (output/"SOURCE_RECEIPT.json").write_text(json.dumps(receipt,indent=2)+"\n")
+          print(json.dumps(receipt,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ipomopsis-2015-experimental-original
+          path: artifacts/ipomopsis-2015/
+          if-no-files-found: error
+          retention-days: 30
