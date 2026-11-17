@@ -5,6 +5,9 @@ on:
     branches: [analysis/larceny-meta-paired-stage-20261117]
     paths:
       - .github/workflows/larceny-meta-2025-source.yml
+      - scripts/audit_larceny_meta_stage_pairability.py
+      - tests/test_larceny_meta_stage_pairability.py
+      - docs/BALANCE_LARCENY_2025_STAGE_MATCHING_V1.md
   workflow_dispatch:
 
 permissions:
@@ -157,6 +160,26 @@ jobs:
           (out/'ORIGINAL_ZIP_SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
           print(json.dumps(receipt,indent=2,ensure_ascii=False)[:35000])
           PY
+      - name: Audit all 776 original effect rows and same-paper response-stage co-reporting
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, zipfile, pathlib
+          root=pathlib.Path('artifacts/larceny-2025-source')
+          with zipfile.ZipFile(root/'figshare_27129204_source_data_and_code.zip') as z:
+              name='update metadata/Dataset for floral larceny effect size calculation.xlsx'
+              if name not in z.namelist():raise ValueError('Original 776-effect XLSX not in author ZIP')
+              raw=z.read(name)
+          sha=hashlib.sha256(raw).hexdigest()
+          expected='6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4'
+          if sha!=expected:raise ValueError('Original meta analysis XLSX hash changed')
+          (root/'ORIGINAL_776_META_EFFECTS.xlsx').write_bytes(raw)
+          print('Source XLSX SHA256 verified:',sha)
+          PY
+          python -m pip install 'pytest>=8,<10'
+          export BALANCE_LARCENY_2025_ORIGINAL=artifacts/larceny-2025-source/ORIGINAL_776_META_EFFECTS.xlsx
+          python -m pytest -q tests/test_larceny_meta_stage_pairability.py
+          python scripts/audit_larceny_meta_stage_pairability.py --source "$BALANCE_LARCENY_2025_ORIGINAL" --out artifacts/larceny-2025-source/STAGE_PAIRABILITY_READOUT.json
       - uses: actions/upload-artifact@v4
         with:
           name: larceny-2025-figshare-discovery-receipt
