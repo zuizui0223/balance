@@ -1,12 +1,16 @@
 name: Leal 2025 Ecology meta-analysis original Zenodo source recovery
 on:
   push:
-    branches: [analysis/larceny-two-meta-audit-20261117]
+    branches: [analysis/larceny-two-meta-audit-20261117, analysis/larceny-sd-taxon-reconciliation-20261117]
     paths:
       - .github/workflows/leal-2025-ecology-source.yml
       - scripts/audit_two_larceny_meta_sources.py
       - tests/test_two_larceny_meta_sources.py
       - docs/BALANCE_TWO_2025_LARCENY_META_SOURCE_COMPARISON_V1.md
+      - scripts/audit_leal_sd_taxon_provenance.py
+      - tests/test_leal_sd_taxon_provenance.py
+      - docs/BALANCE_LEAL_2025_SD_TAXON_PRIMARY_ORIGINAL_V1.md
+      - data/BALANCE_LEAL_2025_SD_TAXON_RECEIPT_V1.json
   workflow_dispatch:
 permissions:
   contents: read
@@ -123,7 +127,32 @@ jobs:
           export BALANCE_TWO_META_ZHONG=artifacts/leal-ecology-2025/ZHONG_ORIGINAL_776_META_EFFECTS.xlsx
           export BALANCE_TWO_META_LEAL=artifacts/leal-ecology-2025/lacaleal__Meta-analysis_larcenists-v1.0.zip
           python -m pytest -q tests/test_two_larceny_meta_sources.py
+          export BALANCE_LEAL_SD_TAXON_ORIGINAL="$BALANCE_TWO_META_LEAL"
+          export BALANCE_LEAL_ZHONG_ORIGINAL="$BALANCE_TWO_META_ZHONG"
+          python -m pytest -q tests/test_leal_sd_taxon_provenance.py
           python scripts/audit_two_larceny_meta_sources.py --zhong-original "$BALANCE_TWO_META_ZHONG" --leal-original-zip "$BALANCE_TWO_META_LEAL" --out artifacts/leal-ecology-2025/CROSS_META_READOUT.json
+          python scripts/audit_leal_sd_taxon_provenance.py --original-zenodo "$BALANCE_TWO_META_LEAL" --original-zhong "$BALANCE_TWO_META_ZHONG" --out artifacts/leal-ecology-2025/REPLAY_LEAL_SD_TAXON_RECEIPT.json
+          python - <<'PY'
+          import json,math,pathlib
+          p=pathlib.Path('artifacts/leal-ecology-2025/REPLAY_LEAL_SD_TAXON_RECEIPT.json')
+          saved=pathlib.Path('data/BALANCE_LEAL_2025_SD_TAXON_RECEIPT_V1.json')
+          fresh=json.loads(p.read_text())
+          expected=json.loads(saved.read_text())
+          def verify(a,b,path='root'):
+              if type(a)!=type(b):raise AssertionError('Type changed: '+path)
+              if isinstance(a,dict):
+                  if set(a)!=set(b):raise AssertionError('Changed keys: '+path)
+                  for key in a:verify(a[key],b[key],path+'.'+str(key))
+              elif isinstance(a,list):
+                  if len(a)!=len(b):raise AssertionError('Changed length: '+path)
+                  for i,(x,y) in enumerate(zip(a,b)):verify(x,y,path+'['+str(i)+']')
+              elif type(a) is float:
+                  if not math.isclose(a,b,rel_tol=0,abs_tol=1e-10):
+                      raise AssertionError('Changed source quantitative result: '+path)
+              elif a!=b:raise AssertionError('Changed source result: '+path)
+          verify(fresh,expected)
+          print('Source re-download and frozen exact audit schema/data checked')
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: leal-ecology-2025-zenodo-primary-source
