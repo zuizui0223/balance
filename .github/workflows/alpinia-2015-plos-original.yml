@@ -1,0 +1,80 @@
+name: Alpinia 2015 PLOS source S2 stage-contrast recovery
+
+on:
+  push:
+    branches: [analysis/balance-alpinia-stage-contrast-20261117]
+    paths:
+      - .github/workflows/alpinia-2015-plos-original.yml
+      - scripts/audit_alpinia_original_stage.py
+      - scripts/audit_alpinia_seed_proxy.py
+      - tests/test_alpinia_seed_proxy.py
+      - tests/test_alpinia_original_stage.py
+      - data/external/alpinia_2015/S2_EXTRACTED_16_CELLS.csv
+      - docs/BALANCE_ALPINIA_2015_ORIGINAL_STAGE_CONTRAST_V1.md
+      - docs/BALANCE_ALPINIA_SEED_PER_FLOWER_PROXY_V1.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Acquire PLOS original supplement and verify identity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,urllib.request
+          from datetime import datetime,timezone
+          url="https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0144585.s002&type=supplementary"
+          out=pathlib.Path("artifacts/alpinia-original")
+          out.mkdir(parents=True,exist_ok=False)
+          req=urllib.request.Request(url,headers={"User-Agent":"BALANCE-PLOS-source-audit/1.0","Accept":"*/*"})
+          with urllib.request.urlopen(req,timeout=100) as resp:
+              raw=resp.read(1500001);final=resp.geturl();mime=resp.headers.get("Content-Type")
+          if not 2000<len(raw)<1500000:raise ValueError("Unexpected PLOS supplement length")
+          if raw.startswith(b'<html') or raw.startswith(b'<!DOCTYPE'):
+              raise ValueError("HTML proxy is not original supplement")
+          path=out/"pone.0144585.s002.doc"
+          path.write_bytes(raw)
+          manifest={"source_article":"https://doi.org/10.1371/journal.pone.0144585",
+                    "source_supplement_url":url,"resolved_url":final,
+                    "downloaded_utc":datetime.now(timezone.utc).isoformat(),
+                    "size_bytes":len(raw),"content_type":mime,
+                    "sha256":hashlib.sha256(raw).hexdigest(),
+                    "native_individual_inflorescence_outcomes_unavailable":True,
+                    "original_BALANCE_V4_inputs_or_coders_changed":False}
+          (out/"SOURCE_RECEIPT.json").write_text(json.dumps(manifest,indent=2)+"\n")
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Extract S2 table textual content without outcome substitution
+        shell: bash
+        run: |
+          if ! command -v antiword >/dev/null 2>&1; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq antiword
+          fi
+          antiword artifacts/alpinia-original/pone.0144585.s002.doc > artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
+          test -s artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
+          sed -n '1,125p' artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
+      - name: Recompute source-authenticated stage contrast and reject changed source rows
+        env:
+          BALANCE_ALPINIA_2015_S2_DOC: artifacts/alpinia-original/pone.0144585.s002.doc
+          BALANCE_ALPINIA_2015_ANTIWORD_TEXT: artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
+        shell: bash
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_alpinia_original_stage.py tests/test_alpinia_seed_proxy.py
+          python scripts/audit_alpinia_original_stage.py --source-doc "$BALANCE_ALPINIA_2015_S2_DOC" --antiword-text "$BALANCE_ALPINIA_2015_ANTIWORD_TEXT" --output artifacts/alpinia-original/STAGE_READOUT.json
+          python scripts/audit_alpinia_seed_proxy.py --original-doc "$BALANCE_ALPINIA_2015_S2_DOC" --output artifacts/alpinia-original/SEED_PER_FLOWER_PROXY_READOUT.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alpinia-2015-plos-original-s2
+          path: artifacts/alpinia-original/
+          if-no-files-found: error
+          retention-days: 30
