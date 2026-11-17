@@ -4,6 +4,9 @@ on:
     branches: [analysis/larceny-two-meta-audit-20261117]
     paths:
       - .github/workflows/leal-2025-ecology-source.yml
+      - scripts/audit_two_larceny_meta_sources.py
+      - tests/test_two_larceny_meta_sources.py
+      - docs/BALANCE_TWO_2025_LARCENY_META_SOURCE_COMPARISON_V1.md
   workflow_dispatch:
 permissions:
   contents: read
@@ -86,6 +89,41 @@ jobs:
           (root/'SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n')
           print(json.dumps(receipt,indent=2,ensure_ascii=False)[:35000])
           PY
+      - name: Independently recover Zhong 2025 Figshare original and cross-audit both meta sources
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,io,json,pathlib,urllib.request,zipfile
+          root=pathlib.Path('artifacts/leal-ecology-2025')
+          leal=root/'lacaleal__Meta-analysis_larcenists-v1.0.zip'
+          lsha='3f6e9b5b55ad8090f41f62faeb2f306c6700a9beb274ac6467106ebab9573c2d'
+          if not leal.exists() or hashlib.sha256(leal.read_bytes()).hexdigest()!=lsha:
+              raise ValueError('Official Zenodo Leal ZIP not verified')
+          url='https://figshare.com/ndownloader/files/50193012?private_link=99df84fe5c473dc85d85'
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-meta-data-cross-audit/1.0'})
+          with urllib.request.urlopen(req,timeout=100) as resp:
+              raw=resp.read(2000001)
+          sha='84d310948e1da97c091ca27e9dcc45521cf72512ba14e30d3cd269d46e5b274c'
+          if len(raw)!=1572161 or hashlib.sha256(raw).hexdigest()!=sha:
+              raise ValueError('Official 2025 Zhong original ZIP hash/size mismatch')
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              name='update metadata/Dataset for floral larceny effect size calculation.xlsx'
+              if name not in z.namelist():raise ValueError('Zhong source workbook not found')
+              xlsx=z.read(name)
+          xsha='6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4'
+          if hashlib.sha256(xlsx).hexdigest()!=xsha:
+              raise ValueError('Official Zhong source workbook altered')
+          (root/'ZHONG_ORIGINAL_776_META_EFFECTS.xlsx').write_bytes(xlsx)
+          (root/'ZHONG_SOURCE_CHECKSUM.json').write_text(json.dumps({
+              'source_url':url,'ZIP_SHA256':sha,'XLSX_SHA256':xsha,
+              'source_XLSX_bytes':len(xlsx),'LEAL_ZIP_SHA256':lsha},indent=2)+'\n')
+          print('Both 2025 original sources independently verified')
+          PY
+          python -m pip install 'pytest>=8,<10'
+          export BALANCE_TWO_META_ZHONG=artifacts/leal-ecology-2025/ZHONG_ORIGINAL_776_META_EFFECTS.xlsx
+          export BALANCE_TWO_META_LEAL=artifacts/leal-ecology-2025/lacaleal__Meta-analysis_larcenists-v1.0.zip
+          python -m pytest -q tests/test_two_larceny_meta_sources.py
+          python scripts/audit_two_larceny_meta_sources.py --zhong-original "$BALANCE_TWO_META_ZHONG" --leal-original-zip "$BALANCE_TWO_META_LEAL" --out artifacts/leal-ecology-2025/CROSS_META_READOUT.json
       - uses: actions/upload-artifact@v4
         with:
           name: leal-ecology-2025-zenodo-primary-source
