@@ -7,9 +7,12 @@ corrected meta-analysis, causal treatment estimate, or phylogenetic model fit.
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
+import io
 import json
 import math
+import re
 import sys
 import zipfile
 from pathlib import Path
@@ -17,9 +20,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from scripts.audit_two_larceny_meta_sources import load_leal, LEAL_ZIP_SHA256, _stage_type_matches
 from scripts.audit_larceny_meta_stage_pairability import source_rows, SOURCE_SHA256
-LZIP = LEAL_ZIP_SHA256
+LZIP = "3f6e9b5b55ad8090f41f62faeb2f306c6700a9beb274ac6467106ebab9573c2d"
+LC = "4ecd656251f778189d8c13f3608ba99f4de942656fecfe6f2edc8d2509a3d2cb"
+LR = "9d60311b102cf27c234f9d6c63eeae602c91768950466e7579ed3a03f0488013"
+LM = "e35cb0b9fb62e2ded07c5bdc8bae039ea9b19085a55f023c0f314057774a85fd"
 
 SD_CASE_IDS = ('56','79','81','83','84','88','178')
 YI_CASE_IDS = ('79','88','178')
@@ -36,6 +41,49 @@ SOURCE_CASES = (
          source_status='published original species is Pitcairnia angustifolia; Kew lists accepted spelling'),
 )
 
+
+def load_original_leal(path:Path)->list[dict[str,str]]:
+    """Independently parse published Zenodo ZIP and verify internal CSV, R and metadata."""
+    raw=Path(path).read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=LZIP:
+        raise ValueError('Official Leal Zenodo source ZIP SHA256 mismatch')
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        def unique(suffix,sha):
+            names=[n for n in z.namelist() if n.endswith('/'+suffix)]
+            if len(names)!=1:raise ValueError('Expected exactly one official '+suffix)
+            b=z.read(names[0])
+            if hashlib.sha256(b).hexdigest()!=sha:
+                raise ValueError('Leal nested source SHA256 mismatch '+suffix)
+            return b
+        dat=unique('complete_hedges.csv',LC)
+        code=unique('Script_Leal et al_Ecology.R',LR).decode('utf-8-sig')
+        meta=unique('Metadata_Leal et al_Ecology.csv',LM).decode('utf-8-sig')
+    if not re.search(r'escalc\s*\(\s*["\']ROM["\']',code) or 'Hedges' not in meta:
+        raise ValueError('Expected source ROM computation/metadata contract changed')
+    rows=list(csv.DictReader(io.StringIO(dat.decode('utf-8-sig')),delimiter=';'))
+    if (len(rows),len({x['study'] for x in rows}),len({x['sp_plant'] for x in rows}))!=(267,69,60):
+        raise ValueError('Original Leal effect/study/taxon denominator changed')
+    if len({x['sample'] for x in rows})!=267:raise ValueError('Original sample IDs not unique')
+    return rows
+
+
+def _naive_study_pairs(zhong,leal):
+    """Replicate pre-reconciliation author+year+species heuristic independently."""
+    def species(x):
+        return re.sub('[^a-z]','',str(x).lower()).replace('ipomopis','ipomopsis')
+    def paper(x):
+        s=str(x).lower()
+        for before,after in [('heilling','heiling'),('mallof','maloof'),
+                             ('arizmendie','arizmendi'),('elyiahu','eliyahu')]:
+            s=s.replace(before,after)
+        years=re.findall(r'(?:19|20)\d{2}[a-z]?',s)
+        if not years:return None
+        head=re.sub(r'et\s*al\.?','',s.split(years[-1])[0]).split('&')[0]
+        p=re.sub('[^a-z]','',head)
+        return p+years[-1][:4] if p else None
+    a={(species(r['species']),paper(r['reference'])) for r in zhong}
+    b={(species(r['sp_plant']),paper(r['study'])) for r in leal}
+    return sorted({x for x in a & b if x[1]})
 
 def _variance(r:dict[str,str], flip_sd:bool=False)->float:
     m1,m2,s1,s2,n1,n2=(float(r[k]) for k in (
@@ -61,7 +109,7 @@ def _load_tree(zip_path:Path)->str:
 def _cross_meta_source_overlaps(zhong_source:Path,leal_rows:list[dict])->dict:
     """Recover two author-DOI-verified paper identities missed by string joins."""
     zhong=source_rows(zhong_source)  # original 2025 Figshare XLSX SHA gate
-    prior=_stage_type_matches(zhong,leal_rows)
+    prior=_naive_study_pairs(zhong,leal_rows)
     if len(prior)!=45:
         raise ValueError('Previous 45 candidate author-year-species joins changed')
     pairs=[]
@@ -72,7 +120,6 @@ def _cross_meta_source_overlaps(zhong_source:Path,leal_rows:list[dict])->dict:
                (24,'Collaea_cipoensis',(572,573),
                 'Gelvez-Zuningaetal2016',(87,88),'10.1016/j.rmb.2016.09.004',
                 'first-author accent/transcription and wrong source species tag'))
-    existing={(r['plant_key'],r['paper_key']) for r in prior}
     for z_id,primary_species,zids,l_study,lids,doi,why in originals:
         zrows=[r for r in zhong if r['ref-ID']==z_id and r['species']==primary_species]
         lrows=[r for r in leal_rows if r['study']==l_study]
@@ -101,7 +148,7 @@ def _cross_meta_source_overlaps(zhong_source:Path,leal_rows:list[dict])->dict:
 
 
 def audit(original:Path,zhong_source:Path|None=None)->dict:
-    rows, _source_R = load_leal(original)  # official Zenodo ZIP, nested CSV/R/metadata SHA gates
+    rows=load_original_leal(original)  # independent original Zenodo CSV/R/metadata SHA gates
     byid={r['sample']:r for r in rows}
     if len(byid)!=len(rows):raise ValueError('Duplicate source effect ID')
     results=[]
