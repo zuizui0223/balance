@@ -39,7 +39,7 @@ def test_five_stage_experiment_grain_intersection_is_empty(result):
         assert source["all_stages_have_common_experiment_level"] is False
         assert source["shared_experimental_contrast_id_present_in_meta"] is False
         assert source["all_five_stages_same_cohort_verified"] is False
-        assert all(v["n_effects"]>0 for v in source["stages"])
+        assert all(v["n_effects"]>0 for v in source["stages"].values())
 
 def test_potential_combinations_are_not_real_observation_units(result):
     c,g=result["sources"]
