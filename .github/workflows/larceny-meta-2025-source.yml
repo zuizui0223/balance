@@ -53,6 +53,7 @@ jobs:
           ids=set()
           if 'raw' in shared:
               body=shared['raw'].decode('utf-8','replace')
+              (out/'FIGSHARE_SHARED_LANDING.html').write_bytes(shared['raw'])
               (out/'FIGSHARE_SHARED_LANDING_SHA256.txt').write_text(hashlib.sha256(shared['raw']).hexdigest()+'\n')
               for pattern in [r'/articles/(?:dataset|journal_contribution|article|media|presentation)/[^"\s<>]*/(\d+)',
                               r'\"articleId\"\s*:\s*(\d+)',r'\"article_id\"\s*:\s*(\d+)']:
