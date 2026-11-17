@@ -1,0 +1,110 @@
+name: Souza 2019 original scent-vs-nectar source witness
+on:
+  push:
+    branches: [analysis/larceny-sd-taxon-reconciliation-20261117]
+    paths:
+      - .github/workflows/leal-souza-primary-2019-source.yml
+      - scripts/audit_leal_souza2019_original_scent.py
+      - tests/test_leal_souza2019_original_scent.py
+      - docs/BALANCE_LEAL_SOUZA2019_METRIC_IDENTITY_V1.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch full original publication from Europe PMC and identify Table 2 in source XML
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,hashlib,pathlib,re,urllib.request,xml.etree.ElementTree as ET
+          from datetime import datetime,timezone
+          out=pathlib.Path('artifacts/souza-2019-primary');out.mkdir(parents=True,exist_ok=True)
+          doi='10.1371/journal.pone.0225252'
+          url='https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6872153/fullTextXML'
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-source-provenance-audit/1.0','Accept':'application/xml'})
+          with urllib.request.urlopen(req,timeout=90) as resp:
+              raw=resp.read(3000001);final=resp.url
+          if len(raw)>=3000001 or len(raw)<20000:raise ValueError('Unexpected original source length')
+          root=ET.fromstring(raw)
+          dois=[(x.text or '').strip() for x in root.iter('article-id') if x.attrib.get('pub-id-type')=='doi']
+          if doi not in dois:raise ValueError('Original publication DOI not verified')
+          tables=[]
+          for wrap in root.iter('table-wrap'):
+              label=' '.join(wrap.itertext())
+              if '29.90' in label or '58.24' in label:
+                  tables.append({'id':wrap.attrib.get('id'),'text':' '.join(label.split())[:14000]})
+          if not tables:raise ValueError('No independent exact Table 2 scent-source rows')
+          receipt={'paper_doi':doi,'original_source_url':url,'resolved_url':final,
+             'original_xml_sha256':hashlib.sha256(raw).hexdigest(),
+             'original_xml_size':len(raw),'retrieved_utc':datetime.now(timezone.utc).isoformat(),
+             'real_source_species':'Jacaranda caroba','table2_candidate':tables,
+             'original_source_not_a_2019_Jacaranda_rugosa_experiment':True,
+             'author_archived_2025_meta_effects_NOT_modified':True}
+          (out/'PLOS_2019_SOURCE.xml').write_bytes(raw)
+          (out/'ORIGINAL_SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n')
+          print(json.dumps(receipt,indent=2,ensure_ascii=False)[:20000])
+          PY
+      - name: Redownload exact Leal 2025 Zenodo and Zhong 2025 Figshare original meta inputs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request,json,hashlib,zipfile,io,pathlib
+          out=pathlib.Path('artifacts/souza-2019-primary')
+          api='https://zenodo.org/api/records/14773082'
+          req=urllib.request.Request(api,headers={'User-Agent':'BALANCE-original-meta-joint-source/1.0'})
+          with urllib.request.urlopen(req,timeout=60) as response:meta=json.load(response)
+          if meta.get('id')!=14773082:raise ValueError('Official Leal record identity mismatch')
+          found=[x for x in meta.get('files',[]) if str(x.get('key','')).endswith('Meta-analysis_larcenists-v1.0.zip')]
+          if len(found)!=1:raise ValueError('Official Leal original meta ZIP not uniquely found')
+          file=found[0]
+          url=file.get('links',{}).get('self')
+          if not str(url).startswith('https://'):raise ValueError('Untrusted Zenodo file URL')
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-original-meta-joint-source/1.0'})
+          with urllib.request.urlopen(req,timeout=90) as response:leal=response.read(1500001)
+          sha='3f6e9b5b55ad8090f41f62faeb2f306c6700a9beb274ac6467106ebab9573c2d'
+          if hashlib.sha256(leal).hexdigest()!=sha:raise ValueError('Leal original SHA256 mismatch')
+          checksum=str(file.get('checksum') or '')
+          if checksum.startswith('md5:') and hashlib.md5(leal).hexdigest()!=checksum[4:]:
+              raise ValueError('Leal original official MD5 mismatch')
+          (out/'LEAL_2025_SOURCE.zip').write_bytes(leal)
+          url='https://figshare.com/ndownloader/files/50193012?private_link=99df84fe5c473dc85d85'
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-original-meta-joint-source/1.0'})
+          with urllib.request.urlopen(req,timeout=100) as response:zipraw=response.read(2000001)
+          zipsha='84d310948e1da97c091ca27e9dcc45521cf72512ba14e30d3cd269d46e5b274c'
+          if hashlib.sha256(zipraw).hexdigest()!=zipsha:raise ValueError('Zhong original ZIP SHA256 mismatch')
+          with zipfile.ZipFile(io.BytesIO(zipraw)) as z:
+              name='update metadata/Dataset for floral larceny effect size calculation.xlsx'
+              if name not in z.namelist():raise ValueError('Zhong original XLSX missing')
+              workbook=z.read(name)
+          xsha='6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4'
+          if hashlib.sha256(workbook).hexdigest()!=xsha:raise ValueError('Zhong original XLSX altered')
+          (out/'ZHONG_2025_SOURCE.xlsx').write_bytes(workbook)
+          (out/'TWO_META_SHA_RECEIPT.json').write_text(json.dumps({
+              'leal_zenodo_record':api,'leal_zenodo_original_md5':checksum,
+              'leal_original_ZIP_sha256':sha,'zhong_original_ZIP_sha256':zipsha,
+              'zhong_original_XLSX_sha256':xsha,
+              'source_frozen_and_original_META_not_modified':True},indent=2)+'\n')
+          print('Verified original Leal and Zhong meta source checksums')
+          PY
+      - name: Replay original published Table 2 and meta misclassified-scent audit
+        shell: bash
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          export BALANCE_LEAL_ORIGINAL_ZIP=artifacts/souza-2019-primary/LEAL_2025_SOURCE.zip
+          export BALANCE_ZHONG_ORIGINAL_XLSX=artifacts/souza-2019-primary/ZHONG_2025_SOURCE.xlsx
+          export BALANCE_SOUZA2019_JATS=artifacts/souza-2019-primary/PLOS_2019_SOURCE.xml
+          python -m pytest -q tests/test_leal_souza2019_original_scent.py
+          python scripts/audit_leal_souza2019_original_scent.py --leal-zip "$BALANCE_LEAL_ORIGINAL_ZIP" --zhong-xlsx "$BALANCE_ZHONG_ORIGINAL_XLSX" --source-jats "$BALANCE_SOUZA2019_JATS" --out artifacts/souza-2019-primary/SOUZA_ORIGINAL_SCENT_AUDIT.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: souza-2019-original-published-table
+          path: artifacts/souza-2019-primary/
+          if-no-files-found: error
+          retention-days: 30
