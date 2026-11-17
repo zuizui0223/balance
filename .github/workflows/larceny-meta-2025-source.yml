@@ -1,0 +1,117 @@
+name: Floral larceny 2025 macro-effect source discovery (no outcome promotion)
+
+on:
+  push:
+    branches: [analysis/larceny-meta-paired-stage-20261117]
+    paths:
+      - .github/workflows/larceny-meta-2025-source.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check publisher-declared Figshare share link and official public Figshare API
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, html, json, pathlib, re, urllib.request, urllib.error
+          out=pathlib.Path('artifacts/larceny-2025-source')
+          out.mkdir(parents=True,exist_ok=False)
+          def req(url,post=None,limit=5_000_000):
+              headers={'User-Agent':'BALANCE-ecology-source-audit/1.0','Accept':'*/*'}
+              if post is not None:headers['Content-Type']='application/json'
+              try:
+                  q=urllib.request.Request(url,data=(json.dumps(post).encode() if post is not None else None),headers=headers)
+                  with urllib.request.urlopen(q,timeout=35) as response:
+                      raw=response.read(limit+1);code=response.status;final=response.url
+                  if len(raw)>limit:raise ValueError('Response exceeds public source size cap')
+                  return {'code':code,'final':final,'raw':raw}
+              except Exception as err:
+                  return {'code':getattr(err,'code',None),'error':type(err).__name__+': '+str(err)[:400]}
+          share='https://figshare.com/s/99df84fe5c473dc85d85'
+          shared=req(share,limit=2_000_000)
+          receipt={'source_paper':'Zhong et al. 2025 Plant Diversity 47:148-158',
+              'source_paper_doi':'10.1016/j.pld.2024.12.004',
+              'source_claimed_publication_count':153,
+              'source_claimed_species_count':120,
+              'source_claimed_observation_count':776,
+              'declared_raw_data_url':share,
+              'retrieved_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'discovery_only':True,'data_validated':False,
+              'U6_architecture_coders_or_V4_responses_modified':False,
+              'requests':{},'candidate_figshare_articles':[],'downloaded_originals':[]}
+          receipt['requests']['share']={k:v for k,v in shared.items() if k!='raw'}
+          ids=set()
+          if 'raw' in shared:
+              body=shared['raw'].decode('utf-8','replace')
+              (out/'FIGSHARE_SHARED_LANDING_SHA256.txt').write_text(hashlib.sha256(shared['raw']).hexdigest()+'\n')
+              for pattern in [r'/articles/(?:dataset|journal_contribution|article|media|presentation)/[^"\s<>]*/(\d+)',
+                              r'\"articleId\"\s*:\s*(\d+)',r'\"article_id\"\s*:\s*(\d+)']:
+                  for match in re.findall(pattern,body):ids.add(int(match))
+              receipt['requests']['share']['html_title']=re.findall(r'<title[^>]*>(.*?)</title>',body,re.I|re.S)[:1]
+          for term in ['The ethics of theft','floral larceny']:
+              q=req('https://api.figshare.com/v2/articles/search',{'search_for':term,'page_size':30},limit=3_000_000)
+              receipt['requests']['figshare_search_'+term]={k:v for k,v in q.items() if k!='raw'}
+              if 'raw' not in q:continue
+              try: lst=json.loads(q['raw'])
+              except Exception as err:
+                  receipt['requests']['figshare_search_'+term]['json_parse_error']=str(err);continue
+              filtered=[]
+              for row in lst:
+                  title=str(row.get('title',''))
+                  if 'ethics of theft' in title.lower() or (
+                      'floral larceny' in title.lower() and ('meta' in title.lower() or 'data' in title.lower())):
+                      ident=row.get('id')
+                      if isinstance(ident,int):ids.add(ident)
+                      filtered.append({'id':ident,'title':title,'doi':row.get('doi')})
+              receipt['requests']['figshare_search_'+term]['matching_candidates']=filtered
+          for aid in sorted(ids)[:12]:
+              z=req('https://api.figshare.com/v2/articles/'+str(aid),limit=3_000_000)
+              if 'raw' not in z:
+                  receipt['candidate_figshare_articles'].append({'id':aid,'error':z.get('error'),'status':z.get('code')});continue
+              d=json.loads(z['raw'])
+              title=str(d.get('title',''))
+              doi=str(d.get('doi') or '')
+              files=[{k:f.get(k) for k in ('id','name','size','download_url','supplied_md5','computed_md5')} for f in d.get('files',[])]
+              rec={'id':aid,'title':title,'doi':doi,'is_public':d.get('is_public'),'files':files}
+              receipt['candidate_figshare_articles'].append(rec)
+              trusted=('ethics of theft' in title.lower() or d.get('resource_doi')=='10.1016/j.pld.2024.12.004')
+              if not trusted:continue
+              for f in files:
+                  filename=str(f.get('name') or '')
+                  if not filename.lower().endswith(('.xlsx','.xls','.csv','.tsv','.zip','.rds','.rdata')):continue
+                  if (f.get('size') or 0)>12_000_000:continue
+                  url=f.get('download_url')
+                  if not url or not url.startswith('https://'):continue
+                  source=req(url,limit=12_000_000)
+                  if 'raw' not in source:
+                      rec.setdefault('file_errors',[]).append({'name':filename,'error':source.get('error')});continue
+                  md5=hashlib.md5(source['raw']).hexdigest()
+                  expected=f.get('supplied_md5') or f.get('computed_md5')
+                  if expected and md5!=expected:raise ValueError('Original Figshare MD5 mismatch '+filename)
+                  if '/' in filename or '\\' in filename:raise ValueError('Unsafe Figshare filename')
+                  dst=out/('figshare_'+str(aid)+'_'+filename)
+                  dst.write_bytes(source['raw'])
+                  receipt['downloaded_originals'].append({'source_article_id':aid,'file':dst.name,
+                      'bytes':len(source['raw']),'sha256':hashlib.sha256(source['raw']).hexdigest(),
+                      'md5':md5,'official_md5':expected,'source_url':url})
+          receipt['data_validated']=len(receipt['downloaded_originals'])>0
+          (out/'SOURCE_DISCOVERY_RECEIPT.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+          print(json.dumps({**receipt,'candidate_figshare_articles':[
+              {**q,'files':q.get('files',[])[:10]} for q in receipt['candidate_figshare_articles']]},indent=2,ensure_ascii=False)[:25000])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: larceny-2025-figshare-discovery-receipt
+          path: artifacts/larceny-2025-source/
+          if-no-files-found: error
+          retention-days: 30
