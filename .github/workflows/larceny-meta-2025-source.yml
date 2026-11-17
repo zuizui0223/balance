@@ -6,6 +6,9 @@ on:
     paths:
       - .github/workflows/larceny-meta-2025-source.yml
       - scripts/audit_larceny_meta_stage_pairability.py
+      - scripts/audit_larceny_two_five_stage_sources.py
+      - tests/test_larceny_two_five_stage_sources.py
+      - docs/BALANCE_2025_TWO_FIVE_STAGE_PRIMARY_SOURCE_AUDIT_V1.md
       - tests/test_larceny_meta_stage_pairability.py
       - docs/BALANCE_LARCENY_2025_STAGE_MATCHING_V1.md
   workflow_dispatch:
@@ -178,8 +181,9 @@ jobs:
           PY
           python -m pip install 'pytest>=8,<10'
           export BALANCE_LARCENY_2025_ORIGINAL=artifacts/larceny-2025-source/ORIGINAL_776_META_EFFECTS.xlsx
-          python -m pytest -q tests/test_larceny_meta_stage_pairability.py
+          python -m pytest -q tests/test_larceny_meta_stage_pairability.py tests/test_larceny_two_five_stage_sources.py
           python scripts/audit_larceny_meta_stage_pairability.py --source "$BALANCE_LARCENY_2025_ORIGINAL" --out artifacts/larceny-2025-source/STAGE_PAIRABILITY_READOUT.json
+          python scripts/audit_larceny_two_five_stage_sources.py --original-meta "$BALANCE_LARCENY_2025_ORIGINAL" --out artifacts/larceny-2025-source/TWO_FIVE_STAGE_SOURCE_IDENTITIES.json
       - uses: actions/upload-artifact@v4
         with:
           name: larceny-2025-figshare-discovery-receipt
