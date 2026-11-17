@@ -1,0 +1,129 @@
+name: Heiling 2018 primary study source recovery and treatment map
+on:
+  push:
+    branches: [analysis/larceny-meta-paired-stage-20261117]
+    paths:
+      - .github/workflows/heiling-2018-primary-source.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  primary-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Independently discover original Dryad workbook and test anonymous file delivery
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request,urllib.parse,hashlib,json,pathlib,datetime,io,zipfile
+          dest=pathlib.Path('artifacts/heiling-2018-original')
+          dest.mkdir(parents=True,exist_ok=True)
+          doi='10.5061/dryad.bh6hs70'
+          root='https://datadryad.org/api/v2/datasets/'+urllib.parse.quote('doi:'+doi,safe='')
+          def get(url,limit=1500000):
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-original-plant-data-audit/1.0','Accept':'*/*'})
+                  with urllib.request.urlopen(req,timeout=35) as resp:
+                      data=resp.read(limit+1);final=resp.url;status=resp.status
+                  if len(data)>limit:raise ValueError('Size limit')
+                  return {'raw':data,'resolved':final,'status':status}
+              except Exception as e:
+                  return {'status':getattr(e,'code',None),'error':type(e).__name__+': '+str(e)[:160]}
+          receipt={'source_doi':doi,'original_paper_doi':'10.1111/oik.05440',
+                   'expected_file':'Heiling.et.al.Oikos.2018.data.xlsx',
+                   'downloaded_original':False,'dryad_metadata_verified':False,
+                   'attempts':{},'original_21_U6_taxa_42_coders_and_V4_unchanged':True,
+                   'retrieved_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+          meta=get(root)
+          receipt['attempts']['dataset']={k:v for k,v in meta.items() if k!='raw'}
+          if 'raw' in meta:
+              d=json.loads(meta['raw'])
+              receipt['metadata_identifier']=d.get('identifier')
+              receipt['dryad_metadata_verified']='bh6hs70' in str(d.get('identifier')).lower()
+              if not receipt['dryad_metadata_verified']:raise ValueError('Unexpected dataset DOI')
+              receipt['metadata_sha256']=hashlib.sha256(meta['raw']).hexdigest()
+              (dest/'METADATA.json').write_bytes(meta['raw'])
+          vers=get(root+'/versions')
+          receipt['attempts']['versions']={k:v for k,v in vers.items() if k!='raw'}
+          ids=[]
+          if 'raw' in vers:
+              versions=json.loads(vers['raw'])
+              if isinstance(versions,list):entries=versions
+              elif isinstance(versions,dict):
+                  entries=versions.get('_embedded',{}).get('stash:versions',versions.get('versions',[]))
+              else:entries=[]
+              for v in entries:
+                  if isinstance(v,dict):
+                      if isinstance(v.get('id'),int):ids.append(v['id'])
+                      href=v.get('_links',{}).get('self',{}).get('href','')
+                      for term in href.split('/'):
+                          if term.isdigit():ids.append(int(term))
+              (dest/'VERSIONS.json').write_bytes(vers['raw'])
+          if 'raw' in meta:
+              d=json.loads(meta['raw'])
+              if isinstance(d.get('versionId'),int):ids.append(d['versionId'])
+              for key in ('stash:version','stash:latest-version'):
+                  href=d.get('_links',{}).get(key,{}).get('href','')
+                  for term in href.split('/'):
+                      if term.isdigit():ids.append(int(term))
+              latest=d.get('_links',{}).get('stash:latest-version',{})
+              if isinstance(latest,dict):
+                  url=latest.get('href','')
+                  for term in url.split('/'):
+                      if term.isdigit():ids.append(int(term))
+          ids=sorted(set(ids),reverse=True)[:4]
+          receipt['candidate_version_ids']=ids
+          files=[]
+          for vid in ids:
+              z=get('https://datadryad.org/api/v2/versions/'+str(vid)+'/files')
+              receipt['attempts']['files_'+str(vid)]={k:v for k,v in z.items() if k!='raw'}
+              if 'raw' not in z:continue
+              obj=json.loads(z['raw'])
+              if isinstance(obj,list):entries=obj
+              elif isinstance(obj,dict):entries=obj.get('_embedded',{}).get('stash:files',obj.get('files',[]))
+              else:entries=[]
+              (dest/('FILES_'+str(vid)+'.json')).write_bytes(z['raw'])
+              for item in entries:
+                  if isinstance(item,dict) and 'Heiling.et.al.Oikos.2018.data.xlsx' in str(item):
+                      files.append(item)
+          receipt['file_candidates']=[{k:v for k,v in f.items() if k not in ('description',)} for f in files]
+          for item in files:
+              fid=item.get('id')
+              if not isinstance(fid,int):
+                  href=item.get('_links',{}).get('self',{}).get('href','')
+                  digits=[int(term) for term in href.split('/') if term.isdigit()]
+                  fid=digits[-1] if digits else None
+              if not isinstance(fid,int):continue
+              for url in ('https://datadryad.org/downloads/file_stream/'+str(fid),
+                          'https://datadryad.org/api/v2/files/'+str(fid)+'/download'):
+                  response=get(url,limit=700000)
+                  receipt['attempts'][url]={k:v for k,v in response.items() if k!='raw'}
+                  if 'raw' not in response:continue
+                  b=response['raw']
+                  if len(b)<30000 or not zipfile.is_zipfile(io.BytesIO(b)):continue
+                  with zipfile.ZipFile(io.BytesIO(b)) as z:
+                      if 'xl/workbook.xml' not in z.namelist():continue
+                  expected=item.get('digest') or item.get('checksum') or item.get('md5')
+                  if expected and len(str(expected))==32 and hashlib.md5(b).hexdigest()!=expected:raise ValueError('Dryad source checksum mismatch')
+                  (dest/'Heiling.et.al.Oikos.2018.data.xlsx').write_bytes(b)
+                  receipt['downloaded_original']=True
+                  receipt['workbook_size']=len(b)
+                  receipt['workbook_sha256']=hashlib.sha256(b).hexdigest()
+                  receipt['workbook_md5']=hashlib.md5(b).hexdigest()
+                  receipt['resolved_download']=response['resolved']
+                  break
+              if receipt['downloaded_original']:break
+          (dest/'PRIMARY_SOURCE_RECOVERY.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n')
+          print(json.dumps(receipt,indent=2,ensure_ascii=False)[:22000])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heiling-2018-dryad-source-recovery
+          path: artifacts/heiling-2018-original/
+          if-no-files-found: error
+          retention-days: 30
