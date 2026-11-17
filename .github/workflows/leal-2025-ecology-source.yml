@@ -20,7 +20,7 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import datetime, hashlib, io, json, pathlib, urllib.request, zipfile
+          import datetime, hashlib, io, json, pathlib, urllib.request, zipfile, re
           root=pathlib.Path('artifacts/leal-ecology-2025')
           root.mkdir(parents=True,exist_ok=True)
           api='https://zenodo.org/api/records/14773082'
@@ -42,7 +42,11 @@ jobs:
           for e in z.get('files',[]):
               fn=str(e.get('key') or '')
               size=e.get('size')
-              if '/' in fn or '\\' in fn or not fn:raise ValueError('Untrusted archive filename')
+              parts=pathlib.PurePosixPath(fn).parts
+              if not fn or fn.startswith('/') or '..' in parts or '\\' in fn:
+                  raise ValueError('Unsafe Zenodo original path')
+              safe=re.sub(r'[^0-9A-Za-z._-]','_',fn.replace('/','__'))
+              if not safe:raise ValueError('Empty sanitized Zenodo path')
               url=e.get('links',{}).get('self') or e.get('links',{}).get('content')
               checksum=str(e.get('checksum') or '')
               entry={'file':fn,'bytes_in_metadata':size,'checksum':checksum,
@@ -63,7 +67,8 @@ jobs:
                       children=[{'name':i.filename,'size':i.file_size,'crc32':i.CRC}
                           for i in zz.infolist() if not i.is_dir()]
                       entry['nested_entries']=children[:140]
-              (root/fn).write_bytes(raw)
+              (root/safe).write_bytes(raw)
+              entry['local_safe_name']=safe
               entry.update({'downloaded':True,'identified_md5':md5,
                             'sha256':hashlib.sha256(raw).hexdigest(),
                             'resolved_url':final,
