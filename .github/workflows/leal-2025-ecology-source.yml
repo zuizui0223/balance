@@ -1,0 +1,132 @@
+name: Leal 2025 Ecology meta-analysis original Zenodo source recovery
+on:
+  push:
+    branches: [analysis/larceny-two-meta-audit-20261117]
+    paths:
+      - .github/workflows/leal-2025-ecology-source.yml
+      - scripts/audit_two_larceny_meta_sources.py
+      - tests/test_two_larceny_meta_sources.py
+      - docs/BALANCE_TWO_2025_LARCENY_META_SOURCE_COMPARISON_V1.md
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read official Zenodo metadata and source files; independently check published MD5s
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, io, json, pathlib, urllib.request, zipfile, re
+          root=pathlib.Path('artifacts/leal-ecology-2025')
+          root.mkdir(parents=True,exist_ok=True)
+          api='https://zenodo.org/api/records/14773082'
+          def request(url,limit):
+              req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-ecology-original-source-verification/1.0','Accept':'*/*'})
+              with urllib.request.urlopen(req,timeout=100) as response:
+                  data=response.read(limit+1);final=response.url
+              if len(data)>limit:raise ValueError('Source exceeds size cap')
+              return data,final
+          meta,meta_url=request(api,3_000_000)
+          z=json.loads(meta)
+          if z.get('id')!=14773082: raise ValueError('Zenodo DOI record ID mismatch')
+          paper=str(z.get('metadata',{}).get('title') or '')
+          doi=str(z.get('doi') or z.get('metadata',{}).get('doi') or '')
+          if '10.5281/zenodo.14773082' not in doi:
+              raise ValueError('Zenodo record DOI does not match publisher')
+          (root/'ZENODO_METADATA.json').write_bytes(meta)
+          manifest=[]
+          for e in z.get('files',[]):
+              fn=str(e.get('key') or '')
+              size=e.get('size')
+              parts=pathlib.PurePosixPath(fn).parts
+              if not fn or fn.startswith('/') or '..' in parts or '\\' in fn:
+                  raise ValueError('Unsafe Zenodo original path')
+              safe=re.sub(r'[^0-9A-Za-z._-]','_',fn.replace('/','__'))
+              if not safe:raise ValueError('Empty sanitized Zenodo path')
+              url=e.get('links',{}).get('self') or e.get('links',{}).get('content')
+              checksum=str(e.get('checksum') or '')
+              entry={'file':fn,'bytes_in_metadata':size,'checksum':checksum,
+                     'source_url':url,'downloaded':False,'identification_status':'metadata_only'}
+              if not isinstance(size,int) or size>16_000_000 or size<=0:
+                  manifest.append(entry);continue
+              if not isinstance(url,str) or not url.startswith('https://'):
+                  manifest.append(entry);continue
+              raw,final=request(url,17_000_000)
+              if len(raw)!=size:raise ValueError('Zenodo original file byte length mismatch '+fn)
+              md5=hashlib.md5(raw).hexdigest()
+              if checksum.startswith('md5:') and md5!=checksum[4:]:
+                  raise ValueError('Zenodo original file failed MD5 '+fn)
+              if fn.lower().endswith(('.zip','.xlsx','.xlsm')) and not zipfile.is_zipfile(io.BytesIO(raw)):
+                  raise ValueError('Expected archive signature not found '+fn)
+              if fn.lower().endswith('.zip'):
+                  with zipfile.ZipFile(io.BytesIO(raw)) as zz:
+                      children=[{'name':i.filename,'size':i.file_size,'crc32':i.CRC}
+                          for i in zz.infolist() if not i.is_dir()]
+                      entry['nested_entries']=children[:140]
+              (root/safe).write_bytes(raw)
+              entry['local_safe_name']=safe
+              entry.update({'downloaded':True,'identified_md5':md5,
+                            'sha256':hashlib.sha256(raw).hexdigest(),
+                            'resolved_url':final,
+                            'identification_status':'source_verified'})
+              manifest.append(entry)
+          receipt={'source_paper':'Leal et al. 2025, Ecology',
+                   'source_paper_doi':'10.1002/ecy.70036',
+                   'original_zenodo_doi':doi,'metadata_title':paper,
+                   'metadata_url':api,'metadata_sha256':hashlib.sha256(meta).hexdigest(),
+                   'retrieved_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                   'data_raw_original_recovered':any(x['downloaded'] for x in manifest),
+                   'original_files':manifest,
+                   'no_2025_merged_meta_mixed_outcome_analysis_yet':True,
+                   'no_original_V4_or_U6_architecture_mutation':True}
+          (root/'SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n')
+          print(json.dumps(receipt,indent=2,ensure_ascii=False)[:35000])
+          PY
+      - name: Independently recover Zhong 2025 Figshare original and cross-audit both meta sources
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,io,json,pathlib,urllib.request,zipfile
+          root=pathlib.Path('artifacts/leal-ecology-2025')
+          leal=root/'lacaleal__Meta-analysis_larcenists-v1.0.zip'
+          lsha='3f6e9b5b55ad8090f41f62faeb2f306c6700a9beb274ac6467106ebab9573c2d'
+          if not leal.exists() or hashlib.sha256(leal.read_bytes()).hexdigest()!=lsha:
+              raise ValueError('Official Zenodo Leal ZIP not verified')
+          url='https://figshare.com/ndownloader/files/50193012?private_link=99df84fe5c473dc85d85'
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-meta-data-cross-audit/1.0'})
+          with urllib.request.urlopen(req,timeout=100) as resp:
+              raw=resp.read(2000001)
+          sha='84d310948e1da97c091ca27e9dcc45521cf72512ba14e30d3cd269d46e5b274c'
+          if len(raw)!=1572161 or hashlib.sha256(raw).hexdigest()!=sha:
+              raise ValueError('Official 2025 Zhong original ZIP hash/size mismatch')
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              name='update metadata/Dataset for floral larceny effect size calculation.xlsx'
+              if name not in z.namelist():raise ValueError('Zhong source workbook not found')
+              xlsx=z.read(name)
+          xsha='6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4'
+          if hashlib.sha256(xlsx).hexdigest()!=xsha:
+              raise ValueError('Official Zhong source workbook altered')
+          (root/'ZHONG_ORIGINAL_776_META_EFFECTS.xlsx').write_bytes(xlsx)
+          (root/'ZHONG_SOURCE_CHECKSUM.json').write_text(json.dumps({
+              'source_url':url,'ZIP_SHA256':sha,'XLSX_SHA256':xsha,
+              'source_XLSX_bytes':len(xlsx),'LEAL_ZIP_SHA256':lsha},indent=2)+'\n')
+          print('Both 2025 original sources independently verified')
+          PY
+          python -m pip install 'pytest>=8,<10'
+          export BALANCE_TWO_META_ZHONG=artifacts/leal-ecology-2025/ZHONG_ORIGINAL_776_META_EFFECTS.xlsx
+          export BALANCE_TWO_META_LEAL=artifacts/leal-ecology-2025/lacaleal__Meta-analysis_larcenists-v1.0.zip
+          python -m pytest -q tests/test_two_larceny_meta_sources.py
+          python scripts/audit_two_larceny_meta_sources.py --zhong-original "$BALANCE_TWO_META_ZHONG" --leal-original-zip "$BALANCE_TWO_META_LEAL" --out artifacts/leal-ecology-2025/CROSS_META_READOUT.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: leal-ecology-2025-zenodo-primary-source
+          path: artifacts/leal-ecology-2025/
+          if-no-files-found: error
+          retention-days: 30
