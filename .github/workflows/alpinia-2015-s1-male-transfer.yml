@@ -6,6 +6,9 @@ on:
     paths:
       - .github/workflows/alpinia-2015-s1-male-transfer.yml
       - scripts/audit_alpinia_dye_visitation_bridge.py
+      - scripts/audit_alpinia_fixed_efficiency_envelope.py
+      - tests/test_alpinia_fixed_efficiency_envelope.py
+      - docs/BALANCE_ALPINIA_PLOT_GATE_FIXED_EFFICIENCY_V1.md
       - tests/test_alpinia_dye_visitation_bridge.py
       - data/external/alpinia_2015/S1_FLUORESCENT_TRANSFER_32_CELLS.csv
       - docs/BALANCE_ALPINIA_VISITOR_COMPOSITION_DYE_FRUIT_STAGE_V1.md
@@ -64,8 +67,9 @@ jobs:
           BALANCE_ALPINIA_S1_TEXT: artifacts/alpinia-s1/S1_TEXT.txt
         run: |
           python -m pip install 'pytest>=8,<10'
-          python -m pytest -q tests/test_alpinia_dye_visitation_bridge.py
+          python -m pytest -q tests/test_alpinia_dye_visitation_bridge.py tests/test_alpinia_fixed_efficiency_envelope.py
           python scripts/audit_alpinia_dye_visitation_bridge.py --source-doc "$BALANCE_ALPINIA_S1_DOC" --source-text "$BALANCE_ALPINIA_S1_TEXT" --out artifacts/alpinia-s1/BRIDGE_READOUT.json
+          python scripts/audit_alpinia_fixed_efficiency_envelope.py --s1-original-doc "$BALANCE_ALPINIA_S1_DOC" --s1-antiword-text "$BALANCE_ALPINIA_S1_TEXT" --output artifacts/alpinia-s1/PLOT_GATE_EFFICIENCY_READOUT.json
       - uses: actions/upload-artifact@v4
         with:
           name: alpinia-2015-fluorescent-transfer-original-s1
