@@ -110,6 +110,53 @@ jobs:
           print(json.dumps({**receipt,'candidate_figshare_articles':[
               {**q,'files':q.get('files',[])[:10]} for q in receipt['candidate_figshare_articles']]},indent=2,ensure_ascii=False)[:25000])
           PY
+      - name: Acquire publisher-linked unlisted Figshare original ZIP and record source manifest
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, io, json, pathlib, urllib.request, zipfile, csv
+          out=pathlib.Path('artifacts/larceny-2025-source')
+          landing=(out/'FIGSHARE_SHARED_LANDING.html').read_text(encoding='utf-8')
+          if 'Item:27129204' not in landing or 'File:50193012' not in landing or 'Data and code for meta-analysis of floral larceny' not in landing:
+              raise ValueError('Figshare share article/content identity was not verified')
+          url='https://figshare.com/ndownloader/files/50193012?private_link=99df84fe5c473dc85d85'
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-original-ecological-meta-data-audit/1.0'})
+          with urllib.request.urlopen(req,timeout=90) as resp:
+              raw=resp.read(4000001)
+              final_url=resp.url
+          if len(raw)!=1572161:
+              raise ValueError('Shared original Figshare file size changed or truncated')
+          if not zipfile.is_zipfile(io.BytesIO(raw)):
+              raise ValueError('Figshare original source is not a ZIP')
+          original=out/'figshare_27129204_source_data_and_code.zip'
+          original.write_bytes(raw)
+          manifest=[]
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              members=z.infolist()
+              if len(members)>2000:raise ValueError('Too many source files')
+              for member in members:
+                  if member.is_dir():continue
+                  from pathlib import PurePosixPath
+                  if member.filename.startswith('/') or '..' in PurePosixPath(member.filename).parts:raise ValueError('Unsafe source ZIP path')
+                  if member.file_size>30000000:raise ValueError('Unexpected large embedded source')
+                  b=z.read(member.filename)
+                  rec={'name':member.filename,'uncompressed_bytes':len(b),'sha256':hashlib.sha256(b).hexdigest(),'crc32':member.CRC}
+                  if member.filename.lower().endswith(('.csv','.tsv','.txt','.r','.md')):
+                      rec['first_lines']=b.decode('utf-8-sig','replace').splitlines()[:3]
+                  manifest.append(rec)
+          receipt={'paper_doi':'10.1016/j.pld.2024.12.004',
+               'publisher_declared_private_figshare_share':'https://figshare.com/s/99df84fe5c473dc85d85',
+               'figshare_article_id':27129204,'figshare_file_id':50193012,
+               'figshare_article_doi':'10.6084/m9.figshare.27129204',
+               'license':'CC BY 4.0 according to public share landing',
+               'official_link':url,'resolved_url':final_url,
+               'downloaded_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+               'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),
+               'files':manifest,'meta_776_effect_rows_not_yet_validated':True,
+               'outcome_data_not_promoted_into_U6_or_V4':True}
+          (out/'ORIGINAL_ZIP_SOURCE_RECEIPT.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+          print(json.dumps(receipt,indent=2,ensure_ascii=False)[:35000])
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: larceny-2025-figshare-discovery-receipt
