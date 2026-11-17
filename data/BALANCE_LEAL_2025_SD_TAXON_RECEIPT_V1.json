@@ -1,0 +1,272 @@
+{
+  "schema": "BALANCE_LEAL_2025_SOURCE_SD_TAXON_IDENTIFICATION_V1",
+  "original_zenodo_doi": "10.5281/zenodo.14773082",
+  "original_ecology_paper_doi": "10.1002/ecy.70036",
+  "original_zip_sha256": "3f6e9b5b55ad8090f41f62faeb2f306c6700a9beb274ac6467106ebab9573c2d",
+  "source_effect_count": 267,
+  "ROM_variance": {
+    "original_source_vi_unmodified": true,
+    "source_vi_matches_archived_SD_order": 260,
+    "source_vi_matches_only_exchanged_SD_order": 7,
+    "source_vi_discordant_sample_ids": [
+      "56",
+      "79",
+      "81",
+      "83",
+      "84",
+      "88",
+      "178"
+    ],
+    "discrepancies": [
+      {
+        "sample_id": "56",
+        "study": "Cuevas&Guerrero_2016",
+        "species_archive": "Salvia_gesnerifolia",
+        "metric": "visitation",
+        "vi_archived": 0.058309038,
+        "vi_recomputed_archived_SD_columns": 0.11013929381276319,
+        "vi_recomputed_with_SD_columns_exchanged": 0.05830903790087463,
+        "relative_vi_change_if_recalculated_from_current_SD": 1.8888888856777775,
+        "sd_larcenist_archived": 0.04,
+        "sd_control_archived": 0.06
+      },
+      {
+        "sample_id": "79",
+        "study": "Fumero-Caban&Melendez-Ackerman_2013",
+        "species_archive": "Pitcairnia_augustifolia",
+        "metric": "female",
+        "vi_archived": 0.285431781,
+        "vi_recomputed_archived_SD_columns": 0.3766917260970232,
+        "vi_recomputed_with_SD_columns_exchanged": 0.28543178141654485,
+        "relative_vi_change_if_recalculated_from_current_SD": 1.3197259421403507,
+        "sd_larcenist_archived": 28.16913204,
+        "sd_control_archived": 54.72160085
+      },
+      {
+        "sample_id": "81",
+        "study": "Fumero-Caban&Melendez-Ackerman_2013",
+        "species_archive": "Pitcairnia_augustifolia",
+        "metric": "male",
+        "vi_archived": 0.007751317,
+        "vi_recomputed_archived_SD_columns": 0.007786807734113872,
+        "vi_recomputed_with_SD_columns_exchanged": 0.007751316951384928,
+        "relative_vi_change_if_recalculated_from_current_SD": 1.0045786714843261,
+        "sd_larcenist_archived": 0.391918359,
+        "sd_control_archived": 0.416413256
+      },
+      {
+        "sample_id": "83",
+        "study": "Fumero-Caban&Melendez-Ackerman_2013",
+        "species_archive": "Pitcairnia_augustifolia",
+        "metric": "female",
+        "vi_archived": 0.020887135,
+        "vi_recomputed_archived_SD_columns": 0.018921253270651372,
+        "vi_recomputed_with_SD_columns_exchanged": 0.020887135018005928,
+        "relative_vi_change_if_recalculated_from_current_SD": 0.9058807381027303,
+        "sd_larcenist_archived": 117.3513954,
+        "sd_control_archived": 64.67882188
+      },
+      {
+        "sample_id": "84",
+        "study": "Fumero-Caban&Melendez-Ackerman_2013",
+        "species_archive": "Pitcairnia_augustifolia",
+        "metric": "male",
+        "vi_archived": 0.019137786,
+        "vi_recomputed_archived_SD_columns": 0.016643709824673614,
+        "vi_recomputed_with_SD_columns_exchanged": 0.019137786395024503,
+        "relative_vi_change_if_recalculated_from_current_SD": 0.8696779149204413,
+        "sd_larcenist_archived": 1.592168333,
+        "sd_control_archived": 1.102270384
+      },
+      {
+        "sample_id": "88",
+        "study": "Gelvez-Zuningaetal2016",
+        "species_archive": "Collaea_speciosa",
+        "metric": "visitation",
+        "vi_archived": 0.118070882,
+        "vi_recomputed_archived_SD_columns": 3.3189278680544105,
+        "vi_recomputed_with_SD_columns_exchanged": 0.11807088195971885,
+        "relative_vi_change_if_recalculated_from_current_SD": 28.109622049358542,
+        "sd_larcenist_archived": 41.56597166,
+        "sd_control_archived": 6.965
+      },
+      {
+        "sample_id": "178",
+        "study": "Souzaetal_2019",
+        "species_archive": "Jacaranda_rugosa",
+        "metric": "nectar",
+        "vi_archived": 0.295380506,
+        "vi_recomputed_archived_SD_columns": 0.12221879685141024,
+        "vi_recomputed_with_SD_columns_exchanged": 0.29538050594147247,
+        "relative_vi_change_if_recalculated_from_current_SD": 0.41376730816288276,
+        "sd_larcenist_archived": 11.39,
+        "sd_control_archived": 22.48
+      }
+    ],
+    "max_absolute_error_of_swapped_SD_formula": 4.1654485416486864e-10,
+    "no_claim_that_all_seven_source_SD_values_independently_recovered": true
+  },
+  "ROM_effect_sign": {
+    "archived_sign_opposite_to_group_means_n": 3,
+    "cases": [
+      {
+        "sample_id": "79",
+        "study": "Fumero-Caban&Melendez-Ackerman_2013",
+        "yi_archived": -0.241816817,
+        "ln_group_mean_ratio": 0.2418168165798311,
+        "source_orientation_unexplained": true
+      },
+      {
+        "sample_id": "88",
+        "study": "Gelvez-Zuningaetal2016",
+        "yi_archived": 1.604191617,
+        "ln_group_mean_ratio": -1.604191616518795,
+        "source_orientation_unexplained": true
+      },
+      {
+        "sample_id": "178",
+        "study": "Souzaetal_2019",
+        "yi_archived": 0.666713923,
+        "ln_group_mean_ratio": -0.6667139234917899,
+        "source_orientation_unexplained": true
+      }
+    ],
+    "source_direction_recode_unknown": true
+  },
+  "primary_source_2016_sample88": {
+    "paper_doi": "10.1016/j.rmb.2016.09.004",
+    "paper_species": "Collaea_cipoensis",
+    "robbed_visitation_mean": 3.44,
+    "robbed_visitation_SE": 1.05,
+    "robbed_reported_N": 44,
+    "intact_visitation_mean": 17.11,
+    "intact_visitation_SE": 2.7,
+    "intact_reported_N": 237,
+    "SD_derived_from_paper_SE_and_N_if_SE_is_mean_SE": [
+      6.96491205974634,
+      41.56597165951976
+    ],
+    "archived_SD_columns": [
+      41.56597166,
+      6.965
+    ],
+    "original_2016_plant_n_for_fruit_census": 44,
+    "reported_N_for_visitation_must_not_be_assumed_to_be_independent_plants": true,
+    "original_paper_is_not_Collaea_speciosa": true,
+    "original_yi_sign_in_archive_opposite_ln_treatment_control": true
+  },
+  "primary_article_taxon_discrepancies": [
+    {
+      "source_study": "Gelvez-Zuningaetal2016",
+      "ids": [
+        "87",
+        "88"
+      ],
+      "archived_species": "Collaea_speciosa",
+      "published_species": "Collaea_cipoensis",
+      "published_article_doi": "10.1016/j.rmb.2016.09.004",
+      "primary_article_url": "https://revista.ib.unam.mx/index.php/bio/article/view/1353",
+      "source_status": "published original article identifies Collaea cipoensis; both taxa listed separately by Kew",
+      "effect_row_count": 2,
+      "archived_name_appears_in_original_phylogeny": true,
+      "primary_study_name_appears_in_original_phylogeny": false,
+      "does_not_establish_dna_misplacement_or_model_change": true
+    },
+    {
+      "source_study": "Fumero-Caban&Melendez-Ackerman_2013",
+      "ids": [
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84"
+      ],
+      "archived_species": "Pitcairnia_augustifolia",
+      "published_species": "Pitcairnia_angustifolia",
+      "published_article_doi": "10.1111/j.1442-1984.2012.00388.x",
+      "primary_article_url": "https://esj-journals.onlinelibrary.wiley.com/doi/10.1111/j.1442-1984.2012.00388.x",
+      "source_status": "published original species is Pitcairnia angustifolia; Kew lists accepted spelling",
+      "effect_row_count": 8,
+      "archived_name_appears_in_original_phylogeny": true,
+      "primary_study_name_appears_in_original_phylogeny": false,
+      "does_not_establish_dna_misplacement_or_model_change": true
+    }
+  ],
+  "effect_rows_with_paper_taxon_label_disagreement": 10,
+  "cross_meta_original_paper_recovery": {
+    "prior_provisional_first_author_year_species_candidate_pairs": 45,
+    "recoverable_additional_primary_paper_species_candidate_pairs": 2,
+    "updated_paper_species_candidate_upper_bound": 47,
+    "additional_primary_identified_sources": [
+      {
+        "primary_publication_doi": "10.1111/j.1442-1984.2012.00388.x",
+        "primary_species": "Pitcairnia_angustifolia",
+        "zhong_ref_ID": 23,
+        "zhong_effect_IDs": [
+          562,
+          563,
+          564,
+          565,
+          566,
+          567,
+          568,
+          569,
+          570,
+          571
+        ],
+        "leal_study": "Fumero-Caban&Melendez-Ackerman_2013",
+        "leal_effect_samples": [
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84
+        ],
+        "leal_archive_species": "Pitcairnia_augustifolia",
+        "missed_by_naive_join_reason": "2012 online publication vs 2013 issue-year; original primary species spelling",
+        "same_study_identification_supported_by_primary_DOI": true,
+        "identical_experimental_contrast_IDs_verified": false,
+        "shared_effect_covariance_known": false
+      },
+      {
+        "primary_publication_doi": "10.1016/j.rmb.2016.09.004",
+        "primary_species": "Collaea_cipoensis",
+        "zhong_ref_ID": 24,
+        "zhong_effect_IDs": [
+          572,
+          573
+        ],
+        "leal_study": "Gelvez-Zuningaetal2016",
+        "leal_effect_samples": [
+          87,
+          88
+        ],
+        "leal_archive_species": "Collaea_speciosa",
+        "missed_by_naive_join_reason": "first-author accent/transcription and wrong source species tag",
+        "same_study_identification_supported_by_primary_DOI": true,
+        "identical_experimental_contrast_IDs_verified": false,
+        "shared_effect_covariance_known": false
+      }
+    ],
+    "all_47_are_DOI_verified_independent_effects": false,
+    "distinct_primary_studies_not_distinct_effect_contrasts": true,
+    "original_zhong_source_XLSX_SHA256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4"
+  },
+  "phylogeny_rebuilding_required_before_any_verified_taxonomy_correction": true,
+  "claim_guards": {
+    "original_fitted_meta_model_not_refitted": true,
+    "no_silent_change_to_study_2025_archived_csv": true,
+    "original_source_sd_order_problem_does_not_prove_saved_vi_is_wrong": true,
+    "primary_papers_and_taxon_dbs_are_provenance_not_reanalysed_field_records": true,
+    "taxonomy_mismatch_not_10_independent_taxonomic_errors": true,
+    "direction_reversal_not_a_demonstrated_publication_error": true,
+    "no_plant_architecture_Phi_or_contrast_cost_estimated": true,
+    "original_U6_21_taxa_42_coders_V4_and_SLK_not_changed": true
+  }
+}
