@@ -5,6 +5,10 @@ on:
     branches: [analysis/balance-alpinia-stage-contrast-20261117]
     paths:
       - .github/workflows/alpinia-2015-plos-original.yml
+      - scripts/audit_alpinia_original_stage.py
+      - tests/test_alpinia_original_stage.py
+      - data/external/alpinia_2015/S2_EXTRACTED_16_CELLS.csv
+      - docs/BALANCE_ALPINIA_2015_ORIGINAL_STAGE_CONTRAST_V1.md
   workflow_dispatch:
 
 permissions:
@@ -55,6 +59,15 @@ jobs:
           antiword artifacts/alpinia-original/pone.0144585.s002.doc > artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
           test -s artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
           sed -n '1,125p' artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
+      - name: Recompute source-authenticated stage contrast and reject changed source rows
+        env:
+          BALANCE_ALPINIA_2015_S2_DOC: artifacts/alpinia-original/pone.0144585.s002.doc
+          BALANCE_ALPINIA_2015_ANTIWORD_TEXT: artifacts/alpinia-original/S2_ANTWORD_TEXT.txt
+        shell: bash
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_alpinia_original_stage.py
+          python scripts/audit_alpinia_original_stage.py --source-doc "$BALANCE_ALPINIA_2015_S2_DOC" --antiword-text "$BALANCE_ALPINIA_2015_ANTIWORD_TEXT" --output artifacts/alpinia-original/STAGE_READOUT.json
       - uses: actions/upload-artifact@v4
         with:
           name: alpinia-2015-plos-original-s2
