@@ -58,11 +58,19 @@ jobs:
                   entries=versions.get('_embedded',{}).get('stash:versions',versions.get('versions',[]))
               else:entries=[]
               for v in entries:
-                  if isinstance(v,dict) and isinstance(v.get('id'),int):ids.append(v['id'])
+                  if isinstance(v,dict):
+                      if isinstance(v.get('id'),int):ids.append(v['id'])
+                      href=v.get('_links',{}).get('self',{}).get('href','')
+                      for term in href.split('/'):
+                          if term.isdigit():ids.append(int(term))
               (dest/'VERSIONS.json').write_bytes(vers['raw'])
           if 'raw' in meta:
               d=json.loads(meta['raw'])
               if isinstance(d.get('versionId'),int):ids.append(d['versionId'])
+              for key in ('stash:version','stash:latest-version'):
+                  href=d.get('_links',{}).get(key,{}).get('href','')
+                  for term in href.split('/'):
+                      if term.isdigit():ids.append(int(term))
               latest=d.get('_links',{}).get('stash:latest-version',{})
               if isinstance(latest,dict):
                   url=latest.get('href','')
