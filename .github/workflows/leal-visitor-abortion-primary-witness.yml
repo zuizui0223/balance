@@ -1,0 +1,59 @@
+name: Leal 2025 original Salvia and Collaea source witness
+on:
+  push:
+    branches: [analysis/larceny-visitor-class-abortion-gate-20261117]
+    paths:
+      - .github/workflows/leal-visitor-abortion-primary-witness.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  primary-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Probe original peer-reviewed primary sources; retain receipts and bytes, no ungrounded reanalysis
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime,hashlib,json,pathlib,urllib.request
+          from urllib.error import HTTPError
+          out=pathlib.Path('artifacts/leal-primary-2016-visitor')
+          out.mkdir(parents=True,exist_ok=True)
+          targets={
+           'Cuevas_RosasGuerrero_2016_author_PDF':'https://rosasguerrerolab.com/wp-content/uploads/2023/07/16-cuevas.pdf',
+           'Gelvez_2016_original_SciELO_HTML':'https://www.scielo.org.mx/scielo.php?pid=S1870-34532016000401352&script=sci_arttext',
+           'Gelvez_2016_original_UNAM_PDF':'https://revista.ib.unam.mx/index.php/bio/article/download/1353/1382/6582'}
+          result={'targets':{},'retrieved_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                  'author_meta_data_not_edited':True}
+          for name,url in targets.items():
+              entry={'url':url,'downloaded':False}
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-source-audit/1.0','Accept':'*/*'})
+                  with urllib.request.urlopen(req,timeout=35) as resp:
+                      raw=resp.read(6000001)
+                      entry['resolved_url']=resp.url
+                      entry['content_type']=resp.headers.get('Content-Type')
+                  if len(raw)>6000000:raise ValueError('Publication source exceeds size cap')
+                  ext='.pdf' if raw.startswith(b'%PDF-') else '.html'
+                  if ext=='.html' and b'<html' not in raw[:10000].lower() and b'<!doctype' not in raw[:10000].lower():
+                      raise ValueError('Not a recognizable scholarly webpage')
+                  dst=out/(name+ext);dst.write_bytes(raw)
+                  entry.update({'downloaded':True,'bytes':len(raw),'local_file':dst.name,
+                      'sha256':hashlib.sha256(raw).hexdigest()})
+              except Exception as exc:
+                  entry['failure']=str(exc)[:250]
+              result['targets'][name]=entry
+          (out/'SOURCE_PROBE.json').write_text(json.dumps(result,indent=2)+'\n')
+          print(json.dumps(result,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: leal-original-2016-visitor-source-probe
+          path: artifacts/leal-primary-2016-visitor/
+          if-no-files-found: error
+          retention-days: 30
