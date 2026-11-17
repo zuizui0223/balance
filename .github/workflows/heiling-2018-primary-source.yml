@@ -94,6 +94,10 @@ jobs:
           receipt['file_candidates']=[{k:v for k,v in f.items() if k not in ('description',)} for f in files]
           for item in files:
               fid=item.get('id')
+              if not isinstance(fid,int):
+                  href=item.get('_links',{}).get('self',{}).get('href','')
+                  digits=[int(term) for term in href.split('/') if term.isdigit()]
+                  fid=digits[-1] if digits else None
               if not isinstance(fid,int):continue
               for url in ('https://datadryad.org/downloads/file_stream/'+str(fid),
                           'https://datadryad.org/api/v2/files/'+str(fid)+'/download'):
