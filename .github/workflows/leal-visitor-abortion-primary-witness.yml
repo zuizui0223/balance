@@ -4,6 +4,9 @@ on:
     branches: [analysis/larceny-visitor-class-abortion-gate-20261117]
     paths:
       - .github/workflows/leal-visitor-abortion-primary-witness.yml
+      - scripts/audit_leal_2016_visitor_abortion_gate.py
+      - tests/test_leal_2016_visitor_abortion_gate.py
+      - docs/BALANCE_LEAL_2016_VISITOR_GUILD_ABORTION_PRIMARY_V1.md
   workflow_dispatch:
 permissions:
   contents: read
@@ -51,6 +54,64 @@ jobs:
           (out/'SOURCE_PROBE.json').write_text(json.dumps(result,indent=2)+'\n')
           print(json.dumps(result,indent=2))
           PY
+      - name: Independently re-acquire and verify original Leal Zenodo and Zhong Figshare data
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request,json,hashlib,zipfile,io,pathlib
+          dest=pathlib.Path('artifacts/leal-primary-2016-visitor')
+          expected={'cuevas':('Cuevas_RosasGuerrero_2016_author_PDF.pdf','216750e6c649d8472420e54f272c5448caab875e59aab51603fd5b5e9afb5cdf'),
+                    'gelvez':('Gelvez_2016_original_UNAM_PDF.pdf','1e8ef9017756cacd5f893cef6e42abe2669cd0baf7ea506999324c9f386b0a0a')}
+          for tag,(name,sha) in expected.items():
+              b=(dest/name).read_bytes()
+              if hashlib.sha256(b).hexdigest()!=sha or not b.startswith(b'%PDF-'):
+                  raise ValueError('Official primary source PDF missing/changed '+tag)
+          def get(url,sizecap):
+              req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-2016-guild-abortion-source-audit/1.0'})
+              with urllib.request.urlopen(req,timeout=100) as resp:raw=resp.read(sizecap+1)
+              if len(raw)>sizecap:raise ValueError('Meta original size cap exceeded')
+              return raw
+          zenodo=json.loads(get('https://zenodo.org/api/records/14773082',2000000))
+          if zenodo.get('id')!=14773082:raise ValueError('Leal Zenodo record changed')
+          fl=[f for f in zenodo.get('files',[]) if str(f.get('key','')).endswith('Meta-analysis_larcenists-v1.0.zip')]
+          if len(fl)!=1:raise ValueError('Leal unique official archive not found')
+          obj=fl[0]
+          original=get(obj['links']['self'],1500000)
+          sha='3f6e9b5b55ad8090f41f62faeb2f306c6700a9beb274ac6467106ebab9573c2d'
+          if hashlib.sha256(original).hexdigest()!=sha:raise ValueError('Leal source SHA256 mismatch')
+          supplied=str(obj.get('checksum',''))
+          if supplied.startswith('md5:') and hashlib.md5(original).hexdigest()!=supplied[4:]:
+              raise ValueError('Leal original official MD5 mismatch')
+          (dest/'ORIGINAL_LEAL_ZENODO_2025.zip').write_bytes(original)
+          source_url='https://figshare.com/ndownloader/files/50193012?private_link=99df84fe5c473dc85d85'
+          pack=get(source_url,2000000)
+          zip_sha='84d310948e1da97c091ca27e9dcc45521cf72512ba14e30d3cd269d46e5b274c'
+          if len(pack)!=1572161 or hashlib.sha256(pack).hexdigest()!=zip_sha:
+              raise ValueError('Zhong original full source pack changed')
+          with zipfile.ZipFile(io.BytesIO(pack)) as z:
+              name='update metadata/Dataset for floral larceny effect size calculation.xlsx'
+              if name not in z.namelist():raise ValueError('Zhong original 776 workbook missing')
+              XLSX=z.read(name)
+          xsha='6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4'
+          if hashlib.sha256(XLSX).hexdigest()!=xsha:raise ValueError('Zhong original workbook SHA mismatch')
+          (dest/'ORIGINAL_ZHONG_FIGSHARE_2025.xlsx').write_bytes(XLSX)
+          print(json.dumps({'primary_PDF_hash_checks':'passed','Leal_Zenodo_SHA256':sha,
+                            'Zhong_Figshare_XLSX_SHA256':xsha,'Leal_MD5':supplied},indent=2))
+          PY
+      - name: Original source-linked 2016 visitor guild, abortion, and site-unit tests
+        shell: bash
+        run: |
+          if ! command -v pdftotext >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq poppler-utils
+          fi
+          python -m pip install 'pytest>=8,<10'
+          export BALANCE_2016_AUDIT_LEAL_ZIP=artifacts/leal-primary-2016-visitor/ORIGINAL_LEAL_ZENODO_2025.zip
+          export BALANCE_2016_AUDIT_ZHONG_XLSX=artifacts/leal-primary-2016-visitor/ORIGINAL_ZHONG_FIGSHARE_2025.xlsx
+          export BALANCE_2016_AUDIT_CUEVAS_PDF=artifacts/leal-primary-2016-visitor/Cuevas_RosasGuerrero_2016_author_PDF.pdf
+          export BALANCE_2016_AUDIT_GELVEZ_PDF=artifacts/leal-primary-2016-visitor/Gelvez_2016_original_UNAM_PDF.pdf
+          python -m pytest -q tests/test_leal_2016_visitor_abortion_gate.py
+          python scripts/audit_leal_2016_visitor_abortion_gate.py --leal-zip "$BALANCE_2016_AUDIT_LEAL_ZIP" --zhong-xlsx "$BALANCE_2016_AUDIT_ZHONG_XLSX" --cuevas-original "$BALANCE_2016_AUDIT_CUEVAS_PDF" --gelvez-original "$BALANCE_2016_AUDIT_GELVEZ_PDF" --out artifacts/leal-primary-2016-visitor/GUILD_ABORTION_READOUT.json
       - uses: actions/upload-artifact@v4
         with:
           name: leal-original-2016-visitor-source-probe
