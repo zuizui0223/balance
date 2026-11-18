@@ -68,7 +68,7 @@ def audit(path:Path=SOURCE)->dict:
       'source_descriptive_visit_counts':{
           'total_visits':total,'robber_behavior_visits':robber,
           'robber_behavior_visits_fraction':robber/total,
-          'robber_species_with_source_reported_stigma_pollen_visits':robber_with_detected,
+          'visits_by_robber_taxon_with_separately_detected_stigma_pollen':robber_with_detected,
           'robber_species_with_source_reported_stigma_pollen_fraction_of_all_visits':robber_with_detected/total,
       },
       'interpretation_guards':{
