@@ -15,7 +15,7 @@ def test_original_single_programme_totals_and_behavior():
     s=a['source']
     assert (s['plant_species_count'],s['primary_study_count'],s['patches_observed'],s['plants_observed'])==(1,1,6,60)
     x=a['source_descriptive_visit_counts']
-    assert (x['total_visits'],x['robber_behavior_visits'],x['robber_species_with_source_reported_stigma_pollen_visits'])==(1146,697,664)
+    assert (x['total_visits'],x['robber_behavior_visits'],x['visits_by_robber_taxon_with_separately_detected_stigma_pollen'])==(1146,697,664)
     assert x['robber_behavior_visits_fraction']==pytest.approx(697/1146)
     assert a['visitor_species']['Coereba flaveola']['reported_stigma_pollen_evidence']=='detected'
     assert a['visitor_species']['Chlorostilbon maugaeus']['reported_stigma_pollen_evidence']=='not_distinguishable_from_control'
