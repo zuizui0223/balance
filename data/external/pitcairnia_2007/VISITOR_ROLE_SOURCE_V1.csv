@@ -1,0 +1,5 @@
+source_doi,source_year,plant_species,visitor_species,behavioral_route,total_observed_visits,pollen_load_evidence,relative_per_visit_load_approx_vs_anthracothorax
+10.3732/ajb.94.3.419,2007,Pitcairnia angustifolia,Anthracothorax viridis,legitimate_nectar,111,detected,1.0
+10.3732/ajb.94.3.419,2007,Pitcairnia angustifolia,Apis mellifera,legitimate_pollen,338,detected,0.3333333333333333
+10.3732/ajb.94.3.419,2007,Pitcairnia angustifolia,Coereba flaveola,primary_robber,664,detected,0.067
+10.3732/ajb.94.3.419,2007,Pitcairnia angustifolia,Chlorostilbon maugaeus,secondary_robber,33,not_distinguishable_from_control,
