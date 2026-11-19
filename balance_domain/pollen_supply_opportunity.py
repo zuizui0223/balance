@@ -8,7 +8,7 @@ All numbers in the CLI are synthetic illustrations, NOT observed effects.
 """
 from __future__ import annotations
 
-from math import exp, isfinite
+from math import expm1, isfinite
 
 
 def _nonnegative(name: str, value: float) -> float:
@@ -62,7 +62,7 @@ def service_gated_output(
     capacity = legitimate_visits * c
     export_proxy = min(stock, capacity)
     delivered = eta * export_proxy + hand
-    output = ymax * (-__import__("math").expm1(-delivered / k))
+    output = ymax * (-expm1(-delivered / k))
     if not all(isfinite(z) for z in (stock, capacity, delivered, output)):
         raise ValueError("Non-finite scenario result")
     return {
