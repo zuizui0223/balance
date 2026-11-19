@@ -1,0 +1,124 @@
+{
+  "schema_version": "BALANCE_CLARKIA_KAY2020_DRYAD_RECEIPT_V1",
+  "status": "ARTICLE_AND_PUBLIC_DRYAD_LANDING_AUDIT_NOT_RAW_REANALYSIS",
+  "article": {
+    "doi": "10.1098/rspb.2020.2593",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7779490/",
+    "study_programme_id": "KAY_JOGESH_TATARU_AKIBA_2020",
+    "n_independent_study_programmes": 1
+  },
+  "dryad": {
+    "doi": "10.5061/dryad.8cz8w9gmp",
+    "url": "https://datadryad.org/dataset/doi:10.5061/dryad.8cz8w9gmp",
+    "version_date": "2020-12-26",
+    "n_listed_files": 29,
+    "total_size_MB": 12.95,
+    "download_result": "HTTP_403_FOR_FILE_STREAM_FROM_CURRENT_WEB_ACCESS; NO_RAW_FILES_RETRIEVED",
+    "api_documentation": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/README.md",
+    "files": [
+      {
+        "filename": "CungManipulative.csv",
+        "file_id": 532298,
+        "role": "2017_FIELD_VISITS",
+        "listed": true
+      },
+      {
+        "filename": "CungSeeds.csv",
+        "file_id": 532300,
+        "role": "2017_FIELD_FEMALE_SEED_OUTPUT",
+        "listed": true
+      },
+      {
+        "filename": "FieldManipulationsCung.R",
+        "file_id": 532302,
+        "role": "2017_FIELD_MODEL_CODE",
+        "listed": true
+      },
+      {
+        "filename": "BombusTrials2018.R",
+        "file_id": 532288,
+        "role": "2018_GREENHOUSE_EXPORT_MODEL_CODE",
+        "listed": true
+      },
+      {
+        "filename": "pollen_available.csv",
+        "file_id": 532310,
+        "role": "2018_EXPOSED_POLLEN_LENGTH",
+        "listed": true
+      },
+      {
+        "filename": "pollen_data.csv",
+        "file_id": 532311,
+        "role": "2017_CYLINDRICA_SCOPAE_STIGMA",
+        "listed": true
+      },
+      {
+        "filename": "time_lapse_data.csv",
+        "file_id": 532313,
+        "role": "ANTHER_TIMING_11_SPECIES",
+        "listed": true
+      },
+      {
+        "filename": "ModelResultsCung.csv",
+        "file_id": 532308,
+        "role": "FIELD_MODEL_SUMMARY",
+        "listed": true
+      },
+      {
+        "filename": "FileManifest.txt",
+        "file_id": 532304,
+        "role": "ARCHIVE_FILE_MANIFEST",
+        "listed": true
+      },
+      {
+        "filename": "BombusTrials2018.csv",
+        "file_id": null,
+        "role": "2018_GREENHOUSE_EXPORT_RAW_DATA_EXPECTED_BUT_NOT_LISTED",
+        "listed": false
+      }
+    ],
+    "missing_critical_file_note": "Usage notes cite BombusTrials2018.csv for BombusTrials2018.R; the CSV is absent from 29 listed version files. Presence inside another archive unverified."
+  },
+  "source_readout": {
+    "greenhouse_2018": {
+      "species": "Clarkia unguiculata",
+      "experimental_unit": "one independently visited flower array with one Bombus impatiens; 20 male-phase and five emasculated female-phase flowers",
+      "n_dosing_arrays": 13,
+      "n_no_dosing_arrays": 15,
+      "age_confound": "no-dosing flowers approximately one day older",
+      "exposed_pollen_length_mm_dosing": 1.9,
+      "exposed_pollen_length_mm_no_dosing": 4.6,
+      "exposed_length_test": "F(1,38)=483.17, p<0.001",
+      "stigma_pollen_no_dosing_log_odds": -0.3507,
+      "stigma_pollen_test": "p=0.27; not statistically significant",
+      "bee_corbicula_mg_dosing": 6.7,
+      "bee_corbicula_mg_no_dosing": 6.5,
+      "corbicula_test": "F(1,25)=0.01, p=0.923",
+      "male_genetic_paternity_measured": false,
+      "random_thief_vs_legitimate_order": false
+    },
+    "field_2017": {
+      "species": "Clarkia unguiculata",
+      "experimental_units": "17 patches with treated flowers observed morning/afternoon over two days",
+      "mean_female_seeds_control": 34,
+      "mean_female_seeds_inner_anther_removed": 28,
+      "mean_female_seeds_outer_anther_removed": 30,
+      "seed_anova": "F(2,78)=0.43, p=0.65",
+      "male_fitness_not_measured": true
+    },
+    "cylindrica_2017": {
+      "species": "Clarkia cylindrica",
+      "pollen_origin_stigma_vs_scopa_test": "t=-1.401, p=0.17",
+      "genetic_paternity_not_measured": true
+    }
+  },
+  "validation_contract": {
+    "file_download": "fetch raw files using public Dryad API when accessible; verify file names, hashes and CSV schema",
+    "no_join_by_treatment_alone": true,
+    "join_requires_observed_keys_and_original_R_script": true,
+    "cross_experiment_join_forbidden": true,
+    "frozen_V4_U6_unmodified": true,
+    "source_effects_not_refitted": true,
+    "not_a_direct_q_threshold_test": true
+  }
+}
