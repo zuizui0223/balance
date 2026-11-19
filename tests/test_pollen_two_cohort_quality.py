@@ -90,7 +90,7 @@ def test_quality_reweighting_changes_siring_proxy_not_physical_pollen_accounting
         assert "not_genetic_siring" in out["claim_ceiling"]
 
 
-@pytest.mark.parametrize("invalid", (-1, 1.01, float("nan"), float("inf"), True, "0.5"))
+@pytest.mark.parametrize("invalid", (-1, float("nan"), float("inf"), True, "0.5"))
 def test_quality_out_of_range_fails_closed(invalid):
     with pytest.raises(ValueError):
         scenario_with_quality(q=invalid)
@@ -105,3 +105,16 @@ def test_zero_effect_parameters_are_not_called_an_identified_threshold():
         scenario_with_quality(a=0, q=1)
     with pytest.raises(ValueError, match="positive P"):
         scenario_with_quality(b=0, q=1)
+
+def test_late_relative_effectiveness_can_exceed_one():
+    # A relative weighting is NOT a probability or physical grain count.
+    alt = scenario_with_quality(q=1.5)
+    assert alt["raw_delayed_advantage_thief_first"] == pytest.approx(25.5)
+    assert alt["sham_adjusted_three_way_interaction"] == pytest.approx(18.75)
+    first = track_two_pollen_cohorts(
+        order="TLL", total_pollen=100, delayed_fraction=0.5,
+        legitimate_pickup_fraction=0.3, thief_pickup_fraction=0.5,
+        late_relative_effective_contribution=1.5,
+    )
+    assert first["quality_weighted_export_proxy"] > first["legitimate_pollen_removed_total"]
+    assert first["physical_mass_balance_residual"] == pytest.approx(0)
