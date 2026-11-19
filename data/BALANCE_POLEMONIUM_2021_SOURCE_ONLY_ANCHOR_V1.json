@@ -1,0 +1,55 @@
+{
+  "schema_version": "BALANCE_POLEMONIUM_FOLIOSISSIMUM_SOURCE_ANCHOR_V1",
+  "status": "PUBLICATION_REPORTED_RESULTS_ONLY_NOT_RAW_DATA_REANALYSIS",
+  "source": {
+    "authors": "Brody, Burnham and Smith",
+    "year": 2021,
+    "title": "Feeding friend and foe: ample pollen mitigates the effects of pollen theft for a gynodioecious plant, Polemonium foliosissimum (Polemoniaceae)",
+    "journal": "Annals of Botany",
+    "doi": "10.1093/aob/mcab050",
+    "article_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8318250/",
+    "taxon": "Polemonium foliosissimum",
+    "number_of_independent_original_research_programmes": 1,
+    "study_level": "single-source ecological experiment with multiple endpoints, not a direct BALANCE architecture worldline"
+  },
+  "published_results_descriptive": {
+    "pollen_remaining_on_anthers_after_one_visit": {
+      "muscid_fly_mean_grains": 9700,
+      "muscid_fly_reported_sd_grains": 1500,
+      "bumblebee_mean_grains": 16900,
+      "bumblebee_reported_sd_grains": 3100,
+      "warning": "Remaining pollen is not removed pollen; source initial donor pollen stock is not verified equal for each visitor treatment"
+    },
+    "pollen_deposited_on_stigma_per_single_visit": {
+      "muscid_fly_mean_grains": 266,
+      "bumblebee_mean_grains": 352,
+      "reported_test_p": 0.189,
+      "warning": "Numeric deposition difference was not significant; pollen receipt is not viable paternity"
+    },
+    "neighbourhood_pollen_manipulation": {
+      "experimental_intervention": "Approximately half the anthers removed from hermaphrodites in designated neighbourhoods, not an exactly measured 50 percent of pollination-available pollen",
+      "source_pollen_receipt_result": "Some recipient pollen-load reductions, varying by year and plant sexual form",
+      "reproductive_output_result": "Reduction in neighbourhood anther availability did not detectably exacerbate pollen limitation of fruit or seed production",
+      "warning": "Non-detection does not prove zero effect or causal equivalence"
+    },
+    "hand_supplementation_2016": {
+      "control_seeds_per_fruit_mean": 5.5,
+      "supplemented_seeds_per_fruit_mean": 6.46,
+      "paper_reported_seed_difference": "Higher under hand pollination (reported P < 0.001)",
+      "warning": "Cannot combine hand-pollination and anther-reduction summaries to estimate an unreported source-pollen by visitation-capacity interaction"
+    }
+  },
+  "model_link": {
+    "candidate_mechanism": "Pollen supply and effective visitation opportunities can be separate constraints on realized seed production",
+    "causal_gate_not_measured": "No matched intervention that sets number/quality of effective pollinator visits while independently manipulating donor pollen stock",
+    "source_timing_not_measured": "No controlled visitor-order swap with donor pollen release schedule",
+    "direct_architecture_worldline": false,
+    "not_added_to_frozen_U6": true,
+    "do_not_infer": [
+      "a new independent BALANCE V4 biological response",
+      "an experimentally measured effect of different architecture costs",
+      "an actual odds ratio or pollen-conservation parameter for the synthetic model",
+      "a new source dataset analysis based on underlying replicate-level rows"
+    ]
+  }
+}
