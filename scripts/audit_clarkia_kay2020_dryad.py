@@ -144,8 +144,14 @@ def audit_source_retrieval(
             status = "DOWNLOAD_FAILED_HOLD"
             if isinstance(err, urllib.error.HTTPError):
                 status = f"HTTP_{err.code}_DOWNLOAD_HOLD"
-            items.append({"filename": name, "status": status,
-                          "error_type": type(err).__name__})
+            failure = {"filename": name, "status": status,
+                       "error_type": type(err).__name__}
+            if isinstance(err, ValueError) and str(err).startswith(
+                "TWO_PUBLIC_DRYAD_ENDPOINTS_FAILED: "
+            ):
+                failure["status"] = "BOTH_PUBLIC_ENDPOINTS_FAILED_HOLD"
+                failure["endpoint_failures"] = str(err).split(": ", 1)[1]
+            items.append(failure)
     present = set(retrieved)
     field_pair = {"CungManipulative.csv", "CungSeeds.csv"}
     greenhouse_pair = {"BombusTrials2018.R", "BombusTrials2018.csv"}
