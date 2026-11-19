@@ -10,6 +10,7 @@ from pathlib import Path
 
 from balance_domain.pollen_supply_opportunity import (
     build_synthetic_gate_and_order_scenarios,
+    build_closed_stock_parameter_sweep,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +28,7 @@ if __name__ == "__main__":
         raise ValueError("Published source anchor or evidence ceiling changed")
     output = {
         "hypothesis_model": build_synthetic_gate_and_order_scenarios(),
+        "model_only_parameter_grid": build_closed_stock_parameter_sweep(),
         "external_source_only_anchor": {
             "doi": source["source"]["doi"],
             "taxon": source["source"]["taxon"],
