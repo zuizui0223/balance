@@ -1,6 +1,6 @@
 """Source-pollen cohort quality extension for BALANCE prospective timing tests.
 
-Adds a *hypothetical* relative contribution 0<=q<=1 for pollen released after
+Adds a *hypothetical* relative contribution q>=0 for pollen released after
 the first event. It is NOT an empirically measured viability or paternity
 fraction. Both pollen cohorts contribute to physical mass conservation even
 when the second cohort has reduced effective siring opportunity.
@@ -44,7 +44,7 @@ def track_two_pollen_cohorts(
     Exactly two legitimate visitors (L) and one thief (T). A fraction `d`
     of the initial pollen is held back until immediately after visit one.
     Both cohorts undergo the SAME fraction removed per visiting agent.
-    The late cohort has a hypothetical relative effectiveness q in [0,1].
+    The late cohort has a hypothetical relative effectiveness q >= 0.
     A test of q=1 must reproduce the original unweighted closed-stock model.
     """
     if not isinstance(order, str) or len(order) != 3 or sorted(order) != ["L", "L", "T"]:
@@ -53,7 +53,7 @@ def track_two_pollen_cohorts(
     d = _frac("delayed_fraction", delayed_fraction)
     a = _frac("legitimate_pickup_fraction", legitimate_pickup_fraction)
     b = _frac("thief_pickup_fraction", thief_pickup_fraction)
-    q = _frac("late_relative_effective_contribution", late_relative_effective_contribution)
+    q = _positive_finite("late_relative_effective_contribution", late_relative_effective_contribution)
     eta = _frac("legitimate_transfer_efficiency", legitimate_transfer_efficiency)
     early = P*(1-d)
     late = 0.0
@@ -130,8 +130,9 @@ def scenario_with_quality(
     """Predict raw release benefit, theft-adjusted effect, and triple contrast."""
     # Force all inputs through same physical constraints as cohort simulator.
     _positive_finite("P", P)
-    for name, val in (("a", a), ("b", b), ("d", d), ("eta", eta), ("q", q)):
+    for name, val in (("a", a), ("b", b), ("d", d), ("eta", eta)):
         _frac(name, val)
+    _positive_finite("q", q)
     if P <= 0 or a <= 0 or b <= 0 or d <= 0:
         raise ValueError("Threshold example needs positive P, a, b, d")
     differences = {}
@@ -180,7 +181,7 @@ def scenario_with_quality(
         "architecture_cost_estimated": False,
         "biological_warning": (
             "q is the realized effective contribution of the late pollen cohort "
-            "relative to the early cohort, not necessarily intrinsic pollen viability. "
+            "relative to the early cohort, not necessarily intrinsic pollen viability. This relative weight can exceed one if later access is more effective. "
             "It can reflect residual legitimate opportunities, recipient receptivity, "
             "transfer or post-deposition success. The threshold follows algebraically "
             "from a fixed fractional-removal model, not a demonstrated evolved advantage."
