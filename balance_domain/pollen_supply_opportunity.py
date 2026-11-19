@@ -235,3 +235,71 @@ def build_synthetic_gate_and_order_scenarios() -> dict:
         "empirical_fitness_or_paternity_inferred": False,
         "architecture_fitness_comparison_performed": False,
     }
+
+
+def build_closed_stock_parameter_sweep() -> dict:
+    """Grid sensitivity within this *one* assumed fractional-removal mechanism.
+
+    This is an exhaustive fixed 3x3x3x3 illustration, not a fitted parameter
+    posterior or external biological replication. All 81 combinations share
+    the same donor-stock and no-behavior-feedback assumptions.
+    """
+    alpha_grid = (0.1, 0.3, 0.6)
+    beta_grid = (0.2, 0.5, 0.8)
+    late_grid = (0.25, 0.5, 0.75)
+    eta_grid = (0.25, 0.5, 1.0)
+    total = 0
+    early_protected = 0
+    early_opportunity_cost = 0
+    triple_positive = 0
+    gammas: list[float] = []
+    for alpha in alpha_grid:
+        for beta in beta_grid:
+            for late in late_grid:
+                for eta in eta_grid:
+                    def relative_release_advantage(order: str, thief: float) -> float:
+                        common = {
+                            "event_order": order,
+                            "initial_pollen_total": 100.0,
+                            "legitimate_removal_fraction": alpha,
+                            "thief_removal_fraction": thief,
+                            "effective_transfer_fraction": eta,
+                        }
+                        staged = simulate_visitor_order(
+                            **common, delayed_release_fraction=late
+                        )["effective_export_proxy"]
+                        burst = simulate_visitor_order(
+                            **common, delayed_release_fraction=0.0
+                        )["effective_export_proxy"]
+                        return staged - burst
+
+                    tll = relative_release_advantage("TLL", beta)
+                    ltl = relative_release_advantage("LTL", beta)
+                    gamma = (
+                        tll - relative_release_advantage("TLL", 0.0)
+                        - ltl + relative_release_advantage("LTL", 0.0)
+                    )
+                    total += 1
+                    early_protected += int(tll > 1e-10)
+                    early_opportunity_cost += int(ltl < -1e-10)
+                    triple_positive += int(gamma > 1e-10)
+                    gammas.append(gamma)
+    if total != 81:
+        raise ValueError("Fixed scenario-grid cardinality changed")
+    return {
+        "status": "ALL_SYNTHETIC_SAME_CLOSED_STOCK_MECHANISM",
+        "model_grid_axes": {
+            "legitimate_fraction": list(alpha_grid),
+            "theft_fraction": list(beta_grid),
+            "delayed_release_fraction": list(late_grid),
+            "effective_transfer_fraction": list(eta_grid),
+        },
+        "parameter_combinations": total,
+        "positive_delayed_advantage_if_thief_first": early_protected,
+        "negative_delayed_advantage_if_legitimate_first": early_opportunity_cost,
+        "positive_thief_adjusted_triple_contrast": triple_positive,
+        "minimum_thief_adjusted_triple_contrast": min(gammas),
+        "maximum_thief_adjusted_triple_contrast": max(gammas),
+        "empirical_studies_counted": 0,
+        "inference_limit": "model-internal robustness only, no independent field validation",
+    }
