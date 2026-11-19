@@ -87,15 +87,30 @@ def verify_file_bytes(filename: str, raw: bytes) -> dict:
 
 
 def default_downloader(file_id: int) -> bytes:
-    # Official Dryad v2 public file endpoint; this may require authorization.
-    url = f"{API}{file_id}/download"
-    request = urllib.request.Request(
-        url,
-        headers={"User-Agent": "BALANCE-Kay2020-open-data-audit/1.0", "Accept": "*/*"},
-    )
-    with urllib.request.urlopen(request, timeout=18) as result:
-        raw = result.read(MAX_FILE_BYTES + 1)
-    return raw
+    """Attempt the two public Dryad URL forms, without credential escalation.
+
+    The API URL may require OAuth on public files. The public website's
+    file_stream URL is an alternative user-facing download route, but may
+    independently return HTTP 403. Both fail closed if access is denied.
+    """
+    urls = [
+        f"{API}{file_id}/download",
+        f"https://datadryad.org/downloads/file_stream/{file_id}",
+    ]
+    errors = []
+    for url in urls:
+        request = urllib.request.Request(
+            url,
+            headers={"User-Agent": "BALANCE-Kay2020-open-data-audit/1.0", "Accept": "*/*"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=18) as result:
+                return result.read(MAX_FILE_BYTES + 1)
+        except urllib.error.HTTPError as err:
+            errors.append(f"HTTP_{err.code}")
+        except (urllib.error.URLError, TimeoutError, OSError) as err:
+            errors.append(type(err).__name__)
+    raise ValueError("TWO_PUBLIC_DRYAD_ENDPOINTS_FAILED: " + "/".join(errors))
 
 
 def audit_source_retrieval(
