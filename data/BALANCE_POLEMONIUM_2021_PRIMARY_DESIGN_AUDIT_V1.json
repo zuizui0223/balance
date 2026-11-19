@@ -1,0 +1,84 @@
+{
+  "schema_version": "BALANCE_POLEMONIUM_2021_PRIMARY_DESIGN_AUDIT_V1",
+  "status": "PUBLISHED_PRIMARY_ARTICLE_TEXT_READ_NOT_RAW_DATA",
+  "original_publication": {
+    "title": "Feeding friend and foe: ample pollen mitigates the effects of pollen theft for a gynodioecious plant, Polemonium foliosissimum (Polemoniaceae)",
+    "authors": "Alison K. Brody; P. Alexander Burnham; Brittany Smith",
+    "year": 2021,
+    "journal": "Annals of Botany",
+    "doi": "10.1093/aob/mcab050",
+    "publisher_full_text_url": "https://academic.oup.com/aob/article/128/1/127/6225205",
+    "pmcid": "PMC8318250"
+  },
+  "evidence": {
+    "2015": {
+      "manipulation_unit": "pollen-source neighbourhood, not independently randomized single flowers",
+      "source_neighbourhood_count": 4,
+      "source_removal": "half of anthers removed from hermaphrodite neighbourhood plants on scheduled days",
+      "neighbourhood_pollen_receipt_effect": {
+        "female": "32.2 percent lower pollen receipt in treatment neighbourhoods",
+        "hermaphrodite": "28.9 percent lower pollen receipt in treatment neighbourhoods",
+        "original_main_effect_test": "F(1,93)=4.20, p=0.04"
+      },
+      "hand_supplementation_factorial_present": false
+    },
+    "2016": {
+      "manipulation_unit": "neighbourhood-week, with repeated focal plants, not individual flowers",
+      "source_neighbourhood_count": 10,
+      "source_removal": "half of anthers experimentally removed in neighbourhoods; odd/even neighbourhood treatment rotated",
+      "exposure": "once every 5 to 6 days; first five weeks used for analysis",
+      "hand_supplementation": "three inflorescences of six per focal plant assigned to supplemental hand pollen; other three sham",
+      "pollen_receipt": {
+        "females": "no measured reduction in mean pollen receipt",
+        "hermaphrodites": "20.0 percent numeric reduction, group/main test non-significant",
+        "original_test": "chi-square=0.334, p>0.563"
+      },
+      "seed_per_fruit": {
+        "original_control_mean": 5.5,
+        "original_control_reported_se": 0.28,
+        "hand_supplemented_mean": 6.46,
+        "hand_supplemented_reported_se": 0.31,
+        "hand_effect_test": "chi-square=13.07, p<0.001",
+        "pollen_reduction_x_hand_supplementation_interaction_test": "chi-square=0.083, p=0.773"
+      },
+      "fruit_set": {
+        "control_percent": 64.3,
+        "hand_supplemented_percent": 69.7,
+        "hand_effect_test": "chi-square=3.34, p<0.068",
+        "pollen_reduction_x_hand_supplementation_interaction_test": "chi-square=0.33, p=0.568"
+      }
+    },
+    "visitor_single_visit": {
+      "fly_anther_remaining_mean_grains": 9700,
+      "bee_anther_remaining_mean_grains": 16900,
+      "note": "different remaining grains are not equal to experimentally measured donor depletion from equal initial supplies",
+      "fly_stigma_deposition_mean_grains": 266,
+      "bee_stigma_deposition_mean_grains": 352,
+      "deposition_test": "F(2,45)=1.73, p=0.189; not significant"
+    }
+  },
+  "data_recovery": {
+    "supplementary_types_listed": [
+      "S1 image jpeg",
+      "S2 image jpeg",
+      "S3 image jpeg",
+      "S4 image jpeg",
+      "supplementary legends docx"
+    ],
+    "original_row_level_data_repository_identified": false,
+    "exact_original_data_files_retrieved": false,
+    "original_experimental_unit_data_refit": false,
+    "public_archive_status": "Raw individual/neighbourhood tables were not located in the publisher supplementary list or targeted Dryad/Zenodo searches; this does not establish that no data exist elsewhere."
+  },
+  "interpretation_constraints": [
+    "2015 pollen-receipt response and 2016 supplementation interaction are different year/design endpoints; do not treat as a matched replicated within-year factor interaction",
+    "No study intervention independently randomized the number or quality of effective pollinator visits",
+    "2016 non-significant interaction is not proof of equivalent treatment effects or absence of pollen-source limitation",
+    "Seed output is female reproduction; no donor genetic paternity or male fitness was observed",
+    "Repeated flowers/stalks within neighbourhoods do not supply independent neighbourhood treatment replication",
+    "No measured late pollen quality or controlled visitor sequence in this study",
+    "No U6 V4 architecture admission or direct BALANCE L,K,Phi was measured"
+  ],
+  "source_text_access": "Publisher HTML read, doi resolved and article Results and Methods manually crosschecked; raw source bytes not locally archived.",
+  "claim_ceiling": "exact_original_publication_design_audit_not_new_biological_effect_estimate_or_reanalysis"
+}
