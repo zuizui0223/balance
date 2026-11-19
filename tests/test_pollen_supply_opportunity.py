@@ -5,6 +5,7 @@ import pytest
 
 from balance_domain.pollen_supply_opportunity import (
     build_synthetic_gate_and_order_scenarios,
+    build_closed_stock_parameter_sweep,
     service_gated_output,
     simulate_visitor_order,
 )
@@ -122,3 +123,15 @@ def test_no_biological_outcome_or_architecture_promotion():
     assert result["data_used_for_model_calibration"] is False
     assert result["empirical_fitness_or_paternity_inferred"] is False
     assert result["architecture_fitness_comparison_performed"] is False
+
+
+def test_fixed_81_scenario_grid_shows_model_only_order_reversal():
+    result = build_closed_stock_parameter_sweep()
+    assert result["parameter_combinations"] == 81
+    assert result["positive_delayed_advantage_if_thief_first"] == 81
+    assert result["negative_delayed_advantage_if_legitimate_first"] == 81
+    assert result["positive_thief_adjusted_triple_contrast"] == 81
+    assert result["minimum_thief_adjusted_triple_contrast"] == pytest.approx(0.25)
+    assert result["maximum_thief_adjusted_triple_contrast"] == pytest.approx(72.0)
+    assert result["empirical_studies_counted"] == 0
+    assert result["status"] == "ALL_SYNTHETIC_SAME_CLOSED_STOCK_MECHANISM"
