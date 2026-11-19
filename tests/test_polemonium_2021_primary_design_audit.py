@@ -55,6 +55,6 @@ def test_original_source_data_and_fitness_ceiling_are_explicit():
     assert d["source_text_access"].startswith("Publisher HTML read")
     assert any("No study intervention independently randomized" in x
                for x in d["interpretation_constraints"])
-    assert any("No donor genetic paternity" in x
+    assert any("no donor genetic paternity" in x.lower()
                for x in d["interpretation_constraints"])
     assert "not_new_biological_effect_estimate" in d["claim_ceiling"]
