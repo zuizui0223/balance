@@ -91,6 +91,10 @@ Again, +15 is synthetic, has no experimental uncertainty, and must not be interp
 
 A visitor's earlier legitimate service does not mean the entire pollen reservoir was exported, and a late thief cannot retroactively remove pollen that has already successfully left the source. Theft on a **recipient stigma** belongs to the third clock and is excluded from the donor-stock model.
 
+### Fixed-grid robustness — model-internal only
+
+A prospective 3×3×3×3 parameter grid tests three legitimate pickup fractions (0.1/0.3/0.6), three thief fractions (0.2/0.5/0.8), three delayed-release fractions (0.25/0.50/0.75), and three eventual transfer efficiencies (0.25/0.50/1.00). Within the *same closed-stock fractional-removal assumptions*, **81/81** scenarios favor delayed release when theft precedes both legitimate visits; **81/81** disfavor it when a legitimate visit precedes theft and the delayed release; **81/81** yield a positive sham-adjusted three-way export-proxy interaction (range **0.25–72** in the arbitrary 100-unit pollen scale). This is a deterministic grid, not 81 biological replicates, not 81 experiments, not a null distribution, and not evidence of ecological universality. All sign claims are conditional on model structure, not measured `K`, `Phi`, or genetic paternity.
+
 ## Registered empirical design to test the predictions, without changing V4
 
 **Experiment A: stock × service capacity.** Randomize independently replicated source-pollen reduction (intact/sham versus reduction) × experimentally controlled effective-visitor opportunity (low/high or prespecified quantitative exposure). Keep legitimate species/size, visit windows, donor age and handling comparable. Independently count donor pollen availability, visitor removal and recipient deposition. Hand pollination is a **separate saturation diagnostic**, not a substitute for controlling legitimate visitors. Randomize at a whole plant/enclosure/patch level where cross-treatment pollen movement otherwise causes interference; clustered flowers are not independent donor replicates.
