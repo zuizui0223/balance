@@ -114,3 +114,20 @@ def test_same_taxon_U3_prior_record_cannot_be_renamed_independent_evolution(tmp_
     path.write_text(json.dumps(orig), encoding="utf-8")
     with pytest.raises(ValueError, match="Same-taxon U3 dependence"):
         source_readout(path)
+
+
+def test_duration_range_violates_fixed_per_visit_pollen_pickup_as_transferable_parameter():
+    out = build_solanum_published_kinetics_audit()
+    nonlinear, mixed = (
+        out["published_model_predictions"][key][
+            "conditional_predictions_at_original_observed_trial_time_extrema"
+        ]
+        for key in ("original_nonlinear_fit", "bee_mixed_log_linear_fit")
+    )
+    assert [r["cumulative_buzz_seconds"] for r in nonlinear] == [0.542, 69.277]
+    assert nonlinear[0]["fraction_released"] == pytest.approx(0.0145274, abs=1e-6)
+    assert nonlinear[1]["fraction_released"] == pytest.approx(0.8459501, abs=1e-6)
+    assert mixed[0]["fraction_released"] == pytest.approx(0.0193229, abs=1e-6)
+    assert mixed[1]["fraction_released"] == pytest.approx(0.9174187, abs=1e-6)
+    assert nonlinear[0]["fraction_released"] < 0.3 < nonlinear[1]["fraction_released"]
+    assert mixed[0]["fraction_released"] < 0.3 < mixed[1]["fraction_released"]
