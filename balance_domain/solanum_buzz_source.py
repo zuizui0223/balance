@@ -116,6 +116,14 @@ def build_solanum_published_kinetics_audit(path: Path = SOURCE) -> dict:
             "source_fitted_available_pollen_A0": spec["A0"],
             "half_life_using_rounded_r_seconds": half_life,
             "paper_reported_half_life_seconds": spec["published_half_life"],
+            "conditional_predictions_at_original_observed_trial_time_extrema": [
+                pollen_release_curve(
+                    rate_per_buzz_second=spec["r"],
+                    cumulative_buzz_seconds=s["published_observations"][key],
+                    available_pollen_grains=spec["A0"],
+                )
+                for key in ("trial_buzz_seconds_min", "trial_buzz_seconds_max")
+            ],
             "predictions_at_prespecified_buzz_duration_seconds": [
                 pollen_release_curve(
                     rate_per_buzz_second=spec["r"],
