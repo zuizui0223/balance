@@ -1,0 +1,110 @@
+{
+  "schema_version": "BALANCE_SOLANUM_ROSTRATUM_2025_BEHAVIOR_POLLEN_SOURCE_V1",
+  "status": "PUBLISHED_MODEL_SOURCE_ONLY_NOT_RAW_DATA_REANALYSIS",
+  "publication": {
+    "authors": [
+      "Mario Vallejo-Marín",
+      "Anna Lundgren"
+    ],
+    "doi": "10.1111/1365-2435.70189",
+    "online_date": "2025-10-06",
+    "issue_citation": "Functional Ecology (2026) 40(2):476-485",
+    "title": "Gradual pollen release in a buzz-pollinated plant: Investigating pollen presentation theory under bee visitation",
+    "full_text_url": "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2435.70189"
+  },
+  "archive": {
+    "dryad_doi": "10.5061/dryad.kkwh70sh4",
+    "landing_url": "https://datadryad.org/dataset/doi:10.5061/dryad.kkwh70sh4",
+    "file_of_interest": "FE_bee_release_mdat_20250701.csv",
+    "published_date": "2025-09-22",
+    "source_columns_listed": [
+      "SampleID",
+      "buzz.number",
+      "cep.fund.frequency.median",
+      "start",
+      "stop",
+      "buzz.duration",
+      "visit.length",
+      "BeeID",
+      "Accession",
+      "flower.sample",
+      "mean.size",
+      "pollen.number",
+      "est.pollen"
+    ],
+    "source_file_bytes_retrieved": false,
+    "original_csv_independently_refitted": false,
+    "exact_flower_bee_trial_grain_unverified_until_original_csv_loaded": true
+  },
+  "biological_unit": {
+    "focal_plant": "Solanum rostratum",
+    "focal_pollinator": "Bombus terrestris",
+    "observed_floral_trials": 80,
+    "unique_bees": 13,
+    "bumblebee_colonies": 1,
+    "observed_buzzes": 2101,
+    "original_study_programmes": 1,
+    "dependence_note": "80 flower/trial outcomes are clustered within 13 bees from one colony; 2101 buzzes are not independent flowers, plants or evolved architectures"
+  },
+  "published_observations": {
+    "flower_pollen_control_mean": 423203,
+    "flower_pollen_control_sd": 129590,
+    "flower_pollen_control_n": 50,
+    "buzz_duration_mean_seconds": 0.748,
+    "buzz_duration_sd_seconds": 0.604,
+    "buzz_frequency_mean_hz": 340.79,
+    "buzz_frequency_sd_hz": 26.28,
+    "trial_buzz_seconds_mean": 19.635,
+    "trial_buzz_seconds_min": 0.542,
+    "trial_buzz_seconds_max": 69.277
+  },
+  "published_models": {
+    "model1": {
+      "original_label": "Model 1 (nonlinear exponential source-pollen availability)",
+      "rate_per_buzz_second": 0.027,
+      "available_pollen_grains": 403314,
+      "paper_reported_half_life_seconds": 25.2
+    },
+    "model2a": {
+      "original_label": "Model 2a (fixed control pollen production)",
+      "rate_per_buzz_second": 0.027,
+      "control_total_pollen_grains": 423203,
+      "available_fraction": 0.955
+    },
+    "model2b": {
+      "original_label": "Model 2b (fixed maximum observed pollen remaining)",
+      "rate_per_buzz_second": 0.027,
+      "assumed_pollen_grains": 752568,
+      "available_fraction": 0.537
+    },
+    "bee_mixed": {
+      "original_label": "Log-linear mixed model with (1|BeeID)",
+      "rate_per_buzz_second": 0.036,
+      "table1_available_pollen_grains": 352284,
+      "results_prose_available_pollen_grains": 352384,
+      "paper_reported_half_life_seconds": 19.2,
+      "prose_table_difference_grains": 100,
+      "transcription_note": "Published table 1 shows A0=352,284, while section 3.3 prose shows 352,384; the source discrepancy remains unresolved; no raw input is available in this audit to adjudicate"
+    }
+  },
+  "biological_inference_boundaries": {
+    "experiment_measured": "exposure-dependent anther pollen remaining versus cumulative real bee buzz duration",
+    "no_reproductive_paternity_data": true,
+    "no_matched_visitor_thief_order": true,
+    "no_male_genetic_paternity": true,
+    "no_plant_structural_alternative_cost": true,
+    "no_relative_late_cohort_siring_q": true,
+    "not_independent_evolutionary_lineage_from_prior_U3_S_rostratum": true,
+    "source_already_in_BALANCE_U3_matched_taxon": true,
+    "belongs_to": "INDEPENDENT_PRIMARY_RESEARCH_PROGRAMME_BUT_SAME_SPECIES_DEPENDENCE_BLOCK",
+    "source_only_claim_ceiling": "published_buzz_behavior_to_pollen_export_kinetics_not_BALANCE_V4_effect_or_architecture_value"
+  },
+  "source_model_limitations": [
+    "r and A0 are fitted by original authors; the audit re-expresses the published model and does not re-fit them",
+    "Published rates are rounded to three decimal places, so derived half-life differs slightly from reported author half-life",
+    "The bee mixed model Table 1 and Results prose differ in A0 by 100 pollen grains; neither value silently overwrites the other",
+    "Bee buzzing frequency or acoustic duration does not itself measure vibration amplitude transmitted to anthers",
+    "All bees came from one colony; inter-colony generality not identified",
+    "Pollen removed from anthers is not equivalent to successful stigma deposition or genotype-verified siring"
+  ]
+}
