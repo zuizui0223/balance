@@ -171,3 +171,13 @@ def test_cannot_silently_assign_independent_2024_paternity(tmp_path):
     wrong.write_text(json.dumps(d), encoding="utf-8")
     with pytest.raises(ValueError, match="promoted to fitness"):
         validate_publication_receipt(wrong)
+
+
+def test_documented_dryad_ERGU_alias_is_treated_as_MIGU_same_species(tmp_path):
+    rows = sample_rows()
+    rows[4][2] = "ERGU"
+    rows[5][2] = "MIGU"
+    # Both records must refer to the same bee's assigned Erythranthe taxon.
+    report = load_original_paired_csv(write(tmp_path, rows=rows))
+    assert report["paired_bee_trial_count"] == 3
+    assert "MIGU" in {x["species_code"] for x in report["species_results"]}
