@@ -1,0 +1,192 @@
+{
+  "schema_version": "BALANCE_SOLANUM_MECHANICAL_GATE_SOURCE_LADDER_V1",
+  "status": "ORIGINAL_PUBLISHED_RESULTS_TRANSCRIPTION_NOT_ORIGINAL_DATA_REFIT",
+  "generated_date": "2026-11-20",
+  "studies": [
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "title": "Anther cones increase pollen release in buzz-pollinated Solanum flowers",
+      "doi": "10.1111/evo.14485",
+      "publication_year": 2022,
+      "article_url": "https://onlinelibrary.wiley.com/doi/full/10.1111/evo.14485",
+      "archive_doi": "10.5061/dryad.s1rn8pk9p",
+      "intervention": "EXPERIMENTALLY_JOINED_VS_FREE_ANTHERS_SAME_FLOWER_RANDOM_ORDER",
+      "grain_note": "240 buzz measurements across 3 species with repeated paired flowers; individual/flower/accession clustered in original model",
+      "n_buzz_measurements": 240,
+      "n_independent_research_programmes": 1,
+      "n_separate_evolutionary_transitions": 0,
+      "phenotypes": "nonfocal anther velocity in mm/s; source pollen released per buzz in grain-equivalents/sqrt grain model"
+    },
+    {
+      "programme": "SOLANUM_BUZZ_DURATION_2025",
+      "title": "Gradual pollen release in a buzz-pollinated plant: Investigating pollen presentation theory under bee visitation",
+      "doi": "10.1111/1365-2435.70189",
+      "publication_year": 2025,
+      "online_date": "2025-10-06",
+      "article_url": "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2435.70189",
+      "archive_doi": "10.5061/dryad.kkwh70sh4",
+      "intervention": "OBSERVED_REAL_BEE_BUZZ_DURATION_NOT_RANDOMIZED_VISIT_ORDER",
+      "grain_note": "80 flower-trial bouts nested in 13 bees from one colony; 2101 buzzes are not independent flowers",
+      "n_flower_trials": 80,
+      "n_bees": 13,
+      "n_colonies": 1,
+      "n_buzz_measurements": 2101,
+      "n_independent_research_programmes": 1,
+      "n_separate_evolutionary_transitions": 0,
+      "phenotypes": "source pollen remaining versus cumulative buzzing seconds"
+    },
+    {
+      "programme": "SOLANUM_VIBRATION_SPECTRUM_2026",
+      "title": "Pollen release during buzz pollination depends on vibration amplitude and floral vibration transmission, but not on spectral composition",
+      "doi": "10.1242/jeb.253005",
+      "publication_year": 2026,
+      "online_date": "2026-08-28",
+      "article_url": "https://pubmed.ncbi.nlm.nih.gov/42560029/",
+      "archive_doi": "10.5061/dryad.wstqjq328",
+      "intervention": "ARTIFICIAL_BUZZ_INPUT_RMS_3_LEVELS_X_HARMONICS_0_2_4_AT_300_HZ",
+      "grain_note": "flower sample and plant/accession identifiers defined in archived dataset; actual sample size and unique plants not verified in this source-only audit",
+      "n_independent_research_programmes": 1,
+      "n_separate_evolutionary_transitions": 0,
+      "phenotypes": "shaker input RMS and distal-anther acceleration RMS (m s-2) versus pollen proportion removed"
+    }
+  ],
+  "source_records": [
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "species": "Solanum elaeagnifolium",
+      "stage": "FLOWER_ARCHITECTURE_TO_DISTAL_RMS_VELOCITY",
+      "architecture_baseline": "LOOSE_ANTHERS",
+      "intervention": "JOINED_VS_FREE",
+      "outcome": "DISTAL_RMS_VELOCITY_MM_S",
+      "direction": "SIGNIFICANT_POSITIVE",
+      "estimated_contrast": 110.047,
+      "contrast_se": 8.93,
+      "p_report": "p<0.0001",
+      "numeric_basis": "Table2: joined=63.273 plus elaeagnifolium×joined=46.774; published within-species EMM +110.0 ±8.93 mm/s"
+    },
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "species": "Solanum sisymbriifolium",
+      "stage": "FLOWER_ARCHITECTURE_TO_DISTAL_RMS_VELOCITY",
+      "architecture_baseline": "LOOSE_ANTHERS",
+      "intervention": "JOINED_VS_FREE",
+      "outcome": "DISTAL_RMS_VELOCITY_MM_S",
+      "direction": "SIGNIFICANT_POSITIVE",
+      "estimated_contrast": 116.419,
+      "contrast_se": 6.88,
+      "p_report": "p<0.0001",
+      "numeric_basis": "Table2: joined=63.273 plus sisymbriifolium×joined=53.146; published within-species EMM +116.4 ±6.88 mm/s"
+    },
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "species": "Solanum pyracanthos",
+      "stage": "FLOWER_ARCHITECTURE_TO_DISTAL_RMS_VELOCITY",
+      "architecture_baseline": "NATURALLY_COMPACT_UNJOINED",
+      "intervention": "JOINED_VS_FREE",
+      "outcome": "DISTAL_RMS_VELOCITY_MM_S",
+      "direction": "SIGNIFICANT_POSITIVE",
+      "estimated_contrast": 63.273,
+      "contrast_se": 8.58,
+      "p_report": "p<0.0001",
+      "numeric_basis": "Table2 reference joined coefficient 63.273; source EMM +63.3 ±8.58 mm/s"
+    },
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "species": "Solanum elaeagnifolium",
+      "stage": "FLOWER_ARCHITECTURE_TO_SOURCE_POLLEN_RELEASE",
+      "architecture_baseline": "LOOSE_ANTHERS",
+      "intervention": "JOINED_VS_FREE",
+      "outcome": "SQRT_POLLEN_GRAINS_PER_BUZZ",
+      "direction": "SIGNIFICANT_POSITIVE",
+      "estimated_contrast": 48.213,
+      "contrast_se": 9.38,
+      "p_report": "p<0.0001",
+      "numeric_basis": "Table3: joined effect -12.332 plus elaeagnifolium×joined=60.545; source EMM +48.2 ±9.38 sqrt grains; approx 1,500-2,300 extra grains in loose species reported as combined prose range"
+    },
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "species": "Solanum sisymbriifolium",
+      "stage": "FLOWER_ARCHITECTURE_TO_SOURCE_POLLEN_RELEASE",
+      "architecture_baseline": "LOOSE_ANTHERS",
+      "intervention": "JOINED_VS_FREE",
+      "outcome": "SQRT_POLLEN_GRAINS_PER_BUZZ",
+      "direction": "SIGNIFICANT_POSITIVE",
+      "estimated_contrast": 38.313,
+      "contrast_se": 7.18,
+      "p_report": "p<0.0001",
+      "numeric_basis": "Table3: joined effect -12.332 plus sisymbriifolium×joined=50.645; source EMM +38.3 ±7.18 sqrt grains"
+    },
+    {
+      "programme": "SOLANUM_ANTHER_CONE_2022",
+      "species": "Solanum pyracanthos",
+      "stage": "FLOWER_ARCHITECTURE_TO_SOURCE_POLLEN_RELEASE",
+      "architecture_baseline": "NATURALLY_COMPACT_UNJOINED",
+      "intervention": "JOINED_VS_FREE",
+      "outcome": "SQRT_POLLEN_GRAINS_PER_BUZZ",
+      "direction": "NO_STATISTICALLY_DETECTED_CHANGE",
+      "estimated_contrast": -12.332,
+      "contrast_se": 8.915,
+      "p_report": "p=0.169",
+      "numeric_basis": "Table3 joined coefficient -12.332 ±8.915; source prose states free-minus-joined 12.3 ±8.91 sqrt grains. Neither a significant loss nor biological equivalence was established"
+    },
+    {
+      "programme": "SOLANUM_BUZZ_DURATION_2025",
+      "species": "Solanum rostratum",
+      "stage": "BEE_BUZZ_TIME_TO_SOURCE_POLLEN_LOSS",
+      "intervention": "OBSERVED_BEE_CUMULATIVE_BUZZ_TIME",
+      "outcome": "FITTED_RATE_PER_BUZZ_SECOND",
+      "direction": "POSITIVE_PHYSICAL_RELEASE_RATE",
+      "published_rate_range": [
+        0.027,
+        0.036
+      ],
+      "grain_note": "80 flower trials, 13 bee IDs one colony; re-expression of published models not refit"
+    },
+    {
+      "programme": "SOLANUM_VIBRATION_SPECTRUM_2026",
+      "species": "Solanum pyracanthos",
+      "stage": "CONTROLLED_INPUT_AMPLITUDE_TO_SOURCE_POLLEN_RELEASE",
+      "intervention": "3_RMS_LEVELS_HARMONIC_CONTROL",
+      "outcome": "FRACTION_POLLEN_REMOVED",
+      "direction": "POSITIVE_AMPLITUDE_EFFECT",
+      "numeric_effect_estimate": null,
+      "p_report": "qualitative original publication abstract: strong amplitude association; no numerical contrast extracted",
+      "grain_note": "3 input RMS levels and three harmonic levels"
+    },
+    {
+      "programme": "SOLANUM_VIBRATION_SPECTRUM_2026",
+      "species": "Solanum pyracanthos",
+      "stage": "HARMONIC_CONTENT_TO_SOURCE_POLLEN_RELEASE",
+      "intervention": "0_2_4_HARMONICS_FIXED_300_HZ_AMPLITUDE_CONTROL",
+      "outcome": "FRACTION_POLLEN_REMOVED",
+      "direction": "NO_DETECTED_HARMONIC_EFFECT",
+      "numeric_effect_estimate": null,
+      "p_report": "qualitative original publication abstract; not equivalence or zero effect"
+    },
+    {
+      "programme": "SOLANUM_VIBRATION_SPECTRUM_2026",
+      "species": "Solanum pyracanthos",
+      "stage": "INPUT_VIBRATION_TO_DISTAL_ANTHER_VIBRATION",
+      "intervention": "INPUT_VIBRATION_RMS_3_LEVELS",
+      "outcome": "DISTAL_ANTHER_RMS_ACCELERATION_MS2",
+      "direction": "WEAK_INPUT_DISTAL_CORRELATION",
+      "numeric_effect_estimate": null,
+      "p_report": "original publication abstract describes weak correlation; cannot infer mediation coefficient"
+    }
+  ],
+  "dependency_contract": {
+    "three_study_programmes_separate_publications_but_shared_authors": true,
+    "solanum_pyracanthos_appears_in_both_2022_and_2026": true,
+    "solanum_rostratum_already_in_frozen_BALANCE_U3": true,
+    "papers_not_independent_evolutionary_transitions": true,
+    "total_distinct_species_four": true,
+    "no_multinomial_architecture_outcomes_used": true,
+    "no_genetic_paternity_or_architecture_cost_measured": true,
+    "do_not_pool_2022_RMS_velocity_mm_s_with_2026_RMS_acceleration_m_s2": true,
+    "do_not_use_2022_NULL_as_zero_effect_or_equivalence": true,
+    "do_not_multiply_2022_and_2026_source_coefficients_into_mediation_estimate": true,
+    "numerical_2026_contrast_unavailable_from_abstract": true,
+    "no_2026_raw_csv_retrieved_in_this_audit": true,
+    "inferential_ceiling": "proximal_vibration_transmission_and_pollen_release_source_heterogeneity_not_biological_L_K_Phi_or_paternity"
+  }
+}
