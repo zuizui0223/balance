@@ -63,6 +63,16 @@ The more source-consistent mechanical operation is `alpha(B)=1-exp(-r*B)` for cu
 
 Scientific synthesis worth pursuing: the **temporal control of pollen availability has two mechanistically separable clocks** — plant-scheduled dehiscence and bee-induced vibration exposure — with no proof that they have equivalent effects on realized male reproductive fitness. A controlled experiment must vary both clocks and independently track donor pollen availability, recipient stigma deposition and genotype-verified male paternity.
 
+## Independent prior-study link to BALANCE's focal `Pedicularis` programme
+
+An additional original empirical research programme addresses pollen removal as a function of **visitor activity time** rather than just visit counts:
+
+Harder (1990), *Ecology* 71:1110–1125, [doi:10.2307/1937379](https://doi.org/10.2307/1937379), sampled six plant species: *Aconitum delphinifolium*, *Aralia hispida*, *Lupinus sericeus*, *Mertensia paniculata*, ***Pedicularis bracteosa*** and ***P. contorta***. The original published abstract reports that, within species, pollen removed increased with visit duration and did not additionally depend on the number of visits; subsequent removal was often a declining proportion of remaining pollen. Thus **visitor active exposure and remaining donor stock** are relevant to the same source-pollen stage in a separate study from *Solanum*. The six species share one research programme, not six independent published experiments or six evolutionary origins.
+
+The 2025/2026 *Solanum* research tightens the measured behavioral clock from generic visit duration to **actual summed vibration/buzzing seconds**. The original study also reports `total buzzing time ∝ visit duration^0.828` (p<0.001), so whole-visit duration does not map one-to-one onto the mechanically active behavior. Cross-study inference is therefore **qualitative only**: this is more evidence that *visit count alone* is a poor general currency for anther pollen removal, with mechanisms varying among bee–flower systems.
+
+Neither original study supplies a matched donor genetic-paternity contrast or direct structural cost. The *Pedicularis* records are independently relevant to the BALANCE focal species programme, but **should not be imported as a fitted `L,K,Phi` or as a new independent U2/U6 V4 architecture result**. Numeric species-specific visitor rates quoted in the 2025 paper for Harder 1990 Table 2 were not directly verified from the original 1990 full table in this audit, so **they are not reproduced or pooled here**.
+
 ## Reproduction, input and output constraints
 
 ```bash
