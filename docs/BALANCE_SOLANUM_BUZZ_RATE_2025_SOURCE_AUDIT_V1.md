@@ -41,6 +41,19 @@ The 0.748-second calculations describe a **hypothetical buzz of exactly mean len
 
 Actual pollen removal may depend on amplitude, coupling, bee behaviour and current accessibility; the authors noted acoustic signals do **not directly measure vibration amplitude transmitted to the anther**. The single-colony design cannot establish cross-colony invariance of the release law.
 
+### Critical portability check: a constant removal fraction per *visit* is inadequate
+
+The observed **total buzzing duration per flower trial** ranged from **0.542 to 69.277 seconds**. Inserting those two original observed times into the *authors' published conditional source-release functions* yields:
+
+| Fitted function | Conditional release at 0.542 seconds | Conditional release at 69.277 seconds |
+|---|---:|---:|
+| Nonlinear `r=0.027` | 1.45% of initially available donor pollen | 84.60% |
+| Bee-intercept `r=0.036` | 1.93% | 91.74% |
+
+These are **conditional fitted-model predictions at two observed trial times**, *not actual minimum and maximum removal outcomes*, not observed per-visit means and not evidence that the original model predicts every bee equally accurately. Nevertheless, the original study's observed duration support covers a large variation in cumulative sonication, so the `alpha=0.3` fixed-proportional visit model used in BALANCE PR #274 as a **toy scenario** is not a portable description of these trials.
+
+The more source-consistent mechanical operation is `alpha(B)=1-exp(-r*B)` for cumulative buzzing time `B`, conditional on the original published r and available pollen `A0`. This does **not** identify the quality-weighted late contribution `q` or plant genetic paternity. Buzz events and bee visitation numbers have different biological and statistical denominators.
+
 ## Relation to Clarkia and BALANCE mechanisms
 
 - [Kay et al. (2020)](https://doi.org/10.1098/rspb.2020.2593) on *Clarkia* (BALANCE PR #275) provides **anther developmental schedule / morphological manipulation** and bee pollen transport observations, but neither an independent thief-before/after randomized visit order nor genotype-verified paternal fitness. Raw Dryad CSV acquisition is currently blocked by public API 401 and file-stream 403; source-manifest's listed greenhouse CSV is missing.
