@@ -1,0 +1,51 @@
+name: Audit public Clarkia Kay-2020 Dryad source access
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/audit-clarkia-kay2020-dryad.yml"
+      - "data/BALANCE_CLARKIA_KAY2020_DRYAD_RECEIPT_V1.json"
+      - "scripts/audit_clarkia_kay2020_dryad.py"
+      - "tests/test_clarkia_kay2020_dryad_source_access.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dryad-source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Attempt official public Dryad API fetch and inspect source schemas
+        run: |
+          python scripts/audit_clarkia_kay2020_dryad.py --download --json-out "${RUNNER_TEMP}/clarkia-source-access.json"
+      - name: Report downstream analysis HOLD distinctly from CI success
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          p = Path(os.environ["RUNNER_TEMP"]) / "clarkia-source-access.json"
+          report = json.loads(p.read_text())
+          for f in report["files"]:
+              print(f"{f['filename']}: {f['status']}; rows={f.get('rows')}")
+          if not report["greenhouse_export_original_raw_csv_retrievable"]:
+              print("::warning::HOLD: greenhouse BombusTrials2018.csv is absent from public Dryad file list. Do NOT infer greenhouse treatment effects from code alone.")
+          if not report["field_visit_and_seed_files_retrievable"]:
+              print("::warning::HOLD: field visitation and seed microdata could not both be retrieved. No plant-level analysis performed.")
+          else:
+              print("Field source files are present, but exact join keys and original R code still require separate verification. No join and no effect fit performed.")
+          assert report["raw_observation_effect_refits_performed"] == 0
+          assert report["experiment_year_cross_join"] == "PROHIBITED"
+          PY
+      - name: Save metadata-only retrieval receipt (never raw records)
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-clarkia-dryad-source-access
+          path: ${{ runner.temp }}/clarkia-source-access.json
+          retention-days: 14
