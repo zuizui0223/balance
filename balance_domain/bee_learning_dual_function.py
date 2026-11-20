@@ -185,6 +185,10 @@ def load_original_paired_csv(csv_path: Path) -> dict:
         bee = row["BeeID"].strip()
         colony = row["ColonyID"].strip()
         species = row["Species"].strip().upper()
+        # The public README gives Erythranthe guttata as ERGU/MIGU;
+        # normalize only that exact documented synonym, not an arbitrary taxon.
+        if species == "ERGU":
+            species = "MIGU"
         treatment = row["Treatment"].strip().casefold().replace("ï", "i")
         if not bee or not colony or species not in allowed_species:
             raise ValueError(f"line {line} unidentifiable bee/colony/species")
