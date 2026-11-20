@@ -95,7 +95,8 @@
       "bee_corbicula_mg_no_dosing": 6.5,
       "corbicula_test": "F(1,25)=0.01, p=0.923",
       "male_genetic_paternity_measured": false,
-      "random_thief_vs_legitimate_order": false
+      "random_thief_vs_legitimate_order": false,
+      "late_pollen_realized_efficacy_q_measured": false
     },
     "field_2017": {
       "species": "Clarkia unguiculata",
