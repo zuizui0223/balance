@@ -53,6 +53,7 @@ def source_receipts(path: Path = SOURCE) -> dict:
     required_true = (
         "solanum_pyracanthos_appears_in_both_2022_and_2026",
         "solanum_rostratum_already_in_frozen_BALANCE_U3",
+        "total_distinct_species_four",
         "papers_not_independent_evolutionary_transitions",
         "no_multinomial_architecture_outcomes_used",
         "no_genetic_paternity_or_architecture_cost_measured",
@@ -176,7 +177,7 @@ def build_solanum_mechanical_gate_evidence(path: Path = SOURCE) -> dict:
         "analysis": "BALANCE_SOLANUM_PROXIMAL_MECHANICAL_GATE_V1",
         "status": "SOURCE_REPORTED_EFFECTS_ONLY_NOT_RAW_DATA_FITS",
         "study_programmes": len(src["studies"]),
-        "species_distinct": src["dependency_contract"]["total_distinct_species_four"],
+        "species_distinct": len({r["species"] for r in rows}),
         "original_2022_treatment_stage_comparisons": pairs,
         "original_2022_species_with_positive_distal_velocity": mechanical_count,
         "original_2022_species_with_detected_pollen_release_gain": functional_count,
