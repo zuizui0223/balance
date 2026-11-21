@@ -1,0 +1,358 @@
+{
+  "status": "VERIFIED_PUBLISHER_SUPPLEMENTS_BEE_TRIAL_DESCRIPTIVES",
+  "provenance": {
+    "doi": "10.1007/s00442-022-05246-0",
+    "files": {
+      "442_2022_5246_MOESM2_ESM.r": {
+        "url": "https://static-content.springer.com/esm/art%3A10.1007%2Fs00442-022-05246-0/MediaObjects/442_2022_5246_MOESM2_ESM.r",
+        "bytes": 29899,
+        "sha256": "b89d1a1cea198bed16284c55fc941c5c217ca0501de4e530165cd3839a0ea16c"
+      },
+      "442_2022_5246_MOESM3_ESM.csv": {
+        "url": "https://static-content.springer.com/esm/art%3A10.1007%2Fs00442-022-05246-0/MediaObjects/442_2022_5246_MOESM3_ESM.csv",
+        "bytes": 5292,
+        "sha256": "0d433ba471cc7c1cbcdc3ce4bf0fd8a599b04176b4e85c7425ab67fad6703c62"
+      }
+    }
+  },
+  "design": {
+    "bee_species": "Bombus impatiens",
+    "plant_species": "Solanum elaeagnifolium",
+    "recruited_bees": 67,
+    "basket_collecting_bees_in_archive": 60,
+    "unit": "one bee per trial; flower observations pooled within trial",
+    "treatment_mapping": {
+      "Sham": "free",
+      "Cone": "joined"
+    },
+    "assignment": "architecture alternated; head width observed"
+  },
+  "pooled": {
+    "n_bees": 60,
+    "n_colonies": 3,
+    "bees_by_colony": {
+      "Blue": 14,
+      "Orange": 18,
+      "Red": 28
+    },
+    "missing": {
+      "AntherPollen": 3,
+      "HeadWidth": 1
+    },
+    "descriptives": {
+      "HeadPollen": {
+        "n": 60,
+        "mean": 1088.7,
+        "se": 140.10383014157387
+      },
+      "ThoraxPollen": {
+        "n": 60,
+        "mean": 19298.833333333332,
+        "se": 1819.9854820564976
+      },
+      "AbdomenPollen": {
+        "n": 60,
+        "mean": 6636.5,
+        "se": 818.5649674474247
+      },
+      "CorbiculaPollen": {
+        "n": 60,
+        "mean": 186231,
+        "se": 13105.90031213138
+      },
+      "AntherPollen": {
+        "n": 57,
+        "mean": 319365.7894736842,
+        "se": 22695.053870218966
+      },
+      "StigmaPollen": {
+        "n": 60,
+        "mean": 3552.85,
+        "se": 611.1959910283709
+      },
+      "BodyPollen": {
+        "n": 60,
+        "mean": 27024.033333333333,
+        "se": 2541.2853262838644
+      },
+      "PollinatingPollen": {
+        "n": 60,
+        "mean": 30576.883333333335,
+        "se": 2627.4647251623933
+      },
+      "TotalPollen": {
+        "n": 60,
+        "mean": 216807.88333333333,
+        "se": 14317.086485128553
+      },
+      "body_only_fraction": {
+        "n": 60,
+        "mean": 0.1505563552549825,
+        "se": 0.015726669734426626
+      },
+      "composite_fraction": {
+        "n": 60,
+        "mean": 0.1700473561474835,
+        "se": 0.017847192837048317
+      },
+      "HeadWidth": {
+        "n": 59,
+        "mean": 3.469135016322034,
+        "se": 0.029392336350980798
+      },
+      "VisitTime": {
+        "n": 60,
+        "mean": 168.10185,
+        "se": 13.336010540553506
+      }
+    },
+    "support": {
+      "HeadWidth": {
+        "n": 59,
+        "min": 3.015350877,
+        "max": 3.983094928
+      },
+      "VisitTime": {
+        "n": 60,
+        "min": 40.24,
+        "max": 666.93
+      }
+    },
+    "model_eligible_bees": {
+      "anther": 57,
+      "basket": 59,
+      "composite_count": 59,
+      "composite_fraction": 59,
+      "stigma": 59,
+      "body_only_count": 59,
+      "body_only_fraction": 59
+    }
+  },
+  "by_architecture": {
+    "free": {
+      "n_bees": 28,
+      "n_colonies": 3,
+      "bees_by_colony": {
+        "Blue": 5,
+        "Orange": 9,
+        "Red": 14
+      },
+      "missing": {
+        "AntherPollen": 0,
+        "HeadWidth": 0
+      },
+      "descriptives": {
+        "HeadPollen": {
+          "n": 28,
+          "mean": 1340.5,
+          "se": 236.78181582815498
+        },
+        "ThoraxPollen": {
+          "n": 28,
+          "mean": 23921.321428571428,
+          "se": 3256.071864113061
+        },
+        "AbdomenPollen": {
+          "n": 28,
+          "mean": 8683,
+          "se": 1577.5730347258666
+        },
+        "CorbiculaPollen": {
+          "n": 28,
+          "mean": 211696.60714285713,
+          "se": 20452.053822516176
+        },
+        "AntherPollen": {
+          "n": 28,
+          "mean": 252900,
+          "se": 24095.201804508713
+        },
+        "StigmaPollen": {
+          "n": 28,
+          "mean": 3932.8928571428573,
+          "se": 1054.9151566216442
+        },
+        "BodyPollen": {
+          "n": 28,
+          "mean": 33944.82142857143,
+          "se": 4672.516910677264
+        },
+        "PollinatingPollen": {
+          "n": 28,
+          "mean": 37877.71428571428,
+          "se": 4817.280120449851
+        },
+        "TotalPollen": {
+          "n": 28,
+          "mean": 249574.32142857142,
+          "se": 22573.605075177707
+        },
+        "body_only_fraction": {
+          "n": 28,
+          "mean": 0.14603275552817144,
+          "se": 0.01702691815762481
+        },
+        "composite_fraction": {
+          "n": 28,
+          "mean": 0.16030168817271875,
+          "se": 0.01696838035384821
+        },
+        "HeadWidth": {
+          "n": 28,
+          "mean": 3.4519160671071427,
+          "se": 0.04463610520182727
+        },
+        "VisitTime": {
+          "n": 28,
+          "mean": 166.48942857142856,
+          "se": 17.356879291867433
+        }
+      },
+      "support": {
+        "HeadWidth": {
+          "n": 28,
+          "min": 3.015350877,
+          "max": 3.971391417
+        },
+        "VisitTime": {
+          "n": 28,
+          "min": 40.24,
+          "max": 382.99
+        }
+      },
+      "model_eligible_bees": {
+        "anther": 28,
+        "basket": 28,
+        "composite_count": 28,
+        "composite_fraction": 28,
+        "stigma": 28,
+        "body_only_count": 28,
+        "body_only_fraction": 28
+      }
+    },
+    "joined": {
+      "n_bees": 32,
+      "n_colonies": 3,
+      "bees_by_colony": {
+        "Blue": 9,
+        "Orange": 9,
+        "Red": 14
+      },
+      "missing": {
+        "AntherPollen": 3,
+        "HeadWidth": 1
+      },
+      "descriptives": {
+        "HeadPollen": {
+          "n": 32,
+          "mean": 868.375,
+          "se": 154.80434288679663
+        },
+        "ThoraxPollen": {
+          "n": 32,
+          "mean": 15254.15625,
+          "se": 1615.4513551530033
+        },
+        "AbdomenPollen": {
+          "n": 32,
+          "mean": 4845.8125,
+          "se": 522.2939253240876
+        },
+        "CorbiculaPollen": {
+          "n": 32,
+          "mean": 163948.59375,
+          "se": 16120.015701338818
+        },
+        "AntherPollen": {
+          "n": 29,
+          "mean": 383539.6551724138,
+          "se": 34420.70824774734
+        },
+        "StigmaPollen": {
+          "n": 32,
+          "mean": 3220.3125,
+          "se": 690.8897612299512
+        },
+        "BodyPollen": {
+          "n": 32,
+          "mean": 20968.34375,
+          "se": 1967.9565782736452
+        },
+        "PollinatingPollen": {
+          "n": 32,
+          "mean": 24188.65625,
+          "se": 2032.1015002398292
+        },
+        "TotalPollen": {
+          "n": 32,
+          "mean": 188137.25,
+          "se": 16920.90009712173
+        },
+        "body_only_fraction": {
+          "n": 32,
+          "mean": 0.1545145050159422,
+          "se": 0.025701662697452755
+        },
+        "composite_fraction": {
+          "n": 32,
+          "mean": 0.17857481562540267,
+          "se": 0.030202785108207585
+        },
+        "HeadWidth": {
+          "n": 31,
+          "mean": 3.4846876156129034,
+          "se": 0.039271007910298694
+        },
+        "VisitTime": {
+          "n": 32,
+          "mean": 169.51271875,
+          "se": 20.123010835136895
+        }
+      },
+      "support": {
+        "HeadWidth": {
+          "n": 31,
+          "min": 3.027192982,
+          "max": 3.983094928
+        },
+        "VisitTime": {
+          "n": 32,
+          "min": 67.12,
+          "max": 666.93
+        }
+      },
+      "model_eligible_bees": {
+        "anther": 29,
+        "basket": 31,
+        "composite_count": 31,
+        "composite_fraction": 31,
+        "stigma": 31,
+        "body_only_count": 31,
+        "body_only_fraction": 31
+      }
+    }
+  },
+  "identity_checks": {
+    "rows_checked": 60,
+    "components": {
+      "BodyPollen": [
+        "HeadPollen",
+        "ThoraxPollen",
+        "AbdomenPollen"
+      ],
+      "PollinatingPollen": [
+        "BodyPollen",
+        "StigmaPollen"
+      ],
+      "TotalPollen": [
+        "PollinatingPollen",
+        "CorbiculaPollen"
+      ]
+    }
+  },
+  "descriptive_unit": "One value per bee; SE is the sample SD divided by sqrt(n), without colony adjustment.",
+  "fraction_definitions": {
+    "body_only_fraction": "BodyPollen / (BodyPollen + CorbiculaPollen)",
+    "composite_fraction": "PollinatingPollen / TotalPollen"
+  }
+}
