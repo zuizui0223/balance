@@ -1,9 +1,6 @@
-"""Published Mayberry 2024 dual-function results, with optional original CSV.
+"""Report published Mayberry 2024 results with optional paired CSV diagnostics.
 
-By default, this script reproduces source-reported summary claims ONLY.
-Original row-level paired description runs ONLY with an explicit --csv
-pointing to an actual locally available Dryad file. No file is downloaded
-or fabricated, and synthetic test records are not used here.
+Only bytes matching the archived Dryad file qualify as original trial data.
 """
 from __future__ import annotations
 
@@ -19,16 +16,17 @@ from balance_domain.bee_learning_dual_function import (
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--csv", type=Path, help="Real original Dryad summary CSV, when available"
+        "--csv", type=Path, help="Local trial summary CSV to compare with the Dryad archive"
     )
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
+    trial_analysis = load_original_paired_csv(args.csv) if args.csv else None
+    verified = trial_analysis is not None and trial_analysis["provenance"]["verified_original"]
     output = {
         "published_original_source": published_dual_function_audit(),
-        "real_original_csv_supplied": bool(args.csv),
-        "raw_trial_analysis": (
-            load_original_paired_csv(args.csv) if args.csv else None
-        ),
+        "real_original_csv_supplied": verified,
+        "raw_trial_analysis": trial_analysis if verified else None,
+        "candidate_trial_analysis": None if verified else trial_analysis,
     }
     text = json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2)
     print(text)

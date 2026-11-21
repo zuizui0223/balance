@@ -1,8 +1,8 @@
-"""Published bee-learning dual-function source audit + optional *real CSV* paired diagnostics.
+"""Published bee-learning audit and provenance-checked paired CSV diagnostics.
 
-The published source results are not re-estimated unless the actual original
-Dryad summary CSV is supplied explicitly as --csv. Synthetic test fixtures
-are never counted as empirical results. Trial is repeated within BeeID, nested
+The reported statistics are transcribed from the paper. Descriptive contrasts
+computed from a local CSV carry a separate indication of whether the supplied
+bytes match the archived Dryad file. Trial is repeated within BeeID, nested
 in ColonyID; no flower-level or visit-level pseudo-replication is allowed.
 
 The original sequence was always NAIVE then EXPERIENCED ~24 hours later, so
@@ -10,8 +10,10 @@ paired descriptive differences are not randomized learning causality.
 """
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 import csv
+from hashlib import sha256
+from io import StringIO
 import json
 from math import isfinite, log1p
 from pathlib import Path
@@ -23,6 +25,31 @@ SOURCE = (
 )
 STUDY_DOI = "10.1093/beheco/arae083"
 DATA_DOI = "10.5061/dryad.gtht76hwk"
+# Archive metadata published at https://datadryad.org/api/v2/files/3536167.
+DRYAD_IDENTITY = {
+    "primary_file_id": 3536167,
+    "primary_version_id": 321573,
+    "primary_file": "AnalysisData_All-Trials-Summary-Data_20_8-4-2024.csv",
+    "primary_file_size_bytes": 27774,
+    "primary_file_sha256": "4abb4300cfe5202058dd51003c5910e65c8c6cb774cd8b8100e8d5563b1433cb",
+}
+REQUIRED_CLAIM_CEILINGS = {
+    "species_specific_percent_changes_are_point_estimates",
+    "overall_stigma_nonsignificance_does_not_establish_equivalence",
+    "species_by_experience_interaction_is_a_real_published_positive_statistical_result",
+    "not_a_randomized_learning_vs_aging_sequence",
+    "same_bee_repeated_trials_and_colony_clustering_required",
+    "no_genetically_assigned_donor_paternity",
+    "stigma_deposition_proxy_not_measured_female_seed_fitness",
+    "pollen_basket_collection_not_equivalent_to_complete_pollen_loss",
+    "same_species_S_elaeagnifolium_in_2022_anther_joining_study",
+    "cross_paper_mediation_in_same_taxon_not_identified",
+    "not_independent_four_evolutionary_origins",
+    "U2_U6_V4_admissions_unchanged",
+    "title_words_do_not_substitute_for_reported_interaction",
+    "no_new_effect_or_p_value_estimated",
+}
+MISSING_IDS = {"", "na", "n/a", "nan", "null", "none"}
 ESSENTIAL_COLUMNS = (
     "BeeID", "ColonyID", "Species", "Treatment", "NumVisits",
     "CorbPolperVis", "StigPolperVis",
@@ -82,10 +109,20 @@ def validate_publication_receipt(path: Path = SOURCE) -> dict:
         ] != 0.00005
     ):
         raise ValueError("Original paper global/interaction results changed")
-    if source["archived_data"]["raw_csv_retrieved"] is not False:
-        raise ValueError("Publication-only source archive cannot claim raw retrieval")
-    ceiling = source["source_claim_ceiling"]
-    if not all(ceiling.values()):
+    archive = source["archived_data"]
+    if any(archive.get(key) != expected for key, expected in DRYAD_IDENTITY.items()):
+        raise ValueError("Dryad file identity differs from the published archive metadata")
+    if (
+        archive.get("raw_csv_retrieved") is not False
+        or archive.get("original_trial_data_refitted") is not False
+    ):
+        raise ValueError("Publication-only source archive cannot claim raw retrieval or refit")
+    ceiling = source.get("source_claim_ceiling")
+    if (
+        not isinstance(ceiling, dict)
+        or not REQUIRED_CLAIM_CEILINGS.issubset(ceiling)
+        or any(value is not True for value in ceiling.values())
+    ):
         raise ValueError("This source cannot be promoted to fitness or V4 evidence")
     return source
 
@@ -106,7 +143,8 @@ def published_dual_function_audit(path: Path = SOURCE) -> dict:
             "published_stigma_percent_change": s[
                 "stigma_deposition_percent_experienced_vs_naive"
             ],
-            "species_specific_effect_has_individual_significance": "UNRESOLVED",
+            "published_stigma_species_contrast": "REPORTED_NONSIGNIFICANT",
+            "published_collection_species_contrast": "NOT_REPORTED",
         }
         for s in species
     ]
@@ -142,6 +180,12 @@ def published_dual_function_audit(path: Path = SOURCE) -> dict:
         "published_routine_by_species_by_experience_stigma_p": p[
             "modified_motor_routine"
         ]["stigmatic_deposition_species_experience_routine_p"],
+        "published_stigma_experience_term_scope": p[
+            "stigmatic_deposition_experience"
+        ]["experience_term_scope"],
+        "published_source_statistic_discrepancy": p[
+            "modified_motor_routine"
+        ]["stigmatic_deposition_main_discrepancy"],
         "species_source_point_estimates": effects,
         "within_bee_24h_experience_order_not_randomized": True,
         "stigma_pollination_not_seed_fitness": True,
@@ -166,16 +210,23 @@ def _nonnegative_number(value: str, *, field: str, line: int) -> float:
 
 
 def load_original_paired_csv(csv_path: Path) -> dict:
-    """Read only an explicitly supplied original-file path, never auto-fetch."""
+    """Compute paired diagnostics and identify the supplied bytes against Dryad."""
     if not csv_path.is_file():
         raise FileNotFoundError(
             "Original Dryad CSV not locally supplied; cannot run raw paired analysis"
         )
-    with csv_path.open(encoding="utf-8-sig", newline="") as fh:
+    # Hash and parse one snapshot, even if the path is replaced during the audit.
+    contents = csv_path.read_bytes()
+    digest = sha256(contents).hexdigest()
+    verified = (
+        digest == DRYAD_IDENTITY["primary_file_sha256"]
+        and len(contents) == DRYAD_IDENTITY["primary_file_size_bytes"]
+    )
+    with StringIO(contents.decode("utf-8-sig"), newline="") as fh:
         reader = csv.DictReader(fh)
         header = reader.fieldnames or []
         if len(header) != len(set(header)) or not set(ESSENTIAL_COLUMNS) <= set(header):
-            raise ValueError("Real CSV is missing canonical bee/colony/two-function columns")
+            raise ValueError("CSV is missing canonical bee/colony/two-function columns")
         data = list(reader)
     if not data or any(None in row or None in row.values() for row in data):
         raise ValueError("Empty or ragged CSV")
@@ -190,12 +241,16 @@ def load_original_paired_csv(csv_path: Path) -> dict:
         if species == "ERGU":
             species = "MIGU"
         treatment = row["Treatment"].strip().casefold().replace("ï", "i")
-        if not bee or not colony or species not in allowed_species:
+        if (
+            bee.casefold() in MISSING_IDS
+            or colony.casefold() in MISSING_IDS
+            or species not in allowed_species
+        ):
             raise ValueError(f"line {line} unidentifiable bee/colony/species")
         if treatment not in {"naive", "experienced"}:
             raise ValueError(f"line {line} invalid or missing experience treatment")
         n = _nonnegative_number(row["NumVisits"], field="NumVisits", line=line)
-        if n < 1 or int(n) != n:
+        if not 1 <= n <= 70 or not n.is_integer():
             raise ValueError(f"line {line} invalid number of flower visits")
         basket = _nonnegative_number(
             row["CorbPolperVis"], field="CorbPolperVis", line=line
@@ -233,12 +288,26 @@ def load_original_paired_csv(csv_path: Path) -> dict:
             "visits_in_each_trial": a["visits"],
         })
     if not pairs:
-        raise ValueError("No valid matched bee trials in original CSV")
+        raise ValueError("No valid matched bee trials in supplied CSV")
     by_species: dict[str, list[dict]] = defaultdict(list)
     for p in pairs:
         by_species[p["species"]].append(p)
     return {
-        "status": "ORIGINAL_SOURCE_CSV_USER_SUPPLIED_PAIRED_DESCRIPTIVES",
+        "status": (
+            "VERIFIED_DRYAD_CSV_PAIRED_DESCRIPTIVES" if verified
+            else "UNVERIFIED_USER_CSV_PAIRED_DESCRIPTIVES"
+        ),
+        "provenance": {
+            "verified_original": verified,
+            "observed_sha256": digest,
+            "observed_size_bytes": len(contents),
+            "expected_sha256": DRYAD_IDENTITY["primary_file_sha256"],
+            "expected_size_bytes": DRYAD_IDENTITY["primary_file_size_bytes"],
+            "expected_filename": DRYAD_IDENTITY["primary_file"],
+            "file_id": DRYAD_IDENTITY["primary_file_id"],
+            "version_id": DRYAD_IDENTITY["primary_version_id"],
+            "doi": DATA_DOI,
+        },
         "paired_bee_trial_count": len(pairs),
         "unpaired_bee_count": len(missing_treatments),
         "unpaired_bees_excluded_from_paired_summary": True,
@@ -257,7 +326,7 @@ def load_original_paired_csv(csv_path: Path) -> dict:
             }
             for s, group in sorted(by_species.items())
         ],
-        "colonies_observed_in_original_csv_by_species": {
+        "colonies_observed_in_supplied_csv_by_species": {
             s: len(groups) for s, groups in sorted(n_colonies_by_species.items())
         },
         "no_new_p_values_or_causal_paternity": True,
