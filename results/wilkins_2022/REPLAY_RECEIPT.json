@@ -1,0 +1,78 @@
+{
+  "analysis_kind": "ORIGINAL_SOURCE_MODEL_REPLAY_AND_ENDPOINT_DEFINITION_SENSITIVITY",
+  "source_doi": "10.1007/s00442-022-05246-0",
+  "source_csv_sha256": "0d433ba471cc7c1cbcdc3ce4bf0fd8a599b04176b4e85c7425ab67fad6703c62",
+  "source_R_sha256": "b89d1a1cea198bed16284c55fc941c5c217ca0501de4e530165cd3839a0ea16c",
+  "row_count": 60,
+  "distinct_source_bees": 60,
+  "fitted_models": 7,
+  "archived_models_replayed": 5,
+  "body_only_endpoint_sensitivities": 2,
+  "source_chisquare_comparisons": 37,
+  "all_reference_comparisons_compatible": true,
+  "max_abs_source_chisquare_difference": 0.00169968650139163,
+  "numerical_tolerance": "0.005 + 0.005 * abs(source_chisq)",
+  "runtime": {
+    "R": "4.5.2",
+    "glmmTMB": "1.1.15.2",
+    "car": "3.1.5",
+    "TMB": "1.9.25"
+  },
+  "workflow": {
+    "run_id": 44914763307,
+    "url": "https://github.com/zuizui0223/balance/actions/runs/44914763307",
+    "commit": "0177934ee50d27b308c036148682e2ec27b1ad2f",
+    "conclusion": "success",
+    "artifact_id": 14711266562,
+    "artifact_zip_sha256": "36d8a51533ebb0e0de47879beba7d33127e2e469a4e4aca622dcbb7821048d80"
+  },
+  "initial_run": {
+    "run_id": 44914287678,
+    "url": "https://github.com/zuizui0223/balance/actions/runs/44914287678",
+    "conclusion": "failure",
+    "reason": "Four Gaussian fits failed Hessian or fixed covariance checks; every default and numerical retry attempt is retained in the successful replay."
+  },
+  "unit_retry": {
+    "trigger": "Numerically unusable fit only",
+    "head_width_divisor": 3,
+    "visit_time_divisor": 100,
+    "maximum_additional_attempts_per_model": 1,
+    "reported_units": "Original millimetres and seconds",
+    "same_rows_formulas_likelihood_and_random_effect_structure": true
+  },
+  "inference_scope": "Conditional source models and prespecified endpoint sensitivities; alternating allocation, observed size and post-treatment time/body-load covariates. Same biological sample, not independent evolutionary or plant-fitness validation.",
+  "derived_files": {
+    "conditional_contrasts.csv": {
+      "bytes": 2738,
+      "sha256": "0535b2b0a2a0613f70b37170d7a12099e8327ab834516767a5562d55ef22790c"
+    },
+    "contrast_grid.csv": {
+      "bytes": 222,
+      "sha256": "44e3f008a513763589c9132c44cceeb9518faebb45a35312b4078fa797c28180"
+    },
+    "model_attempts.csv": {
+      "bytes": 4003,
+      "sha256": "6022be7ce024ba0e67b991d66a7afa06adebff0108a9e290d98ab71d046ed73f"
+    },
+    "model_coefficients.csv": {
+      "bytes": 6359,
+      "sha256": "9b29bf7d39c6f77683b7bc65e5bffcfa2b844001bbdf076842d9e113eab7c9e1"
+    },
+    "model_diagnostics.csv": {
+      "bytes": 2543,
+      "sha256": "b1ce58df7cebf2dee64e21e8eb6145d451b02fe1e5c2d6e6cdc9d610b3fe93c9"
+    },
+    "model_tests.csv": {
+      "bytes": 5406,
+      "sha256": "78eaf2600a94baa3883e4d10ea8bf53d89da88717817ac46ab76c4dfdd33b8b0"
+    },
+    "session_info.txt": {
+      "bytes": 1441,
+      "sha256": "0d8ffee3c8c6829b8a54bbd82040a675848252091d848b481a34a73bed930a6b"
+    },
+    "source_audit.json": {
+      "bytes": 8709,
+      "sha256": "9a0bb474358aed3db6549e465992aeb5d316e165592c1c0d9b178ff970a43305"
+    }
+  }
+}

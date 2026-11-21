@@ -44,11 +44,49 @@ The script exports all coefficient estimates, their covariance-based contrasts, 
 
 Conditional free-minus-joined contrasts use common head-width support and its pooled type-7 25th/75th percentiles, pooled mean handling time, and pooled median terminal body pollen for the stigma model. Their intervals use the full fixed-effect covariance. These grid values probe the same conditional model; they do not define selected small/large categories or an optimized morphology. Because handling time and terminal pollen are measured after treatment, adjusted contrasts are not total causal architecture effects.
 
-The actual-engine results will be recorded from the verified workflow artifacts; model output is not inferred from the published p-values.
+The first actual-engine run exposed numerical failures in four Gaussian fits: one invalid Hessian and three nonfinite fixed-effect covariance matrices. A deterministic retry divides head width by 3 and handling time by 100. This is a positive change of measurement units, preserving every model column's hypothesis space, response, observation, family and random-effect term. The retry is triggered only by numerical diagnostics, never by p-values or agreement with the paper. Coefficients and their full covariance are converted back to millimetres and seconds, and all original/retry attempts are exported. Independent checks against native model predictions verified that this conversion preserves estimates and standard errors.
+
+## Recomputed model findings
+
+The [verified GitHub Actions replay](https://github.com/zuizui0223/balance/actions/runs/44914763307), using R 4.5.2 / glmmTMB 1.1.15.2 / car 3.1.5 / TMB 1.9.25, recovered **all 37 archived Type II tests** within the prespecified tolerance (largest absolute chi-square discrepancy **0.00170**). Seven final fits had successful optimizer status, positive-definite Hessians and finite positive-definite fixed-effect covariance matrices. The source/retry history contains 11 attempts. These are numerical checks; they do not reproduce all residual diagnostics or establish distributional assumptions. Several fitted colony variances are near zero, and there are only three colonies.
+
+The complete derived output is committed under [`results/wilkins_2022`](../results/wilkins_2022), with [runtime/workflow and file hashes](../results/wilkins_2022/REPLAY_RECEIPT.json), [all tests](../results/wilkins_2022/model_tests.csv), [coefficients](../results/wilkins_2022/model_coefficients.csv), [conditional contrasts](../results/wilkins_2022/conditional_contrasts.csv), and [all fitting attempts](../results/wilkins_2022/model_attempts.csv). A separate local R 4.5.0 / glmmTMB 1.1.11 check agreed; it emitted a TMB patch-version warning, so the reported results here use the separately verified GitHub environment and its artifact bytes.
+
+The two endpoint-definition sensitivities yield the following architecture-by-head-width terms. Every term below has one degree of freedom and uses 59 bees.
+
+| Response | Recomputed chi-square | Recomputed p | Analysis class |
+|---|---:|---:|---|
+| Log composite pollen amount: body + stigma | 4.1480 | 0.04168 | Published-model replay |
+| Log body-only pollen amount | 2.9668 | 0.08499 | Endpoint-definition sensitivity |
+| Composite-versus-basket allocation | 13.1118 | 0.000293 | Published-model replay |
+| Body-only-versus-basket allocation | 13.2182 | 0.000277 | Endpoint-definition sensitivity |
+
+**The allocation interaction persists after removing stigma grains from the numerator.** It therefore does not depend on that particular composite definition. For absolute pollen amount, the body-only interaction is less precisely supported at the conventional 0.05 threshold. This difference between p-values is not a formal test that the two endpoint effects differ, and it should not be called disappearance of an effect.
+
+For the body-only allocation model, the following odds ratios compare **free with joined** anthers at two prespecified sizes. Here the odds concern body-only versus basket pollen. They are conditional model estimates, not ratios of the raw group means or pollen-deposition probabilities.
+
+| Head width | Free / joined allocation odds ratio | 95% Wald interval |
+|---|---:|---:|
+| 3.334 mm (25th percentile within common support) | 0.647 | 0.417–1.002 |
+| 3.620 mm (75th percentile within common support) | 1.581 | 1.018–2.456 |
+
+Handling time is fixed at the pooled mean of 168.10185 seconds. Point estimates reverse direction across these sizes; the lower-size interval includes equal odds. The observed interaction supports size-dependent allocation, not superiority of one architecture for every bee.
+
+### Stigma receipt is a different result
+
+The stigma architecture-by-head-width test is **p=0.49192**. Thus the allocation-size result must not be relabeled a demonstrated architecture-by-size interaction in actual stigma receipt. Instead, the source stigma model has an architecture-by-terminal-body-load interaction (**chi-square=5.2986, p=0.02134**).
+
+| Slope of log stigma pollen versus log terminal body pollen | Estimate | 95% Wald interval |
+|---|---:|---:|
+| Joined anthers | −0.844 | −1.843 to 0.155 |
+| Free anthers | +0.596 | −0.114 to 1.306 |
+| Free minus joined slope | +1.440 | 0.214 to 2.665 |
+
+The slope difference is supported even though each individual slope's interval spans zero. These are conditional associations with pollen remaining after foraging/grooming, not causal effects of experimentally assigned body load. They agree with Figure 6a's direction and contradict the reversed direction in the Results prose. No seed production, donor identity or paternity was measured.
 
 ## Source discrepancies and interpretation
 
-The published Results prose describes the architecture-by-body-load stigma response in the opposite direction to Figure 6a and the supplied coefficient table. The replay will report the joined and free log-body slopes and their difference to adjudicate that inconsistency. The supplement also displays identical coefficient/SE/z entries in Tables S1 and S4 despite different omnibus tests; those coefficient tables are not used as replay ground truth. The [2023 correction](https://doi.org/10.1007/s00442-023-05413-x) concerns Figure 1's legend, not these model results.
+The published Results prose describes the architecture-by-body-load stigma response in the opposite direction to Figure 6a and the supplied coefficient table; the replay above adjudicates the fitted direction. The supplement also displays identical coefficient/SE/z entries in Tables S1 and S4 despite different omnibus tests. Recomputed coefficients show that those repeated cells track the allocation-share model rather than the anther model; neither duplicated table was used as coefficient ground truth. The [2023 correction](https://doi.org/10.1007/s00442-023-05413-x) concerns Figure 1's legend, not these model results.
 
 This live-bee manipulation is a direct bridge to the artificial-vibration anther experiment in PR #277. The previously reported mechanical increase in release from joined anthers does not identify what a freely moving bee will collect or deposit. Observed pollen destination additionally depends on the bee and its behavior. The learning experiment in PR #278 is a separate intervention; none of these papers identifies a training-by-architecture interaction across experiments.
 

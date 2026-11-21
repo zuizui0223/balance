@@ -27,9 +27,9 @@
 
 **Interface:** CLI takes `--source-dir PATH`, optional `--download`, and `--out PATH`; downloads only the exact pinned CSV/R URLs when requested. Its receipt records hashes and sizes, row counts, endpoint-specific missingness, every-row identity checks, means/SE and support ranges. Export no p-values from this layer.
 
-- [ ] Write tests that reject changed bytes even under the official filename, duplicated bee IDs, broken component sums and invalid counts; preserve allowed missing anther/head-width data and correct per-endpoint denominators.
-- [ ] Implement the audit and fetch wrapper; run focused tests.
-- [ ] Run against the authenticated source and verify 60 rows, 28 free/32 joined, three missing anther counts, one missing head width; reproduce source Table 1 means.
+- [x] Write tests that reject changed bytes even under the official filename, duplicated bee IDs, broken component sums and invalid counts; preserve allowed missing anther/head-width data and correct per-endpoint denominators.
+- [x] Implement the audit and fetch wrapper; run focused tests.
+- [x] Run against the authenticated source and verify 60 rows, 28 free/32 joined, three missing anther counts, one missing head width; reproduce source Table 1 means.
 
 ## Task 2 — source replay and fixed endpoint sensitivity
 
@@ -37,19 +37,19 @@
 
 **Interface:** R receives the verified CSV path and an output directory; writes `model_tests.csv`, `model_coefficients.csv`, `model_diagnostics.csv`, `conditional_contrasts.csv`, and `session_info.txt`. Workflow authenticates original sources before invoking R and uploads only derived artifacts/provenance.
 
-- [ ] Implement the five exact model formulas and two fixed sensitivities above; retain the original Cone reference and map Sham to free architecture.
-- [ ] Export model-specific sample counts and diagnostic failures explicitly; fail rather than claim a completed inferential result when a model is unusable.
-- [ ] Compare replayed published Type II tests with the original R comments/tables using rounding-aware tolerances. Investigate discrepancies rather than choosing a better-fitting replacement.
-- [ ] Export free-minus-joined contrasts on link scales at pooled mean visit time and prespecified 25th/75th percentiles of observed head width within common treatment support. These are conditional effect probes, not fitted optimal sizes. Export the stigma log-body slopes and their difference to adjudicate the prose/figure discrepancy.
+- [x] Implement the five exact model formulas and two fixed sensitivities above; retain the original Cone reference and map Sham to free architecture.
+- [x] Export model-specific sample counts and diagnostic failures explicitly; fail rather than claim a completed inferential result when a model is unusable.
+- [x] Compare replayed published Type II tests with the original R comments/tables using rounding-aware tolerances. Investigate discrepancies rather than choosing a better-fitting replacement.
+- [x] Export free-minus-joined contrasts on link scales at pooled mean visit time and prespecified 25th/75th percentiles of observed head width within common treatment support. These are conditional effect probes, not fitted optimal sizes. Export the stigma log-body slopes and their difference to adjudicate the prose/figure discrepancy.
 
 ## Task 3 — scientific synthesis and verification
 
 **Files:** `docs/BALANCE_SOLANUM_BEE_ARCHITECTURE_REANALYSIS_20261121.md`, derived JSON/CSV files under `data/` or `results/`.
 
-- [ ] Keep publication transcription, recomputed arithmetic, model replay and endpoint-definition sensitivity distinguishable.
-- [ ] Explain that the published composite already contains the stigma outcome, preventing its use as independent corroboration of deposition.
-- [ ] Distinguish an architecture-by-size result for basket/body allocation from an architecture-by-body-load result for stigma receipt; disclose the Results prose/Fig. 6 direction discrepancy.
-- [ ] Review code and methods independently; run the repository test gate and the real-data R workflow; verify the exact pushed head before reporting success.
+- [x] Keep publication transcription, recomputed arithmetic, model replay and endpoint-definition sensitivity distinguishable.
+- [x] Explain that the published composite already contains the stigma outcome, preventing its use as independent corroboration of deposition.
+- [x] Distinguish an architecture-by-size result for basket/body allocation from an architecture-by-body-load result for stigma receipt; disclose the Results prose/Fig. 6 direction discrepancy.
+- [x] Review code and methods independently; run the repository test gate and the real-data R workflow; verify the exact pushed head before reporting success.
 
 ## Review focus
 
@@ -58,3 +58,7 @@
 - Body-plus-stigma and body-only pollen must never silently share a label.
 - Post-treatment adjustment and alternating allocation must not become a randomized total-effect claim.
 - Source contradictions, boundary random-effect variance, poor convergence and limited common support must remain visible in the final readout.
+
+## Numerical amendment after the first actual-engine run
+
+The default-unit run failed numerical checks in four Gaussian models. A single deterministic retry, triggered only by unusable convergence/Hessian/covariance diagnostics, now divides `HeadWidth` by 3 and `VisitTime` by 100. Pure positive unit scaling leaves model-column term spaces and likelihoods unchanged. No response, observations, term, family or random-effect structure is changed. Coefficients and covariance are mapped back to millimetres and seconds; all default and retry attempts are retained in `model_attempts.csv`. The retry does not depend on source compatibility or an effect's p-value. Independent prediction/covariance checks verified the conversion.
