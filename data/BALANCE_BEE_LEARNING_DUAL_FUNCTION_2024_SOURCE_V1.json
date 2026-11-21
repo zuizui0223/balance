@@ -1,0 +1,166 @@
+{
+  "schema_version": "BALANCE_BEE_LEARNING_DUAL_FUNCTION_PUBLICATION_AUDIT_V1",
+  "status": "ORIGINAL_PUBLISHED_EFFECTS_AND_DRYAD_SCHEMA_ONLY_NOT_RAW_REFIT",
+  "article": {
+    "doi": "10.1093/beheco/arae083",
+    "title": "Learning to handle flowers increases pollen collection for bees but does not affect pollination success for plants",
+    "year": 2024,
+    "published_online": "2024-10-04",
+    "journal": "Behavioral Ecology 35(6), arae083",
+    "authors_short": "Mayberry et al. (2024)",
+    "url": "https://academic.oup.com/beheco/article/35/6/arae083/7810950",
+    "author_hosted_pdf": "https://therusselllab.net/wp-content/uploads/2024/10/mayberry-et-al.-2024-be-learning-affects-foraging-but-not-pollination.pdf",
+    "independent_research_programmes": 1
+  },
+  "archived_data": {
+    "doi": "10.5061/dryad.gtht76hwk",
+    "url": "https://datadryad.org/dataset/doi:10.5061/dryad.gtht76hwk",
+    "published_date": "2024-10-14",
+    "listed_files": 7,
+    "size_kB": 318.34,
+    "primary_file": "AnalysisData_All-Trials-Summary-Data_20_8-4-2024.csv",
+    "primary_file_id": 3536167,
+    "primary_version_id": 321573,
+    "primary_file_size_bytes": 27774,
+    "primary_file_sha256": "4abb4300cfe5202058dd51003c5910e65c8c6cb774cd8b8100e8d5563b1433cb",
+    "metadata_api_url": "https://datadryad.org/api/v2/files/3536167",
+    "metadata_retrieved_date": "2026-11-21",
+    "primary_declared_fields": [
+      "BeeID",
+      "ColonyID",
+      "Species",
+      "Treatment",
+      "TimeTotal",
+      "StigPol",
+      "CorbPol",
+      "StigPolperVis",
+      "CorbPolperVis",
+      "NumVisits",
+      "MeanPropMotRoutine"
+    ],
+    "raw_csv_retrieved": false,
+    "original_trial_data_refitted": false,
+    "access_note": "Official file metadata returned HTTP 200 on 2026-11-21 and independently supplied the version, byte count and SHA-256. The public file_stream returned HTTP 403 through both web and direct runtime access; metadata retrieval is not retrieval of source rows. Do not infer source is globally unavailable.",
+    "handling_trace_files": [
+      "AnalysisData_Handling-Time-Traces-EXAF_5-24-2023.csv",
+      "AnalysisData_Handling-Time-Traces-MIGU_5-24-2023.csv",
+      "AnalysisData_Handling-Time-Traces-PHCA_5-24-2023.csv",
+      "AnalysisData_Handling-Time-Traces-SOEL_5-24-2023.csv"
+    ]
+  },
+  "experiment": {
+    "bees": "Bombus impatiens",
+    "plant_species": [
+      {
+        "code": "PHCA",
+        "species": "Phacelia campanularia",
+        "floral_complexity_mfci": 1.876,
+        "pollen_collection_percent_experienced_vs_naive": 17,
+        "stigma_deposition_percent_experienced_vs_naive": 18,
+        "figure_naive_bees_n": 17,
+        "figure_experienced_bees_n": 19
+      },
+      {
+        "code": "EXAF",
+        "species": "Exacum affine",
+        "floral_complexity_mfci": 2.126,
+        "pollen_collection_percent_experienced_vs_naive": 19,
+        "stigma_deposition_percent_experienced_vs_naive": 28,
+        "figure_naive_bees_n": 21,
+        "figure_experienced_bees_n": 21
+      },
+      {
+        "code": "SOEL",
+        "species": "Solanum elaeagnifolium",
+        "floral_complexity_mfci": 2.276,
+        "pollen_collection_percent_experienced_vs_naive": 26,
+        "stigma_deposition_percent_experienced_vs_naive": -49,
+        "figure_naive_bees_n": 20,
+        "figure_experienced_bees_n": 20
+      },
+      {
+        "code": "MIGU",
+        "species": "Erythranthe guttata",
+        "floral_complexity_mfci": 2.925,
+        "pollen_collection_percent_experienced_vs_naive": 27,
+        "stigma_deposition_percent_experienced_vs_naive": -6,
+        "figure_naive_bees_n": 20,
+        "figure_experienced_bees_n": 20
+      }
+    ],
+    "treatment": "SAME_BEE_NAIVE_THEN_EXPERIENCED_PAIRS_APPROX_24H_APART_NOT_RANDOMIZED_TRIAL_ORDER",
+    "replicate_unit": "BEEID_WITHIN_COLONYID",
+    "total_workers_reported": 81,
+    "total_colonies_reported": 7,
+    "colonies_per_species_at_least": 3,
+    "figure_pollen_outcomes_trial_counts": {
+      "naive": 78,
+      "experienced": 80,
+      "complete_paired_bee_count": null,
+      "note": "Figure 5 caption counts do not establish the complete-case sample of either fitted model. Three missing naive videos are behavioral missingness; the paper does not fully explain the caption totals."
+    },
+    "flower_array": "20 fresh flowers/species in 5x4 arena grid",
+    "trial_visit_count_cap": 70,
+    "naive_and_experienced_visit_counts_matched_within_bee": true,
+    "stigma_pollen_measurement_grain": "styles collected from visited flowers pooled by trial, not per-flower genetically assigned siring",
+    "basket_pollen_measurement_grain": "one pollen basket load from each bee trial",
+    "handling_time": "up to 70 flower visits with handling time and motor routine scored from video; three naive bee videos missing",
+    "same_bee_24h_order_confounded": true
+  },
+  "published_results": {
+    "collection_experience": {
+      "overall_change_percent": 22,
+      "per_time_change_percent": 24,
+      "GLMM_test": "chi-square(1)=9.81",
+      "p": 0.0017,
+      "species_by_experience_test": "chi-square(3)=0.30",
+      "species_by_experience_p": 0.961,
+      "individual_species_contrast_significance": "NOT_REPORTED_IN_RESULTS_PASSAGE"
+    },
+    "stigmatic_deposition_experience": {
+      "overall_test": "chi-square(1)=0.02",
+      "overall_p": 0.893,
+      "species_by_experience_test": "chi-square(3)=13.31",
+      "species_by_experience_p": 0.004,
+      "individual_species_contrast_significance": "ALL_FOUR_REPORTED_NONSIGNIFICANT",
+      "individual_species_contrast_p_values": null,
+      "experience_term_scope": "Author-reported Type III term in an interacting model; exact reference coding and averaging contrast not independently verified."
+    },
+    "modified_motor_routine": {
+      "pollen_collection_main_test": "chi-square(1)=2.03",
+      "pollen_collection_main_p": 0.154,
+      "stigmatic_deposition_main_test": "chi-square(2)=7.69",
+      "stigmatic_deposition_main_p": 0.0056,
+      "stigmatic_deposition_main_printed_triplet_consistent": false,
+      "stigmatic_deposition_main_discrepancy": {
+        "printed_statistic": 7.69,
+        "printed_df": 2,
+        "printed_p": 0.0056,
+        "chi_square_tail_at_printed_df": 0.02138640156115709,
+        "chi_square_tail_if_df_were_1": 0.005552762756569359,
+        "status": "UNRESOLVED_SOURCE_STATISTIC_DF_P_INCONSISTENCY",
+        "note": "Original printed values retained. Tail probabilities are arithmetic checks, not replacement biological tests or refits; no choice of a corrected df or p is made."
+      },
+      "stigmatic_deposition_species_experience_routine_test": "chi-square(2)=19.70",
+      "stigmatic_deposition_species_experience_routine_p": 5e-05
+    },
+    "model_scope": "One GLMM per pollen endpoint is described for the motor-routine analysis. The experience, species-by-experience and three-way stigma terms are reported together, not as independent models.",
+    "figure_reference_note": "In the author-hosted journal PDF, Figure 5 is the experience boxplot and Figure 4 is the motor-routine plot. Results prose transposes those references; percent changes are sourced to Results pp. 6 and 8."
+  },
+  "source_claim_ceiling": {
+    "species_specific_percent_changes_are_point_estimates": true,
+    "overall_stigma_nonsignificance_does_not_establish_equivalence": true,
+    "species_by_experience_interaction_is_a_real_published_positive_statistical_result": true,
+    "not_a_randomized_learning_vs_aging_sequence": true,
+    "same_bee_repeated_trials_and_colony_clustering_required": true,
+    "no_genetically_assigned_donor_paternity": true,
+    "stigma_deposition_proxy_not_measured_female_seed_fitness": true,
+    "pollen_basket_collection_not_equivalent_to_complete_pollen_loss": true,
+    "same_species_S_elaeagnifolium_in_2022_anther_joining_study": true,
+    "cross_paper_mediation_in_same_taxon_not_identified": true,
+    "not_independent_four_evolutionary_origins": true,
+    "U2_U6_V4_admissions_unchanged": true,
+    "title_words_do_not_substitute_for_reported_interaction": true,
+    "no_new_effect_or_p_value_estimated": true
+  }
+}
