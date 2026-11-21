@@ -67,9 +67,9 @@ write.csv(data.frame(width_min = support_low, width_max = support_high, n_overla
                      pooled_mean_visit_time = probe_time, pooled_median_body_pollen = probe_body,
                      pooled_n = nrow(bees)), file.path(out_dir, "contrast_grid.csv"), row.names = FALSE)
 
-wald_contrast <- function(model, label, fit, weights, width, scale) {
-    beta <- fixef(fit)$cond
-    cov <- vcov(fit)$cond
+wald_contrast <- function(model, label, params, weights, width, scale) {
+    beta <- params$beta
+    cov <- params$cov
     weights <- weights[names(beta)]
     estimate <- sum(weights * beta)
     se <- sqrt(drop(t(weights) %*% cov[names(beta), names(beta)] %*% weights))
@@ -80,8 +80,8 @@ wald_contrast <- function(model, label, fit, weights, width, scale) {
                estimate, se, lower_95 = estimate - margin, upper_95 = estimate + margin)
 }
 
-fit_contrasts <- function(model, fit) {
-    beta <- fixef(fit)$cond
+fit_contrasts <- function(model, params) {
+    beta <- params$beta
     fixed_terms <- delete.response(terms(lme4::nobars(formulas[[model]])))
     rows <- list()
     for (i in seq_along(probe_widths)) {
@@ -89,7 +89,7 @@ fit_contrasts <- function(model, fit) {
                             VisitTime = probe_time, HeadWidth = probe_widths[i], BodyPollen = probe_body)
         design <- model.matrix(fixed_terms, probe)
         rows[[i]] <- wald_contrast(model, paste0("free_minus_joined_width_p", c(25, 75)[i]),
-                                  fit, design[2, ] - design[1, ], probe_widths[i],
+                                  params, design[2, ] - design[1, ], probe_widths[i],
                                   if (model %in% share_models) "log_odds" else "log_grains")
     }
     if (model == "stigma") {
@@ -102,51 +102,102 @@ fit_contrasts <- function(model, fit) {
         slopes <- list(joined_log_body_slope = joined, free_log_body_slope = free,
                        free_minus_joined_log_body_slope = free - joined)
         for (label in names(slopes)) {
-            rows[[length(rows) + 1L]] <- wald_contrast(model, label, fit, slopes[[label]], NA_real_,
+            rows[[length(rows) + 1L]] <- wald_contrast(model, label, params, slopes[[label]], NA_real_,
                                                       "log_grains_per_log_body_grain")
         }
     }
     do.call(rbind, rows)
 }
 
+# Positive unit changes only: each model-matrix column is multiplied by a
+# constant, so each Type II term tests the same subspace in either unit system.
+# Convert both beta and its joint covariance to mm and seconds for reporting.
+original_units <- function(fit, size_divisor, time_divisor) {
+    beta <- fixef(fit)$cond
+    column_divisor <- vapply(strsplit(names(beta), ":", fixed = TRUE), function(variables) {
+        (if ("HeadWidth" %in% variables) size_divisor else 1) *
+            (if ("VisitTime" %in% variables) time_divisor else 1)
+    }, numeric(1))
+    cov <- vcov(fit)$cond[names(beta), names(beta), drop = FALSE] / outer(column_divisor, column_divisor)
+    stopifnot(all(is.finite(beta)), all(is.finite(cov)))
+    chol(cov)  # finite, positive-definite joint fixed-effect covariance
+    list(beta = beta / column_divisor, cov = cov)
+}
+
+fit_attempt <- function(model, size_divisor, time_divisor) {
+    d <- bees
+    d$HeadWidth <- d$HeadWidth / size_divisor
+    d$VisitTime <- d$VisitTime / time_divisor
+    model_formula <- formulas[[model]]
+    expected_n <- sum(complete.cases(d[all.vars(model_formula)]))
+    family <- if (model %in% share_models) binomial() else gaussian()
+    log <- data.frame(model, attempt = if (time_divisor == 1) "original_units" else "rescaled_units",
+                      head_width_divisor = size_divisor, visit_time_divisor = time_divisor,
+                      source_sha256 = digest, family = family$family,
+                      formula = paste(deparse(model_formula), collapse = " "),
+                      expected_n, n = NA_integer_, convergence = NA_integer_, objective = NA_real_,
+                      positive_definite_hessian = NA, max_abs_fixed_gradient = NA_real_,
+                      colony_variance = NA_real_, bee_within_colony_variance = NA_real_,
+                      optimizer_message = "", warnings = "", error = "", usable = FALSE)
+    warnings_seen <- character()
+    fit <- params <- NULL
+    tryCatch(withCallingHandlers({
+        fit <- glmmTMB(model_formula, data = d, family = family, REML = FALSE, na.action = na.omit)
+        log$n <- nobs(fit)
+        log$convergence <- fit$fit$convergence
+        log$objective <- fit$fit$objective
+        log$positive_definite_hessian <- isTRUE(fit$sdr$pdHess)
+        if (length(fit$sdr$gradient.fixed))
+            log$max_abs_fixed_gradient <- max(abs(fit$sdr$gradient.fixed))
+        log$optimizer_message <- paste(fit$fit$message, collapse = "; ")
+        v <- VarCorr(fit)$cond
+        log$colony_variance <- unname(v[["ColonyID"]][1, 1])
+        if (model %in% share_models) {
+            nested <- setdiff(names(v), "ColonyID")
+            stopifnot(length(nested) == 1L)
+            log$bee_within_colony_variance <- unname(v[[nested]][1, 1])
+        }
+        if (log$n != expected_n || log$convergence != 0L || !log$positive_definite_hessian)
+            stop("Model failed the sample count, convergence, or Hessian check")
+        params <- original_units(fit, size_divisor, time_divisor)
+        log$usable <- TRUE
+    }, warning = function(w) {
+        warnings_seen <<- c(warnings_seen, conditionMessage(w))
+        invokeRestart("muffleWarning")
+    }), error = function(e) {
+        log$error <<- conditionMessage(e)
+    })
+    log$warnings <- paste(unique(warnings_seen), collapse = "; ")
+    list(fit = fit, params = params, log = log)
+}
+
 diagnostics <- list()
+attempts <- list()
 tests <- list()
 coefficients <- list()
 contrasts <- list()
 for (model in names(formulas)) {
-    warnings_seen <- character()
-    model_formula <- formulas[[model]]
-    expected_n <- sum(complete.cases(bees[all.vars(model_formula)]))
-    diag_row <- data.frame(model, source_sha256 = digest,
-                           family = if (model %in% share_models) "binomial" else "gaussian",
-                           formula = paste(deparse(model_formula), collapse = " "),
-                           expected_n, n = NA_integer_, convergence = NA_integer_,
-                           positive_definite_hessian = NA, max_abs_fixed_gradient = NA_real_,
-                           colony_variance = NA_real_, bee_within_colony_variance = NA_real_,
-                           optimizer_message = "", warnings = "", error = "", usable = FALSE)
-    tryCatch(withCallingHandlers({
-        family <- if (model %in% share_models) binomial() else gaussian()
-        fit <- glmmTMB(model_formula, data = bees, family = family, REML = FALSE,
-                       na.action = na.omit)
-        diag_row$n <- nobs(fit)
-        diag_row$convergence <- fit$fit$convergence
-        diag_row$positive_definite_hessian <- isTRUE(fit$sdr$pdHess)
-        if (length(fit$sdr$gradient.fixed))
-            diag_row$max_abs_fixed_gradient <- max(abs(fit$sdr$gradient.fixed))
-        diag_row$optimizer_message <- paste(fit$fit$message, collapse = "; ")
-        v <- VarCorr(fit)$cond
-        diag_row$colony_variance <- unname(v[["ColonyID"]][1, 1])
-        if (model %in% share_models) {
-            nested <- setdiff(names(v), "ColonyID")
-            stopifnot(length(nested) == 1L)
-            diag_row$bee_within_colony_variance <- unname(v[[nested]][1, 1])
-        }
-        if (diag_row$n != expected_n || diag_row$convergence != 0L || !diag_row$positive_definite_hessian)
-            stop("Model failed the sample count, convergence, or Hessian check")
-        coef_mat <- summary(fit)$coefficients$cond
-        stopifnot(all(is.finite(coef_mat)))
-        co <- data.frame(model, term = rownames(coef_mat), estimate = coef_mat[, 1],
-                         se = coef_mat[, 2], z = coef_mat[, 3], p = coef_mat[, 4], row.names = NULL)
+    result <- fit_attempt(model, size_divisor = 1, time_divisor = 1)
+    attempts[[length(attempts) + 1L]] <- result$log
+    # A single numerical retry is triggered only by fit diagnostics.
+    # The original statistic and any p-value differences play no part.
+    if (!result$log$usable) {
+        result <- fit_attempt(model, size_divisor = 3, time_divisor = 100)
+        attempts[[length(attempts) + 1L]] <- result$log
+    }
+    diag_row <- result$log
+    if (!diag_row$usable) {
+        diagnostics[[model]] <- diag_row
+        next
+    }
+    fit <- result$fit
+    params <- result$params
+    tryCatch({
+        se <- sqrt(diag(params$cov))
+        z <- params$beta / se
+        co <- data.frame(model, term = names(params$beta), estimate = unname(params$beta),
+                         se = unname(se), z = unname(z), p = 2 * pnorm(-abs(unname(z))),
+                         row.names = NULL)
         test <- as.data.frame(car::Anova(fit, type = 2))
         tab <- data.frame(model, term = rownames(test), chisq = test[["Chisq"]],
                           df = test[["Df"]], p = test[["Pr(>Chisq)"]], source_chisq = NA_real_,
@@ -161,23 +212,20 @@ for (model in names(formulas)) {
             tab$tolerance <- .005 + .005 * abs(tab$source_chisq)
             tab$compatible <- abs(tab$delta_chisq) <= tab$tolerance
         }
-        ct <- fit_contrasts(model, fit)
+        ct <- fit_contrasts(model, params)
         coefficients[[model]] <- co
         tests[[model]] <- tab
         contrasts[[model]] <- ct
-        diag_row$usable <- TRUE
-    }, warning = function(w) {
-        warnings_seen <<- c(warnings_seen, conditionMessage(w))
-        invokeRestart("muffleWarning")
-    }), error = function(e) {
+    }, error = function(e) {
+        diag_row$usable <<- FALSE
         diag_row$error <<- conditionMessage(e)
     })
-    diag_row$warnings <- paste(unique(warnings_seen), collapse = "; ")
     diagnostics[[model]] <- diag_row
 }
 write_table <- function(rows, name) {
     if (length(rows)) write.csv(do.call(rbind, rows), file.path(out_dir, name), row.names = FALSE, na = "")
 }
+write_table(attempts, "model_attempts.csv")
 write_table(diagnostics, "model_diagnostics.csv")
 write_table(tests, "model_tests.csv")
 write_table(coefficients, "model_coefficients.csv")
