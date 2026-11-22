@@ -43,6 +43,18 @@ jobs:
           path: ${{ runner.temp }}/vasquez-2025-original-trial-grain.json
           if-no-files-found: error
           retention-days: 21
+      - name: Reanalyse 15 real donor trials with two verified pollen denominators
+        run: |
+          python -m scripts.reanalyse_vasquez_2025_trial_denominators \
+            --original-csv "${RUNNER_TEMP}/vasquez-raw-not-uploaded/data.csv" \
+            --out "${RUNNER_TEMP}/vasquez-2025-actual-15-trial-denominators.json"
+      - name: Upload only derived pollen delivery summary, never original raw CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-real-trial-level-denominator-estimates
+          path: ${{ runner.temp }}/vasquez-2025-actual-15-trial-denominators.json
+          if-no-files-found: error
+          retention-days: 21
       - name: Explicitly reject a false biological reanalysis claim
         run: |
           python - <<'PY'
