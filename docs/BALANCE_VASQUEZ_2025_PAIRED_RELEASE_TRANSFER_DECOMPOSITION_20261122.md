@@ -60,3 +60,95 @@ python -m pytest -q tests/test_vasquez_2025_covariance_decomposition.py
 ```
 
 The workflow uses hash-verified Zenodo 2025 public source CSV and uploads *only* source-aggregate JSON, not individual trial records. It does not merge the PR or update main.
+
+
+## Verified original-source results (2026-11-22)
+
+GitHub Actions [run #45031783505](https://github.com/zuizui0223/balance/actions/runs/45031783505)
+read the **actual** Zenodo source CSV (SHA256
+`484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79`)
+and produced all group, correlation, leave-one-out and 20,000 paired-bootstrap
+numbers. The metadata-only exact output and workflow artifact digest are stored
+at [`results/vasquez_2025/PAIRED_RELEASE_TRANSFER_COVARIANCE_20261122.json`](../results/vasquez_2025/PAIRED_RELEASE_TRANSFER_COVARIANCE_20261122.json).
+No raw trial rows were committed.
+
+### Within-species pairing and donor-exclusion stability
+
+The average-of-products `E[R*T]` is strictly less than the
+product-of-averages `E[R]*E[T]` in both original species:
+
+| Species | `E[R]*E[T]` produced-to-stigma % | Actual `E[R*T]` % | Covariance in produced-to-stigma percentage points | Leave-one-donor deletions keeping negative covariance |
+|---|---:|---:|---:|---:|
+| *S. rostratum* (6 donor-bee trials) | 0.116650 | 0.064957 | **−0.051693** | **6/6** |
+| *S. dulcamara* (9 donor-bee trials) | 0.377944 | 0.313750 | **−0.064194** | **9/9** |
+
+Trial Spearman rank association between `B/A` release fraction and `H/B`
+conditional transfer efficiency is −0.8857 (*rostratum*) and −0.5500
+(*dulcamara*). No significance tests are attached: the sample sizes are only
+6 and 9 and the measured ratios **share B in numerator versus denominator**.
+
+For *S. rostratum*, the donor-trial bootstrap 95% percentile interval for
+the paired covariance term is **[−0.09545, −0.00353]** percentage points;
+for *S. dulcamara*, **[−0.13568, +0.01437]**. Thus despite
+all individual-donor deletion signs staying negative, *dulcamara* has a
+bootstrap interval spanning zero. The intervals are naive trial-bootstrap
+descriptions (20,000 paired draws, source seed 20261122), **not** 2-hive or
+plant-level confidence intervals.
+
+**Critical independent count check:** the Spearman association between
+absolute donor released grains `B_i` and the actual stigmatic grains
+`H_i` is **−0.8857** in *S. rostratum*, but **+0.6500** in
+*S. dulcamara*. The negative ratio-ratio pattern in both species therefore
+does **not** mean that more released pollen is uniformly associated with fewer
+deposited pollen grains. The small observational n cannot establish
+biological release-to-transfer inhibition, saturation, active grooming
+or a genuine ecological tradeoff.
+
+### Exact symmetric arithmetic allocation of the between-species contrast
+
+The actual original-donor-trial mean `H/A` difference between
+*dulcamara* and *rostratum* is **+0.248793 percentage points**.
+Using exactly the symmetric identity registered above:
+
+| Arithmetic contribution | Percentage points | Trial-bootstrap percentile 95% interval |
+|---|---:|---|
+| Between-species difference in mean release fraction `E[R]` | **+0.225470** | **[+0.09212, +0.42574]** |
+| Difference in mean conditional PTE `E[T]` | +0.035824 | [−0.19880, +0.23636] |
+| Difference in paired release-PTE covariance | −0.012501 | [−0.10896, +0.07857] |
+| **Observed total `E[H/A]` contrast** | **+0.248793** | **[+0.12600, +0.41179]** |
+
+The components sum to the source-to-stigma contrast with **exact zero
+numerical decomposition error**. The release-fraction component is largest
+and has a positive trial-bootstrap interval under the stated resampling
+assumption. This is a defensible **descriptive source-stage statement**.
+
+It would be *incorrect* to call the +0.22547 contribution an experimentally
+identified **causal path** or to state the donor pollen removal
+process alone *caused* the difference. Species, anther geometry, visitor
+handling, donor population, sex allocation and pollen production are
+not independently randomized in this experiment. The decomposition does
+not separate these mechanisms, and the signed covariance term can be
+induced mechanically by shared `B`.
+
+### Robust scientific conclusion and remaining tests
+
+**Source-backed positive:** in these 15 original donor-bee trials, the
+difference in *total measured donor stock ultimately deposited on the
+four measured stigmas* is appreciably larger than the difference in
+removed-pollen-conditioned PTE; the largest arithmetic contribution is
+the difference in the fraction removed from the donor. The negative
+within-species pairing terms are directly observed and stable under
+single-trial deletion, but their origin is unidentified and the
+cross-species difference between them is imprecise.
+
+**Not supported:** a new floral evolutionary architecture cost, a
+universal ecological negative release-efficiency law, a mechanism
+assigning the loss to pollen-gathering bee grooming versus
+ground deposition, or differences in viable male paternity.
+
+A convincing forward experimental test would manipulate accessible
+pollen release **within a single species and bee population**, measure
+all donor/bee/ground/recipient inventories in matched donor-bee trials,
+and genotype resulting offspring or pollen donors. Stratify by bee
+individual and plant source before making a colony-population or
+evolutionary architecture inference.
