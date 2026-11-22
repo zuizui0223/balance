@@ -96,3 +96,52 @@ fitness or a net BALANCE `Phi` structural alternative.
 The source was obtained from one original study; this robustness exercise does
 not create extra studies, evolutionary transitions, or independent biological
 worldlines. U2/U6/V4 and architecture A/B human coder inputs remain untouched.
+
+
+## Actual R reanalysis results (2026-11-22)
+
+The authenticated original source was re-read in
+[GitHub Actions #45013279220](https://github.com/zuizui0223/balance/actions/runs/45013279220).
+Both fixed post-open models completed with 59 equal-weighted bees, and the
+original five-model reference replay still matched all 37 published test
+statistics (maximum original chi-square deviation 0.00169969).
+
+The reported `TreatmentSham:width_centered` coefficient is **free minus
+joined in the head-width slope per millimetre**, evaluated at the original
+complete-bee mean handling time. These are HC3 standard errors and approximate
+t-based intervals on the **bee-row** scale, not 3-colony cluster-robust CIs:
+
+| Locked exploratory specification | Slope difference, per mm | HC3 SE | Approx. 95% interval | Approx. p |
+|---|---:|---:|---:|---:|
+| Full original 3-way structure + colony fixed effect | +3.525543 | 1.475394 | [0.560628, 6.490459] | 0.020761 |
+| Reduced 2-way interaction + handling time + colony fixed effect | +3.175466 | 1.106602 | [0.954907, 5.396025] | 0.005929 |
+
+**Stability, not independent effect confirmation:** both fitted slopes remained
+positive under **59/59 one-bee deletions** and **3/3 one-colony deletions**.
+The full 3-way coefficient ranged from **+1.855975 to +4.318321** when one
+colony was omitted; the reduced two-way coefficient ranged from **+2.761527
+to +3.449744**. The deleted-colony datasets have only two colonies and cannot
+support valid generalization to the population of colonies.
+
+This establishes a more specific **within-study positive result**: the
+architecture×bee-size interaction in the allocation of **terminal body pollen
+versus pollen basket** is not solely due to the published composite that
+also contains stigma pollen; it remains directionally stable when each bee
+receives one outcome and when any one of three colonies is deleted. It does
+**not** demonstrate an architecture-by-size interaction in *actual stigma
+deposition* (published-source replay p=0.49192) or viability of exported
+pollen. Nor does it remove treatment-order bias, unmeasured source-plant
+clustering, survivor bias from seven excluded noncollectors, or possible
+post-treatment covariate bias.
+
+The full provenance and exact model readout are committed in
+[`results/wilkins_2022/BEE_LEVEL_ROBUSTNESS_SUMMARY_20261122.json`](../results/wilkins_2022/BEE_LEVEL_ROBUSTNESS_SUMMARY_20261122.json).
+Its source is the real Actions artifact
+`wilkins-2022-architecture-model-replay`, ID 14750741539, ZIP SHA-256
+`bceafeb74283bee7eabdc0315768b9f694ab25b19bf768b1a53cbcfa78fe87a8`,
+and its derived CSV diagnostics include all three colony-deletion rows.
+The artifact is temporary, but the source-locked R code and summary record
+are versioned in this branch.
+
+The original five-model source quantities, proposed BALANCE structural
+fitness and the frozen U2/U6/V4 architecture inference are **unchanged**.
