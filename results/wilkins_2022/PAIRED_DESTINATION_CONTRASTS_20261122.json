@@ -1,0 +1,155 @@
+{
+  "analysis_id": "BALANCE_WILKINS_2022_PAIRED_DESTINATION_CONTRASTS_20261122",
+  "status": "ACTUAL_ORIGINAL_SOURCE_POSTOPEN_PAIRED_BEE_COVARIANCE_TEST_NOT_CONFIRMATORY",
+  "source": {
+    "doi": "10.1007/s00442-022-05246-0",
+    "original_csv_sha256": "0d433ba471cc7c1cbcdc3ce4bf0fd8a599b04176b4e85c7425ab67fad6703c62",
+    "source_bee_trials": 60,
+    "analysis_bees": 59,
+    "original_bee_colonies": 3,
+    "source_plant_identifiers_unavailable": true
+  },
+  "design": {
+    "two_independent_log_ratio_responses": [
+      "log(BodyPollen/CorbiculaPollen)",
+      "log(StigmaPollen/BodyPollen)"
+    ],
+    "derived_response": "log(StigmaPollen/CorbiculaPollen)",
+    "same_bee_covariance": "Joint two-endpoint HC3 sandwich from the actual paired bee residual vectors, retaining covariance",
+    "primary_direct_difference": "beta(log body/basket)-beta(log stigma/basket) = -beta(log stigma/body), one-sample same-bee contrast",
+    "omnibus": "2 df Wald of both independent destination-ratio slopes = 0; post-open exploratory",
+    "covariate_specifications": [
+      "with_postvisit_time",
+      "without_postvisit_time"
+    ],
+    "contrast": "Free Sham minus joined Cone size slope per 1 mm",
+    "model_family": "equal-bee-weight ordinary least squares with colony fixed effects",
+    "uncertainty_scope": "approximate HC3 on 59 bee rows, not a valid 3-colony-cluster uncertainty",
+    "treatment_allocation": "alternated rather than demonstrated randomized",
+    "not_independent_species_evolution_replications": true,
+    "genetically_verified_donor_paternity_unmeasured": true,
+    "seed_fitness_unmeasured": true,
+    "new_frozen_V4_outcome_rows": 0,
+    "postopen_multiple_outcomes_no_multiplicity_adjustment": true
+  },
+  "stage_results": [
+    {
+      "specification": "with_postvisit_time",
+      "contrast": "body_vs_basket",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": 3.17546609,
+      "approximate_bee_row_hc3_95ci": [
+        0.95490686,
+        5.39602532
+      ],
+      "approximate_bee_row_hc3_p": 0.0059290062
+    },
+    {
+      "specification": "with_postvisit_time",
+      "contrast": "stigma_vs_body",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": -2.7857184,
+      "approximate_bee_row_hc3_95ci": [
+        -8.51882097,
+        2.94738417
+      ],
+      "approximate_bee_row_hc3_p": 0.33405905
+    },
+    {
+      "specification": "with_postvisit_time",
+      "contrast": "stigma_vs_basket",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": 0.38974769,
+      "approximate_bee_row_hc3_95ci": [
+        -4.25952497,
+        5.03902035
+      ],
+      "approximate_bee_row_hc3_p": 0.86706527
+    },
+    {
+      "specification": "with_postvisit_time",
+      "contrast": "difference_body_vs_basket_minus_stigma_vs_basket",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": 2.7857184,
+      "approximate_bee_row_hc3_95ci": [
+        -2.94738417,
+        8.51882097
+      ],
+      "approximate_bee_row_hc3_p": 0.33405905
+    },
+    {
+      "specification": "without_postvisit_time",
+      "contrast": "body_vs_basket",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": 2.9650493,
+      "approximate_bee_row_hc3_95ci": [
+        0.7623132,
+        5.1677854
+      ],
+      "approximate_bee_row_hc3_p": 0.0092891907
+    },
+    {
+      "specification": "without_postvisit_time",
+      "contrast": "stigma_vs_body",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": -2.68579253,
+      "approximate_bee_row_hc3_95ci": [
+        -8.11164108,
+        2.74005603
+      ],
+      "approximate_bee_row_hc3_p": 0.32529766
+    },
+    {
+      "specification": "without_postvisit_time",
+      "contrast": "stigma_vs_basket",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": 0.27925677,
+      "approximate_bee_row_hc3_95ci": [
+        -4.23137684,
+        4.78989039
+      ],
+      "approximate_bee_row_hc3_p": 0.90164469
+    },
+    {
+      "specification": "without_postvisit_time",
+      "contrast": "difference_body_vs_basket_minus_stigma_vs_basket",
+      "n_bees": 59,
+      "beta_free_minus_joined_headwidth_per_mm": 2.68579253,
+      "approximate_bee_row_hc3_95ci": [
+        -2.74005603,
+        8.11164108
+      ],
+      "approximate_bee_row_hc3_p": 0.32529766
+    }
+  ],
+  "omnibus_results": [
+    {
+      "specification": "with_postvisit_time",
+      "wald_2df": 9.44353826,
+      "asymptotic_bee_row_hc3_2df_p": 0.0088994204
+    },
+    {
+      "specification": "without_postvisit_time",
+      "wald_2df": 7.80354547,
+      "asymptotic_bee_row_hc3_2df_p": 0.02020606
+    }
+  ],
+  "provenance": {
+    "original_verified_run_id": 45017971832,
+    "original_verified_job_id": 137194304983,
+    "run_url": "https://github.com/zuizui0223/balance/actions/runs/45017971832",
+    "original_executed_head_sha": "6af788d832535276e33254d41362a686d4571a0c",
+    "artifact_id": 14752347567,
+    "artifact_sha256": "3ea5ea51fdca69e8c808c449f31e4a2624fb53b466d2bd83e52d4dc467e9a690",
+    "artifact_expires": "2026-12-22",
+    "script_path": "scripts/check_wilkins_2022_paired_stage_contrasts.R",
+    "archived_typeII_replayed": 37,
+    "maximum_original_typeII_chisquare_abs_error": 0.00169969,
+    "derived_csvs": [
+      "paired_stage_effect_contrasts.csv",
+      "paired_stage_omnibus.csv",
+      "paired_stage_inference_scope.csv"
+    ]
+  },
+  "conclusion_ceiling": "some_within_study_destination_effect_heterogeneity_detected_but_direct_difference_body_basket_vs_stigma_basket_not_detected; no demonstrated pollen transfer disconnection, no genetic siring or evolutionary structure fitness"
+}
