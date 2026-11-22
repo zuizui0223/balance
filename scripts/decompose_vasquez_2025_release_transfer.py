@@ -32,7 +32,8 @@ def _percentile(values, probability: float) -> float:
     at = (len(data)-1)*probability
     lower = int(at)
     upper = min(lower+1,len(data)-1)
-    return data[lower]*(upper-at)+data[upper]*(at-lower)
+    fraction=at-lower
+    return data[lower]*(1-fraction)+data[upper]*fraction
 
 
 def _pearson(a: list[float], b: list[float]) -> float | None:
