@@ -31,6 +31,18 @@ jobs:
       - name: Probe Zenodo record 17102653 and authenticate available source file schemas
         run: |
           python -m scripts.audit_vasquez_2025_zenodo --online --out "${RUNNER_TEMP}/vasquez-2025-zenodo-access.json"
+      - name: Verify exact original 60-recipient CSV and 15 donor-trial keys
+        run: |
+          python -m scripts.audit_vasquez_2025_trial_structure \
+            --source-dir "${RUNNER_TEMP}/vasquez-raw-not-uploaded" \
+            --out "${RUNNER_TEMP}/vasquez-2025-original-trial-grain.json"
+      - name: Upload verified trial-grain receipt (no raw observations)
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-original-trial-grain-only
+          path: ${{ runner.temp }}/vasquez-2025-original-trial-grain.json
+          if-no-files-found: error
+          retention-days: 21
       - name: Explicitly reject a false biological reanalysis claim
         run: |
           python - <<'PY'
