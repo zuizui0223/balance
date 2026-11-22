@@ -59,3 +59,92 @@ The public data have **no direct ground-fate/basket/body columns**, **no randomi
 This original-data result supports an **ecologically interesting denominator-dependent pattern**: two species have similarly low percentage of *removed* pollen reaching measured stigmas, but differ strongly in the fraction of their **total measured source pollen delivered**. The flower-structural or grooming mechanism is a hypothesis until the full compartments and treatment controls are simultaneously measured. The source cannot be promoted to the frozen U2/U6/V4 architecture classes or to a BALANCE `Phi`/structural cost estimate.
 
 Both additional tests were fixed by the code and this document prior to evaluating their result outputs; they are **not** pre-field-study confirmatory preregistrations.
+
+## Results from the same authenticated source: hive and recipient-order checks
+
+**Both additional analyses have now been executed** from the genuine Zenodo
+`data.csv` (SHA256 `484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79`)
+in GitHub Actions [#45030511028](https://github.com/zuizui0223/balance/actions/runs/45030511028).
+They are **post-open sensitivity and original-paper reproduction**, not new
+independent biological experiments.
+
+### Original 15-trial species difference within each observed bee hive
+
+| Source hive | Original donor trials: dulcamara / rostratum | Source production → 4 stigmas: dulcamara minus rostratum (percentage points) |
+|---|---:|---:|
+| B1 | 5 / 5 | **+0.28169** |
+| B2 | 4 / **1** | **+0.21943** |
+
+Both within-hive point contrasts are positive. B1 is a useful **balanced
+within-one-hive** sensitivity. B2 has one rostratum trial and does **not**
+provide a replicated species effect within that hive. There are only
+**two colonies** total; neither within-hive contrast identifies
+species-versus-flower-architecture causality or population-level
+colony-robust uncertainty.
+
+Deleting each of the **15 unique donor trials** one at a time leaves
+the full-source-throughput species contrast positive in **15/15** cases;
+the differences lie between **+0.17783 and +0.27038 percentage points**.
+This is *single-trial influence stability*, not 15 independently
+replicated hypothesis tests or an external validation.
+
+Machine-readable source-run results:
+[`results/vasquez_2025/ORIGINAL_HIVE_AND_TRIAL_INFLUENCE_20261122.json`](../results/vasquez_2025/ORIGINAL_HIVE_AND_TRIAL_INFLUENCE_20261122.json).
+
+### Original paper's negative-binomial recipient model is recovered
+
+Using 60 recipient measurements, each in one of 15 donor-trial random
+intercept groups, the authors' original predeclared additive
+`glmmTMB` negative-binomial (`nbinom2`, log link) model was
+**re-executed on the original exact 2025 public records**.
+
+| Published-model term | Replayed log coefficient | SE | Replayed p |
+|---|---:|---:|---:|
+| Recipient order (1–4) | **−0.339172** | 0.097607 | 0.000511 |
+| *S. rostratum* relative to *S. dulcamara* | **−0.953824** | 0.309527 | 0.002059 |
+| log(visit duration) | +0.264634 | 0.110311 | 0.016440 |
+| log(donor source pollen released) | +0.154850 | 0.159068 | 0.330314 |
+
+The log recipient-order slope implies a conditional per-next-flower
+multiplicative deposition factor of
+`exp(−0.339172) ≈ 0.7124`, not a constant number of grains
+on each new stigma. The donor source pollen-release coefficient is
+**not statistically detected** in this particular fitted model and must
+not be recoded as zero or equivalence.
+
+The re-run reproduced the paper's AIC:
+**794.806984** (additive) versus **796.616746** (species × recipient
+interaction), `ΔAIC=1.809762`. The manuscript rounded these to
+794.8 and 796.6. This is a strong **technical replication of the authors'
+original models**, and by definition **not independent confirmation from a
+new biological sample**.
+
+The source-verified log and coefficient artifact was retained as GitHub
+Actions artifact **14757542712**, ZIP SHA256
+`392765f8aefb76bf2d558f64745efbc0a21d8997420bb8d7580cb6aaa65d082e`.
+Detailed machine-readable transcription:
+[`results/vasquez_2025/ORIGINAL_RECIPIENT_NBINOM_REPLAY_20261122.json`](../results/vasquez_2025/ORIGINAL_RECIPIENT_NBINOM_REPLAY_20261122.json).
+These results use the two alternative models reported by the authors, with
+no after-results model search.
+
+### What does this add to BALANCE?
+
+For the two observed plant species, similarly small **removed-pollen
+conditioned PTE** is compatible with substantially different
+**produced-to-recipient delivery**. The original 15-trial data show a
+approximately **4.83-fold** ratio of mean `H_i/A_i` between species,
+not the approximate **3.24-fold** product-of-rounded-group-means shortcut.
+This source-conditional difference is not driven by a single donor
+trial and has the same sign within both sampled hives, but B2's
+species comparison is too sparse to generalize.
+
+The more specific ecological hypothesis is that **source pollen
+accessibility/removal is one bottleneck, whereas successful recipient
+delivery conditional on removal is another**. Observational contrasts
+of two *Solanum* species do not identify the respective contributions
+of anther morphology, bee handling or grooming, ground loss, or sexual
+fitness. Ground/basket/body channels are not in this actual Zenodo CSV,
+so any claims about the specific source-fate channel remain anchored
+to the original published article only. No paternity, seed production,
+optimization of structural alternatives or frozen BALANCE V4
+architectural coding was performed.
