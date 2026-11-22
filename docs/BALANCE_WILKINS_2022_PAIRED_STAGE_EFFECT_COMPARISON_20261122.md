@@ -130,3 +130,73 @@ sensitivity checks. The new readout comprises:
 
 No U2/U6/V4 original blinded architectural outcomes, main manuscripts,
 source-admission counts or hypothesized structural net fitness are changed.
+
+
+## Actual authenticated result (2026-11-22)
+
+The source-authenticated R workflow
+[run #45017971832](https://github.com/zuizui0223/balance/actions/runs/45017971832)
+completed successfully. The original five-model comparison again reproduced
+37 published Type II tests, maximum absolute chi-square discrepancy 0.00169969.
+The paired model recovered the previously verified individual response
+coefficients and their HC3 intervals to eight decimals (a cross-implementation
+regression check, not an independent study).
+
+### Within-bee direct stage contrast: measured versus unmeasured
+
+The **same 59 bees and full joint endpoint covariance** yielded these
+exploratory size×architecture interaction coefficients (free−joined per
+head-width mm), adjusted for observed visit time and colony intercepts:
+
+| Same-bee observed log outcome | Beta | Approx. HC3 95% CI | Approx. p |
+|---|---:|---:|---:|
+| Terminal body / corbicula pollen | +3.1755 | [+0.9549, +5.3960] | 0.00593 |
+| Stigma / corbicula pollen | +0.3897 | [−4.2595, +5.0390] | 0.8671 |
+| **Direct effect difference:** body/basket minus stigma/basket | **+2.7857** | **[−2.9474, +8.5188]** | **0.3341** |
+
+The **directly tested effect difference is NOT distinguishable from zero**.
+It equals the negative of the independently fitted stigma/body effect as a
+mathematical identity on the same log scale, and the paired covariance
+calculation reproduces the expected interval. Therefore a strong
+body/basket slope and an individually nonsignificant stigma/basket slope
+**do not establish biological decoupling between terminal carrying and
+stigma transfer**. No extra causal step is newly identified by this
+algebraic check.
+
+### Omnibus destination heterogeneity
+
+The direct 2-df joint HC3 Wald test of equal source architecture×head-width
+slopes across all three pollen destinations is:
+
+| Fixed model | 2-df joint Wald χ² | Asymptotic p |
+|---|---:|---:|
+| Adjusted for observed visit time | **9.4435** | **0.00890** |
+| Without visit-time adjustment | **7.8035** | **0.02021** |
+
+This is **positive within-study statistical evidence that at least one
+destination-specific log-pollen effect differs from another**; it may be
+driven predominantly by the verified body/basket interaction. The omnibus
+test does not establish which pair differs, and the direct body-vs-stigma
+destination contrast above is not supported. The underlying response
+ratios are calculated from the *same bee pollen inventory*, so the joint
+two-dimensional test is not three independent outcome replications. These
+are exploratory post-open checks on the original population of 59 bees
+from only three colonies, not cross-population p-values.
+
+The machine-readable exact model output is
+[`results/wilkins_2022/PAIRED_DESTINATION_CONTRASTS_20261122.json`](../results/wilkins_2022/PAIRED_DESTINATION_CONTRASTS_20261122.json);
+the actual GitHub Actions artifact
+`wilkins-2022-architecture-model-replay` ID `14752347567`
+(SHA-256 `3ea5ea51fdca69e8c808c449f31e4a2624fb53b466d2bd83e52d4dc467e9a690`)
+contains the derived original-source stage contrasts, omnibus test and
+provenance. The artifact expires in December 2026.
+
+### Biological claim ceiling
+
+What this adds: **the structure×visitor size relation varies across
+measured pollen destinations in the original experiment**. What remains
+unidentified: a specific loss of pollen transfer between body and stigma,
+a causal grooming or temporal mediation pathway, actual fathered offspring,
+pollen viability, source-plant hierarchy and the net architectural cost or
+BALANCE `Phi`. The original source's alternating architecture allocation
+and bee/plant/colony dependence also limit causal generalization.
