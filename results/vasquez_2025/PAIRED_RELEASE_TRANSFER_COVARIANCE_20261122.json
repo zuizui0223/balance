@@ -1,0 +1,146 @@
+{
+  "analysis": "BALANCE_VASQUEZ_2025_ACTUAL_PAIRED_RELEASE_PTE_COVARIANCE_V1",
+  "fixed_bootstrap_seed": 20261122,
+  "n_original_donor_trials": 15,
+  "n_recipient_rows_nested": 60,
+  "original_article_doi": "10.26786/1920-7603(2025)836",
+  "paired_trial_bootstrap_descriptive": {
+    "actual_dulcamara_minus_rostratum_source_throughput_pp": {
+      "bootstrap_resamples": 20000,
+      "n_negative_resamples": 0,
+      "n_positive_resamples": 20000,
+      "not_hive_or_plant_cluster_robust": true,
+      "trial_bootstrap_95pct_interval": [
+        0.12599529279023952,
+        0.4117856227627733
+      ]
+    },
+    "conditional_transfer_component_percentage_points": {
+      "bootstrap_resamples": 20000,
+      "n_negative_resamples": 7186,
+      "n_positive_resamples": 12814,
+      "not_hive_or_plant_cluster_robust": true,
+      "trial_bootstrap_95pct_interval": [
+        -0.19879611193832597,
+        0.23636485192509607
+      ]
+    },
+    "cov_dulcamara_pp": {
+      "bootstrap_resamples": 20000,
+      "n_negative_resamples": 18257,
+      "n_positive_resamples": 1743,
+      "not_hive_or_plant_cluster_robust": true,
+      "trial_bootstrap_95pct_interval": [
+        -0.1356806351914839,
+        0.014374684654739484
+      ]
+    },
+    "cov_rostratum_pp": {
+      "bootstrap_resamples": 20000,
+      "n_negative_resamples": 19833,
+      "n_positive_resamples": 165,
+      "not_hive_or_plant_cluster_robust": true,
+      "trial_bootstrap_95pct_interval": [
+        -0.0954491404172211,
+        -0.003533934133910532
+      ]
+    },
+    "paired_covariance_component_percentage_points": {
+      "bootstrap_resamples": 20000,
+      "n_negative_resamples": 12109,
+      "n_positive_resamples": 7891,
+      "not_hive_or_plant_cluster_robust": true,
+      "trial_bootstrap_95pct_interval": [
+        -0.10896404705985765,
+        0.07857225219766545
+      ]
+    },
+    "release_component_percentage_points": {
+      "bootstrap_resamples": 20000,
+      "n_negative_resamples": 2,
+      "n_positive_resamples": 19998,
+      "not_hive_or_plant_cluster_robust": true,
+      "trial_bootstrap_95pct_interval": [
+        0.0921244261352006,
+        0.42574316424921427
+      ]
+    }
+  },
+  "raw_donor_row_values_exported": false,
+  "source_sha256": "484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79",
+  "species": {
+    "S.dulcamara": {
+      "absolute_released_grains_vs_absolute_stigmatic_grains_spearman": 0.65,
+      "covariance_sign_preserving_single_donor_deletions": 9,
+      "full_transfer_as_fraction_of_independent_mean_product": 0.8301492347864756,
+      "group_mean_conditional_PTE_pct": 1.0006996406397815,
+      "group_mean_full_source_transfer_pct": 0.3137500727232434,
+      "group_mean_release_pct": 37.76799408538001,
+      "n_donor_bee_trials": 9,
+      "n_single_donor_deletions": 9,
+      "no_correlation_p_values": true,
+      "paired_covariance_pct_points": -0.0641941083660082,
+      "product_of_separate_group_means_pct": 0.3779441810892516,
+      "release_pct_vs_conditional_PTE_pearson": -0.5604499979054745,
+      "release_pct_vs_conditional_PTE_spearman": -0.55,
+      "single_donor_covariance_range_pct_points": [
+        -0.08616893061696952,
+        -0.022659999121414122
+      ]
+    },
+    "S.rostratum": {
+      "absolute_released_grains_vs_absolute_stigmatic_grains_spearman": -0.8857142857142857,
+      "covariance_sign_preserving_single_donor_deletions": 6,
+      "full_transfer_as_fraction_of_independent_mean_product": 0.5568536443072051,
+      "group_mean_conditional_PTE_pct": 0.8610764890798218,
+      "group_mean_full_source_transfer_pct": 0.06495702836418192,
+      "group_mean_release_pct": 13.5470068718319,
+      "n_donor_bee_trials": 6,
+      "n_single_donor_deletions": 6,
+      "no_correlation_p_values": true,
+      "paired_covariance_pct_points": -0.051693062783190406,
+      "product_of_separate_group_means_pct": 0.11665009114737233,
+      "release_pct_vs_conditional_PTE_pearson": -0.8706558583580875,
+      "release_pct_vs_conditional_PTE_spearman": -0.8857142857142857,
+      "single_donor_covariance_range_pct_points": [
+        -0.06534316807334914,
+        -0.010304033912774693
+      ]
+    }
+  },
+  "status": "POSTOPEN_AUTHENTIC_ORIGINAL_15_TRIAL_ARITHMETIC_DECOMPOSITION_NOT_CAUSAL",
+  "strict_interpretation": {
+    "absolute_grain_count_correlation_is_exploratory_not_causal": true,
+    "negative_covariance_is_NOT_evidence_of_causal_pollen_release_transfer_tradeoff": true,
+    "no_frozen_BALANCE_U2_U6_V4_update": true,
+    "no_genetic_paternity_or_seed_fitness": true,
+    "no_independent_evolutionary_replication": true,
+    "no_new_independent_original_research_programme": true,
+    "no_randomized_morphology_species_comparison": true,
+    "no_source_plant_ID_or_valid_two_hive_population_cluster_inference": true,
+    "no_true_pollen_fate_ground_body_or_basket_microdata": true,
+    "ratio_shared_denominator_B_induces_spurious_correlation_risk": true
+  },
+  "symmetric_between_species_arithmetic_decomposition": {
+    "actual_dulcamara_minus_rostratum_source_throughput_pp": 0.2487930443590615,
+    "conditional_transfer_component_percentage_points": 0.03582381077974134,
+    "decomposition_error_pp": 0,
+    "paired_covariance_component_percentage_points": -0.012501045582817788,
+    "release_component_percentage_points": 0.22547027916213794
+  },
+  "provenance": {
+    "article_doi": "10.26786/1920-7603(2025)836",
+    "zenodo_record_id": 17102653,
+    "original_csv_sha256": "484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79",
+    "original_source_trial_summary_sha_from_repo": "f0a463f862248099fbf3cb5bdcd43573d761701f",
+    "workflow_run_id": 45031783505,
+    "workflow_job_id": 137236750264,
+    "workflow_head_commit": "d81cfa82528ecb4b59d37a10e7aefb5a57c81670",
+    "action_url": "https://github.com/zuizui0223/balance/actions/runs/45031783505",
+    "artifact_id": 14758620232,
+    "zip_sha256": "b22cf7db0312d6ed4435fd1fdea98aa5bf400f1d58f74a0814c3099a12db8783",
+    "artifact_expires_at": "2026-12-13",
+    "script_path": "scripts/decompose_vasquez_2025_release_transfer.py",
+    "original_trial_rows_in_repository": 0
+  }
+}
