@@ -39,6 +39,11 @@ jobs:
           Rscript scripts/replay_wilkins_2022_architecture.R \
             release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
             release/generated/wilkins
+      - name: Check equal-bee architecture interaction and colony influence
+        run: |
+          Rscript scripts/check_wilkins_2022_bee_level_robustness.R \
+            release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
+            release/generated/wilkins
       - name: Upload source receipt and derived model results
         if: always()
         uses: actions/upload-artifact@v4
