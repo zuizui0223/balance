@@ -1,0 +1,57 @@
+name: Source-audit Vasquez-Castro 2025 Zenodo pollen fate trials
+
+on:
+  push:
+    branches:
+      - analysis/solanum-pollen-fates-zenodo-20261122
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zenodo-original-data-discovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reconcile published original source stage denominators
+        run: |
+          python - <<'PY'
+          from balance_domain.vasquez_2025_pollen_fates import build_source_pollen_fates
+          report=build_source_pollen_fates()
+          assert report["n_donor_trials"] == 15
+          assert report["n_nested_recipient_stigmas_not_independent_trials"] == 60
+          assert report["original_zenodo_raw_csv_rows_analyzed"] == 0
+          print("Paper anchors verified; this does not reproduce original raw models.")
+          PY
+      - name: Probe Zenodo record 17102653 and authenticate available source file schemas
+        run: |
+          python -m scripts.audit_vasquez_2025_zenodo --online --out "${RUNNER_TEMP}/vasquez-2025-zenodo-access.json"
+      - name: Explicitly reject a false biological reanalysis claim
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"vasquez-2025-zenodo-access.json"
+          r=json.loads(p.read_text(encoding="utf-8"))
+          assert r["raw_trial_data_analyzed"] is False
+          assert r["new_biological_effects_estimated"] == 0
+          assert r["original_trial_level_model_reproduction"] == "NOT_PERFORMED"
+          print("ZENODO_ACCESS_FINAL_STATUS",r["status"])
+          if r["status"] != "SOURCE_FILE_SCHEMAS_VERIFIED_NO_EFFECT_FITS":
+              print("::warning::Raw source schemas unavailable or incomplete; original trial-level ecological inference remains on HOLD")
+          else:
+              print("Candidate source files have verified checksums and column schemas; original ecological effects still UNFITTED")
+          PY
+      - name: Upload metadata-only original-data recovery receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-zenodo-access-only
+          path: ${{ runner.temp }}/vasquez-2025-zenodo-access.json
+          if-no-files-found: warn
+          retention-days: 21
