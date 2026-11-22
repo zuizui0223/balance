@@ -113,8 +113,8 @@ joint_fit <- function(name, spec) {
 }
 result <- lapply(names(specifications),function(x)joint_fit(x,specifications[[x]]))
 names(result)<-names(specifications)
-all_rows <- do.call(rbind,lapply(result,\`[[\`,"rows"))
-all_omnibus <- do.call(rbind,lapply(result,\`[[\`,"omnibus"))
+all_rows <- do.call(rbind,lapply(result,function(x) x$rows))
+all_omnibus <- do.call(rbind,lapply(result,function(x) x$omnibus))
 # Two independent regression implementations should reproduce the already
 # archived same-bee stage model, including the direct formal difference test.
 adjusted <- subset(all_rows,specification=="with_postvisit_time")
@@ -142,13 +142,13 @@ write.csv(data.frame(
 )
 for(i in seq_len(nrow(all_rows))) {
   z<-all_rows[i,]
-  cat(sprintf("WILKINS_PAIRED_STAGE|spec=%s|contrast=%s|n=%d|beta=%+.8f|HC3_CI=[%+.8f,%+.8f]|p=%.8g\\n",
+  cat(sprintf("WILKINS_PAIRED_STAGE|spec=%s|contrast=%s|n=%d|beta=%+.8f|HC3_CI=[%+.8f,%+.8f]|p=%.8g\n",
     z$specification,z$contrast,z$n_bees,
     z$beta_free_minus_joined_headwidth_per_mm,
     z$bee_hc3_lower95,z$bee_hc3_upper95,z$bee_hc3_approximate_p))
 }
 for(i in seq_len(nrow(all_omnibus))) {
   z<-all_omnibus[i,]
-  cat(sprintf("WILKINS_PAIRED_OMNIBUS|spec=%s|Wald2=%.8f|p=%.8g\\n",
+  cat(sprintf("WILKINS_PAIRED_OMNIBUS|spec=%s|Wald2=%.8f|p=%.8g\n",
               z$specification,z$wald_chisquare_2df,z$asymptotic_chisquare_p))
 }
