@@ -1,0 +1,33 @@
+{
+  "article": {
+    "doi": "10.1007/s00442-022-05246-0",
+    "title": "Hold tight or loosen up? Functional consequences of a shift in anther architecture depend substantially on bee body size",
+    "publisher_url": "https://link.springer.com/article/10.1007/s00442-022-05246-0"
+  },
+  "files": {
+    "442_2022_5246_MOESM2_ESM.r": {
+      "url": "https://static-content.springer.com/esm/art%3A10.1007%2Fs00442-022-05246-0/MediaObjects/442_2022_5246_MOESM2_ESM.r",
+      "bytes": 29899,
+      "sha256": "b89d1a1cea198bed16284c55fc941c5c217ca0501de4e530165cd3839a0ea16c",
+      "access_utc": "2026-11-21T14:19:44.984544+00:00"
+    },
+    "442_2022_5246_MOESM3_ESM.csv": {
+      "url": "https://static-content.springer.com/esm/art%3A10.1007%2Fs00442-022-05246-0/MediaObjects/442_2022_5246_MOESM3_ESM.csv",
+      "bytes": 5292,
+      "sha256": "0d433ba471cc7c1cbcdc3ce4bf0fd8a599b04176b4e85c7425ab67fad6703c62",
+      "access_utc": "2026-11-21T14:19:44.980831+00:00"
+    }
+  },
+  "design": {
+    "bee_species": "Bombus impatiens",
+    "plant_species": "Solanum elaeagnifolium",
+    "recruited_bees": 67,
+    "basket_collecting_bees_in_archive": 60,
+    "unit": "one bee per trial; flower observations pooled within trial",
+    "treatment_mapping": {
+      "Sham": "free",
+      "Cone": "joined"
+    },
+    "assignment": "architecture alternated; head width observed"
+  }
+}

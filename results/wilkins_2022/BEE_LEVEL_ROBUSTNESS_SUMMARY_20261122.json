@@ -1,0 +1,77 @@
+{
+  "analysis": "BALANCE_WILKINS_BEE_LEVEL_ROBUSTNESS_20261122",
+  "status": "ACTUAL_VERIFIED_SOURCE_POSTOPEN_EXPLORATORY_BEE_LEVEL_SENSITIVITY",
+  "source": {
+    "doi": "10.1007/s00442-022-05246-0",
+    "sha256": "0d433ba471cc7c1cbcdc3ce4bf0fd8a599b04176b4e85c7425ab67fad6703c62",
+    "biological_units": "59 independent bee trials nested in three colonies; original 60 source trials with one missing head width",
+    "colony_count": 3
+  },
+  "response": "log(BodyPollen/CorbiculaPollen)",
+  "scope": {
+    "head_width_slope_contrast": "Sham free minus Cone joined per 1 mm, conditional on pooled mean VisitTime; all 59 bees equal-weight",
+    "covariance": "HC3 heteroskedastic bee-row covariance; NOT 3-colony-robust uncertainty",
+    "leave_one_out": "Post-open stability of coefficient direction; not independent replication, no causal randomization-inference",
+    "plant_source_clusters_unknown": true,
+    "architecture_assignment": "alternating treatment order, not assured randomized",
+    "no_independent_genetic_paternity": true,
+    "not_new_BALANCE_V4_architecture_outcome": true
+  },
+  "results": [
+    {
+      "model": "full_three_way",
+      "n_bees": 59,
+      "beta_free_minus_joined_per_mm": 3.52554343,
+      "hc3_se": 1.47539422,
+      "p_approximate_bee_row_hc3": 0.020760817,
+      "hc3_approximate_95pct_interval": [
+        0.56062775,
+        6.49045912
+      ],
+      "leave_one_bee_same_sign_count": 59,
+      "leave_one_bee_total": 59,
+      "leave_one_colony_same_sign_count": 3,
+      "leave_one_colony_total": 3,
+      "leave_one_colony_beta_range": [
+        1.85597511,
+        4.31832139
+      ]
+    },
+    {
+      "model": "reduced_two_way",
+      "n_bees": 59,
+      "beta_free_minus_joined_per_mm": 3.17546609,
+      "hc3_se": 1.10660193,
+      "p_approximate_bee_row_hc3": 0.0059290062,
+      "hc3_approximate_95pct_interval": [
+        0.95490686,
+        5.39602532
+      ],
+      "leave_one_bee_same_sign_count": 59,
+      "leave_one_bee_total": 59,
+      "leave_one_colony_same_sign_count": 3,
+      "leave_one_colony_total": 3,
+      "leave_one_colony_beta_range": [
+        2.76152657,
+        3.44974395
+      ]
+    }
+  ],
+  "reproducibility": {
+    "workflow_run_id": 45013279220,
+    "workflow_url": "https://github.com/zuizui0223/balance/actions/runs/45013279220",
+    "verified_head_commit": "4bded595c93d54de1914c766a713b51676b0a1e0",
+    "artifact_id": 14750741539,
+    "artifact_zip_sha256": "bceafeb74283bee7eabdc0315768b9f694ab25b19bf768b1a53cbcfa78fe87a8",
+    "artifact_expiration": "2026-12-22",
+    "code_file": "scripts/check_wilkins_2022_bee_level_robustness.R",
+    "derived_artifact_files": [
+      "bee_level_hc3_contrasts.csv",
+      "leave_one_colony_out.csv",
+      "leave_one_bee_out_summary.csv",
+      "bee_level_scope.csv"
+    ],
+    "original_five_model_source_chisq_replay_max_abs_error": 0.00169969
+  },
+  "claim_ceiling": "source-bee-level-within-study-allocation-interaction-stability-not-architecture-evolution-or-donor-paternity-or-fitness"
+}

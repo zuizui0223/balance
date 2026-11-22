@@ -1,0 +1,64 @@
+name: Wilkins 2022 anther architecture model replay
+'on':
+  push:
+    branches:
+      - analysis/solanum-bee-size-architecture-20261121
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-models:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Authenticate the publisher CSV and original R script
+        run: |
+          python -m scripts.audit_solanum_bee_architecture \
+            --source-dir release/generated/wilkins-source --download \
+            --out release/generated/wilkins/source_audit.json
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.5.2'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          dependencies: '"hard"'
+          install-pandoc: 'false'
+          install-quarto: 'false'
+          packages: |
+            any::glmmTMB
+            any::car
+            any::digest
+            any::lme4
+      - name: Replay archived and body-only models on the authenticated data
+        run: |
+          Rscript scripts/replay_wilkins_2022_architecture.R \
+            release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
+            release/generated/wilkins
+      - name: Check equal-bee architecture interaction and colony influence
+        run: |
+          Rscript scripts/check_wilkins_2022_bee_level_robustness.R \
+            release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
+            release/generated/wilkins
+      - name: Check individual-colony architecture-size slopes and stigma destination
+        run: |
+          Rscript scripts/check_wilkins_2022_colony_and_stigma_stages.R \
+            release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
+            release/generated/wilkins
+      - name: Direct paired pollen-stage contrast with within-bee covariance
+        run: |
+          Rscript scripts/check_wilkins_2022_paired_stage_contrasts.R \
+            release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
+            release/generated/wilkins
+      - name: Upload source receipt and derived model results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wilkins-2022-architecture-model-replay
+          path: release/generated/wilkins/
+          if-no-files-found: error
+          retention-days: 30

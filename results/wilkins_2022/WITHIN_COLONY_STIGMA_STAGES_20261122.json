@@ -1,0 +1,160 @@
+{
+  "analysis": "BALANCE_WILKINS_2022_WITHIN_COLONY_AND_STIGMA_STAGE_V1",
+  "status": "ACTUAL_AUTHENTICATED_SOURCE_EXPLORATORY_POSTOPEN_SENSITIVITY",
+  "source": {
+    "article_doi": "10.1007/s00442-022-05246-0",
+    "raw_csv_sha256": "0d433ba471cc7c1cbcdc3ce4bf0fd8a599b04176b4e85c7425ab67fad6703c62",
+    "n_original_bee_trials": 60,
+    "n_complete_bee_trials": 59,
+    "n_colonies": 3,
+    "source_plants_not_independently_identified": true
+  },
+  "within_colony_headwidth_results": [
+    {
+      "colony": "Blue",
+      "n_bees": 14,
+      "joined": 9,
+      "free": 5,
+      "slope_free_minus_joined_per_mm": 6.3406883,
+      "descriptive_ols_95pct_interval": [
+        -3.26176301,
+        15.94313962
+      ],
+      "within_treatment_headwidth_support_overlap": true,
+      "observed_bees_in_overlap": 9,
+      "claim": "within-colony point estimate; descriptive OLS interval, not colony-population inference"
+    },
+    {
+      "colony": "Orange",
+      "n_bees": 18,
+      "joined": 9,
+      "free": 9,
+      "slope_free_minus_joined_per_mm": 1.64309292,
+      "descriptive_ols_95pct_interval": [
+        -2.57611339,
+        5.86229924
+      ],
+      "within_treatment_headwidth_support_overlap": true,
+      "observed_bees_in_overlap": 15,
+      "claim": "within-colony point estimate; descriptive OLS interval, not colony-population inference"
+    },
+    {
+      "colony": "Red",
+      "n_bees": 27,
+      "joined": 13,
+      "free": 14,
+      "slope_free_minus_joined_per_mm": 1.85273939,
+      "descriptive_ols_95pct_interval": [
+        -1.44242374,
+        5.14790252
+      ],
+      "within_treatment_headwidth_support_overlap": true,
+      "observed_bees_in_overlap": 25,
+      "claim": "within-colony point estimate; descriptive OLS interval, not colony-population inference"
+    }
+  ],
+  "pollen_stage_endpoint_sensitivity": [
+    {
+      "endpoint": "log_body_basket",
+      "specification": "with_postvisit_time",
+      "n_bees": 59,
+      "beta_free_minus_joined_size_per_mm": 3.17546609,
+      "bee_row_hc3_approximate_95pct_interval": [
+        0.95490686,
+        5.39602532
+      ],
+      "bee_row_hc3_approximate_p": 0.0059290062,
+      "claim": "separate exploratory endpoint model; no causal mediation, no genetic paternity"
+    },
+    {
+      "endpoint": "log_body_basket",
+      "specification": "without_postvisit_time",
+      "n_bees": 59,
+      "beta_free_minus_joined_size_per_mm": 2.9650493,
+      "bee_row_hc3_approximate_95pct_interval": [
+        0.7623132,
+        5.1677854
+      ],
+      "bee_row_hc3_approximate_p": 0.0092891907,
+      "claim": "separate exploratory endpoint model; no causal mediation, no genetic paternity"
+    },
+    {
+      "endpoint": "log_stigma_body",
+      "specification": "with_postvisit_time",
+      "n_bees": 59,
+      "beta_free_minus_joined_size_per_mm": -2.7857184,
+      "bee_row_hc3_approximate_95pct_interval": [
+        -8.51882097,
+        2.94738417
+      ],
+      "bee_row_hc3_approximate_p": 0.33405905,
+      "claim": "separate exploratory endpoint model; no causal mediation, no genetic paternity"
+    },
+    {
+      "endpoint": "log_stigma_body",
+      "specification": "without_postvisit_time",
+      "n_bees": 59,
+      "beta_free_minus_joined_size_per_mm": -2.68579253,
+      "bee_row_hc3_approximate_95pct_interval": [
+        -8.11164108,
+        2.74005603
+      ],
+      "bee_row_hc3_approximate_p": 0.32529766,
+      "claim": "separate exploratory endpoint model; no causal mediation, no genetic paternity"
+    },
+    {
+      "endpoint": "log_stigma_count",
+      "specification": "with_postvisit_time",
+      "n_bees": 59,
+      "beta_free_minus_joined_size_per_mm": -1.1832438,
+      "bee_row_hc3_approximate_95pct_interval": [
+        -5.93346082,
+        3.56697322
+      ],
+      "bee_row_hc3_approximate_p": 0.61929578,
+      "claim": "separate exploratory endpoint model; no causal mediation, no genetic paternity"
+    },
+    {
+      "endpoint": "log_stigma_count",
+      "specification": "without_postvisit_time",
+      "n_bees": 59,
+      "beta_free_minus_joined_size_per_mm": -1.33275174,
+      "bee_row_hc3_approximate_95pct_interval": [
+        -5.95722931,
+        3.29172583
+      ],
+      "bee_row_hc3_approximate_p": 0.56568103,
+      "claim": "separate exploratory endpoint model; no causal mediation, no genetic paternity"
+    }
+  ],
+  "model_scope": {
+    "contrast": "Sham free minus Cone joined treatment interaction with continuous bee head width (mm)",
+    "colony_within": "Per-colony equal-bee log BodyPollen/CorbiculaPollen regression adjusted for observed visit time; 1 study, 3 colonies, n=14/18/27",
+    "stage_common": "All 59 bee trials, colony fixed effects; with and without visit-time adjustment; 3 different observed stage outcomes",
+    "endpoint_log_body_basket": "log(terminal body pollen / pollen in bee basket)",
+    "endpoint_log_stigma_body": "log(pollen deposited on pooled stigmas / terminal body pollen) - not true transfer efficiency",
+    "endpoint_log_stigma_count": "log(pollen grains observed on pooled recipient stigmas) - not genetic paternity",
+    "HC3_not_colony_robust": true,
+    "not_cross_endpoint_effect_difference_test": true,
+    "post_treatment_covariate_caveat": true,
+    "trial_assignments_alternated_not_proven_randomized": true,
+    "only_three_original_bee_colonies": true,
+    "missing_seven_noncollecting_bees_caveat": true,
+    "sexually_viable_donor_paternity_not_measured": true,
+    "source_plant_cluster_not_identified": true,
+    "not_frozen_BALANCE_V4_or_Phi": true
+  },
+  "provenance": {
+    "workflow_id": 45017036647,
+    "workflow_url": "https://github.com/zuizui0223/balance/actions/runs/45017036647",
+    "original_executed_head": "a62e9c947c445c5e94e69b542660eb87195a7d8a",
+    "workflow_artifact_id": 14752457051,
+    "workflow_artifact_zip_sha256": "b1a8a1f3120650ecfa9fcf86ef5224ad5f31367bf17ce5312724f62586fcc541",
+    "workflow_artifact_expires_at": "2026-12-22",
+    "original_2022_typeII_tests_reproduced": 37,
+    "maximum_reference_chisquare_abs_deviation": 0.00169969,
+    "readout_kind": "exact official GitHub Actions verified raw-source R log; full derived CSVs in Actions archive",
+    "script_path": "scripts/check_wilkins_2022_colony_and_stigma_stages.R"
+  },
+  "claim_ceiling": "all_three_colony_specific_points_same_sign_but_each_CI_crosses_zero; bee_routing_architecture_size_robust; no_stigma_interaction_detected_in_fixed_stage_models; not_fitness_or_heritable_selection"
+}
