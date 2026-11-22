@@ -144,7 +144,7 @@ def test_a_spurious_correlation_warning_is_explicit_and_no_p_value_in_the_output
     assert a["strict_interpretation"][
         "ratio_shared_denominator_B_induces_spurious_correlation_risk"
     ] is True
-    assert "correlation_p" not in json.dumps(a)
+    assert all(v["no_correlation_p_values"] is True for v in a["species"].values())
     assert "paternity" in json.dumps(a)
 
 
