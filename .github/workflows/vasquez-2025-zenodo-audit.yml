@@ -1,0 +1,129 @@
+name: Source-audit Vasquez-Castro 2025 Zenodo pollen fate trials
+
+on:
+  push:
+    branches:
+      - analysis/solanum-pollen-fates-zenodo-20261122
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zenodo-original-data-discovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reconcile published original source stage denominators
+        run: |
+          python - <<'PY'
+          from balance_domain.vasquez_2025_pollen_fates import build_source_pollen_fates
+          report=build_source_pollen_fates()
+          assert report["n_donor_trials"] == 15
+          assert report["n_nested_recipient_stigmas_not_independent_trials"] == 60
+          assert report["original_zenodo_raw_csv_rows_analyzed"] == 0
+          print("Paper anchors verified; this does not reproduce original raw models.")
+          PY
+      - name: Probe Zenodo record 17102653 and authenticate available source file schemas
+        run: |
+          python -m scripts.audit_vasquez_2025_zenodo --online --out "${RUNNER_TEMP}/vasquez-2025-zenodo-access.json"
+      - name: Verify exact original 60-recipient CSV and 15 donor-trial keys
+        run: |
+          python -m scripts.audit_vasquez_2025_trial_structure \
+            --source-dir "${RUNNER_TEMP}/vasquez-raw-not-uploaded" \
+            --out "${RUNNER_TEMP}/vasquez-2025-original-trial-grain.json"
+      - name: Upload verified trial-grain receipt (no raw observations)
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-original-trial-grain-only
+          path: ${{ runner.temp }}/vasquez-2025-original-trial-grain.json
+          if-no-files-found: error
+          retention-days: 21
+      - name: Reanalyse 15 real donor trials with two verified pollen denominators
+        run: |
+          python -m scripts.reanalyse_vasquez_2025_trial_denominators \
+            --original-csv "${RUNNER_TEMP}/vasquez-raw-not-uploaded/data.csv" \
+            --out "${RUNNER_TEMP}/vasquez-2025-actual-15-trial-denominators.json"
+      - name: Upload only derived pollen delivery summary, never original raw CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-real-trial-level-denominator-estimates
+          path: ${{ runner.temp }}/vasquez-2025-actual-15-trial-denominators.json
+          if-no-files-found: error
+          retention-days: 21
+      - name: Check both hives and each donor-trial influence without new p-values
+        run: |
+          python -m scripts.check_vasquez_2025_hive_dependency \
+            --original-csv "${RUNNER_TEMP}/vasquez-raw-not-uploaded/data.csv" \
+            --out "${RUNNER_TEMP}/vasquez-2025-hive-sensitivity.json"
+      - name: Upload derived original-trial hive influence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-hive-influence
+          path: ${{ runner.temp }}/vasquez-2025-hive-sensitivity.json
+          if-no-files-found: error
+          retention-days: 21
+      - name: Decompose paired release and conditional PTE on original 15 donor trials
+        run: |
+          python -m scripts.decompose_vasquez_2025_release_transfer \
+            --original-csv "${RUNNER_TEMP}/vasquez-raw-not-uploaded/data.csv" \
+            --out "${RUNNER_TEMP}/vasquez-2025-paired-release-transfer-decomposition.json"
+      - name: Upload source-aggregate covariance decomposition only
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-paired-release-pte-decomposition
+          path: ${{ runner.temp }}/vasquez-2025-paired-release-transfer-decomposition.json
+          if-no-files-found: error
+          retention-days: 21
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.5.2'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          dependencies: '"hard"'
+          install-pandoc: 'false'
+          install-quarto: 'false'
+          packages: |
+            any::glmmTMB
+            any::digest
+      - name: Reproduce original 2025 recipient-order negative binomial mixed models
+        run: |
+          Rscript scripts/replay_vasquez_2025_recipient_curve.R \
+            "${RUNNER_TEMP}/vasquez-raw-not-uploaded/data.csv" \
+            "${RUNNER_TEMP}/vasquez-2025-original-nb"
+      - name: Upload derived original recipient-curve coefficients and diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-original-recipient-nbinom2-replay
+          path: ${{ runner.temp }}/vasquez-2025-original-nb/
+          if-no-files-found: error
+          retention-days: 21
+      - name: Explicitly reject a false biological reanalysis claim
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"vasquez-2025-zenodo-access.json"
+          r=json.loads(p.read_text(encoding="utf-8"))
+          assert r["raw_trial_data_analyzed"] is False
+          assert r["new_biological_effects_estimated"] == 0
+          assert r["original_trial_level_model_reproduction"] == "NOT_PERFORMED"
+          print("ZENODO_ACCESS_FINAL_STATUS",r["status"])
+          if r["status"] != "SOURCE_FILE_SCHEMAS_VERIFIED_NO_EFFECT_FITS":
+              print("::warning::Raw source schemas unavailable or incomplete; original trial-level ecological inference remains on HOLD")
+          else:
+              print("Candidate source files have verified checksums and column schemas; original ecological effects still UNFITTED")
+          PY
+      - name: Upload metadata-only original-data recovery receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasquez-2025-zenodo-access-only
+          path: ${{ runner.temp }}/vasquez-2025-zenodo-access.json
+          if-no-files-found: warn
+          retention-days: 21

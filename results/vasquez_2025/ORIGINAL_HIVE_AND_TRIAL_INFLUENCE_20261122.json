@@ -1,0 +1,57 @@
+{
+  "analysis": "BALANCE_VASQUEZ_2025_TRIAL_HIVE_SENSITIVITY",
+  "limits": {
+    "B2_rostratum_n1_no_species_replication_within_B2": true,
+    "donor_plant_ID_missing": true,
+    "no_inference_on_ground_basket_body_channels": true,
+    "no_original_genetic_paternity": true,
+    "postopen_hive_and_influence_checks": true,
+    "species_not_randomized": true,
+    "two_hives_insufficient_for_population_cluster_inference": true
+  },
+  "n_hives": 2,
+  "n_source_trials": 15,
+  "single_donor_deletion": {
+    "max_end_to_end_dulcamara_minus_rostratum_pp": 0.2703804068318603,
+    "min_end_to_end_dulcamara_minus_rostratum_pp": 0.17782717948143062,
+    "n_differences_positive": 15,
+    "n_source_trials_removed_one_at_a_time": 15
+  },
+  "source_sha256": "484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79",
+  "status": "ACTUAL_SOURCE_POSTOPEN_DESCRIPTIVE_HIVE_CHECK_NOT_CONFIRMATORY",
+  "within_hive_comparisons": [
+    {
+      "at_least_two_trials_each_species": true,
+      "caution": "Single observational hive; donor plants untracked; no species-specific causal architecture estimate",
+      "hive": "B1",
+      "n_dulcamara": 5,
+      "n_rostratum": 5,
+      "within_hive_dulcamara_minus_rostratum": {
+        "fraction_released_pct_of_measured_source": 20.54710763445405,
+        "pollen_transfer_efficiency_pct_of_removed": 0.3500712554786338,
+        "source_to_four_stigmas_pct_of_production": 0.2816905352285103
+      }
+    },
+    {
+      "at_least_two_trials_each_species": false,
+      "caution": "Single observational hive; donor plants untracked; no species-specific causal architecture estimate",
+      "hive": "B2",
+      "n_dulcamara": 4,
+      "n_rostratum": 1,
+      "within_hive_dulcamara_minus_rostratum": {
+        "fraction_released_pct_of_measured_source": 31.814797907187362,
+        "pollen_transfer_efficiency_pct_of_removed": 0.13514744191207806,
+        "source_to_four_stigmas_pct_of_production": 0.21942829496572466
+      }
+    }
+  ],
+  "provenance": {
+    "article_doi": "10.26786/1920-7603(2025)836",
+    "source_csv_sha256": "484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79",
+    "run_id": 45030511028,
+    "executed_head_sha": "1df45853881ed1a30909672378a2b3c9712f9b07",
+    "artifact_id": 14757243674,
+    "artifact_zip_sha256": "b2b6c81a6bc7e96aba2561699c197a58dd92540f0cceec5590b2064b2445ec78",
+    "source_experimental_units": "15 donor-bee trials; two hives; B2 rostratum n1"
+  }
+}

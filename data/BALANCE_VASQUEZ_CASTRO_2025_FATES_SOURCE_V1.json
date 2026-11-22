@@ -1,0 +1,137 @@
+{
+  "schema_version": "BALANCE_VASQUEZ_CASTRO_2025_POLLEN_FATES_SOURCE_V1",
+  "status": "PUBLISHED_SOURCE_NUMBERS_VERIFIED_RAW_TRIAL_DATA_NOT_YET_FETCHED",
+  "article": {
+    "title": "The fate of pollen in two morphologically contrasting buzz-pollinated Solanum flowers",
+    "authors": "Christian A. Vasquez-Castro; Elodie Morel; Bernardo Garcia-Simpson; Mario Vallejo-Marín",
+    "doi": "10.26786/1920-7603(2025)836",
+    "journal": "Journal of Pollination Ecology",
+    "volume": 39,
+    "pages": "246-260",
+    "publication_date": "2025-09-17",
+    "official_url": "https://www.pollinationecology.org/index.php/jpe/article/view/836",
+    "open_full_text_url": "https://pollinationecology.org/index.php/jpe/article/download/836/570/6006",
+    "research_programme_count": 1
+  },
+  "dataset": {
+    "source": "Zenodo",
+    "publisher_stated_record": "https://zenodo.org/records/17102653",
+    "record_id": 17102653,
+    "public_api": "https://zenodo.org/api/records/17102653",
+    "file_inventory_retrieved": false,
+    "raw_original_trials_retrieved": false,
+    "source_hashes_verified": false,
+    "possible_blocker": "Uncredentialed file access might be blocked; not evidence that source data do not exist",
+    "originally_reported_available": true
+  },
+  "design": {
+    "focal_bee": "Bombus terrestris",
+    "bee_colonies": 2,
+    "focal_species": [
+      "Solanum rostratum",
+      "Solanum dulcamara"
+    ],
+    "completed_donor_trials": {
+      "Solanum rostratum": 6,
+      "Solanum dulcamara": 9
+    },
+    "recipient_stigmas_per_trial": 4,
+    "recipient_stigmas_total": 60,
+    "donor_flower_per_trial": 1,
+    "primary_replicate": "one donor-bee-to-four-recipient trial",
+    "repeated_recipients_nested_within_trials": true,
+    "bee_ids_and_independence_not_verified_in_raw_data": true,
+    "source_species_intervention": "between species, not within-species architecture randomization",
+    "fates_measured": [
+      "anther pollen remaining C",
+      "ground falling D",
+      "bee corbicula F",
+      "terminal body G",
+      "four recipient stigmas H1-H4"
+    ],
+    "ground_recording_limit": "Pollen lost to ground or air after leaving donor was not measured; only pollen collected under donor",
+    "recipients_anther_pores_sealed": true,
+    "orientation_artificial_fixed_90_degrees": true,
+    "sampled_consecutive_recipient_limit": 4
+  },
+  "source_definitions": {
+    "C": "anther grains remaining after single donor visit",
+    "D": "pollen grains dislodged and recovered on ground under donor",
+    "F": "pollen grains on bee corbiculae after trial",
+    "G": "pollen grains remaining on bee body at end of trial",
+    "H": "H1+H2+H3+H4 counted on four recipient stigmas",
+    "A": "C+D+F+G+H (measured accounting reconstruction, not necessarily absolute biological production)",
+    "B": "D+F+G+H (measured pollen removed from donor)",
+    "PTE": "100*H/B percent; PTE is NOT 100*H/A",
+    "fractions": "Pollen fate fractions D/B,F/B,G/B,H/B, all from the same one-donor one-bee trial",
+    "denominator_warning": "Published species proportions are species means of trial-level ratios; never treat them as one shared measured joint draw"
+  },
+  "published_source_results": {
+    "Solanum rostratum": {
+      "source_pollen_removal_as_pct_total": 13.55,
+      "percent_removed_to_ground": 62.99,
+      "percent_removed_to_basket": 27.65,
+      "percent_removed_left_on_body": 8.54,
+      "percent_removed_to_stigmas": 0.86,
+      "n_completed_trials": 6,
+      "architecture": "heterantherous flower with a laterally displaced pollinating anther"
+    },
+    "Solanum dulcamara": {
+      "source_pollen_removal_as_pct_total": 37.77,
+      "percent_removed_to_ground": 19.07,
+      "percent_removed_to_basket": 65.92,
+      "percent_removed_left_on_body": 14.01,
+      "percent_removed_to_stigmas": 1,
+      "n_completed_trials": 9,
+      "architecture": "monomorphic anthers fused into a cone"
+    }
+  },
+  "author_tests": {
+    "ground_dislodged_species_difference": {
+      "z": 3.66,
+      "p": 0.001,
+      "interpretation": "significant species contrast at original author reported test"
+    },
+    "basket_fraction_species_difference": {
+      "z": -2.535,
+      "p": 0.011,
+      "interpretation": "significant species contrast at original author reported test"
+    },
+    "body_fraction_species_difference": {
+      "z": -0.305,
+      "p": 0.76,
+      "interpretation": "nonsignificant; NOT equivalence"
+    },
+    "stigma_fraction_species_difference": {
+      "z": -1.223,
+      "p": 0.221,
+      "interpretation": "nonsignificant; NOT equivalence"
+    },
+    "release_visit_receipt_slope": {
+      "estimate_log_rate": -0.339,
+      "se": 0.098,
+      "z": -3.475,
+      "p_reported": "p<0.001",
+      "warning": "Original paper uses a negative binomial GLMM and four nested recipient flowers"
+    },
+    "species_recipient_order_interaction_compared_by_AIC": {
+      "additive": 794.8,
+      "interaction": 796.6,
+      "delta": 1.8,
+      "author_decision": "additive preferred as more parsimonious; does not prove equal slopes"
+    }
+  },
+  "scientific_ceiling": {
+    "same_species_as_earlier_BALANCE": "S. rostratum appears in U3 and PR #276, and this programme shares Solanum context with PR #277 but is not a separate evolutionary transition",
+    "different_bee_species_to_Wilkins_2022": "Vasquez used B. terrestris; Wilkins used B. impatiens",
+    "loss_pathway_significant_within_2025_source": true,
+    "pte_difference_not_detected_does_not_mean_equivalence": true,
+    "morphology_causal_effect_unidentified": true,
+    "no_genetic_donor_paternity": true,
+    "no_seed_fitness": true,
+    "no_fitness_net_architecture_comparison": true,
+    "no_raw_data_reanalysis_as_of_source_receipt": true,
+    "published_means_not_necessarily_identical_to_ratio_of_group_means": true,
+    "no_G1_V4_human_coder_admission": true
+  }
+}
