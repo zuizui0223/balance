@@ -114,3 +114,84 @@ The run exports `colony_specific_size_slopes.csv` (three colonies),
 exploratory** source reanalysis. No raw publisher CSV or original
 copyrighted author code is committed to the repository, and the existing
 U2/U6/V4 coder surfaces are unchanged.
+
+
+## Results from real authenticated 59-bee experiment (2026-11-22)
+
+The fixed script ran with the original CSV in
+[Actions #45017036647](https://github.com/zuizui0223/balance/actions/runs/45017036647).
+It completed successfully after independently reproducing all 37 published
+2022 original Type II tests (maximum absolute chi-square discrepancy
+0.00169969). The complete machine-readable values were captured from the
+Action log and are committed in
+[`results/wilkins_2022/WITHIN_COLONY_STIGMA_STAGES_20261122.json`](../results/wilkins_2022/WITHIN_COLONY_STIGMA_STAGES_20261122.json).
+
+### 1. One model per original bee colony
+
+Colony-by-colony *free-minus-joined head-width slope differences* for
+`log(BodyPollen/CorbiculaPollen)` with observed handling time included:
+
+| Colony | Bees (joined, free) | Slope difference / head-width mm | 95% descriptive OLS interval | Bees in treated-arm head-width overlap |
+|---|---|---:|---:|---:|
+| Blue | 14 (9, 5) | +6.3407 | [−3.2618, +15.9431] | 9 |
+| Orange | 18 (9, 9) | +1.6431 | [−2.5761, +5.8623] | 15 |
+| Red | 27 (13, 14) | +1.8527 | [−1.4424, +5.1479] | 25 |
+
+All three point estimates are positive, **but each individual interval spans
+zero**. The original pooled positive association is therefore **directionally
+present in all three observed colony subsets**, not just in every
+leave-one-colony-out fit. It is nevertheless inappropriate to claim that
+any single colony established the interaction or that the three colonies
+demonstrate population-wide replication. The Blue subset's few freely
+foraging bees make its slope especially imprecise.
+
+### 2. Downstream observed pollen-stage endpoints
+
+Each line uses all 59 bees, separate *bee-equal-weighted* model fits and
+colony fixed effects. Values describe the head-width interaction in the
+*free-versus-joined* slope on each endpoint's log scale. All uncertainty is
+approximate **HC3 on bee rows**, not colony-robust uncertainty.
+
+| Observed pollen outcome | Visit-time model | Interaction beta / mm | 95% HC3 interval | Approx. p |
+|---|---|---:|---:|---:|
+| Terminal body / bee basket | Adjusted | +3.1755 | [+0.9549, +5.3960] | 0.00593 |
+| Terminal body / bee basket | Not adjusted | +2.9650 | [+0.7623, +5.1678] | 0.00929 |
+| Stigma deposits / terminal body | Adjusted | −2.7857 | [−8.5188, +2.9474] | 0.334 |
+| Stigma deposits / terminal body | Not adjusted | −2.6858 | [−8.1116, +2.7401] | 0.325 |
+| Absolute stigma grain count (log) | Adjusted | −1.1832 | [−5.9335, +3.5670] | 0.619 |
+| Absolute stigma grain count (log) | Not adjusted | −1.3328 | [−5.9572, +3.2917] | 0.566 |
+
+The archived body/basket result with observed handling time is reproduced
+exactly in an independently fitted R model, `beta=+3.17546609`.
+Removing handling time does not reverse this interaction or its approximate
+bee-level HC3 interval. The same treated plants and bees yield **no
+detectable architecture×size interaction in either stigma endpoint under
+these fixed model specifications**.
+
+**This is a failure to detect a downstream stage response, not a formal
+rejection of effect transmission.** The stigma log-ratio shares BodyPollen
+with the body/basket response; end points are dependent, and the difference
+between their coefficients has not been formally tested. Therefore the
+opposite signs and different individual p-values do not establish that the
+true stage effects are statistically different. They also do not establish
+that body pollen cannot be transferred later, because terminal measurements
+do not record later visit opportunities or donor genotype.
+
+### Current biological interpretation
+
+These two real-data audits together strengthen a **stage-specific**
+ecological conclusion within *Solanum elaeagnifolium*: the form of the
+anther cone and the size of its bee visitor jointly predict **where that bee
+carries captured pollen (terminal body versus corbicula)**. In this study,
+**measured pollen deposited on visited stigmas does not show a correspondingly
+identified size-by-architecture contrast**. Several untested causes remain
+possible, including bee grooming, stigma contact, finite stigma receptivity,
+or imperfect pollen transport. These are mechanisms for future testing,
+**not demonstrated explanations**.
+
+**Strict ceiling:** architecture treatment alternated; size and handling
+time are observed or post-treatment; source plant identity, the seven
+noncollecting bees, and genetically identified paternity are missing.
+Only three bee colonies were sampled. This is original-source within-study
+post-open sensitivity and must not be imported into frozen U2/U6/V4 as a
+confirmatory architecture outcome or an estimated BALANCE `Phi`.
