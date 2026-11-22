@@ -19,6 +19,7 @@ import random
 from statistics import mean
 
 from scripts.reanalyse_vasquez_2025_trial_denominators import from_authenticated_rows
+from scripts.audit_vasquez_2025_trial_structure import RAW_SHA256
 
 SEED = 20261122
 BOOTSTRAPS = 20000
@@ -124,6 +125,13 @@ def analyze_paired_trials(
         raise ValueError("Bootstrap count must be a positive integer >=100")
     if isinstance(seed,bool) or not isinstance(seed,int):
         raise ValueError("Seed must be a plain integer")
+    metadata=source.get("source") or {}
+    if (
+        metadata.get("raw_csv_sha256") != RAW_SHA256
+        or metadata.get("n_donor_trials") != 15
+        or metadata.get("n_original_recipient_measurements") != 60
+    ):
+        raise ValueError("Analysis requires 15 donor units from the source-verified Zenodo receipt")
     original=source.get("trials")
     if not isinstance(original,list) or len(original)!=15:
         raise ValueError("Expected 15 independent original donor trials")
