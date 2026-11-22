@@ -1,0 +1,153 @@
+{
+  "analysis": "BALANCE_VASQUEZ_2025_ACTUAL_TRIAL_LEVEL_END_TO_END_POLLEN_TRANSFER_V1",
+  "article_doi": "10.26786/1920-7603(2025)836",
+  "independent_original_research_programmes": 1,
+  "nested_stigma_rows": 60,
+  "original_species_results_not_forced_to_match_author_rounded_figures": true,
+  "predefined_trial_level_species_mean_differences": {
+    "fraction_released_pct_of_measured_source": {
+      "bootstrap_replicates": 20000,
+      "descriptive_95pct_trial_bootstrap_interval": [
+        11.353309437965336,
+        37.142196066434686
+      ],
+      "dulcamara_minus_rostratum_pct_points": 24.22098721354811,
+      "not_random_assignment_or_colony_robust_confidence": true
+    },
+    "pollen_transfer_efficiency_pct_of_removed": {
+      "bootstrap_replicates": 20000,
+      "descriptive_95pct_trial_bootstrap_interval": [
+        -0.7781930252539648,
+        0.9185107046616129
+      ],
+      "dulcamara_minus_rostratum_pct_points": 0.13962315155995952,
+      "not_random_assignment_or_colony_robust_confidence": true
+    },
+    "source_to_four_stigmas_pct_of_production": {
+      "bootstrap_replicates": 20000,
+      "descriptive_95pct_trial_bootstrap_interval": [
+        0.12359794566221402,
+        0.4129667851068951
+      ],
+      "dulcamara_minus_rostratum_pct_points": 0.24879304435906147,
+      "not_random_assignment_or_colony_robust_confidence": true
+    }
+  },
+  "published_author_species_mean_PTE_pct_of_removed": {
+    "S.dulcamara": 1,
+    "S.rostratum": 0.86
+  },
+  "published_author_species_mean_removed_pct_of_production": {
+    "S.dulcamara": 37.77,
+    "S.rostratum": 13.55
+  },
+  "raw_trial_rows_in_repo": 0,
+  "source_hash": "484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79",
+  "species": {
+    "S.dulcamara": {
+      "hive_counts": {
+        "B1": 5,
+        "B2": 4
+      },
+      "mean_per_trial": {
+        "first_recipient_pct_of_four_stigmas": 32.52323464961442,
+        "fraction_released_pct_of_measured_source": 37.76799408538001,
+        "pollen_transfer_efficiency_pct_of_removed": 1.0006996406397812,
+        "source_to_four_stigmas_pct_of_production": 0.3137500727232434
+      },
+      "median_per_trial": {
+        "first_recipient_pct_of_four_stigmas": 27.360774818401936,
+        "fraction_released_pct_of_measured_source": 38.450897975712586,
+        "pollen_transfer_efficiency_pct_of_removed": 0.6447356416326111,
+        "source_to_four_stigmas_pct_of_production": 0.21812137910361507
+      },
+      "n_donor_bee_trials": 9,
+      "n_donor_bees": 9,
+      "range_per_trial": {
+        "first_recipient_pct_of_four_stigmas": [
+          12.012856568903175,
+          75.87539241729051
+        ],
+        "fraction_released_pct_of_measured_source": [
+          6.69934254345761,
+          69.1429720592394
+        ],
+        "pollen_transfer_efficiency_pct_of_removed": [
+          0.39637176035463817,
+          2.1350105228564735
+        ],
+        "source_to_four_stigmas_pct_of_production": [
+          0.14105117294085254,
+          0.8814769917442902
+        ]
+      }
+    },
+    "S.rostratum": {
+      "hive_counts": {
+        "B1": 5,
+        "B2": 1
+      },
+      "mean_per_trial": {
+        "first_recipient_pct_of_four_stigmas": 39.67477286879112,
+        "fraction_released_pct_of_measured_source": 13.5470068718319,
+        "pollen_transfer_efficiency_pct_of_removed": 0.8610764890798217,
+        "source_to_four_stigmas_pct_of_production": 0.06495702836418192
+      },
+      "median_per_trial": {
+        "first_recipient_pct_of_four_stigmas": 39.500674405916584,
+        "fraction_released_pct_of_measured_source": 14.810205645616302,
+        "pollen_transfer_efficiency_pct_of_removed": 0.42399259621763347,
+        "source_to_four_stigmas_pct_of_production": 0.05384191562644187
+      },
+      "n_donor_bee_trials": 6,
+      "n_donor_bees": 6,
+      "range_per_trial": {
+        "first_recipient_pct_of_four_stigmas": [
+          1.0101010101010102,
+          78.67647058823529
+        ],
+        "fraction_released_pct_of_measured_source": [
+          2.67005224135053,
+          21.487562413768764
+        ],
+        "pollen_transfer_efficiency_pct_of_removed": [
+          0.04811244329379956,
+          2.8426223040764977
+        ],
+        "source_to_four_stigmas_pct_of_production": [
+          0.008640492861253601,
+          0.14823746942161328
+        ]
+      }
+    }
+  },
+  "statistical_limits": {
+    "bootstrap_exchangeability": "Within species, trial exchangeability assumed descriptively; only two hives and plants not identified",
+    "bootstrap_level": "One donor-bee trial (4 recipient measurements nested)",
+    "no_BALANCE_phi_or_K": true,
+    "no_colony_robust_population_generalization": true,
+    "no_genetic_paternity": true,
+    "no_ground_corbicula_terminal_body_source_rows": true,
+    "no_inferential_species_causality": true,
+    "no_species_equivalence_claim": true,
+    "not_novel_evolutionary_transition": true
+  },
+  "status": "ORIGINAL_ZENODO_60_RECIPIENT_ROWS_AGGREGATED_TO_15_AUTHENTIC_TRIALS",
+  "total_donor_trials": 15,
+  "zenodo_record_id": 17102653,
+  "provenance": {
+    "original_record": "https://zenodo.org/records/17102653",
+    "source_file": "data.csv",
+    "source_file_sha256": "484ed52ac611dbc6dc1831320a6c54d314492e9830823edd8934690c35205b79",
+    "source_file_md5": "d06dc42f897004e8eb6bd113a0e39bac",
+    "source_file_bytes": 3965,
+    "workflow_run_id": 45030158810,
+    "workflow_job_id": 137231771435,
+    "original_run_head": "f2fc10583e3023f9d811ed6d655034a6378fdeee",
+    "original_run_url": "https://github.com/zuizui0223/balance/actions/runs/45030158810",
+    "artifact_id": 14756788770,
+    "artifact_zip_sha256": "069a5deef070c977c09e7b083eb70d45f299f07783a3a61af9746a907f463808",
+    "paper_doi": "10.26786/1920-7603(2025)836",
+    "raw_source_rows_committed_to_repo": 0
+  }
+}
