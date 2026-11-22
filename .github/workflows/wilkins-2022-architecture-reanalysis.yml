@@ -49,6 +49,11 @@ jobs:
           Rscript scripts/check_wilkins_2022_colony_and_stigma_stages.R \
             release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
             release/generated/wilkins
+      - name: Direct paired pollen-stage contrast with within-bee covariance
+        run: |
+          Rscript scripts/check_wilkins_2022_paired_stage_contrasts.R \
+            release/generated/wilkins-source/442_2022_5246_MOESM3_ESM.csv \
+            release/generated/wilkins
       - name: Upload source receipt and derived model results
         if: always()
         uses: actions/upload-artifact@v4
