@@ -1,0 +1,78 @@
+{
+  "schema_version": "BALANCE_ORCHID_HARDER_2021_SOURCE_AND_MIRROR_V1",
+  "audit_status": "PUBLISHED_EXPERIMENT_SOURCE_ONLY_UNTIL_ORIGINAL_ZENODO_CSV_AUTHENTICATED",
+  "primary_article": {
+    "doi": "10.1086/712378",
+    "title": "Mechanisms of Male-Male Interference during Dispersal of Orchid Pollen",
+    "journal": "The American Naturalist",
+    "volume": 197,
+    "issue": 2,
+    "pages": "250-265",
+    "published_online": "2021-01-08",
+    "publisher_url": "https://www.journals.uchicago.edu/doi/full/10.1086/712378",
+    "independent_study_programmes": 1,
+    "species": "Anacamptis morio (Orchidaceae)",
+    "pollinator": "Bombus ruderarius (queen bees)",
+    "field_site": "Öland, Sweden",
+    "study_dates": "2009-05-25 to 2009-06-01"
+  },
+  "original_data": {
+    "dryad_doi": "10.5061/dryad.41ns1rnc0",
+    "dryad_landing": "https://datadryad.org/dataset/doi:10.5061/dryad.41ns1rnc0",
+    "zenodo_mirror_record_id": 4072200,
+    "zenodo_mirror_landing": "https://zenodo.org/records/4072200",
+    "zenodo_api": "https://zenodo.org/api/records/4072200",
+    "expected_filename": "Data_for_AmNat.csv",
+    "zenodo_md5": "650e40ae7ebb41bdfb333dcf63c63c71",
+    "zenodo_file_bytes": null,
+    "original_sha256": null,
+    "original_bytes_retrieved": false,
+    "original_row_models_refitted": false,
+    "mirror_note": "Zenodo mirror preserves the same Dryad dataset DOI; not an independent ecological study or independent replication.",
+    "expected_usage_note_fields": [
+      "Trial_type",
+      "Trial",
+      "M_init",
+      "R",
+      "Visit",
+      "Deposition"
+    ],
+    "source_mirror_api_metadata_to_be_verified": true
+  },
+  "experiment": {
+    "treatment": "Recipient flowers emasculated (competitor pollinaria absent) versus intact (potential competitor pollinaria present)",
+    "n_emasculated_donor_pollen_trials": 16,
+    "n_intact_donor_pollen_trials": 15,
+    "n_independent_donor_visit_sequences": 31,
+    "recipient_flower_visits_nested_within_trial": true,
+    "many_visits_per_trial": "Generally >=13 recipient flowers, some trials <10 with minimum 6",
+    "treatment_order": "almost strictly alternating, not an individual random assignment",
+    "original_bee_reuse": "most bees participated in one trial; exact identities not verified",
+    "original_donor_initial_massulae": "initial inferred from adjacent flower on donor inflorescence",
+    "original_donor_massulae_stained": true,
+    "original_emasculated_mechanism": "No competitor pollinaria can be picked up from recipient flowers, while donor pollen may be exported to their stigmas",
+    "original_intact_mechanism": "Competing pollinaria can be picked up and obstruct donor pollen dispersal",
+    "original_sexual_fitness_measured": false
+  },
+  "published_results": {
+    "competing_pollen_total_donor_export_change_pct": -27,
+    "competing_pollen_transport_loss_proportion_ratio": "approximately doubled",
+    "recipient_pollinaria_pickup_decreases_with_accumulated_load": true,
+    "among_trial_deposition_variance_altered": true,
+    "source_article_effects_not_yet_refitted": true
+  },
+  "identification_ceiling": {
+    "original_study_more_independent_from_previous_Solanum_studies_at_family_level": true,
+    "not_independent_evolutionary_architecture_transition": true,
+    "observed_male_pollen_export_not_genetic_siring": true,
+    "not_seed_production_nor_parentage": true,
+    "no_randomly_assigned_donor_parent_or_genetically_matched_offspring": true,
+    "not_comparable_with_granular_Solanum_grain_unit_without_harmonization": true,
+    "orchid_massulae_are_pollen_packages_not_individual_pollen_grains": true,
+    "intact_vs_emasculated_is_not_flower_anther_modularity_comparison": true,
+    "treatment_nearly_alternated_not_strictly_randomized": true,
+    "no_new_BALANCE_U2_U6_V4_architecture_coding": true,
+    "no_phi_L_K_inferred": true,
+    "original_treatment_outcome_not_equivalent_to_plant_male_fitness": true
+  }
+}
