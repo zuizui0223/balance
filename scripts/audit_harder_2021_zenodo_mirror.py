@@ -118,8 +118,17 @@ def source_schema_audit(raw:bytes,receipt:dict)->dict:
         for key in sample:
             sample[key].add((row.get(key) or "").strip())
     completed={k:len(v) for k,v in kind.items()}
+    # Metadata only: diagnostic before the trial-count gate, never raw rows.
+    print("ORCHID_SOURCE_TRIAL_GROUPS",json.dumps(completed,sort_keys=True))
+    print("ORCHID_SOURCE_CSV_IDENTITY",json.dumps({
+        "n_source_rows":len(rows),"columns":header,
+        "md5":hashlib.md5(raw).hexdigest(),"sha256":hashlib.sha256(raw).hexdigest(),
+    },sort_keys=True))
     if len(completed)!=2 or sorted(completed.values())!=[15,16]:
-        raise ValueError("Expected the paper's original 16 emasculated +15 intact trials")
+        raise ValueError(
+            "Published 16/15 trial expectation conflicts with original CSV "
+            "group identities; HOLD before fitting any effects"
+        )
     visit_ranges={}
     inconsistent={}
     for label,trial in kind.items():
