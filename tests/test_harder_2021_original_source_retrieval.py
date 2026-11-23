@@ -64,8 +64,10 @@ def test_incomplete_trial_or_wrong_source_bytes_fail_closed(monkeypatch):
     wrong=original.replace(b"Intact",b"Unknown")
     with pytest.raises(ValueError,match="non-original"):
         audit.source_schema_audit(wrong,{})
-    with pytest.raises(ValueError,match="16 emasculated"):
-        audit.source_schema_audit(original.replace(b"Intact",b"Emasculat"),{})
+    altered=original.replace(b"Intact",b"Emasculat")
+    monkeypatch.setattr(audit,"MD5",hashlib.md5(altered).hexdigest())
+    with pytest.raises(ValueError,match="16/15 trial expectation"):
+        audit.source_schema_audit(altered,{})
 
 
 def test_authentic_file_manifest_rejects_wrong_record_and_checksum():
