@@ -63,3 +63,25 @@ Neither source identifies a total plant genotype-verified siring rate, a net sha
 5. Before claiming broad ecological universality, repeat analogous competitor-pollen experiments for nonpollinarium granular pollen systems with standardized endpoints.
 
 **Current epistemic status:** authentic positive *source-coded* transport interference direction under multiple bounded data choices, but published original biological trial membership unresolved and no independent paternity result.
+
+
+## Original journal analysis-code access check
+
+The paper explicitly links a supplementary ZIP with Excel/R model code:
+[official supplement file](https://www.journals.uchicago.edu/doi/suppl/10.1086/712378/suppl_file/59424Supplements.zip).
+A separate, one-time bounded publisher file-access check was added to
+`scripts/audit_harder_2021_publisher_supplements.py` and ran in
+[GitHub Actions #45242551944](https://github.com/zuizui0223/balance/actions/runs/45242551944).
+The exact official publisher endpoint returned **HTTP 403**, so the
+author code's source-trial inclusion/exclusion rules **could not be examined**.
+The metadata-only access artifact is **14850824249**, ZIP SHA-256
+`4b5b71bdb856bea07f363a5ca2f2ebaa0108df4d9188595750ec76e5474b7af9`.
+This is a retrieval blocker, **not proof that author code is unavailable
+globally**.
+
+Crucially, **successful Zenodo 383-row source-data authentication does not
+resolve the Methods' 31 donor trial membership**. As long as the publisher
+code is inaccessible and no independently justified inclusion rule is
+available, the manuscript's 31-trial inferential analysis remains an
+unreproduced result. All coded-group effect estimates above retain their
+post-open exploratory label and no source-specific exclusion was chosen.
