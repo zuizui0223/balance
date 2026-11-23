@@ -120,3 +120,69 @@ pytest -q tests/test_harder_2021_visit_window_hurdle.py
 Output artifacts contain **only code-group aggregate summaries and source
 membership counts**, not raw donor/recipient data and not final genetic
 paternity or independent evolved lineage effects.
+
+
+## Results verified on the authentic 8041-byte original source (2026-11-24)
+
+[GitHub Actions run #45245113786](https://github.com/zuizui0223/balance/actions/runs/45245113786)
+authenticated exactly the original Zenodo-mirrored CSV and reported the
+following outcome; the exact model and source provenance are committed at
+[`results/harder_2021/PAPER_ALIGNED_379_AND_COMMON_SIX_HURDLE_20261124.json`](../results/harder_2021/PAPER_ALIGNED_379_AND_COMMON_SIX_HURDLE_20261124.json).
+
+**The 379-row article-aligned candidate** (excluding only original Intact4,
+four recipients) contains **16 emasculated and 15 intact coded groups**,
+so it matches the article's initial Methods arm counts and the second
+model's total recipient-row count, but **NOT** the second model's reversed
+15/16 group allocation. Source-coded massulae exported/initial massulae:
+Emasc **52.1492%**, Intact **41.8959%**; Intact/Emasc ratio **0.803385**,
+an approximately **19.7% lower** value with competing pollinaria possible.
+The source of the exclusion is still only a reproducible *alignment
+hypothesis*, not established author intent.
+
+**Common initial six-recipient opportunity window:** the original source
+yielded exactly **14 Emasc and 15 Intact coded groups**, each with
+recipient positions 1–6 (174 observed stigma measurements). The source
+code group Emasc3, whose positions start at 11, cannot contribute to
+this window, so the possible Emasc2/E3 split **does not double count
+two Emasc2+3 fragments in this particular early-six analysis**.
+However, unique bee/donor identities are still not independently
+established for *other* groups; this is not a certified random sample of
+29 independent bees.
+
+| Same six recipient observations per coded group | Emasc (no competitors) | Intact (competitors possible) | Intact−Emasc | 20,000 coded-group bootstrap 95% interval for difference |
+|---|---:|---:|---:|---|
+| Donor massulae on 6 stigmas / initial massulae | **49.9022%** | **36.0284%** | **−13.8738 percentage points** | **[−25.4834, −2.0683] pp** |
+| Fraction of six stigmas receiving ≥1 stained donor massula | **85.7143%** | **71.1111%** | **−14.6032 pp** | **[−29.1270, −0.9524] pp** |
+| Mean stained donor massulae on a *positive* stigma / initial massulae (within coded group) | **0.10048** | **0.08932** | **−0.01116** | **[−0.03774, +0.01658]** |
+
+All eligible groups had at least one stigma with dyed donor massulae, so
+the mean-positive-stigma component was defined for all 14 and 15 eligible
+coded groups. The first-six group-averaged deposition difference persists
+when the number of available recipient opportunities is held constant.
+The **measured zero-vs-positive deposit frequency** is one component
+compatible with the loss of donor pollen delivery. By contrast,
+conditional-positive quantity has an uncertain between-treatment
+difference. We have **not formally tested whether the two component
+effects differ from one another** (their scales differ), so it is
+incorrect to infer that the mechanistic bottleneck is definitively
+contact probability rather than variation in source availability.
+
+**Nonidentification that remains:** observing zero stained massulae on
+a stigma does **not** reveal whether the donor pollinia never contacted
+the stigma or did contact but deposited nothing. Original donor
+pollinarium loss/carryover, contact probability `c`, and deposition on
+contact are not separately estimated by these fixed common-window
+statistics. The original source includes only stained donor massulae and
+initial source inventory, not genotype-verified paternity. Treat the
+coded-group bootstrap as a **descriptive post-open** interval with
+uncertain individual bee/plant independence, not a new registered
+causal treatment effect.
+
+**Primary biological takeaway:** the direction of reduced donor
+massula deposition under potential competitor-pollinarium exposure
+persists under equal six-visit opportunities. An increase in
+observed zero-stained-donor stigmas is supported *within these source
+code-group observations*, but its specific physical mechanism and
+fitness consequence remain unidentified. This is stronger than
+comparison of unequal-length entire visit chains, without resolving
+the original publication's contradictory arm-count statements.
