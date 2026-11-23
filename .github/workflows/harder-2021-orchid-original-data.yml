@@ -53,6 +53,17 @@ jobs:
           path: ${{ runner.temp }}/harder-source-code-group-sensitivity.json
           if-no-files-found: error
           retention-days: 21
+      - name: Independently check original journal R/Excel supplement archive for trial admissions
+        run: |
+          python -m scripts.audit_harder_2021_publisher_supplements \
+            --out "${RUNNER_TEMP}/harder-publisher-supplements-metadata.json"
+      - name: Preserve publisher supplement source accessibility metadata only
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-orchid-2021-publisher-supplements-access
+          path: ${{ runner.temp }}/harder-publisher-supplements-metadata.json
+          if-no-files-found: error
+          retention-days: 21
       - name: Store only original file identity, schema and trial-grain receipt
         uses: actions/upload-artifact@v4
         with:
