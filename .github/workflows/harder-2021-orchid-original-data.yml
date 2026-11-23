@@ -53,6 +53,18 @@ jobs:
           path: ${{ runner.temp }}/harder-source-code-group-sensitivity.json
           if-no-files-found: error
           retention-days: 21
+      - name: Test journal-aligned 379 rows and matched 6-recipient zero-and-positive pollen transfer
+        run: |
+          python -m scripts.check_harder_2021_visit_window_hurdle \
+            --original-csv "${RUNNER_TEMP}/harder-original-raw-not-uploaded/Data_for_AmNat.csv" \
+            --out "${RUNNER_TEMP}/harder-2021-first-six-hurdle.json"
+      - name: Upload only bounded source group and six-recipient outcome summaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-orchid-2021-paper-aligned-six-visit
+          path: ${{ runner.temp }}/harder-2021-first-six-hurdle.json
+          if-no-files-found: error
+          retention-days: 21
       - name: Independently check original journal R/Excel supplement archive for trial admissions
         run: |
           python -m scripts.audit_harder_2021_publisher_supplements \
