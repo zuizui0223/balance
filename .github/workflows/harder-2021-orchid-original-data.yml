@@ -41,6 +41,18 @@ jobs:
           print("::warning::Original source includes one extra intact trial vs published n=15; do not choose a source row for exclusion by result or p-value")
           print("NO_BIOLOGICAL_EFFECT_REFIT",source["source_csv_columns"])
           PY
+      - name: Quantify complete source-coded and all one-intact-exclusion effects
+        run: |
+          python -m scripts.audit_harder_2021_export_sensitivity \
+            --original-csv "${RUNNER_TEMP}/harder-original-raw-not-uploaded/Data_for_AmNat.csv" \
+            --out "${RUNNER_TEMP}/harder-source-code-group-sensitivity.json"
+      - name: Keep only provenance and trial-group descriptive sensitivity, not original donor rows
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-orchid-2021-candidate-trial-envelope
+          path: ${{ runner.temp }}/harder-source-code-group-sensitivity.json
+          if-no-files-found: error
+          retention-days: 21
       - name: Store only original file identity, schema and trial-grain receipt
         uses: actions/upload-artifact@v4
         with:
