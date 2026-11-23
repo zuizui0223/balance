@@ -1,0 +1,858 @@
+{
+  "actual_study_programmes": 1,
+  "analysis": "BALANCE_ORCHID_HARDER_ZENODO_ORIGINAL_SOURCE_RECEIPT",
+  "bytes": 8041,
+  "categorical_levels": {
+    "R": [
+      "0",
+      "1",
+      "2"
+    ],
+    "Trial_type": [
+      "Emasc",
+      "Intact"
+    ]
+  },
+  "claim_ceiling": "source schema and donor-trial nesting verified, no effects refitted",
+  "independent_donor_visit_sequences": 32,
+  "md5": "650e40ae7ebb41bdfb333dcf63c63c71",
+  "name": "Data_for_AmNat.csv",
+  "new_ecological_effects_fitted": 0,
+  "new_independent_study_programmes": 0,
+  "original_data_doi": "10.5061/dryad.41ns1rnc0",
+  "original_mirror_n_donor_trial_groups": 32,
+  "original_treatment_trial_counts": {
+    "Emasc": 16,
+    "Intact": 16
+  },
+  "original_treatment_visit_ranges": {
+    "Emasc": {
+      "max_recipient_rows": 17,
+      "min_recipient_rows": 2,
+      "n_donor_trials": 16,
+      "total_recipient_rows": 192
+    },
+    "Intact": {
+      "max_recipient_rows": 14,
+      "min_recipient_rows": 4,
+      "n_donor_trials": 16,
+      "total_recipient_rows": 191
+    }
+  },
+  "paper_doi": "10.1086/712378",
+  "published_reported_n_donor_trials": 31,
+  "raw_data_effects_estimated": 0,
+  "recipient_rows_not_independent_trial_replicates": true,
+  "sha256": "303428b859bcba4756ac78c4ffd4b42121a6efce5b0cd2cc2030834705f62cbc",
+  "source_csv_columns": [
+    "Trial_type",
+    "Trial",
+    "M_init",
+    "R",
+    "Visit",
+    "Deposition"
+  ],
+  "source_field_missing_counts": {
+    "Deposition": 0,
+    "M_init": 0,
+    "R": 0,
+    "Trial": 0,
+    "Trial_type": 0,
+    "Visit": 0
+  },
+  "source_pollen_export_not_genetic_siring": true,
+  "source_recipient_rows": 383,
+  "source_trial_admission": "HOLD_UNEXPLAINED_EXTRA_INTACT_TRIAL",
+  "status": "AUTHENTIC_SOURCE_SCHEMAS_VERIFIED_EXTRA_TRIAL_HOLD",
+  "trial_count_discrepancy_present": true,
+  "trial_identity_metadata_only": [
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "201"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 10,
+      "recipient_rows": 10,
+      "treatment": "Emasc",
+      "trial_id": "2",
+      "visit_max": "10",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "201"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 7,
+      "recipient_rows": 7,
+      "treatment": "Emasc",
+      "trial_id": "3",
+      "visit_max": "17",
+      "visit_min": "11"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "157"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 2,
+      "recipient_rows": 2,
+      "treatment": "Emasc",
+      "trial_id": "7",
+      "visit_max": "2",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "192"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 10,
+      "recipient_rows": 10,
+      "treatment": "Emasc",
+      "trial_id": "8",
+      "visit_max": "10",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "182"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 11,
+      "recipient_rows": 11,
+      "treatment": "Emasc",
+      "trial_id": "10",
+      "visit_max": "11",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "165"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "12",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "216"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 17,
+      "recipient_rows": 17,
+      "treatment": "Emasc",
+      "trial_id": "14",
+      "visit_max": "17",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "101"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 16,
+      "recipient_rows": 16,
+      "treatment": "Emasc",
+      "trial_id": "16",
+      "visit_max": "16",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "221"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "18",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "206"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "22",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "205"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 7,
+      "recipient_rows": 7,
+      "treatment": "Emasc",
+      "trial_id": "24",
+      "visit_max": "7",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0",
+        "2"
+      ],
+      "initial_massula_values": [
+        "229"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 2,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "26",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "261"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "28",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "228"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "30",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0",
+        "2"
+      ],
+      "initial_massula_values": [
+        "236"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 2,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "32",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0",
+        "1"
+      ],
+      "initial_massula_values": [
+        "246"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 2,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Emasc",
+      "trial_id": "33",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "181"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "1",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "239"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 4,
+      "recipient_rows": 4,
+      "treatment": "Intact",
+      "trial_id": "4",
+      "visit_max": "4",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "160"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 7,
+      "recipient_rows": 7,
+      "treatment": "Intact",
+      "trial_id": "5",
+      "visit_max": "7",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "188"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 10,
+      "recipient_rows": 10,
+      "treatment": "Intact",
+      "trial_id": "6",
+      "visit_max": "10",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0"
+      ],
+      "initial_massula_values": [
+        "198"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 8,
+      "recipient_rows": 8,
+      "treatment": "Intact",
+      "trial_id": "9",
+      "visit_max": "8",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "181"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "11",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "212"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "13",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "144"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 13,
+      "recipient_rows": 13,
+      "treatment": "Intact",
+      "trial_id": "15",
+      "visit_max": "13",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "198"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 10,
+      "recipient_rows": 10,
+      "treatment": "Intact",
+      "trial_id": "17",
+      "visit_max": "10",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "1"
+      ],
+      "initial_massula_values": [
+        "195"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 13,
+      "recipient_rows": 13,
+      "treatment": "Intact",
+      "trial_id": "19",
+      "visit_max": "13",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "213"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "21",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "214"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "23",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "192"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "25",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "188"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "27",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "2"
+      ],
+      "initial_massula_values": [
+        "192"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 1,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "29",
+      "visit_max": "14",
+      "visit_min": "1"
+    },
+    {
+      "final_donor_pollinaria_values": [
+        "0",
+        "1"
+      ],
+      "initial_massula_values": [
+        "258"
+      ],
+      "missing_counts": {
+        "Deposition": 0,
+        "M_init": 0,
+        "R": 0,
+        "Trial": 0,
+        "Trial_type": 0,
+        "Visit": 0
+      },
+      "n_distinct_final_pollinaria_values": 2,
+      "n_distinct_initial_source_values": 1,
+      "n_distinct_visit_identifiers": 14,
+      "recipient_rows": 14,
+      "treatment": "Intact",
+      "trial_id": "31",
+      "visit_max": "14",
+      "visit_min": "1"
+    }
+  ],
+  "within_trial_donor_initial_or_final_inconsistency_checks": {
+    "Emasc": 3,
+    "Intact": 1
+  },
+  "zenodo_mirror_record_id": 4072200,
+  "provenance": {
+    "original_2021_article_doi": "10.1086/712378",
+    "mirror_url": "https://zenodo.org/records/4072200",
+    "original_mirror_doi": "10.5061/dryad.41ns1rnc0",
+    "actions_run": 45241393794,
+    "head_commit": "5fbad64a36d4428e19926545dcc35f821838f43a",
+    "artifact_id": 14849769785,
+    "artifact_zip_sha256": "9dc91b803d87fa603aeb6aefef77224c6050ec6b708e4a81a847397f055a9f87",
+    "run": "https://github.com/zuizui0223/balance/actions/runs/45241393794",
+    "no_original_rows_republished": true
+  }
+}
