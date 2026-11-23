@@ -124,11 +124,37 @@ def source_schema_audit(raw:bytes,receipt:dict)->dict:
         "n_source_rows":len(rows),"columns":header,
         "md5":hashlib.md5(raw).hexdigest(),"sha256":hashlib.sha256(raw).hexdigest(),
     },sort_keys=True))
-    if len(completed)!=2 or sorted(completed.values())!=[15,16]:
-        raise ValueError(
-            "Published 16/15 trial expectation conflicts with original CSV "
-            "group identities; HOLD before fitting any effects"
-        )
+    is_31_paper_count=(sorted(completed.values())==[15,16])
+    is_32_source_count=(set(completed)=={"Emasc","Intact"}
+                        and completed["Emasc"]==16 and completed["Intact"]==16)
+    if not (is_31_paper_count or is_32_source_count):
+        raise ValueError("Unexpected orchid source trial count; neither paper 31 nor verified mirror 32")
+    if is_32_source_count and (
+        len(rows)!=383 or
+        hashlib.sha256(raw).hexdigest()!=
+        "303428b859bcba4756ac78c4ffd4b42121a6efce5b0cd2cc2030834705f62cbc"
+    ):
+        raise ValueError("32-trial mismatch is permitted only for exact original source hash")
+    per_trial_metadata=[]
+    for treatment,trial in sorted(kind.items()):
+        for identifier,group in sorted(trial.items(),key=lambda p:int(p[0]) if p[0].isdigit() else p[0]):
+            unique_visits=sorted({r["Visit"].strip() for r in group},
+                                 key=lambda v: int(v) if v.isdigit() else v)
+            initials=sorted({r["M_init"].strip() for r in group if r["M_init"].strip()})
+            finals=sorted({r["R"].strip() for r in group if r["R"].strip()})
+            missing={k:sum(not (r.get(k) or "").strip() for r in group)
+                     for k in header}
+            per_trial_metadata.append({
+                "treatment":treatment,"trial_id":identifier,
+                "recipient_rows":len(group),
+                "n_distinct_visit_identifiers":len(unique_visits),
+                "visit_min":unique_visits[0],"visit_max":unique_visits[-1],
+                "n_distinct_initial_source_values":len(initials),
+                "n_distinct_final_pollinaria_values":len(finals),
+                "initial_massula_values":initials,
+                "final_donor_pollinaria_values":finals,
+                "missing_counts":missing
+            })
     visit_ranges={}
     inconsistent={}
     for label,trial in kind.items():
@@ -144,7 +170,9 @@ def source_schema_audit(raw:bytes,receipt:dict)->dict:
         inconsistent[label]=nbad
     return {
         **receipt,
-        "status":"AUTHENTIC_ZENODO_DRYAD_MIRROR_SCHEMA_VALIDATED_NO_EFFECT_REFITS",
+        "status":("AUTHENTIC_SOURCE_SCHEMAS_VERIFIED_EXTRA_TRIAL_HOLD"
+                  if is_32_source_count else
+                  "AUTHENTIC_ZENODO_DRYAD_MIRROR_SCHEMA_VALIDATED_NO_EFFECT_REFITS"),
         "source_csv_columns":header,
         "source_recipient_rows":len(rows),
         "original_treatment_trial_counts":completed,
@@ -155,6 +183,14 @@ def source_schema_audit(raw:bytes,receipt:dict)->dict:
         "independent_donor_visit_sequences":sum(completed.values()),
         "recipient_rows_not_independent_trial_replicates":True,
         "source_pollen_export_not_genetic_siring":True,
+        "published_reported_n_donor_trials":31,
+        "original_mirror_n_donor_trial_groups":sum(completed.values()),
+        "trial_count_discrepancy_present":is_32_source_count,
+        "source_trial_admission":(
+            "HOLD_UNEXPLAINED_EXTRA_INTACT_TRIAL"
+            if is_32_source_count else "COUNTS_MATCH_PUBLISHED_TOTAL"
+        ),
+        "trial_identity_metadata_only":per_trial_metadata,
         "raw_data_effects_estimated":0,
         "claim_ceiling":"source schema and donor-trial nesting verified, no effects refitted"
     }
