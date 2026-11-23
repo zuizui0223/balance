@@ -64,7 +64,7 @@ def test_incomplete_trial_or_wrong_source_bytes_fail_closed(monkeypatch):
     wrong=original.replace(b"Intact",b"Unknown")
     with pytest.raises(ValueError,match="non-original"):
         audit.source_schema_audit(wrong,{})
-    altered=original.replace(b"Intact",b"Emasculat")
+    altered=original.replace(b"Intact",b"Emasculated")
     monkeypatch.setattr(audit,"MD5",hashlib.md5(altered).hexdigest())
     with pytest.raises(ValueError,match="Unexpected orchid source trial count"):
         audit.source_schema_audit(altered,{})
