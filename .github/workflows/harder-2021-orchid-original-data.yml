@@ -30,12 +30,15 @@ jobs:
           from pathlib import Path
           p=Path(os.environ["RUNNER_TEMP"])/"harder-original-schema.json"
           source=json.loads(p.read_text(encoding="utf-8"))
-          assert source["status"]=="AUTHENTIC_ZENODO_DRYAD_MIRROR_SCHEMA_VALIDATED_NO_EFFECT_REFITS"
-          assert source["independent_donor_visit_sequences"]==31
-          assert sorted(source["original_treatment_trial_counts"].values())==[15,16]
+          assert source["status"]=="AUTHENTIC_SOURCE_SCHEMAS_VERIFIED_EXTRA_TRIAL_HOLD"
+          assert source["independent_donor_visit_sequences"]==32
+          assert source["original_treatment_trial_counts"]=={"Emasc":16,"Intact":16}
+          assert source["trial_count_discrepancy_present"] is True
+          assert source["source_trial_admission"]=="HOLD_UNEXPLAINED_EXTRA_INTACT_TRIAL"
           assert source["raw_data_effects_estimated"]==0
           print("AUTHENTIC_ORCHID_SCHEMA_VERIFIED",source["sha256"])
           print("ORIGINAL_TRIAL_COUNTS",source["original_treatment_trial_counts"])
+          print("::warning::Original source includes one extra intact trial vs published n=15; do not choose a source row for exclusion by result or p-value")
           print("NO_BIOLOGICAL_EFFECT_REFIT",source["source_csv_columns"])
           PY
       - name: Store only original file identity, schema and trial-grain receipt
