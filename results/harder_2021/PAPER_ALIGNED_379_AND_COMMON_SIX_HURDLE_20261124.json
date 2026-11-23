@@ -1,0 +1,244 @@
+{
+  "analysis": "BALANCE_ORCHID_HARDER_2021_PAPER_ALIGNED_379_ROW_FIRST_SIX_HURDLE_V1",
+  "inference_limits": {
+    "candidate_inclusion_not_confirmed_by_author_code": true,
+    "emasculated2_3_possibly_one_sequence_unconfirmed": true,
+    "emasculated7_two_recipient_records_unresolved": true,
+    "first_six_extensive_zero_is_not_contact_probability": true,
+    "first_six_positive_massula_load_is_not_fatherhood": true,
+    "no_frozen_BALANCE_V4_architecture_outcomes_changed": true,
+    "original_R_varies_within_four_source_codes": true,
+    "original_paper_internal_group_allocation_contradictory": true,
+    "postopen_original_study_sensitivity_not_an_independent_experiment": true,
+    "source_code_groups_may_not_be_independent_unique_donors": true,
+    "time_recipient_order_and_competing_massulae_not_orthogonally_randomized": true
+  },
+  "n_original_source_trial_codes": 32,
+  "original_383_recipient_rows": 383,
+  "original_article_doi": "10.1086/712378",
+  "original_source_all32_descriptive_contrast": {
+    "emasculated_mean": 0.5214915625069592,
+    "intact_mean": 0.3930351223054467,
+    "intact_minus_emasculated_difference": -0.12845644020151248,
+    "intact_over_emasculated_mean_ratio": 0.7536749404266762,
+    "interpretation": "stained donor massulae deposited relative to initial estimated donor massulae; NOT genetically sired offspring",
+    "n_emasculated_coded_groups": 16,
+    "n_intact_coded_groups": 16
+  },
+  "original_source_six_recipient_hurdle": {
+    "arm_descriptions": {
+      "Emasc": {
+        "means_by_equal_coded_group": {
+          "fraction_six_stigmas_with_stained_donor_massulae": 0.8571428571428572,
+          "positive_stigma_mean_deposition_per_initial_massulae": 0.10048334474644462,
+          "six_recipient_deposition_pct": 49.90222517191172
+        },
+        "n_original_source_coded_groups": 14,
+        "n_recipient_rows_at_shared_1_to_6_positions": 84,
+        "n_with_any_stained_donor_deposition": 14,
+        "n_with_no_stained_donor_deposition": 0,
+        "per_recipient_position": {
+          "1": {
+            "fraction_no_stained_donor_massulae": 0,
+            "mean_massulae_per_original_source_stigma_visit": 30.857142857142858,
+            "n_coded_groups": 14,
+            "n_positive_stigmas": 14
+          },
+          "2": {
+            "fraction_no_stained_donor_massulae": 0,
+            "mean_massulae_per_original_source_stigma_visit": 23.571428571428573,
+            "n_coded_groups": 14,
+            "n_positive_stigmas": 14
+          },
+          "3": {
+            "fraction_no_stained_donor_massulae": 0.07142857142857142,
+            "mean_massulae_per_original_source_stigma_visit": 17.285714285714285,
+            "n_coded_groups": 14,
+            "n_positive_stigmas": 13
+          },
+          "4": {
+            "fraction_no_stained_donor_massulae": 0.07142857142857142,
+            "mean_massulae_per_original_source_stigma_visit": 15.857142857142858,
+            "n_coded_groups": 14,
+            "n_positive_stigmas": 13
+          },
+          "5": {
+            "fraction_no_stained_donor_massulae": 0.42857142857142855,
+            "mean_massulae_per_original_source_stigma_visit": 6.5,
+            "n_coded_groups": 14,
+            "n_positive_stigmas": 8
+          },
+          "6": {
+            "fraction_no_stained_donor_massulae": 0.2857142857142857,
+            "mean_massulae_per_original_source_stigma_visit": 6.642857142857143,
+            "n_coded_groups": 14,
+            "n_positive_stigmas": 10
+          }
+        }
+      },
+      "Intact": {
+        "means_by_equal_coded_group": {
+          "fraction_six_stigmas_with_stained_donor_massulae": 0.7111111111111111,
+          "positive_stigma_mean_deposition_per_initial_massulae": 0.0893222635701015,
+          "six_recipient_deposition_pct": 36.0283867060307
+        },
+        "n_original_source_coded_groups": 15,
+        "n_recipient_rows_at_shared_1_to_6_positions": 90,
+        "n_with_any_stained_donor_deposition": 15,
+        "n_with_no_stained_donor_deposition": 0,
+        "per_recipient_position": {
+          "1": {
+            "fraction_no_stained_donor_massulae": 0.06666666666666667,
+            "mean_massulae_per_original_source_stigma_visit": 28.4,
+            "n_coded_groups": 15,
+            "n_positive_stigmas": 14
+          },
+          "2": {
+            "fraction_no_stained_donor_massulae": 0.13333333333333333,
+            "mean_massulae_per_original_source_stigma_visit": 19.133333333333333,
+            "n_coded_groups": 15,
+            "n_positive_stigmas": 13
+          },
+          "3": {
+            "fraction_no_stained_donor_massulae": 0.26666666666666666,
+            "mean_massulae_per_original_source_stigma_visit": 9.733333333333333,
+            "n_coded_groups": 15,
+            "n_positive_stigmas": 11
+          },
+          "4": {
+            "fraction_no_stained_donor_massulae": 0.3333333333333333,
+            "mean_massulae_per_original_source_stigma_visit": 7.466666666666667,
+            "n_coded_groups": 15,
+            "n_positive_stigmas": 10
+          },
+          "5": {
+            "fraction_no_stained_donor_massulae": 0.4,
+            "mean_massulae_per_original_source_stigma_visit": 2.6666666666666665,
+            "n_coded_groups": 15,
+            "n_positive_stigmas": 9
+          },
+          "6": {
+            "fraction_no_stained_donor_massulae": 0.5333333333333333,
+            "mean_massulae_per_original_source_stigma_visit": 2.533333333333333,
+            "n_coded_groups": 15,
+            "n_positive_stigmas": 7
+          }
+        }
+      }
+    },
+    "eligible_coded_group_counts": {
+      "Emasc": 14,
+      "Intact": 15
+    },
+    "excluded_coded_group_metadata": [
+      {
+        "code": "3",
+        "n_source_rows": 7,
+        "treatment": "Emasc"
+      },
+      {
+        "code": "7",
+        "n_source_rows": 2,
+        "treatment": "Emasc"
+      },
+      {
+        "code": "4",
+        "n_source_rows": 4,
+        "treatment": "Intact"
+      }
+    ],
+    "n_total_recipient_position_observations": 174,
+    "observed_intact_minus_emasculated": {
+      "fraction_six_stigmas_with_stained_donor_massulae": -0.14603174603174607,
+      "positive_stigma_mean_deposition_per_initial_massulae": -0.01116108117634311,
+      "six_recipient_deposition_pct": -13.873838465881015
+    },
+    "one_truncated_recipient_sequence_is_not_a_new_independent_donor": true,
+    "positive_conditional_amount_does_not_identify_pollen_viability": true,
+    "postopen_trial_code_bootstrap": {
+      "fraction_six_stigmas_with_stained_donor_massulae": {
+        "intact_minus_emasculated_95pct_interval": [
+          -0.29126984126984135,
+          -0.00952380952380949
+        ],
+        "n_bootstrap_coded_groups": 20000,
+        "not_a_valid_confirmatory_donor_population_or_genetic_paternity_test": true,
+        "resamples_with_defined_statistic": 20000,
+        "undefined_resamples": 0
+      },
+      "positive_stigma_mean_deposition_per_initial_massulae": {
+        "intact_minus_emasculated_95pct_interval": [
+          -0.03774218514161498,
+          0.016575264442793964
+        ],
+        "n_bootstrap_coded_groups": 20000,
+        "not_a_valid_confirmatory_donor_population_or_genetic_paternity_test": true,
+        "resamples_with_defined_statistic": 20000,
+        "undefined_resamples": 0
+      },
+      "six_recipient_deposition_pct": {
+        "intact_minus_emasculated_95pct_interval": [
+          -25.48340565470231,
+          -2.068275695398626
+        ],
+        "n_bootstrap_coded_groups": 20000,
+        "not_a_valid_confirmatory_donor_population_or_genetic_paternity_test": true,
+        "resamples_with_defined_statistic": 20000,
+        "undefined_resamples": 0
+      }
+    },
+    "source_recipient_opportunity_held_constant_at_six": true,
+    "stigma_contact_vs_zero_transfer_not_identified": true
+  },
+  "original_trial_rows_committed": 0,
+  "paper_aligned_candidate": {
+    "does_not_match_published_second_stage_reversed_arm_counts": true,
+    "does_not_prove_original_paper_exclusion_rule": true,
+    "excluded_n_recipient_rows": 4,
+    "excluded_original_source_code": "4",
+    "excluded_treatment": "Intact",
+    "matches_published_general_methods_arm_counts": true,
+    "matches_published_second_stage_recipient_count": true,
+    "retained_coded_group_counts": {
+      "Emasc": 16,
+      "Intact": 15
+    },
+    "retained_n_recipient_rows": 379,
+    "source_code_group_contrast": {
+      "emasculated_mean": 0.5214915625069592,
+      "intact_mean": 0.4189585237645824,
+      "intact_minus_emasculated_difference": -0.10253303874237674,
+      "intact_over_emasculated_mean_ratio": 0.8033850475941143,
+      "interpretation": "stained donor massulae deposited relative to initial estimated donor massulae; NOT genetically sired offspring",
+      "n_emasculated_coded_groups": 16,
+      "n_intact_coded_groups": 15
+    }
+  },
+  "published_methods_group_counts": {
+    "Emasc": 16,
+    "Intact": 15
+  },
+  "published_model_fitting_group_counts": {
+    "Emasc": 15,
+    "Intact": 16
+  },
+  "published_model_fitting_n_recipient_rows": 379,
+  "source_data_doi": "10.5061/dryad.41ns1rnc0",
+  "source_sha256": "303428b859bcba4756ac78c4ffd4b42121a6efce5b0cd2cc2030834705f62cbc",
+  "status": "ACTUAL_AUTHENTIC_SOURCE_ORIGINAL_31_PAPER_CANDIDATE_AND_29_COMMON_SIX_CODES_POSTOPEN",
+  "provenance": {
+    "original_paper_doi": "10.1086/712378",
+    "original_dryad_doi": "10.5061/dryad.41ns1rnc0",
+    "zenodo_mirror_record_id": 4072200,
+    "authenticated_original_csv_sha256": "303428b859bcba4756ac78c4ffd4b42121a6efce5b0cd2cc2030834705f62cbc",
+    "workflow_run_id": 45245113786,
+    "workflow_job_id": 137939737854,
+    "original_executed_head": "75e527d28d182170101e037d4f6dd91b76660013",
+    "workflow_url": "https://github.com/zuizui0223/balance/actions/runs/45245113786",
+    "artifact_id": 14854211333,
+    "artifact_zip_sha256": "6ea7736f7fac86286b94f105569d37604dab17e095d251ab380f53145829b646",
+    "archive_expires_at": "2026-12-14",
+    "output_only_source_code_group_aggregates": true,
+    "no_original_raw_row_redistribution": true
+  }
+}
