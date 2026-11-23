@@ -1,0 +1,47 @@
+name: Orchid 2021 authentic donor-pollen interference experiment
+
+on:
+  push:
+    branches:
+      - analysis/orchid-pollen-interference-zenodo-20261124
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-orchid-data:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recover real 2021 orchid donor-source trials through official Zenodo mirror
+        run: |
+          python -m scripts.audit_harder_2021_zenodo_mirror \
+            --source-dir "${RUNNER_TEMP}/harder-original-raw-not-uploaded" \
+            --out "${RUNNER_TEMP}/harder-original-schema.json"
+      - name: Check that original-source data recovery is NOT interpreted as effect replication
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"harder-original-schema.json"
+          source=json.loads(p.read_text(encoding="utf-8"))
+          assert source["status"]=="AUTHENTIC_ZENODO_DRYAD_MIRROR_SCHEMA_VALIDATED_NO_EFFECT_REFITS"
+          assert source["independent_donor_visit_sequences"]==31
+          assert sorted(source["original_treatment_trial_counts"].values())==[15,16]
+          assert source["raw_data_effects_estimated"]==0
+          print("AUTHENTIC_ORCHID_SCHEMA_VERIFIED",source["sha256"])
+          print("ORIGINAL_TRIAL_COUNTS",source["original_treatment_trial_counts"])
+          print("NO_BIOLOGICAL_EFFECT_REFIT",source["source_csv_columns"])
+          PY
+      - name: Store only original file identity, schema and trial-grain receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-orchid-2021-original-schema-only
+          path: ${{ runner.temp }}/harder-original-schema.json
+          if-no-files-found: error
+          retention-days: 21
