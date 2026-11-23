@@ -1,6 +1,6 @@
 {
   "schema_version": "BALANCE_ORCHID_HARDER_2021_SOURCE_AND_MIRROR_V1",
-  "audit_status": "PUBLISHED_EXPERIMENT_SOURCE_ONLY_UNTIL_ORIGINAL_ZENODO_CSV_AUTHENTICATED",
+  "audit_status": "ORIGINAL_ZENODO_CSV_AUTHENTICATED_32_VS_31_TRIAL_SOURCE_DISCREPANCY_UNRESOLVED_POSTOPEN_SENSITIVITY_COMPLETED",
   "primary_article": {
     "doi": "10.1086/712378",
     "title": "Mechanisms of Male-Male Interference during Dispersal of Orchid Pollen",
@@ -24,9 +24,9 @@
     "zenodo_api": "https://zenodo.org/api/records/4072200",
     "expected_filename": "Data_for_AmNat.csv",
     "zenodo_md5": "650e40ae7ebb41bdfb333dcf63c63c71",
-    "zenodo_file_bytes": null,
-    "original_sha256": null,
-    "original_bytes_retrieved": false,
+    "zenodo_file_bytes": 8041,
+    "original_sha256": "303428b859bcba4756ac78c4ffd4b42121a6efce5b0cd2cc2030834705f62cbc",
+    "original_bytes_retrieved": true,
     "original_row_models_refitted": false,
     "mirror_note": "Zenodo mirror preserves the same Dryad dataset DOI; not an independent ecological study or independent replication.",
     "expected_usage_note_fields": [
@@ -37,7 +37,22 @@
       "Visit",
       "Deposition"
     ],
-    "source_mirror_api_metadata_to_be_verified": true
+    "source_mirror_api_metadata_to_be_verified": true,
+    "original_source_coded_groups": {
+      "Emasc": 16,
+      "Intact": 16
+    },
+    "original_source_recipient_rows": 383,
+    "original_author_published_trials": {
+      "Emasc": 16,
+      "Intact": 15
+    },
+    "contiguous_possible_split_note": "Emasc source code 2 has Visits 1..10 and 3 has Visits 11..17, both M_init=201 and R=0; same donor is only a hypothesis, not identified by bee/plant ID.",
+    "inconsistent_R_within_trial_code_groups": 4,
+    "original_coded_group_descriptive_reanalysis_complete": true,
+    "candidate_intact_trial_exclusions_all_16_checked": true,
+    "publication_inclusion_discrepancy_unresolved": true,
+    "source_evidence_revision_notes": "Mirror recovery status supersedes initial unverified source-only receipt; experimental 31-trial model not refitted."
   },
   "experiment": {
     "treatment": "Recipient flowers emasculated (competitor pollinaria absent) versus intact (potential competitor pollinaria present)",
