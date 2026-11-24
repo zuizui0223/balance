@@ -20,3 +20,13 @@ def test_joint_same_plant_bootstrap():
     assert r['effects']['P/C']['downstream_minus_upstream']['y']['estimate']==pytest.approx(-math.log(2))
     assert r['effects']['S/P']['downstream_minus_upstream']['y']['estimate']==pytest.approx(0)
     assert len(r['joint_covariance'])==6
+
+def test_quarantine_keeps_all_fruit_plants_and_excludes_entire_ambiguous_component():
+    from scripts.fit_richman_plant_stage import linkage_audit
+    f=[fruit(a,p) for a in ARMS for p in range(1,41)]
+    z=[sample('C',1,1,3),sample('C',1,2,4),sample('C',2,2,8),sample('C',3,3,7)]
+    bad,detail=linkage_audit(z)
+    assert bad=={('C',1),('C',2)} and detail['n_quarantined_stigma_rows']==3
+    q=assemble(z,f,link_mode='quarantine')
+    assert len(q)==120 and q['C',1]['pollen_mean'] is None and q['C',3]['pollen_mean']==7
+    assert assemble(z,f,link_mode='within_key_only')['C',1]['pollen_mean']==3.5

@@ -39,8 +39,32 @@ def load_original(path):
     w.close()
     if (len(pollen),len(fruit),visit_n)!=(435,120,30):raise ValueError('source row count mismatch')
     return pollen,fruit,meta
-def assemble(pollen,fruit):
-    plants={}; samples=collections.defaultdict(list); pid_to_key={}; key_to_pid={}
+def linkage_audit(pollen):
+    pid_keys=collections.defaultdict(set); key_pids=collections.defaultdict(set); entries=[]
+    for i,r in enumerate(pollen,2):
+        k=key(r);pid=number(r['plant_id']);week=number(r['week'])
+        if pid is None or int(pid)!=pid or not 1<=pid<=120 or week is None or int(week)!=week or not 1<=week<=6:raise ValueError('invalid source plant ID or week')
+        pid=int(pid)
+        pid_keys[pid].add(k);key_pids[k].add(pid);entries.append((i,k,pid))
+    badkeys={k for k,v in key_pids.items() if len(v)>1}
+    badpids={p for p,v in pid_keys.items() if len(v)>1}
+    while True:
+        nk=badkeys|{k for p in badpids for k in pid_keys[p]}
+        npids=badpids|{p for k in nk for p in key_pids[k]}
+        if nk==badkeys and npids==badpids:break
+        badkeys,badpids=nk,npids
+    detail={'source_pollen_rows':len(pollen),'unique_treatment_plant_keys':len(key_pids),'unique_global_ids':len(pid_keys),
+            'ambiguous_treatment_plant_keys':[{ 'treatment':k[0],'plant':k[1],'global_ids':sorted(key_pids[k])} for k in sorted(badkeys)],
+            'ambiguous_global_ids':[{'global_id':p,'keys':[list(k) for k in sorted(pid_keys[p])]} for p in sorted(badpids)],
+            'quarantined_stigma_rows':[{'xlsx_row':i,'treatment':k[0],'plant':k[1],'global_id':p} for i,k,p in entries if k in badkeys],
+            'n_quarantined_stigma_rows':sum(k in badkeys for _,k,_ in entries),
+            'no_id_correction_assumed':True}
+    return badkeys,detail
+def assemble(pollen,fruit,link_mode='reject'):
+    if link_mode not in ('reject','quarantine','within_key_only'):raise ValueError('unknown linkage mode')
+    badkeys,detail=linkage_audit(pollen)
+    if badkeys and link_mode=='reject':raise ValueError('ambiguous plant linkage')
+    plants={}; samples=collections.defaultdict(list)
     for r in fruit:
         k=key(r)
         if k in plants:raise ValueError('duplicate fruit plant')
@@ -57,12 +81,10 @@ def assemble(pollen,fruit):
         plants[k]=p
     if set(plants)!={(a,p) for a in ARMS for p in range(1,41)}:raise ValueError('fruit allocation incomplete')
     for r in pollen:
-        k=key(r);pid=number(r['plant_id']);week=number(r['week'])
-        if pid is None or int(pid)!=pid or not 1<=pid<=120 or week is None or int(week)!=week or not 1<=week<=6:raise ValueError('invalid source plant ID or week')
-        pid=int(pid)
-        if k not in plants or (pid in pid_to_key and pid_to_key[pid]!=k) or (k in key_to_pid and key_to_pid[k]!=pid):raise ValueError('ambiguous plant linkage')
-        pid_to_key[pid]=k;key_to_pid[k]=pid
-        samples[k].append((int(week),number(r['grains'])))
+        k=key(r)
+        if k not in plants:raise ValueError('unmatched fruit key')
+        if link_mode=='quarantine' and k in badkeys:continue
+        samples[k].append((int(number(r['week'])),number(r['grains'])))
     for k,p in plants.items():
         values=[v for _,v in samples[k] if v is not None]
         week=collections.defaultdict(list)
@@ -123,7 +145,7 @@ def summarize(plants,fields,seed=20261124,B=20000,browse_free=False):
     return {'status':'DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP','fields':fields,'n':n,'plant_numbers':selected,'means':{a:{f:float(means[a][i]) for i,f in enumerate(fields)} for a in ARMS},
             'effects':effects,'joint_covariance_order':names,'joint_covariance':np.cov(matrix[ok],rowvar=False).tolist() if ok.sum()>1 else None,'joint_valid_draws':int(ok.sum()),'B':B,'seed':seed}
 def run(path):
-    pollen,fruit,meta=load_original(path);plants=assemble(pollen,fruit)
+    pollen,fruit,meta=load_original(path);_,link=linkage_audit(pollen);plants=assemble(pollen,fruit,link_mode='quarantine');alt=assemble(pollen,fruit,link_mode='within_key_only')
     variants={
        'primary_pollen_fruit':(('pollen_mean','prop_fruit_set'),False),
        'matched_pollen_fruit_total_seeds':(('pollen_mean','prop_fruit_set','total_seeds_plant'),False),
@@ -135,8 +157,8 @@ def run(path):
        'positive_stigma_load_fruit':(('pollen_positive_mean','prop_fruit_set'),False),
        'browse_free_sensitivity':(('pollen_mean','prop_fruit_set'),True)}
     d={'source_sha256':SHA,'source_md5':MD5,'scope':'Same treatment and plant keys; different flowers, haphazard allocation, no secondary-only treatment, complete-case and missingness sensitivity; descriptive plant-level resampling, not causal mediation or original model replay.',
-       'treatments':{'C':'control','P':'primary','S':'primary+secondary'},'metadata':meta,'audit':audit(plants),
-       'variants':{k:summarize(plants,f,browse_free=b) for k,(f,b) in variants.items()}}
+       'treatments':{'C':'control','P':'primary','S':'primary+secondary'},'metadata':meta,'linkage_audit':link,'audit':audit(plants),'within_key_only_audit':audit(alt),
+       'variants':{**{k:summarize(plants,f,browse_free=b) for k,(f,b) in variants.items()},'ambiguous_within_key_only_sensitivity':summarize(alt,('pollen_mean','prop_fruit_set'))}}
     return d
 def main():
     p=argparse.ArgumentParser();p.add_argument('--source',required=True,type=pathlib.Path);p.add_argument('--out',required=True,type=pathlib.Path);a=p.parse_args()
