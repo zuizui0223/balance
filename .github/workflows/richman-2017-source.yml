@@ -18,9 +18,9 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install 'openpyxl==3.1.5'
-      - run: python scripts/recover_richman_2017_source.py --out results/richman_source
+      - run: python scripts/recover_richman_2017_source.py --out artifacts/richman_source
       - uses: actions/upload-artifact@v4
         with:
           name: richman-2017-source
-          path: results/richman_source/
+          path: artifacts/richman_source/
           if-no-files-found: error
