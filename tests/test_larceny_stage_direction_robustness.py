@@ -1,6 +1,6 @@
 import pytest
 pytest.importorskip('scipy')
-from scripts.audit_larceny_stage_direction_robustness import holm, sign_summary, species_components, trace, present
+from scripts.audit_larceny_stage_direction_robustness import holm, sign_summary, species_components, trace, present, stage_profile
 from scripts.fit_larceny_study_stage_meta import collect, CONTEXT
 def row(i,p,s,y,sp='plant',**kw):
     r={k:'x' for k in CONTEXT};r.update(ID=i,species=sp,title='title',reference='ref',yi=y,vi=.1)
@@ -21,3 +21,10 @@ def test_source_trace_not_treatment_verification():
     assert q['unique_per_endpoint'] and not q['core_present']
     assert not q['same_experiment_verified'] and not q['sampling_covariance_known']
     assert not present('NA') and present('no')
+
+def test_stage_direction_not_necessarily_negative_cost():
+    assert stage_profile(-1,-.5)=='both_negative_attenuation'
+    assert stage_profile(-.5,-1)=='both_negative_amplification'
+    assert stage_profile(-.5,.5)=='negative_to_nonnegative'
+    assert stage_profile(.5,-.5)=='nonnegative_to_negative'
+    assert stage_profile(.5,1)=='both_nonnegative'

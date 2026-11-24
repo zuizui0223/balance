@@ -67,6 +67,14 @@ def species_components(items,rows):
             'papers':sorted(ps)}
     return components
 
+def stage_profile(up,down):
+    # Only both-negative cases can be called attenuation/amplification of an existing negative effect.
+    if up<0 and down<0:
+        return 'both_negative_attenuation' if down>up else 'both_negative_amplification' if down<up else 'both_negative_equal'
+    if up<0 and down>=0:return 'negative_to_nonnegative'
+    if up>=0 and down<0:return 'nonnegative_to_negative'
+    return 'both_nonnegative'
+
 def trace(rows,a,b):
     groups=defaultdict(lambda:defaultdict(list))
     for r in rows:
@@ -76,7 +84,9 @@ def trace(rows,a,b):
     for k,g in sorted(groups.items(),key=lambda x:str(x[0])):
         if not {a,b}.issubset(g):continue
         context=dict(zip(CONTEXT,k[2:]))
-        record={'paper_id':k[0],'species':k[1],'title':g[a][0]['title'],'reference':g[a][0]['reference'],
+        u=mean(r['yi'] for r in g[a]);d=mean(r['yi'] for r in g[b])
+        record={'upstream_equal_effect_mean':u,'downstream_equal_effect_mean':d,'profile':stage_profile(u,d),
+                'paper_id':k[0],'species':k[1],'title':g[a][0]['title'],'reference':g[a][0]['reference'],
                 'upstream':a,'downstream':b,
                 'upstream_ids':[r['ID'] for r in g[a]],'downstream_ids':[r['ID'] for r in g[b]],
                 'context':context,'unique_per_endpoint':len(g[a])==len(g[b])==1,
@@ -113,12 +123,22 @@ def run(rows):
     # Extra conservative family encompassing all scopes and all stage contrasts.
     p_all={(s,k):v['paper_sign']['sign_p_nominal'] for s,res in scopes.items() for k,v in res.items()}
     for (s,k),p in holm(p_all).items():scopes[s][k]['paper_sign']['holm_all_16']=p
+    from collections import Counter
+    profiles={}
+    for name,inventory in inventories.items():
+        bypaper=defaultdict(list)
+        for q in inventory:bypaper[q['paper_id']].append(q)
+        paperprofiles={str(p):stage_profile(mean(q['upstream_equal_effect_mean'] for q in qs),mean(q['downstream_equal_effect_mean'] for q in qs)) for p,qs in bypaper.items()}
+        profiles[name]={'context_block_counts':dict(Counter(q['profile'] for q in inventory)),
+                        'paper_counts':dict(Counter(paperprofiles.values())),
+                        'paper_profiles':paperprofiles,
+                        'conditional_on_observed_sign_not_a_confirmatory_test':True}
     n1='visitation rate minus nectar volume'; n2='fruit set minus pollen deposition'
     joint=contexts[n1]&contexts[n2]
     overlap={q[0] for q in contexts[n1]}&{q[0] for q in contexts[n2]}
     return {'source_sha256':SOURCE_SHA256,'n_effects':len(rows),
         'scope':'Post-open descriptive sign-symmetry diagnostics; four-stage Holm within each scope and across all 16. Not a confirmatory test of causal attenuation. No independence guaranteed across papers/species.',
-        'results':scopes,'primary_source_queue':inventories,
+        'results':scopes,'primary_source_queue':inventories,'endpoint_sign_profiles':profiles,
         'joint_focal_stage_coverage':{'shared_paper_ids':sorted(overlap),
             'same_archived_context_count':len(joint),'same_archived_context_papers':sorted({q[0] for q in joint}),
             'verified_same_experiment_count':0,'verified_same_experiment_count_interpretation':'Not verified here, not evidence of biological absence.'}}
@@ -127,7 +147,7 @@ def main():
     if a.out.exists():raise FileExistsError(a.out)
     result=run(source_rows(a.source));a.out.parent.mkdir(parents=True,exist_ok=True)
     a.out.write_text(json.dumps(result,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
-    compact={'source_sha256':result['source_sha256'],'n_effects':result['n_effects'],'joint':result['joint_focal_stage_coverage'],
+    compact={'source_sha256':result['source_sha256'],'n_effects':result['n_effects'],'joint':result['joint_focal_stage_coverage'],'profiles':result['endpoint_sign_profiles'],
         'scopes':{s:{k:{x:v[x] for x in ('paper_sign','leave_one_paper_out','species_reuse_components','multi_paper_components','component_fits')} for k,v in z.items()} for s,z in result['results'].items()},
         'focal_queue':{k:result['primary_source_queue'][k] for k in ('visitation rate minus nectar volume','fruit set minus pollen deposition')}}
     print('BALANCE_DIRECTION_RESULT_BEGIN')
