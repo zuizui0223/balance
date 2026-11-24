@@ -1,0 +1,44 @@
+name: Stage profile uncertainty and original fruit fate audit
+on:
+  push:
+    branches: [analysis/stage-profile-uncertainty-20261124]
+    paths:
+      - scripts/audit_stage_profile_uncertainty.py
+      - tests/test_stage_profile_uncertainty.py
+      - .github/workflows/stage-profile-uncertainty.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy==2.2.6 scipy==1.14.1 openpyxl==3.1.5 pytest
+      - run: python -m pytest -q tests/test_stage_profile_uncertainty.py
+      - run: python scripts/audit_stage_profile_uncertainty.py --kind archive --out artifacts/stage_profile_archive
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stage-profile-archive
+          path: artifacts/stage_profile_archive/RESULT.json
+          if-no-files-found: error
+  richman:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy==2.2.6 scipy==1.14.1 openpyxl==3.1.5 pytest
+      - run: python -m scripts.recover_richman_direct_mirror
+      - run: python scripts/audit_stage_profile_uncertainty.py --kind richman --source artifacts/richman_direct_mirror/2016_Richman_IpomopsisSecondaryRobbing.xlsx --out artifacts/stage_profile_richman
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stage-profile-richman
+          path: artifacts/stage_profile_richman/RESULT.json
+          if-no-files-found: error
