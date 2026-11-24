@@ -1,0 +1,1040 @@
+{
+  "provenance": {
+    "run_id": 45379033479,
+    "job_id": 138392894588,
+    "head": "bec95faf5a57827cdfbdfb58b10c54300f855837",
+    "artifact_id": 14912452953,
+    "artifact_digest": "sha256:424d4c5cb9cc23c04794cab0176b71400c54d3ac6546e81587b931e48bdba7f7"
+  },
+  "source_sha256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4",
+  "n_original_effects": 776,
+  "source_endpoint_audit": {
+    "glechoma": {
+      "doi": "10.1007/s11258-006-9244-y",
+      "study": "Zhang et al. 2007, Glechoma longituba",
+      "source": "Original Results and Methods, author manuscript copy: https://www.academia.edu/4001739/Nectar_robbing_of_a_carpenter_bee_and_its_effects_on_the_reproductive_fitness_of_Glechoma_longituba_Lamiaceae",
+      "published": {
+        "robbed": {
+          "pollinated_percent": 64.86,
+          "conditional_pollen_load": 15.96,
+          "fruit_percent": 58.89,
+          "n_pollination_reported": 575,
+          "n_load_reported": 373
+        },
+        "unrobbed": {
+          "pollinated_percent": 83.33,
+          "conditional_pollen_load": 13.85,
+          "fruit_percent": 80.35,
+          "n_pollination_reported": 584,
+          "n_load_reported": 469
+        }
+      },
+      "lnRR": {
+        "incidence": -0.2505775275149435,
+        "conditional_load": 0.14180035938831534,
+        "fruit": -0.3107207952270422
+      },
+      "archive_id_map": {
+        "incidence": 384,
+        "conditional_load": 387,
+        "fruit": 385
+      },
+      "archived_rows": [
+        {
+          "ID": 384,
+          "ref-ID": 72,
+          "title": "Nectar robbing of a carpenter bee and its effects on the reproductive fitness of Glechoma longituba (Lamiaceae)",
+          "reference": "Zhang et al., 2007",
+          "country": "China",
+          "longitude": 114.362778,
+          "latitude": 30.542222,
+          "altitude": 150,
+          "climate": "non-tropical",
+          "species": "Glechoma_longituba",
+          "rob_location": "corolla",
+          "nectar_production": 0.24,
+          "sugar_concentration": 28.2,
+          "flower_lifespan": 2,
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "yes",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "individual-flower success",
+          "response_variable": "female fitness",
+          "sub_response_variable": "pollen deposition",
+          "yi": -0.250577527514943,
+          "vi": 0.00516259192075968
+        },
+        {
+          "ID": 387,
+          "ref-ID": 72,
+          "title": "Nectar robbing of a carpenter bee and its effects on the reproductive fitness of Glechoma longituba (Lamiaceae)",
+          "reference": "Zhang et al., 2007",
+          "country": "China",
+          "longitude": 114.362778,
+          "latitude": 30.542222,
+          "altitude": 150,
+          "climate": "non-tropical",
+          "species": "Glechoma_longituba",
+          "rob_location": "corolla",
+          "nectar_production": 0.24,
+          "sugar_concentration": 28.2,
+          "flower_lifespan": 2,
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "yes",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "individual-flower success",
+          "response_variable": "female fitness",
+          "sub_response_variable": "pollen deposition",
+          "yi": 0.141800359388315,
+          "vi": 0.372835281784213
+        },
+        {
+          "ID": 385,
+          "ref-ID": 72,
+          "title": "Nectar robbing of a carpenter bee and its effects on the reproductive fitness of Glechoma longituba (Lamiaceae)",
+          "reference": "Zhang et al., 2007",
+          "country": "China",
+          "longitude": 114.362778,
+          "latitude": 30.542222,
+          "altitude": 150,
+          "climate": "non-tropical",
+          "species": "Glechoma_longituba",
+          "rob_location": "corolla",
+          "nectar_production": 0.24,
+          "sugar_concentration": 28.2,
+          "flower_lifespan": 2,
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "yes",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "individual-flower success",
+          "response_variable": "female fitness",
+          "sub_response_variable": "fruit set",
+          "yi": -0.310720795227042,
+          "vi": 0.00669635063572383
+        }
+      ],
+      "mixed_upstream_delta": -0.2563322111637281,
+      "incidence_only_delta": -0.060143267712098714,
+      "conditional_load_only_delta": -0.4525211546153576,
+      "absolute_delta_reduction_fraction": 0.76536984002497,
+      "scope": "Exact reported point identities. Destructive stigma sampling and other tagged flowers for fruit: not same flower, not known common cohort or covariance. Pollination incidence and conditional positive load are biologically different. Natural robbery association, not randomized treatment."
+    },
+    "wu": {
+      "doi": "10.1093/jpe/rtad036",
+      "study": "Wu & Gao 2024, Thunia alba",
+      "n_inflorescences": {
+        "removed": 43,
+        "intact": 40
+      },
+      "source_reported_mean_SE": {
+        "pollen_deposition": {
+          "id": 481,
+          "t": 9.73,
+          "c": 30.79,
+          "se_t": 3.37,
+          "se_c": 2.13,
+          "lnRR": -1.1519760657384952,
+          "source_delta_variance": 0.12474499262243144,
+          "archived_vi": 0.124759616267624
+        },
+        "fruit_set": {
+          "id": 482,
+          "t": 8.18,
+          "c": 28.71,
+          "se_t": 3.39,
+          "se_c": 2.08,
+          "lnRR": -1.255553343518317,
+          "source_delta_variance": 0.1769972384121298,
+          "archived_vi": 0.177005548398192
+        }
+      },
+      "delta": -0.10357727777982184,
+      "working_normal95_independence": [
+        -1.1802064409477344,
+        0.9730518853880907
+      ],
+      "working_normal95_min_variance": [
+        -0.23590978453358477,
+        0.028755228973941088
+      ],
+      "working_normal95_max_variance": [
+        -1.6203992243587686,
+        1.413244668799125
+      ],
+      "rho_needed_for_negative_normal95": 1.0059421252313752,
+      "scope": "First-order log ratio delta method on reported SEs; not recovered joint covariance. Same intervention and inflorescence groups; unverified parent plant dependence and no common flower rows. No causal effect of robbery isolated."
+    }
+  },
+  "archive_pairing_envelope": [
+    {
+      "paper_id": 1,
+      "min": -0.6801020153294737,
+      "max": 0.342881224116324,
+      "sign_invariant": "not_strictly_invariant",
+      "blocks": [
+        {
+          "species": "Ipomopsis_aggregata",
+          "up_ids": [
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114
+          ],
+          "down_ids": [
+            116,
+            117
+          ],
+          "candidate_pairs": 14,
+          "min": -0.6801020153294737,
+          "max": 0.342881224116324
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 29,
+      "min": -0.2949843231855577,
+      "max": -0.11471035302609729,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Corydalis_caseana",
+          "up_ids": [
+            254,
+            257
+          ],
+          "down_ids": [
+            255,
+            258
+          ],
+          "candidate_pairs": 4,
+          "min": -0.2949843231855577,
+          "max": -0.11471035302609729
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 52,
+      "min": -0.821940617375403,
+      "max": -0.821940617375403,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Chilopsis_linearis",
+          "up_ids": [
+            269
+          ],
+          "down_ids": [
+            268
+          ],
+          "candidate_pairs": 1,
+          "min": -0.821940617375403,
+          "max": -0.821940617375403
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 55,
+      "min": -0.4078750209173872,
+      "max": -0.16791425594995096,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Ipomopsis_aggregata",
+          "up_ids": [
+            230,
+            231
+          ],
+          "down_ids": [
+            232,
+            233
+          ],
+          "candidate_pairs": 4,
+          "min": -0.4078750209173872,
+          "max": -0.16791425594995096
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 71,
+      "min": -1.082182873175285,
+      "max": 0.2848426626666156,
+      "sign_invariant": "not_strictly_invariant",
+      "blocks": [
+        {
+          "species": "Glechoma_longituba",
+          "up_ids": [
+            399,
+            400
+          ],
+          "down_ids": [
+            401,
+            402
+          ],
+          "candidate_pairs": 4,
+          "min": -1.082182873175285,
+          "max": 0.2848426626666156
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 72,
+      "min": -0.452521154615357,
+      "max": -0.06014326771209899,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Glechoma_longituba",
+          "up_ids": [
+            384,
+            387
+          ],
+          "down_ids": [
+            385
+          ],
+          "candidate_pairs": 2,
+          "min": -0.452521154615357,
+          "max": -0.06014326771209899
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 81,
+      "min": -1.54528622799938,
+      "max": -0.08434225474309404,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Ipomopsis_aggregata",
+          "up_ids": [
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172
+          ],
+          "down_ids": [
+            173,
+            174,
+            175,
+            176,
+            177,
+            178,
+            179,
+            180
+          ],
+          "candidate_pairs": 64,
+          "min": -1.54528622799938,
+          "max": -0.08434225474309404
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 108,
+      "min": -0.774188390563071,
+      "max": -0.774188390563071,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Asclepias_syriaca",
+          "up_ids": [
+            773
+          ],
+          "down_ids": [
+            775
+          ],
+          "candidate_pairs": 1,
+          "min": -0.774188390563071,
+          "max": -0.774188390563071
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 129,
+      "min": -0.10357727777981984,
+      "max": -0.10357727777981984,
+      "sign_invariant": "negative",
+      "blocks": [
+        {
+          "species": "Thunia_alba",
+          "up_ids": [
+            481
+          ],
+          "down_ids": [
+            482
+          ],
+          "candidate_pairs": 1,
+          "min": -0.10357727777981984,
+          "max": -0.10357727777981984
+        }
+      ],
+      "treatment_pair_verified": false
+    },
+    {
+      "paper_id": 140,
+      "min": 0.2652092165997222,
+      "max": 0.2652092165997222,
+      "sign_invariant": "positive",
+      "blocks": [
+        {
+          "species": "Platanthera_praeclara",
+          "up_ids": [
+            558
+          ],
+          "down_ids": [
+            560
+          ],
+          "candidate_pairs": 1,
+          "min": 0.2652092165997222,
+          "max": 0.2652092165997222
+        }
+      ],
+      "treatment_pair_verified": false
+    }
+  ],
+  "pairing_sign_counts": {
+    "negative": 7,
+    "positive": 1,
+    "not_strictly_invariant": 2
+  },
+  "sensitivity": {
+    "original_archive": {
+      "paper_sign": {
+        "k": 10,
+        "positive": 1,
+        "negative": 9,
+        "ties": 0,
+        "median": -0.27211342479869854,
+        "equal_cluster_mean": -0.3418214687213395,
+        "sign_p_nominal": 0.021484375
+      },
+      "paper_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.2912838099931922,
+          "ci95": [
+            -0.5932264242853165,
+            0.010658804298932123
+          ],
+          "se_mkh": 0.13347552471163052,
+          "p_two_sided_nominal": 0.05696049053738216,
+          "tau2_DL": 0.12015365641118637,
+          "I2_percent": 88.68407596629964,
+          "equal_paper_mean": -0.3418214687213395,
+          "positive_papers": 1,
+          "negative_papers": 9
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.2572863365151261,
+          "ci95": [
+            -0.5846606305038327,
+            0.07008795747358049
+          ],
+          "se_mkh": 0.14471774966141954,
+          "p_two_sided_nominal": 0.10914622871643723,
+          "tau2_DL": 0.11688519789313742,
+          "I2_percent": 77.35419157365402,
+          "equal_paper_mean": -0.3418214687213395,
+          "positive_papers": 1,
+          "negative_papers": 9
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.24044438840750407,
+          "ci95": [
+            -0.5835339544228736,
+            0.10264517760786543
+          ],
+          "se_mkh": 0.15166477893273478,
+          "p_two_sided_nominal": 0.14734409124534803,
+          "tau2_DL": 0.11343965157842219,
+          "I2_percent": 68.95107367573551,
+          "equal_paper_mean": -0.3418214687213395,
+          "positive_papers": 1,
+          "negative_papers": 9
+        }
+      },
+      "species_sign": {
+        "k": 7,
+        "positive": 1,
+        "negative": 6,
+        "ties": 0,
+        "median": -0.32750115820903136,
+        "equal_cluster_mean": -0.33449545999386787,
+        "sign_p_nominal": 0.125
+      },
+      "species_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.2784938925494661,
+          "ci95": [
+            -0.7114453183739137,
+            0.15445753327498146
+          ],
+          "se_mkh": 0.17693789239765997,
+          "p_two_sided_nominal": 0.16656083794265003,
+          "tau2_DL": 0.1550027900616972,
+          "I2_percent": 92.18604694496867,
+          "equal_paper_mean": -0.33449545999386787,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.26974031805305254,
+          "ci95": [
+            -0.7525101871245921,
+            0.21302955101848692
+          ],
+          "se_mkh": 0.19729761366174256,
+          "p_two_sided_nominal": 0.22057456385397758,
+          "tau2_DL": 0.16727295474124979,
+          "I2_percent": 78.82352789648411,
+          "equal_paper_mean": -0.33449545999386787,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.26010783328857917,
+          "ci95": [
+            -0.773337443768138,
+            0.25312177719097956
+          ],
+          "se_mkh": 0.2097458517924976,
+          "p_two_sided_nominal": 0.26123087105702775,
+          "tau2_DL": 0.1699994542428012,
+          "I2_percent": 71.48717654254483,
+          "equal_paper_mean": -0.33449545999386787,
+          "positive_papers": 1,
+          "negative_papers": 6
+        }
+      }
+    },
+    "Glechoma_2007_incidence_only": {
+      "paper_sign": {
+        "k": 10,
+        "positive": 1,
+        "negative": 9,
+        "ties": 0,
+        "median": -0.2463709882697483,
+        "equal_cluster_mean": -0.3222025743761766,
+        "sign_p_nominal": 0.021484375
+      },
+      "paper_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.2588144047816034,
+          "ci95": [
+            -0.5359066875305462,
+            0.018277877967339373
+          ],
+          "se_mkh": 0.1224902881634198,
+          "p_two_sided_nominal": 0.06376481787428812,
+          "tau2_DL": 0.1037319767851968,
+          "I2_percent": 88.63321215492961,
+          "equal_paper_mean": -0.3222025743761766,
+          "positive_papers": 1,
+          "negative_papers": 9
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.21739287886535882,
+          "ci95": [
+            -0.509770187995608,
+            0.0749844302648904
+          ],
+          "se_mkh": 0.12924712479364833,
+          "p_two_sided_nominal": 0.12686500900637224,
+          "tau2_DL": 0.09460861461956317,
+          "I2_percent": 77.40969763141031,
+          "equal_paper_mean": -0.3222025743761766,
+          "positive_papers": 1,
+          "negative_papers": 9
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.1983622293815831,
+          "ci95": [
+            -0.5015991277821239,
+            0.10487466901895776
+          ],
+          "se_mkh": 0.13404767068347961,
+          "p_two_sided_nominal": 0.173060128741359,
+          "tau2_DL": 0.08981024379666633,
+          "I2_percent": 69.09572502642325,
+          "equal_paper_mean": -0.3222025743761766,
+          "positive_papers": 1,
+          "negative_papers": 9
+        }
+      },
+      "species_sign": {
+        "k": 7,
+        "positive": 1,
+        "negative": 6,
+        "ties": 0,
+        "median": -0.22940668648321683,
+        "equal_cluster_mean": -0.3204819640330372,
+        "sign_p_nominal": 0.125
+      },
+      "species_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.2628772936174374,
+          "ci95": [
+            -0.6872397170544462,
+            0.16148512981957136
+          ],
+          "se_mkh": 0.17342775271550517,
+          "p_two_sided_nominal": 0.18035924353984809,
+          "tau2_DL": 0.1504744089040102,
+          "I2_percent": 92.1441668819878,
+          "equal_paper_mean": -0.3204819640330372,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.256227234339926,
+          "ci95": [
+            -0.7248115603655964,
+            0.21235709168574435
+          ],
+          "se_mkh": 0.1915002887441198,
+          "p_two_sided_nominal": 0.22937333240697447,
+          "tau2_DL": 0.16058710638293255,
+          "I2_percent": 78.8709805285018,
+          "equal_paper_mean": -0.3204819640330372,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.24830909998482006,
+          "ci95": [
+            -0.7462666841224809,
+            0.24964848415284072
+          ],
+          "se_mkh": 0.20350450462882608,
+          "p_two_sided_nominal": 0.2681793040786166,
+          "tau2_DL": 0.16352967141302757,
+          "I2_percent": 71.57591947081103,
+          "equal_paper_mean": -0.3204819640330372,
+          "positive_papers": 1,
+          "negative_papers": 6
+        }
+      }
+    },
+    "Glechoma_2007_conditional_load_only": {
+      "paper_sign": {
+        "k": 10,
+        "positive": 1,
+        "negative": 9,
+        "ties": 0,
+        "median": -0.3432823718440019,
+        "equal_cluster_mean": -0.3614403630665024,
+        "sign_p_nominal": 0.021484375
+      },
+      "paper_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.3008462765847431,
+          "ci95": [
+            -0.6115808637705911,
+            0.009888310601104788
+          ],
+          "se_mkh": 0.13736206851066127,
+          "p_two_sided_nominal": 0.0562346684856777,
+          "tau2_DL": 0.12194879115749037,
+          "I2_percent": 88.66854531358793,
+          "equal_paper_mean": -0.3614403630665024,
+          "positive_papers": 1,
+          "negative_papers": 9
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.26652134313050235,
+          "ci95": [
+            -0.6038645727927434,
+            0.07082188653173865
+          ],
+          "se_mkh": 0.14912457684267377,
+          "p_two_sided_nominal": 0.10753923680667786,
+          "tau2_DL": 0.11956853323005581,
+          "I2_percent": 77.28856249688232,
+          "equal_paper_mean": -0.3614403630665024,
+          "positive_papers": 1,
+          "negative_papers": 9
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 10,
+          "mu": -0.24943315467222696,
+          "ci95": [
+            -0.6027779896026242,
+            0.10391168025817024
+          ],
+          "se_mkh": 0.15619818142281153,
+          "p_two_sided_nominal": 0.1447520332299505,
+          "tau2_DL": 0.11660576626996721,
+          "I2_percent": 68.91021281724801,
+          "equal_paper_mean": -0.3614403630665024,
+          "positive_papers": 1,
+          "negative_papers": 9
+        }
+      },
+      "species_sign": {
+        "k": 7,
+        "positive": 1,
+        "negative": 6,
+        "ties": 0,
+        "median": -0.3746226545236444,
+        "equal_cluster_mean": -0.3485089559546985,
+        "sign_p_nominal": 0.125
+      },
+      "species_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.2885877671766044,
+          "ci95": [
+            -0.7325738468840053,
+            0.15539831253079645
+          ],
+          "se_mkh": 0.1814475169997027,
+          "p_two_sided_nominal": 0.1628312689014944,
+          "tau2_DL": 0.15808386106305924,
+          "I2_percent": 92.1506107281498,
+          "equal_paper_mean": -0.3485089559546985,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.2774729432171142,
+          "ci95": [
+            -0.7705726612965227,
+            0.2156267748622943
+          ],
+          "se_mkh": 0.20151919974096133,
+          "p_two_sided_nominal": 0.21770846955338322,
+          "tau2_DL": 0.17068097135662613,
+          "I2_percent": 78.73445638860733,
+          "equal_paper_mean": -0.3485089559546985,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.26644396969534434,
+          "ci95": [
+            -0.7891999089178542,
+            0.2563119695271655
+          ],
+          "se_mkh": 0.21363905650213746,
+          "p_two_sided_nominal": 0.25880940597912083,
+          "tau2_DL": 0.17323039116455477,
+          "I2_percent": 71.43315151775744,
+          "equal_paper_mean": -0.3485089559546985,
+          "positive_papers": 1,
+          "negative_papers": 6
+        }
+      }
+    },
+    "Glechoma_2007_excluded_for_distinct_cohorts": {
+      "paper_sign": {
+        "k": 9,
+        "positive": 1,
+        "negative": 8,
+        "ties": 0,
+        "median": -0.2878946384336691,
+        "equal_cluster_mean": -0.35132027511662967,
+        "sign_p_nominal": 0.0390625
+      },
+      "paper_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 9,
+          "mu": -0.2953989520985164,
+          "ci95": [
+            -0.619915419916927,
+            0.029117515719894183
+          ],
+          "se_mkh": 0.14072675016676803,
+          "p_two_sided_nominal": 0.06903453592991055,
+          "tau2_DL": 0.12349103141554486,
+          "I2_percent": 89.85834026008985,
+          "equal_paper_mean": -0.35132027511662967,
+          "positive_papers": 1,
+          "negative_papers": 8
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 9,
+          "mu": -0.26010345367079785,
+          "ci95": [
+            -0.6143761599452136,
+            0.09416925260361786
+          ],
+          "se_mkh": 0.1536305598355094,
+          "p_two_sided_nominal": 0.12890214597078006,
+          "tau2_DL": 0.12262363030916444,
+          "I2_percent": 79.48537309498523,
+          "equal_paper_mean": -0.35132027511662967,
+          "positive_papers": 1,
+          "negative_papers": 8
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 9,
+          "mu": -0.24308625875925477,
+          "ci95": [
+            -0.6157541377512699,
+            0.12958162023276037
+          ],
+          "se_mkh": 0.16160763690869115,
+          "p_two_sided_nominal": 0.17094751612176756,
+          "tau2_DL": 0.12117079710457014,
+          "I2_percent": 71.78560416888966,
+          "equal_paper_mean": -0.35132027511662967,
+          "positive_papers": 1,
+          "negative_papers": 8
+        }
+      },
+      "species_sign": {
+        "k": 7,
+        "positive": 1,
+        "negative": 6,
+        "ties": 0,
+        "median": -0.3746226545236444,
+        "equal_cluster_mean": -0.3446624524289112,
+        "sign_p_nominal": 0.125
+      },
+      "species_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.28452169030106556,
+          "ci95": [
+            -0.730131608092552,
+            0.16108822749042084
+          ],
+          "se_mkh": 0.18211114453631616,
+          "p_two_sided_nominal": 0.1692322177537014,
+          "tau2_DL": 0.15783659438712477,
+          "I2_percent": 92.11352906093721,
+          "equal_paper_mean": -0.3446624524289112,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.2746945198069109,
+          "ci95": [
+            -0.7675189957099718,
+            0.21812995609615005
+          ],
+          "se_mkh": 0.20140671421099884,
+          "p_two_sided_nominal": 0.22155280093372995,
+          "tau2_DL": 0.16992679797172264,
+          "I2_percent": 78.63457869895775,
+          "equal_paper_mean": -0.3446624524289112,
+          "positive_papers": 1,
+          "negative_papers": 6
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 7,
+          "mu": -0.26430779498706714,
+          "ci95": [
+            -0.7863134585075456,
+            0.25769786853341137
+          ],
+          "se_mkh": 0.2133324350348867,
+          "p_two_sided_nominal": 0.26163119310853455,
+          "tau2_DL": 0.1725046842509235,
+          "I2_percent": 71.34773453014849,
+          "equal_paper_mean": -0.3446624524289112,
+          "positive_papers": 1,
+          "negative_papers": 6
+        }
+      }
+    },
+    "both_Glechoma_studies_excluded": {
+      "paper_sign": {
+        "k": 8,
+        "positive": 1,
+        "negative": 7,
+        "ties": 0,
+        "median": -0.2463709882697483,
+        "equal_cluster_mean": -0.34540154634941655,
+        "sign_p_nominal": 0.0703125
+      },
+      "paper_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 8,
+          "mu": -0.2881438632459795,
+          "ci95": [
+            -0.6353245991853975,
+            0.05903687269343855
+          ],
+          "se_mkh": 0.14682279254539532,
+          "p_two_sided_nominal": 0.09048201290711891,
+          "tau2_DL": 0.1252883260827327,
+          "I2_percent": 91.00973488588136,
+          "equal_paper_mean": -0.34540154634941655,
+          "positive_papers": 1,
+          "negative_papers": 7
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 8,
+          "mu": -0.25384350086492574,
+          "ci95": [
+            -0.6311865083559183,
+            0.12349950662606679
+          ],
+          "se_mkh": 0.1595784223378486,
+          "p_two_sided_nominal": 0.15569998517041114,
+          "tau2_DL": 0.1261152528594679,
+          "I2_percent": 81.72539931892337,
+          "equal_paper_mean": -0.34540154634941655,
+          "positive_papers": 1,
+          "negative_papers": 7
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 8,
+          "mu": -0.2385770138143451,
+          "ci95": [
+            -0.63541137204452,
+            0.15825734441582978
+          ],
+          "se_mkh": 0.16782131789559027,
+          "p_two_sided_nominal": 0.19812469272469652,
+          "tau2_DL": 0.12656803443975628,
+          "I2_percent": 74.880913587083,
+          "equal_paper_mean": -0.34540154634941655,
+          "positive_papers": 1,
+          "negative_papers": 7
+        }
+      },
+      "species_sign": {
+        "k": 6,
+        "positive": 1,
+        "negative": 5,
+        "ties": 0,
+        "median": -0.289734996314736,
+        "equal_cluster_mean": -0.33566117695800723,
+        "sign_p_nominal": 0.21875
+      },
+      "species_fits": {
+        "0.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 6,
+          "mu": -0.27198030314607985,
+          "ci95": [
+            -0.7707146697059799,
+            0.22675406341382015
+          ],
+          "se_mkh": 0.19401614048846058,
+          "p_two_sided_nominal": 0.2198854955759824,
+          "tau2_DL": 0.16091467475429877,
+          "I2_percent": 93.33353657378922,
+          "equal_paper_mean": -0.33566117695800723,
+          "positive_papers": 1,
+          "negative_papers": 5
+        },
+        "0.5": {
+          "status": "EXPLORATORY_FIT",
+          "k": 6,
+          "mu": -0.2658067381459919,
+          "ci95": [
+            -0.8155939272832538,
+            0.28398045099126984
+          ],
+          "se_mkh": 0.2138765556947029,
+          "p_two_sided_nominal": 0.2690423536670878,
+          "tau2_DL": 0.17765480996929853,
+          "I2_percent": 81.5944560115204,
+          "equal_paper_mean": -0.33566117695800723,
+          "positive_papers": 1,
+          "negative_papers": 5
+        },
+        "1.0": {
+          "status": "EXPLORATORY_FIT",
+          "k": 6,
+          "mu": -0.2581764107426948,
+          "ci95": [
+            -0.840344387458796,
+            0.3239915659734064
+          ],
+          "se_mkh": 0.22647323210855613,
+          "p_two_sided_nominal": 0.30593947622724255,
+          "tau2_DL": 0.18428699815011132,
+          "I2_percent": 75.38584449409883,
+          "equal_paper_mean": -0.33566117695800723,
+          "positive_papers": 1,
+          "negative_papers": 5
+        }
+      }
+    }
+  },
+  "scope": "Post-open source audit and partial correction sensitivity only. Other studies have not been fully denominator-harmonized. No causal transmission, no matched cohort, no new independent study, no V4 changes."
+}

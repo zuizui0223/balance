@@ -1,0 +1,46 @@
+{
+  "provenance": {
+    "run_id": 45379033479,
+    "job_id": 138392894015,
+    "head": "bec95faf5a57827cdfbdfb58b10c54300f855837",
+    "artifact_id": 14913395490,
+    "artifact_digest": "sha256:082e2f8a0545cc36ce2e6d9f8309f9155b584844d90ab2eb2cf1f72c4eadf6c3"
+  },
+  "doi": "10.5061/dryad.tf71f",
+  "record": 4975584,
+  "attempts": [
+    {
+      "url": "https://zenodo.org/api/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx/content",
+      "final_url": "https://zenodo.org/api/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx/content",
+      "source_authenticated": true,
+      "bytes": 67814,
+      "md5": "7bd93c8f75bfff9861263d304eaba799",
+      "sha256": "c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84"
+    },
+    {
+      "url": "https://zenodo.org/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx?download=1",
+      "final_url": "https://zenodo.org/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx?download=1",
+      "source_authenticated": true,
+      "bytes": 67814,
+      "md5": "7bd93c8f75bfff9861263d304eaba799",
+      "sha256": "c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84"
+    },
+    {
+      "url": "https://zenodo.org/record/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx?download=1",
+      "final_url": "https://zenodo.org/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx",
+      "source_authenticated": true,
+      "bytes": 67814,
+      "md5": "7bd93c8f75bfff9861263d304eaba799",
+      "sha256": "c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84"
+    }
+  ],
+  "source_authenticated": true,
+  "selected": {
+    "url": "https://zenodo.org/api/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx/content",
+    "final_url": "https://zenodo.org/api/records/4975584/files/2016_Richman_IpomopsisSecondaryRobbing.xlsx/content",
+    "source_authenticated": true,
+    "bytes": 67814,
+    "md5": "7bd93c8f75bfff9861263d304eaba799",
+    "sha256": "c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84"
+  }
+}
