@@ -1,4 +1,5 @@
 import pytest
+pytest.importorskip('scipy')  # Dedicated source workflow installs the pinned optional dependency.
 from scripts.fit_larceny_study_stage_meta import collapse, collect, pool, sensitivity, CONTEXT
 def row(i,p,stage,y,v=1.,sp='a',**kw):
     r={k:'x' for k in CONTEXT}
