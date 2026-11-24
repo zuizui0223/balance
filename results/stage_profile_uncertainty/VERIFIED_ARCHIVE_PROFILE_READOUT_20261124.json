@@ -1,0 +1,458 @@
+{
+  "provenance": {
+    "run": 45390074548,
+    "job": 138431138622,
+    "head": "ebc175d71e5e51f86eb7ec9af71eeb8d7de849af",
+    "artifact_id": 14918347661,
+    "artifact_digest": "sha256:42e496db3ec2aac910cbacfad47085d0a8bff7624eb567fbf965eba112f8f995"
+  },
+  "source_sha256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4",
+  "n_effects": 776,
+  "method": "All eligible exact archived contexts; one equal-block summary per paper. Normal working Bonferroni intervals for upstream, downstream and delta using Cauchy upper sampling variance. Nominal simultaneous within paper only, not across studies, not exact confidence under unknown source variances or matching. No inferred class prevalence, no phylogenetic correction. Thresholds are post-open sensitivity, not clinical or biological equivalence margins.",
+  "z": 2.3939797998185104,
+  "thresholds": {
+    "zero": 0,
+    "10pct": 0.10536051565782628,
+    "25pct": 0.2876820724517809
+  },
+  "stages": {
+    "seed set minus fruit set": {
+      "papers": {
+        "zero": {
+          "n": 34,
+          "point_counts": {
+            "attenuation": 12,
+            "threshold_crossing_down": 5,
+            "threshold_crossing_up": 6,
+            "amplification": 7,
+            "neither_below_threshold": 4
+          },
+          "certified_counts": {
+            "unresolved": 34
+          }
+        },
+        "10pct": {
+          "n": 34,
+          "point_counts": {
+            "stable_negative": 5,
+            "threshold_crossing_down": 3,
+            "neither_below_threshold": 13,
+            "attenuation": 3,
+            "threshold_crossing_up": 8,
+            "amplification": 2
+          },
+          "certified_counts": {
+            "unresolved": 31,
+            "threshold_crossing_down": 2,
+            "neither_below_threshold": 1
+          }
+        },
+        "25pct": {
+          "n": 34,
+          "point_counts": {
+            "threshold_crossing_up": 6,
+            "threshold_crossing_down": 3,
+            "neither_below_threshold": 16,
+            "attenuation": 2,
+            "stable_negative": 6,
+            "amplification": 1
+          },
+          "certified_counts": {
+            "unresolved": 26,
+            "neither_below_threshold": 6,
+            "threshold_crossing_down": 2
+          }
+        }
+      },
+      "species_reuse_components": {
+        "zero": {
+          "n": 26,
+          "point_counts": {
+            "amplification": 5,
+            "threshold_crossing_down": 4,
+            "threshold_crossing_up": 5,
+            "attenuation": 8,
+            "neither_below_threshold": 4
+          },
+          "certified_counts": {
+            "unresolved": 26
+          }
+        },
+        "10pct": {
+          "n": 26,
+          "point_counts": {
+            "stable_negative": 3,
+            "threshold_crossing_down": 3,
+            "neither_below_threshold": 11,
+            "attenuation": 2,
+            "threshold_crossing_up": 7
+          },
+          "certified_counts": {
+            "unresolved": 23,
+            "threshold_crossing_down": 2,
+            "neither_below_threshold": 1
+          }
+        },
+        "25pct": {
+          "n": 26,
+          "point_counts": {
+            "stable_negative": 3,
+            "threshold_crossing_down": 3,
+            "neither_below_threshold": 15,
+            "attenuation": 2,
+            "threshold_crossing_up": 3
+          },
+          "certified_counts": {
+            "unresolved": 19,
+            "neither_below_threshold": 5,
+            "threshold_crossing_down": 2
+          }
+        }
+      },
+      "multi_paper_components": [
+        [
+          1,
+          9,
+          30,
+          31,
+          55,
+          81
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          29,
+          37
+        ],
+        [
+          71,
+          72
+        ]
+      ]
+    },
+    "visitation rate minus nectar volume": {
+      "papers": {
+        "zero": {
+          "n": 10,
+          "point_counts": {
+            "amplification": 1,
+            "attenuation": 6,
+            "neither_below_threshold": 2,
+            "threshold_crossing_up": 1
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        },
+        "10pct": {
+          "n": 10,
+          "point_counts": {
+            "threshold_crossing_down": 1,
+            "attenuation": 5,
+            "stable_negative": 1,
+            "neither_below_threshold": 3
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        },
+        "25pct": {
+          "n": 10,
+          "point_counts": {
+            "neither_below_threshold": 4,
+            "stable_negative": 2,
+            "attenuation": 1,
+            "threshold_crossing_up": 3
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        }
+      },
+      "species_reuse_components": {
+        "zero": {
+          "n": 10,
+          "point_counts": {
+            "amplification": 1,
+            "attenuation": 6,
+            "neither_below_threshold": 2,
+            "threshold_crossing_up": 1
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        },
+        "10pct": {
+          "n": 10,
+          "point_counts": {
+            "threshold_crossing_down": 1,
+            "attenuation": 5,
+            "stable_negative": 1,
+            "neither_below_threshold": 3
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        },
+        "25pct": {
+          "n": 10,
+          "point_counts": {
+            "neither_below_threshold": 4,
+            "stable_negative": 2,
+            "attenuation": 1,
+            "threshold_crossing_up": 3
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        }
+      },
+      "multi_paper_components": []
+    },
+    "pollen deposition minus visitation rate": {
+      "papers": {
+        "zero": {
+          "n": 5,
+          "point_counts": {
+            "amplification": 2,
+            "threshold_crossing_down": 1,
+            "attenuation": 2
+          },
+          "certified_counts": {
+            "unresolved": 5
+          }
+        },
+        "10pct": {
+          "n": 5,
+          "point_counts": {
+            "threshold_crossing_down": 3,
+            "threshold_crossing_up": 2
+          },
+          "certified_counts": {
+            "unresolved": 5
+          }
+        },
+        "25pct": {
+          "n": 5,
+          "point_counts": {
+            "threshold_crossing_down": 1,
+            "neither_below_threshold": 4
+          },
+          "certified_counts": {
+            "unresolved": 5
+          }
+        }
+      },
+      "species_reuse_components": {
+        "zero": {
+          "n": 5,
+          "point_counts": {
+            "amplification": 2,
+            "threshold_crossing_down": 1,
+            "attenuation": 2
+          },
+          "certified_counts": {
+            "unresolved": 5
+          }
+        },
+        "10pct": {
+          "n": 5,
+          "point_counts": {
+            "threshold_crossing_down": 3,
+            "threshold_crossing_up": 2
+          },
+          "certified_counts": {
+            "unresolved": 5
+          }
+        },
+        "25pct": {
+          "n": 5,
+          "point_counts": {
+            "threshold_crossing_down": 1,
+            "neither_below_threshold": 4
+          },
+          "certified_counts": {
+            "unresolved": 5
+          }
+        }
+      },
+      "multi_paper_components": []
+    },
+    "fruit set minus pollen deposition": {
+      "papers": {
+        "zero": {
+          "n": 10,
+          "point_counts": {
+            "amplification": 7,
+            "threshold_crossing_up": 1,
+            "threshold_crossing_down": 2
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        },
+        "10pct": {
+          "n": 10,
+          "point_counts": {
+            "amplification": 4,
+            "stable_negative": 1,
+            "neither_below_threshold": 2,
+            "threshold_crossing_down": 3
+          },
+          "certified_counts": {
+            "unresolved": 10
+          }
+        },
+        "25pct": {
+          "n": 10,
+          "point_counts": {
+            "threshold_crossing_down": 6,
+            "stable_negative": 1,
+            "neither_below_threshold": 3
+          },
+          "certified_counts": {
+            "unresolved": 8,
+            "neither_below_threshold": 2
+          }
+        }
+      },
+      "species_reuse_components": {
+        "zero": {
+          "n": 7,
+          "point_counts": {
+            "amplification": 4,
+            "threshold_crossing_up": 1,
+            "threshold_crossing_down": 2
+          },
+          "certified_counts": {
+            "unresolved": 7
+          }
+        },
+        "10pct": {
+          "n": 7,
+          "point_counts": {
+            "amplification": 2,
+            "stable_negative": 1,
+            "neither_below_threshold": 2,
+            "threshold_crossing_down": 2
+          },
+          "certified_counts": {
+            "unresolved": 7
+          }
+        },
+        "25pct": {
+          "n": 7,
+          "point_counts": {
+            "threshold_crossing_down": 3,
+            "stable_negative": 1,
+            "neither_below_threshold": 3
+          },
+          "certified_counts": {
+            "unresolved": 5,
+            "neither_below_threshold": 2
+          }
+        }
+      },
+      "multi_paper_components": [
+        [
+          1,
+          55,
+          81
+        ],
+        [
+          71,
+          72
+        ]
+      ]
+    }
+  },
+  "pollen_fruit_Glechoma_incidence_only": {
+    "papers": {
+      "zero": {
+        "n": 10,
+        "point_counts": {
+          "amplification": 7,
+          "threshold_crossing_up": 1,
+          "threshold_crossing_down": 2
+        },
+        "certified_counts": {
+          "unresolved": 10
+        }
+      },
+      "10pct": {
+        "n": 10,
+        "point_counts": {
+          "amplification": 4,
+          "stable_negative": 2,
+          "neither_below_threshold": 2,
+          "threshold_crossing_down": 2
+        },
+        "certified_counts": {
+          "unresolved": 10
+        }
+      },
+      "25pct": {
+        "n": 10,
+        "point_counts": {
+          "threshold_crossing_down": 6,
+          "stable_negative": 1,
+          "neither_below_threshold": 3
+        },
+        "certified_counts": {
+          "unresolved": 8,
+          "neither_below_threshold": 2
+        }
+      }
+    },
+    "species_reuse_components": {
+      "zero": {
+        "n": 7,
+        "point_counts": {
+          "amplification": 4,
+          "threshold_crossing_up": 1,
+          "threshold_crossing_down": 2
+        },
+        "certified_counts": {
+          "unresolved": 7
+        }
+      },
+      "10pct": {
+        "n": 7,
+        "point_counts": {
+          "amplification": 3,
+          "stable_negative": 1,
+          "neither_below_threshold": 2,
+          "threshold_crossing_down": 1
+        },
+        "certified_counts": {
+          "unresolved": 7
+        }
+      },
+      "25pct": {
+        "n": 7,
+        "point_counts": {
+          "threshold_crossing_down": 3,
+          "stable_negative": 1,
+          "neither_below_threshold": 3
+        },
+        "certified_counts": {
+          "unresolved": 5,
+          "neither_below_threshold": 2
+        }
+      }
+    },
+    "multi_paper_components": [
+      [
+        1,
+        55,
+        81
+      ],
+      [
+        71,
+        72
+      ]
+    ]
+  }
+}

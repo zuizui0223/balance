@@ -1,0 +1,569 @@
+{
+  "provenance": {
+    "run": 45390074548,
+    "job": 138431138253,
+    "head": "ebc175d71e5e51f86eb7ec9af71eeb8d7de849af",
+    "artifact_id": 14917478727,
+    "artifact_digest": "sha256:bb5e06b33d6911a4f1ae5e4b47b678afb61eac6e6616fe510cda689f294696d9"
+  },
+  "source_sha256": "c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84",
+  "missingness": {
+    "groups": {
+      "C": {
+        "n": 37,
+        "mean": 69.2049764049764,
+        "fruit_mean_all_40": 0.535085900725,
+        "n_missing": 3
+      },
+      "P": {
+        "n": 33,
+        "mean": 72.22604617604618,
+        "fruit_mean_all_40": 0.35002675125,
+        "n_missing": 7
+      },
+      "S": {
+        "n": 32,
+        "mean": 54.045557133838386,
+        "fruit_mean_all_40": 0.216041871425,
+        "n_missing": 8
+      }
+    },
+    "missingness_outcomes": {
+      "C": {
+        "observed": {
+          "n": 37,
+          "fruit_mean": 0.5238846377297297,
+          "seed_mean": 62.78378378378378
+        },
+        "unobserved_or_quarantined": {
+          "n": 3,
+          "fruit_mean": 0.673234811,
+          "seed_mean": 28
+        }
+      },
+      "P": {
+        "observed": {
+          "n": 33,
+          "fruit_mean": 0.3702273649090909,
+          "seed_mean": 47.63636363636363
+        },
+        "unobserved_or_quarantined": {
+          "n": 7,
+          "fruit_mean": 0.25479528685714287,
+          "seed_mean": 5.428571428571429
+        }
+      },
+      "S": {
+        "observed": {
+          "n": 32,
+          "fruit_mean": 0.23411062578125,
+          "seed_mean": 23.84375
+        },
+        "unobserved_or_quarantined": {
+          "n": 8,
+          "fruit_mean": 0.143766854,
+          "seed_mean": 7.875
+        }
+      }
+    },
+    "ranges": {
+      "1.0": {
+        "P/C": [
+          -0.5451072116743501,
+          -0.2747737775571822
+        ],
+        "S/P": [
+          -0.38493584857831664,
+          0.030579595383349256
+        ],
+        "S/C": [
+          -0.7376711676052108,
+          -0.4365660748212892
+        ]
+      },
+      "2.0": {
+        "P/C": [
+          -0.7063753592704722,
+          -0.20245311597755614
+        ],
+        "S/P": [
+          -0.5672574053722714,
+          0.19184774297947133
+        ],
+        "S/C": [
+          -0.9199927243991655,
+          -0.36424541324166304
+        ]
+      },
+      "3.0": {
+        "P/C": [
+          -0.8452118041246881,
+          -0.13501183518202353
+        ],
+        "S/P": [
+          -0.7214080851995297,
+          0.3306841878336872
+        ],
+        "S/C": [
+          -1.0741434042264237,
+          -0.29680413244613035
+        ]
+      },
+      "5.0": {
+        "P/C": [
+          -1.0757354627365203,
+          -0.012409513089691182
+        ],
+        "S/P": [
+          -0.9727225134804356,
+          0.5612078464455195
+        ],
+        "S/C": [
+          -1.3254578325073296,
+          -0.17420181035379811
+        ]
+      }
+    },
+    "interpretation": "Deterministic hypothetical bounds on full-allocation mean pollen if all missing plant pollen means lie between zero and m times arm observed mean. Fruit is observed for all. Not imputation, no confidence interval, no assumption missing at random; no claim unobserved pollen is physically defined for nonsampled flowers."
+  },
+  "fate_audit": {
+    "count_identity_success_plus_aborts_plus_other_equals_total": {
+      "n": 120,
+      "matches": 120,
+      "mismatches": []
+    },
+    "zero_denominator_keys": [
+      [
+        "S",
+        28
+      ]
+    ],
+    "status": "CLOSED_RECORDED_FRUIT_FATES",
+    "all_positive_denominator_plants": {
+      "n": {
+        "C": 40,
+        "P": 40,
+        "S": 39
+      },
+      "mean_share_order": [
+        "successful_or_developing",
+        "recorded_abort",
+        "combined_dehisced_dropped_or_fly_damaged"
+      ],
+      "mean_shares": {
+        "C": [
+          0.535085900714755,
+          0.0049303920248385,
+          0.4599837072604063
+        ],
+        "P": [
+          0.35002675127776384,
+          0.004427557263691717,
+          0.6455456914585443
+        ],
+        "S": [
+          0.221581406494239,
+          0.03282572775832607,
+          0.745592865747435
+        ]
+      },
+      "contrasts": {
+        "P/C": {
+          "success_difference": -0.1850591494369912,
+          "abort_difference": -0.0005028347611467825,
+          "combined_other_difference": 0.18556198419813802,
+          "ci95_by_share": [
+            [
+              -0.2736037348636862,
+              -0.09635201673115248
+            ],
+            [
+              -0.006364996898153639,
+              0.005469872918722021
+            ],
+            [
+              0.09547133250532171,
+              0.2749156205698369
+            ]
+          ],
+          "success_difference_if_other_fate_can_be_any_success_fraction_by_arm": [
+            -0.6450428566973976,
+            0.46048654202155315
+          ]
+        },
+        "S/P": {
+          "success_difference": -0.12844534478352485,
+          "abort_difference": 0.02839817049463435,
+          "combined_other_difference": 0.10004717428889065,
+          "ci95_by_share": [
+            [
+              -0.21024596253342123,
+              -0.043047996711206835
+            ],
+            [
+              0.008422846760319106,
+              0.055391512591564954
+            ],
+            [
+              0.012771801945797693,
+              0.185332041808483
+            ]
+          ],
+          "success_difference_if_other_fate_can_be_any_success_fraction_by_arm": [
+            -0.7739910362420692,
+            0.6171475209639101
+          ]
+        },
+        "S/C": {
+          "success_difference": -0.3135044942205161,
+          "abort_difference": 0.02789533573348757,
+          "combined_other_difference": 0.28560915848702867,
+          "ci95_by_share": [
+            [
+              -0.39723094080219357,
+              -0.22476669168155583
+            ],
+            [
+              0.007896339177812716,
+              0.054981865564677476
+            ],
+            [
+              0.19661457671686514,
+              0.3703662608761687
+            ]
+          ],
+          "success_difference_if_other_fate_can_be_any_success_fraction_by_arm": [
+            -0.7734882014809223,
+            0.4320883715269189
+          ]
+        }
+      }
+    },
+    "matched_positive_denominator_plants": {
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 31
+      },
+      "mean_share_order": [
+        "successful_or_developing",
+        "recorded_abort",
+        "combined_dehisced_dropped_or_fly_damaged"
+      ],
+      "mean_shares": {
+        "C": [
+          0.5238846377052073,
+          0.005330153540365945,
+          0.47078520875442675
+        ],
+        "P": [
+          0.3702273649516853,
+          0.005366736077202081,
+          0.6244058989711124
+        ],
+        "S": [
+          0.2416625813157274,
+          0.0386776387541334,
+          0.7196597799301392
+        ]
+      },
+      "contrasts": {
+        "P/C": {
+          "success_difference": -0.15365727275352203,
+          "abort_difference": 0.00003658253683613572,
+          "combined_other_difference": 0.15362069021668567,
+          "ci95_by_share": [
+            [
+              -0.24744115720321228,
+              -0.061250112354297795
+            ],
+            [
+              -0.006381653257375343,
+              0.0069117071204154125
+            ],
+            [
+              0.05978397681994678,
+              0.24863962645832627
+            ]
+          ],
+          "success_difference_if_other_fate_can_be_any_success_fraction_by_arm": [
+            -0.6244424815079488,
+            0.4707486262175904
+          ]
+        },
+        "S/P": {
+          "success_difference": -0.12856478363595789,
+          "abort_difference": 0.03331090267693132,
+          "combined_other_difference": 0.09525388095902676,
+          "ci95_by_share": [
+            [
+              -0.2206404954834914,
+              -0.03172209704766026
+            ],
+            [
+              0.00845313574163838,
+              0.06720155232361004
+            ],
+            [
+              -0.004159875450189221,
+              0.1910112505748803
+            ]
+          ],
+          "success_difference_if_other_fate_can_be_any_success_fraction_by_arm": [
+            -0.7529706826070703,
+            0.5910949962941813
+          ]
+        },
+        "S/C": {
+          "success_difference": -0.28222205638947995,
+          "abort_difference": 0.03334748521376746,
+          "combined_other_difference": 0.24887457117571243,
+          "ci95_by_share": [
+            [
+              -0.37131201729379093,
+              -0.18620615857141332
+            ],
+            [
+              0.008628351632851358,
+              0.06733242936363752
+            ],
+            [
+              0.1549898075767698,
+              0.3388413830565919
+            ]
+          ],
+          "success_difference_if_other_fate_can_be_any_success_fraction_by_arm": [
+            -0.7530072651439067,
+            0.43743772354065924
+          ]
+        }
+      }
+    },
+    "scope": "Accounting partition of recorded fruits, not complete flower cohorts. The other category pools dehiscence, collection loss and insect destruction; unknown viability. Worst assignment is hypothetical, not confidence interval or proof of equal survival. Do not infer causal postfertilization mortality."
+  },
+  "profile_resampling": {
+    "n": {
+      "C": 37,
+      "P": 33,
+      "S": 32
+    },
+    "B": 20000,
+    "results": {
+      "P/C": {
+        "recorded_fruit_fraction": {
+          "zero": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.66875,
+              "amplification": 0.3298,
+              "threshold_crossing_up": 0.0001,
+              "attenuation": 0.00085,
+              "neither_below_threshold": 0.0005
+            },
+            "valid_draws": 20000
+          },
+          "10pct": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.9236,
+              "amplification": 0.0577,
+              "stable_negative": 0.00605,
+              "neither_below_threshold": 0.0123,
+              "threshold_crossing_up": 0.00035
+            },
+            "valid_draws": 20000
+          },
+          "25pct": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.7001,
+              "neither_below_threshold": 0.2992,
+              "stable_negative": 0.0006,
+              "amplification": 0.0001
+            },
+            "valid_draws": 20000
+          }
+        },
+        "total_seeds": {
+          "zero": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.599,
+              "amplification": 0.29795,
+              "neither_below_threshold": 0.07025,
+              "attenuation": 0.01485,
+              "threshold_crossing_up": 0.01795
+            },
+            "valid_draws": 20000
+          },
+          "10pct": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.73865,
+              "amplification": 0.04425,
+              "stable_negative": 0.01265,
+              "neither_below_threshold": 0.19725,
+              "threshold_crossing_up": 0.007,
+              "attenuation": 0.0002
+            },
+            "valid_draws": 20000
+          },
+          "25pct": {
+            "point_profile": "neither_below_threshold",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.4747,
+              "neither_below_threshold": 0.5246,
+              "stable_negative": 0.0003,
+              "threshold_crossing_up": 0.0003,
+              "amplification": 0.0001
+            },
+            "valid_draws": 20000
+          }
+        }
+      },
+      "S/P": {
+        "recorded_fruit_fraction": {
+          "zero": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.79395,
+              "attenuation": 0.1975,
+              "threshold_crossing_down": 0.0044,
+              "threshold_crossing_up": 0.00415
+            },
+            "valid_draws": 20000
+          },
+          "10pct": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "stable_negative": 0.26995,
+              "amplification": 0.59165,
+              "threshold_crossing_down": 0.0437,
+              "attenuation": 0.0752,
+              "threshold_crossing_up": 0.0189,
+              "neither_below_threshold": 0.0006
+            },
+            "valid_draws": 20000
+          },
+          "25pct": {
+            "point_profile": "stable_negative",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.4275,
+              "neither_below_threshold": 0.0662,
+              "stable_negative": 0.3503,
+              "amplification": 0.0704,
+              "threshold_crossing_up": 0.08515,
+              "attenuation": 0.00045
+            },
+            "valid_draws": 20000
+          }
+        },
+        "total_seeds": {
+          "zero": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.9265,
+              "threshold_crossing_down": 0.0043,
+              "attenuation": 0.0635,
+              "neither_below_threshold": 0.0001,
+              "threshold_crossing_up": 0.0056
+            },
+            "valid_draws": 20000
+          },
+          "10pct": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.82085,
+              "stable_negative": 0.1029,
+              "threshold_crossing_down": 0.04265,
+              "attenuation": 0.01745,
+              "threshold_crossing_up": 0.0145,
+              "neither_below_threshold": 0.00165
+            },
+            "valid_draws": 20000
+          },
+          "25pct": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.4512,
+              "neither_below_threshold": 0.0425,
+              "amplification": 0.3065,
+              "threshold_crossing_up": 0.0246,
+              "stable_negative": 0.1752
+            },
+            "valid_draws": 20000
+          }
+        }
+      },
+      "S/C": {
+        "recorded_fruit_fraction": {
+          "zero": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.98955,
+              "threshold_crossing_down": 0.00785,
+              "attenuation": 0.0026
+            },
+            "valid_draws": 20000
+          },
+          "10pct": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.90685,
+              "threshold_crossing_down": 0.0832,
+              "stable_negative": 0.00965,
+              "attenuation": 0.0003
+            },
+            "valid_draws": 20000
+          },
+          "25pct": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.6468,
+              "amplification": 0.29195,
+              "stable_negative": 0.06115,
+              "neither_below_threshold": 0.00005,
+              "threshold_crossing_up": 0.00005
+            },
+            "valid_draws": 20000
+          }
+        },
+        "total_seeds": {
+          "zero": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.9915,
+              "threshold_crossing_down": 0.00785,
+              "attenuation": 0.00065
+            },
+            "valid_draws": 20000
+          },
+          "10pct": {
+            "point_profile": "amplification",
+            "bootstrap_fraction": {
+              "amplification": 0.9139,
+              "threshold_crossing_down": 0.0831,
+              "stable_negative": 0.0027,
+              "attenuation": 0.00005,
+              "threshold_crossing_up": 0.00015,
+              "neither_below_threshold": 0.0001
+            },
+            "valid_draws": 20000
+          },
+          "25pct": {
+            "point_profile": "threshold_crossing_down",
+            "bootstrap_fraction": {
+              "threshold_crossing_down": 0.64475,
+              "amplification": 0.3405,
+              "stable_negative": 0.0126,
+              "neither_below_threshold": 0.0021,
+              "threshold_crossing_up": 0.00005
+            },
+            "valid_draws": 20000
+          }
+        }
+      }
+    },
+    "scope": "Joint resampling fractions of estimated profiles, not posterior probabilities of biological mechanisms or confirmatory equivalence."
+  }
+}
