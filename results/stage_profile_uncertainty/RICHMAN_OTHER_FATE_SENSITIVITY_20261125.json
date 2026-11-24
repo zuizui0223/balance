@@ -1,0 +1,431 @@
+{
+  "scope": "Deterministic partial-identification sensitivity on previously authenticated mean shares; not a statistical interval. q is the unknown mean-share weighted successful fraction of the pooled other fruit category, not measured or assumed equal by default. Recorded success includes developing fruit; all counted as success for this hypothetical target. Same q across arms is a sensitivity scenario only. The matched positive-denominator cohort is the 101 plant subset in the original report's alternative_metadata_fraction variant; matching verified by exact field availability and arm sizes; no claim of a same-flower cohort.",
+  "input_receipt_commit": "9acc1a1ef77439bae0ba6ec68b47c8036875523c",
+  "matched_n": {
+    "C": 37,
+    "P": 33,
+    "S": 31
+  },
+  "matched_pollen_means": {
+    "C": 69.2049764049764,
+    "P": 72.22604617604617,
+    "S": 55.07928478331704
+  },
+  "results": {
+    "all_positive_denominator_plants": {
+      "P/C": {
+        "recorded_success_difference": -0.1850591494369912,
+        "recorded_abort_difference": -0.0005028347611467825,
+        "other_share_difference": 0.18556198419813802,
+        "common_q_difference_bounds": [
+          -0.1850591494369912,
+          0.0005028347611468198
+        ],
+        "common_q_zero": 0.9972902059475183,
+        "common_q_zero_feasible": true,
+        "common_q_grid": [
+          {
+            "q": 0,
+            "difference": -0.1850591494369912
+          },
+          {
+            "q": 0.25,
+            "difference": -0.1386686533874567
+          },
+          {
+            "q": 0.5,
+            "difference": -0.09227815733792219
+          },
+          {
+            "q": 0.75,
+            "difference": -0.04588766128838767
+          },
+          {
+            "q": 0.9,
+            "difference": -0.01805336365866697
+          },
+          {
+            "q": 1,
+            "difference": 0.0005028347611468198
+          }
+        ],
+        "arm_specific_q_max_difference_bounds": {
+          "0": [
+            -0.1850591494369912,
+            0.0005028347611468198
+          ],
+          "1": [
+            -0.6450428566973976,
+            0.46048654202155315
+          ],
+          "0.025": [
+            -0.19655874211850136,
+            0.012002427442657004
+          ],
+          "0.05": [
+            -0.2080583348000115,
+            0.023502020124167133
+          ],
+          "0.1": [
+            -0.23105752016303183,
+            0.04650120548718745
+          ],
+          "0.25": [
+            -0.30005507625209277,
+            0.11549876157624839
+          ]
+        },
+        "minimum_q_disparity_for_nonnegative_success_difference": 0
+      },
+      "S/P": {
+        "recorded_success_difference": -0.12844534478352485,
+        "recorded_abort_difference": 0.02839817049463435,
+        "other_share_difference": 0.10004717428889065,
+        "common_q_difference_bounds": [
+          -0.12844534478352485,
+          -0.028398170494634195
+        ],
+        "common_q_zero": 1.2838478017643278,
+        "common_q_zero_feasible": false,
+        "common_q_grid": [
+          {
+            "q": 0,
+            "difference": -0.12844534478352485
+          },
+          {
+            "q": 0.25,
+            "difference": -0.10343355121130218
+          },
+          {
+            "q": 0.5,
+            "difference": -0.07842175763907952
+          },
+          {
+            "q": 0.75,
+            "difference": -0.05340996406685686
+          },
+          {
+            "q": 0.9,
+            "difference": -0.038402887923523255
+          },
+          {
+            "q": 1,
+            "difference": -0.028398170494634195
+          }
+        ],
+        "arm_specific_q_max_difference_bounds": {
+          "0": [
+            -0.12844534478352485,
+            -0.028398170494634223
+          ],
+          "1": [
+            -0.7739910362420692,
+            0.6171475209639101
+          ],
+          "0.025": [
+            -0.14458398706998846,
+            -0.012259528208170556
+          ],
+          "0.05": [
+            -0.16072262935645207,
+            0.003879114078293
+          ],
+          "0.1": [
+            -0.19299991392937926,
+            0.03615639865122022
+          ],
+          "0.25": [
+            -0.28983176764816093,
+            0.1329882523700019
+          ]
+        },
+        "minimum_q_disparity_for_nonnegative_success_difference": 0.043990953499312244
+      },
+      "S/C": {
+        "recorded_success_difference": -0.3135044942205161,
+        "recorded_abort_difference": 0.02789533573348757,
+        "other_share_difference": 0.28560915848702867,
+        "common_q_difference_bounds": [
+          -0.3135044942205161,
+          -0.027895335733487403
+        ],
+        "common_q_zero": 1.0976696121414968,
+        "common_q_zero_feasible": false,
+        "common_q_grid": [
+          {
+            "q": 0,
+            "difference": -0.3135044942205161
+          },
+          {
+            "q": 0.25,
+            "difference": -0.24210220459875892
+          },
+          {
+            "q": 0.5,
+            "difference": -0.17069991497700174
+          },
+          {
+            "q": 0.75,
+            "difference": -0.09929762535524456
+          },
+          {
+            "q": 0.9,
+            "difference": -0.05645625158219025
+          },
+          {
+            "q": 1,
+            "difference": -0.027895335733487403
+          }
+        ],
+        "arm_specific_q_max_difference_bounds": {
+          "0": [
+            -0.3135044942205161,
+            -0.027895335733487403
+          ],
+          "1": [
+            -0.7734882014809223,
+            0.4320883715269189
+          ],
+          "0.025": [
+            -0.32500408690202626,
+            -0.01639574305197722
+          ],
+          "0.05": [
+            -0.3365036795835364,
+            -0.0048961503704670895
+          ],
+          "0.1": [
+            -0.3595028649465567,
+            0.018103034992553224
+          ],
+          "0.25": [
+            -0.42850042103561764,
+            0.08710059108161416
+          ]
+        },
+        "minimum_q_disparity_for_nonnegative_success_difference": 0.060644182159467826
+      }
+    },
+    "matched_positive_denominator_plants": {
+      "P/C": {
+        "recorded_success_difference": -0.15365727275352203,
+        "recorded_abort_difference": 0.00003658253683613572,
+        "other_share_difference": 0.15362069021668567,
+        "common_q_difference_bounds": [
+          -0.15365727275352203,
+          -0.00003658253683636037
+        ],
+        "common_q_zero": 1.0002381354802192,
+        "common_q_zero_feasible": false,
+        "common_q_grid": [
+          {
+            "q": 0,
+            "difference": -0.15365727275352203,
+            "stage_delta": -0.3898821440519053
+          },
+          {
+            "q": 0.25,
+            "difference": -0.11525210019935062,
+            "stage_delta": -0.24073711884124355
+          },
+          {
+            "q": 0.5,
+            "difference": -0.0768469276451792,
+            "stage_delta": -0.14943452287813266
+          },
+          {
+            "q": 0.75,
+            "difference": -0.03844175509100778,
+            "stage_delta": -0.08755229104317797
+          },
+          {
+            "q": 0.9,
+            "difference": -0.015398651558504922,
+            "stage_delta": -0.059111750845934674
+          },
+          {
+            "q": 1,
+            "difference": -0.00003658253683636037,
+            "stage_delta": -0.042764737048693664
+          }
+        ],
+        "arm_specific_q_max_difference_bounds": {
+          "0": [
+            -0.15365727275352203,
+            -0.00003658253683636037
+          ],
+          "1": [
+            -0.6244424815079488,
+            0.4707486262175904
+          ],
+          "0.025": [
+            -0.16542690297238272,
+            0.011733047682024322
+          ],
+          "0.05": [
+            -0.17719653319124337,
+            0.023502677900885005
+          ],
+          "0.1": [
+            -0.2007357936289647,
+            0.047041938338606315
+          ],
+          "0.25": [
+            -0.27135357494212875,
+            0.11765971965177036
+          ]
+        },
+        "minimum_q_disparity_for_nonnegative_success_difference": 0.00007770536575086565,
+        "pollen_ratio": 1.0436539383149406,
+        "common_q_stage_delta_zero": 1.3265810856787428,
+        "common_q_stage_delta_zero_feasible": false
+      },
+      "S/P": {
+        "recorded_success_difference": -0.12856478363595789,
+        "recorded_abort_difference": 0.03331090267693132,
+        "other_share_difference": 0.09525388095902676,
+        "common_q_difference_bounds": [
+          -0.12856478363595789,
+          -0.033310902676931126
+        ],
+        "common_q_zero": 1.3497065142286406,
+        "common_q_zero_feasible": false,
+        "common_q_grid": [
+          {
+            "q": 0,
+            "difference": -0.12856478363595789,
+            "stage_delta": -0.15554781315576083
+          },
+          {
+            "q": 0.25,
+            "difference": -0.1047513133962012,
+            "stage_delta": 0.04910454462132785
+          },
+          {
+            "q": 0.5,
+            "difference": -0.0809378431564445,
+            "stage_delta": 0.1447806427859035
+          },
+          {
+            "q": 0.75,
+            "difference": -0.057124372916687816,
+            "stage_delta": 0.2004712235451997
+          },
+          {
+            "q": 0.9,
+            "difference": -0.042836290772833796,
+            "stage_delta": 0.2239855536061142
+          },
+          {
+            "q": 1,
+            "difference": -0.033310902676931126,
+            "stage_delta": 0.23696274850212384
+          }
+        ],
+        "arm_specific_q_max_difference_bounds": {
+          "0": [
+            -0.12856478363595789,
+            -0.03331090267693115
+          ],
+          "1": [
+            -0.7529706826070703,
+            0.5910949962941813
+          ],
+          "0.025": [
+            -0.1441749311102357,
+            -0.01770075520265335
+          ],
+          "0.05": [
+            -0.15978507858451352,
+            -0.0020906077283755486
+          ],
+          "0.1": [
+            -0.19100537353306912,
+            0.029129687220180056
+          ],
+          "0.25": [
+            -0.284666258378736,
+            0.12279057206584698
+          ]
+        },
+        "minimum_q_disparity_for_nonnegative_success_difference": 0.05334815499312287,
+        "pollen_ratio": 0.7625958736418295,
+        "common_q_stage_delta_zero": 0.16703441497601204,
+        "common_q_stage_delta_zero_feasible": true
+      },
+      "S/C": {
+        "recorded_success_difference": -0.28222205638947995,
+        "recorded_abort_difference": 0.03334748521376746,
+        "other_share_difference": 0.24887457117571243,
+        "common_q_difference_bounds": [
+          -0.28222205638947995,
+          -0.033347485213767514
+        ],
+        "common_q_zero": 1.1339931398223213,
+        "common_q_zero_feasible": false,
+        "common_q_grid": [
+          {
+            "q": 0,
+            "difference": -0.28222205638947995,
+            "stage_delta": -0.5454299572076662
+          },
+          {
+            "q": 0.25,
+            "difference": -0.22000341359555184,
+            "stage_delta": -0.19163257421991578
+          },
+          {
+            "q": 0.5,
+            "difference": -0.15778477080162373,
+            "stage_delta": -0.00465388009222914
+          },
+          {
+            "q": 0.75,
+            "difference": -0.09556612800769562,
+            "stage_delta": 0.11291893250202174
+          },
+          {
+            "q": 0.9,
+            "difference": -0.058234942331338746,
+            "stage_delta": 0.16487380276017943
+          },
+          {
+            "q": 1,
+            "difference": -0.033347485213767514,
+            "stage_delta": 0.19419801145343019
+          }
+        ],
+        "arm_specific_q_max_difference_bounds": {
+          "0": [
+            -0.28222205638947995,
+            -0.033347485213767514
+          ],
+          "1": [
+            -0.7530072651439067,
+            0.43743772354065924
+          ],
+          "0.025": [
+            -0.29399168660834063,
+            -0.02157785499490683
+          ],
+          "0.05": [
+            -0.3057613168272013,
+            -0.009808224776046148
+          ],
+          "0.1": [
+            -0.3293005772649226,
+            0.013731035661675162
+          ],
+          "0.25": [
+            -0.39991835857808666,
+            0.0843488169748392
+          ]
+        },
+        "minimum_q_disparity_for_nonnegative_success_difference": 0.07083375729240973,
+        "pollen_ratio": 0.7958861868690181,
+        "common_q_stage_delta_zero": 0.5081334934528503,
+        "common_q_stage_delta_zero_feasible": true
+      }
+    }
+  }
+}
