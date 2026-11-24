@@ -1,0 +1,40 @@
+name: Floral larceny paper-level stage meta-analysis
+on:
+  push:
+    branches: [analysis/larceny-study-stage-meta-20261124]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stage-meta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'scipy==1.14.1' 'pytest>=8,<10'
+      - name: Download and authenticate exact original
+        run: |
+          python - <<'PY'
+          import urllib.request, zipfile, io, hashlib, pathlib
+          url='https://figshare.com/ndownloader/files/50193012?private_link=99df84fe5c473dc85d85'
+          req=urllib.request.Request(url,headers={'User-Agent':'BALANCE-original-ecological-meta-data-audit/1.0'})
+          with urllib.request.urlopen(req,timeout=90) as resp: raw=resp.read(4000001)
+          if len(raw)!=1572161 or hashlib.sha256(raw).hexdigest()!='84d310948e1da97c091ca27e9dcc45521cf72512ba14e30d3cd269d46e5b274c': raise ValueError('Original ZIP mismatch')
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              b=z.read('update metadata/Dataset for floral larceny effect size calculation.xlsx')
+          if hashlib.sha256(b).hexdigest()!='6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4': raise ValueError('XLSX mismatch')
+          pathlib.Path('/tmp/zhong-original.xlsx').write_bytes(b)
+          PY
+      - name: Run synthetic and original-source gates then fit
+        run: |
+          export BALANCE_LARCENY_2025_ORIGINAL=/tmp/zhong-original.xlsx
+          python -m pytest -q tests/test_fit_larceny_study_stage_meta.py tests/test_larceny_meta_stage_pairability.py
+          python scripts/fit_larceny_study_stage_meta.py --source /tmp/zhong-original.xlsx --out results/larceny_stage_meta/STUDY_STAGE_META_EXPLORATORY_V1.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: larceny-paper-stage-meta
+          path: results/larceny_stage_meta/
+          if-no-files-found: error
