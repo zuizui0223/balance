@@ -1,0 +1,44 @@
+name: Pollen stage denominator and exact pairing sensitivity
+on:
+  push:
+    branches: [analysis/pollen-stage-denominator-audit-20261124]
+    paths:
+      - scripts/audit_pollen_stage_denominators.py
+      - scripts/recover_richman_direct_mirror.py
+      - tests/test_pollen_stage_denominators.py
+      - .github/workflows/pollen-stage-denominators.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install scipy==1.14.1 pytest
+      - run: python -m pytest -q tests/test_pollen_stage_denominators.py
+      - run: python scripts/audit_pollen_stage_denominators.py --out artifacts/pollen_denominators
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pollen-stage-denominator-audit
+          path: artifacts/pollen_denominators/POLLEN_DENOMINATOR_AUDIT.json
+          if-no-files-found: error
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install openpyxl==3.1.5
+      - run: python -m scripts.recover_richman_direct_mirror
+      - uses: actions/upload-artifact@v4
+        with:
+          name: richman-direct-mirror
+          path: artifacts/richman_direct_mirror/
+          if-no-files-found: error
