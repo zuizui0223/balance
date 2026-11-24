@@ -1,0 +1,110 @@
+{
+  "run_id": 45358520145,
+  "job_id": 138322325666,
+  "artifact_id": 14903891676,
+  "artifact_digest": "sha256:2d5ccc42fcb1a636cc9e0a34dd622337c24be46219be0222fbc0e8cf61db8a32",
+  "dataset_doi": "10.5061/dryad.tf71f",
+  "article_doi": "10.1111/1365-2745.12657",
+  "expected_filename": "2016_Richman_IpomopsisSecondaryRobbing.xlsx",
+  "attempts": [
+    {
+      "url": "https://zenodo.org/api/records?q=doi%3A%2210.5061%2Fdryad.tf71f%22&size=20",
+      "error": "The read operation timed out"
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=%2210.5061%2Fdryad.tf71f%22&size=20",
+      "error": "The read operation timed out"
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=title%3A%22Facilitated+exploitation+of+pollination+mutualisms%22&size=20",
+      "error": "The read operation timed out"
+    },
+    {
+      "url": "https://datadryad.org/downloads/file_stream/49142",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "url": "https://datadryad.org/api/v2/files/49142/download",
+      "error": "HTTP Error 401: Unauthorized"
+    }
+  ],
+  "source_authenticated": false,
+  "dryad_metadata": {
+    "dataset": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.tf71f",
+    "version": "https://datadryad.org/api/v2/versions/12495",
+    "files": {
+      "_links": {
+        "self": {
+          "href": "/api/v2/versions/12495/files"
+        },
+        "first": {
+          "href": "/api/v2/versions/12495/files"
+        },
+        "last": {
+          "href": "/api/v2/versions/12495/files?page=1"
+        }
+      },
+      "count": 1,
+      "total": 1,
+      "_embedded": {
+        "stash:files": [
+          {
+            "_links": {
+              "self": {
+                "href": "/api/v2/files/49142"
+              },
+              "stash:dataset": {
+                "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.tf71f"
+              },
+              "stash:version": {
+                "href": "/api/v2/versions/12495"
+              },
+              "stash:files": {
+                "href": "/api/v2/versions/12495/files"
+              },
+              "stash:download": {
+                "href": "/api/v2/files/49142/download"
+              },
+              "curies": [
+                {
+                  "name": "stash",
+                  "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                  "templated": "true"
+                }
+              ]
+            },
+            "path": "2016_Richman_IpomopsisSecondaryRobbing.xlsx",
+            "size": 67814,
+            "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "status": "created",
+            "digest": "7bd93c8f75bfff9861263d304eaba799",
+            "digestType": "md5",
+            "description": "Contains metadata and all data reported in the publication"
+          }
+        ]
+      }
+    }
+  },
+  "candidate_files": [
+    {
+      "provider": "Dryad",
+      "record": "49142",
+      "metadata_url": "https://datadryad.org/api/v2/versions/12495/files",
+      "url": "https://datadryad.org/downloads/file_stream/49142",
+      "algorithm": "md5",
+      "digest": "7bd93c8f75bfff9861263d304eaba799",
+      "size": 67814,
+      "title": "Data from: Facilitated exploitation of pollination mutualisms: fitness consequences for plants"
+    },
+    {
+      "provider": "Dryad",
+      "record": "49142",
+      "metadata_url": "https://datadryad.org/api/v2/versions/12495/files",
+      "url": "https://datadryad.org/api/v2/files/49142/download",
+      "algorithm": "md5",
+      "digest": "7bd93c8f75bfff9861263d304eaba799",
+      "size": 67814,
+      "title": "Data from: Facilitated exploitation of pollination mutualisms: fitness consequences for plants"
+    }
+  ]
+}

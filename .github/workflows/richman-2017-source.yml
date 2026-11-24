@@ -2,6 +2,9 @@ name: Richman primary-secondary robbing original source
 on:
   push:
     branches: [analysis/richman-paired-stage-source-20261124]
+    paths:
+      - scripts/recover_richman_2017_source.py
+      - .github/workflows/richman-2017-source.yml
   workflow_dispatch:
 permissions:
   contents: read

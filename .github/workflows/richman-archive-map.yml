@@ -1,0 +1,25 @@
+name: Richman archival treatment mapping
+on:
+  push:
+    branches: [analysis/richman-paired-stage-source-20261124]
+    paths:
+      - scripts/audit_richman_2017_archive_mapping.py
+      - .github/workflows/richman-archive-map.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mapping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python scripts/audit_richman_2017_archive_mapping.py --out results/richman_archive_map
+      - uses: actions/upload-artifact@v4
+        with:
+          name: richman-zhong-archive-map
+          path: results/richman_archive_map/RICHMAN_ZHONG_MAPPING.json
+          if-no-files-found: error

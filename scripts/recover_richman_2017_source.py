@@ -18,6 +18,7 @@ def title_ok(s):return TITLE in str(s).lower()
 def verify_bytes(raw,expected,algorithm,size):
     if algorithm not in ('md5','sha256') or not expected or not size:raise ValueError('missing source checksum/size')
     if len(raw)!=int(size) or hashlib.new(algorithm,raw).hexdigest().lower()!=expected.lower():raise ValueError('source checksum/size mismatch')
+    if len(raw)!=67814 or hashlib.md5(raw).hexdigest()!='7bd93c8f75bfff9861263d304eaba799':raise ValueError('pinned Dryad original identity mismatch')
     return {'bytes':len(raw),'md5':hashlib.md5(raw).hexdigest(),'sha256':hashlib.sha256(raw).hexdigest(),'official_checksum':algorithm+':'+expected}
 def acquire(out):
     report={'dataset_doi':DOI,'article_doi':PAPER,'expected_filename':NAME,'attempts':[],'source_authenticated':False}
