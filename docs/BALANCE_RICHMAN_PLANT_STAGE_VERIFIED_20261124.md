@@ -1,0 +1,19 @@
+# Richman 2017: verified original-data plant-linked stage result (2026-11-24)
+
+Source: identical Dryad DOI 10.5061/dryad.tf71f and Zenodo record 4975584, original 67814-byte workbook, MD5 7bd93c8f75bfff9861263d304eaba799, SHA256 c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84. Original 435 stigma rows, 120 fruit/seed records, separate 30 visitation plants. Source code run 45384106598 success at 1e7a492db40a866fb1a51df32cfca562ddc47005; artifact 14913999705, sha256:4720db99e1806c87ec0746ef4f3d299ae0dc1763ffc4db3e3b2197f6d7b924b3. Initial run 45383820650 failed closed at ambiguous plant linkage. Both P3 and P4 use overall plant ID 40 (XLSX rows 161–164). Quarantine all four pollen rows; do not correct IDs. 104 pollen keys, 103 global IDs; strict matched sample 102 plants, C/P/S=37/33/32, 431 stigmas. All 120 fruit records remain in all-arm descriptive audit. Alternative within-treatment-key analysis retains both ambiguous plants as an explicit sensitivity, not correction.
+
+The original metadata says prop_fruit_set = total_fruit/(total_fruit+aborts). Actual cached column equals total_successful/total_fruit in all 119 plants with positive denominator (max abs error 4.91e-10). One S plant has zero denominator and recorded zero; retain recorded value. The documented metadata formula only matches 2/119. Source total_successful = successful_fruits+DF in 120/120; source total_fruit = total_successful+deh/drop/hyl in only 93/120, so do not assume whether abortions are included in total_fruit or count alternative formulas as equally meaningful biological estimands. Recorded prop_fruit_set is a fruit-record success fraction, not all initially open flowers. The full-arm source means 0.535086,0.350027,0.216042 reproduce original published rounded numbers. This corrects the earlier interpretation of the denominator, not the original effect direction.
+
+## Main matched plant contrasts
+
+Equal plant weights, mean observed stigma grains per plant (zeros included), recorded fruit success fraction. 20000 arm-stratified plant vector resamples, shared control draws. C 69.205 grains/0.523885 fruit; P 72.226/0.370227; S 54.046/0.234111. P is primary, S is primary+secondary.
+
+| Comparison | pollen lnRR | fruit lnRR | fruit minus pollen | descriptive percentile 95% |
+|---|---:|---:|---:|---|
+| P/C | +0.042728 | -0.347154 | -0.389882 | [-0.638098,-0.142812] |
+| S/P | -0.289973 | -0.458324 | -0.168350 | [-0.576904,+0.249486] |
+| S/C | -0.247245 | -0.805478 | -0.558232 | [-0.928710,-0.185099] |
+
+P/C pollen interval spans zero; do not claim equality. This is emergence of a negative reproductive association despite no detected pollen-count loss, not necessarily amplification of an already negative upstream effect. S/C total seed minus pollen delta -0.720929 [-1.286066,-0.265952]. P/C and S/P seed-stage contrasts span zero. Pollen incidence (equal-plant mean share of sampled stigmas with >0 pollen) C/P/S 0.996139/0.989610/0.988715; incidence is near ceiling, not visit probability. Conditional positive stigma counts show essentially same contrasts as total mean. Equal-week, browse-free and ambiguous within-key-only sensitivities preserve the negative P/C and S/C recorded fruit-minus-pollen intervals and S/P uncertainty. Some alternate count ratios describe different endpoints, not necessarily valid replacements; do not conflate these with fruit success. Joint covariance of contrasts retained in full run artifact.
+
+Inference: same plants, not same flowers, haphazard group assignment, complete-case selection, unadjusted exploratory bootstrap conditional on sampled plants, not causal mediation, not evidence of pollen quality, no separate secondary-only arm, no factorial interaction, no independent three-study replication or V4/structural Phi. Never add Richman as an additional independent study on top of Zhong archive.
