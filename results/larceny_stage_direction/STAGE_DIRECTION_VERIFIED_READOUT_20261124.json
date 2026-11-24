@@ -1,0 +1,2566 @@
+{
+  "provenance": {
+    "run_id": 45341359022,
+    "job_id": 138265524837,
+    "head": "22c41951f2ed6f7921b019a9ffbc4661b6695922",
+    "artifact_id": 14896660116,
+    "artifact_digest": "sha256:5dc2c79629fc3236660988625fdf49330775e981fe496ecf1b04c00f9addce87",
+    "tests_passed": 17
+  },
+  "source_sha256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4",
+  "n_effects": 776,
+  "joint": {
+    "shared_paper_ids": [
+      29
+    ],
+    "same_archived_context_count": 0,
+    "same_archived_context_papers": [],
+    "verified_same_experiment_count": 0,
+    "verified_same_experiment_count_interpretation": "Not verified here, not evidence of biological absence."
+  },
+  "profiles": {
+    "seed set minus fruit set": {
+      "context_block_counts": {
+        "both_negative_attenuation": 12,
+        "nonnegative_to_negative": 6,
+        "negative_to_nonnegative": 6,
+        "both_nonnegative": 7,
+        "both_negative_amplification": 7
+      },
+      "paper_counts": {
+        "both_negative_attenuation": 12,
+        "nonnegative_to_negative": 5,
+        "negative_to_nonnegative": 6,
+        "both_negative_amplification": 7,
+        "both_nonnegative": 4
+      },
+      "paper_profiles": {
+        "1": "both_negative_attenuation",
+        "3": "nonnegative_to_negative",
+        "4": "negative_to_nonnegative",
+        "6": "nonnegative_to_negative",
+        "9": "both_negative_amplification",
+        "11": "negative_to_nonnegative",
+        "12": "both_negative_attenuation",
+        "14": "nonnegative_to_negative",
+        "15": "both_negative_attenuation",
+        "16": "nonnegative_to_negative",
+        "25": "both_negative_attenuation",
+        "29": "negative_to_nonnegative",
+        "30": "both_negative_amplification",
+        "31": "both_negative_amplification",
+        "37": "both_nonnegative",
+        "44": "both_nonnegative",
+        "49": "both_nonnegative",
+        "55": "both_negative_attenuation",
+        "66": "both_negative_attenuation",
+        "71": "both_negative_attenuation",
+        "72": "both_negative_attenuation",
+        "76": "both_negative_amplification",
+        "81": "both_negative_attenuation",
+        "88": "both_negative_attenuation",
+        "93": "both_negative_amplification",
+        "96": "negative_to_nonnegative",
+        "99": "both_negative_attenuation",
+        "101": "nonnegative_to_negative",
+        "112": "both_negative_attenuation",
+        "128": "both_negative_amplification",
+        "144": "negative_to_nonnegative",
+        "148": "both_nonnegative",
+        "161": "negative_to_nonnegative",
+        "166": "both_negative_amplification"
+      },
+      "conditional_on_observed_sign_not_a_confirmatory_test": true
+    },
+    "visitation rate minus nectar volume": {
+      "context_block_counts": {
+        "both_negative_amplification": 1,
+        "both_negative_attenuation": 6,
+        "both_nonnegative": 2,
+        "negative_to_nonnegative": 1
+      },
+      "paper_counts": {
+        "both_negative_amplification": 1,
+        "both_negative_attenuation": 6,
+        "both_nonnegative": 2,
+        "negative_to_nonnegative": 1
+      },
+      "paper_profiles": {
+        "10": "both_negative_amplification",
+        "27": "both_negative_attenuation",
+        "28": "both_nonnegative",
+        "29": "both_negative_attenuation",
+        "66": "negative_to_nonnegative",
+        "100": "both_negative_attenuation",
+        "104": "both_negative_attenuation",
+        "105": "both_negative_attenuation",
+        "116": "both_negative_attenuation",
+        "144": "both_nonnegative"
+      },
+      "conditional_on_observed_sign_not_a_confirmatory_test": true
+    },
+    "pollen deposition minus visitation rate": {
+      "context_block_counts": {
+        "both_negative_amplification": 2,
+        "nonnegative_to_negative": 1,
+        "both_negative_attenuation": 2
+      },
+      "paper_counts": {
+        "both_negative_amplification": 2,
+        "nonnegative_to_negative": 1,
+        "both_negative_attenuation": 2
+      },
+      "paper_profiles": {
+        "29": "both_negative_attenuation",
+        "55": "both_negative_amplification",
+        "70": "both_negative_attenuation",
+        "129": "both_negative_amplification",
+        "165": "nonnegative_to_negative"
+      },
+      "conditional_on_observed_sign_not_a_confirmatory_test": true
+    },
+    "fruit set minus pollen deposition": {
+      "context_block_counts": {
+        "both_negative_amplification": 7,
+        "negative_to_nonnegative": 1,
+        "nonnegative_to_negative": 2
+      },
+      "paper_counts": {
+        "both_negative_amplification": 7,
+        "negative_to_nonnegative": 1,
+        "nonnegative_to_negative": 2
+      },
+      "paper_profiles": {
+        "1": "both_negative_amplification",
+        "29": "nonnegative_to_negative",
+        "52": "nonnegative_to_negative",
+        "55": "both_negative_amplification",
+        "71": "both_negative_amplification",
+        "72": "both_negative_amplification",
+        "81": "both_negative_amplification",
+        "108": "both_negative_amplification",
+        "129": "both_negative_amplification",
+        "140": "negative_to_nonnegative"
+      },
+      "conditional_on_observed_sign_not_a_confirmatory_test": true
+    }
+  },
+  "scopes": {
+    "paper_species": {
+      "seed set minus fruit set": {
+        "paper_sign": {
+          "k": 36,
+          "positive": 21,
+          "negative": 15,
+          "ties": 0,
+          "median": 0.039929349859508856,
+          "equal_cluster_mean": 0.028575129964114043,
+          "sign_p_nominal": 0.4050322461407632,
+          "holm_within_scope": 0.8100644922815264,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.015154511773325182,
+              0.02305310612690348
+            ],
+            "same_sign": 17,
+            "n": 36,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "14"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.03617859002170589,
+              0.008164443783404652
+            ],
+            "same_sign": 34,
+            "n": 36,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "14"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.049118412864132543,
+              0.003572251500853076
+            ],
+            "same_sign": 35,
+            "n": 36,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "101"
+          }
+        },
+        "species_reuse_components": {
+          "k": 28,
+          "positive": 16,
+          "negative": 12,
+          "ties": 0,
+          "median": 0.039929349859508856,
+          "equal_cluster_mean": 0.031131151361204618,
+          "sign_p_nominal": 0.5715881884098053
+        },
+        "multi_paper_components": [
+          [
+            1,
+            9,
+            30,
+            31,
+            55,
+            81
+          ],
+          [
+            29,
+            37
+          ],
+          [
+            15,
+            16
+          ],
+          [
+            71,
+            72
+          ]
+        ],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 28,
+            "mu": -0.009858831998351282,
+            "ci95": [
+              -0.12406835923486934,
+              0.10435069523816676
+            ],
+            "se_mkh": 0.05566226173126299,
+            "p_two_sided_nominal": 0.8607370936200381,
+            "tau2_DL": 0.051201544050795356,
+            "I2_percent": 86.2531775186527,
+            "equal_paper_mean": 0.031131151361204618,
+            "positive_papers": 16,
+            "negative_papers": 12
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 28,
+            "mu": -0.028224096038809793,
+            "ci95": [
+              -0.13888977303836508,
+              0.08244158096074548
+            ],
+            "se_mkh": 0.05393509654461692,
+            "p_two_sided_nominal": 0.605035980614906,
+            "tau2_DL": 0.03296585564341541,
+            "I2_percent": 62.81227014585068,
+            "equal_paper_mean": 0.031131151361204618,
+            "positive_papers": 16,
+            "negative_papers": 12
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 28,
+            "mu": -0.03897629214689688,
+            "ci95": [
+              -0.14383291530805795,
+              0.06588033101426419
+            ],
+            "se_mkh": 0.05110393978398979,
+            "p_two_sided_nominal": 0.45226257644356105,
+            "tau2_DL": 0.02085648186545961,
+            "I2_percent": 42.06529558063637,
+            "equal_paper_mean": 0.031131151361204618,
+            "positive_papers": 16,
+            "negative_papers": 12
+          }
+        }
+      },
+      "visitation rate minus nectar volume": {
+        "paper_sign": {
+          "k": 19,
+          "positive": 14,
+          "negative": 5,
+          "ties": 0,
+          "median": 0.3836234775777081,
+          "equal_cluster_mean": 0.5184362552763212,
+          "sign_p_nominal": 0.063568115234375,
+          "holm_within_scope": 0.190704345703125,
+          "holm_all_16": 0.826385498046875
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              0.3294523213084412,
+              0.48824142177213653
+            ],
+            "same_sign": 19,
+            "n": 19,
+            "intervals_excluding_zero": 2,
+            "largest_influence_paper": "105"
+          },
+          "0.5": {
+            "mu_range": [
+              0.35679215837470346,
+              0.5236521634052537
+            ],
+            "same_sign": 19,
+            "n": 19,
+            "intervals_excluding_zero": 9,
+            "largest_influence_paper": "13"
+          },
+          "1.0": {
+            "mu_range": [
+              0.3637162415128521,
+              0.5454951774300094
+            ],
+            "same_sign": 19,
+            "n": 19,
+            "intervals_excluding_zero": 14,
+            "largest_influence_paper": "13"
+          }
+        },
+        "species_reuse_components": {
+          "k": 19,
+          "positive": 14,
+          "negative": 5,
+          "ties": 0,
+          "median": 0.3836234775777081,
+          "equal_cluster_mean": 0.5184362552763212,
+          "sign_p_nominal": 0.063568115234375
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": 0.4232274955268439,
+            "ci95": [
+              -0.010184829707149456,
+              0.8566398207608372
+            ],
+            "se_mkh": 0.20629624371225322,
+            "p_two_sided_nominal": 0.05505464690184997,
+            "tau2_DL": 0.4406996988102254,
+            "I2_percent": 89.62960350138212,
+            "equal_paper_mean": 0.5184362552763212,
+            "positive_papers": 14,
+            "negative_papers": 5
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": 0.4464909031508083,
+            "ci95": [
+              0.020190304418166105,
+              0.8727915018834504
+            ],
+            "se_mkh": 0.20291119354611972,
+            "p_two_sided_nominal": 0.04107376898477314,
+            "tau2_DL": 0.4090065797108496,
+            "I2_percent": 78.25448622122845,
+            "equal_paper_mean": 0.5184362552763212,
+            "positive_papers": 14,
+            "negative_papers": 5
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": 0.4576096995909248,
+            "ci95": [
+              0.03760184681970824,
+              0.8776175523621413
+            ],
+            "se_mkh": 0.19991596295645733,
+            "p_two_sided_nominal": 0.03438385857681091,
+            "tau2_DL": 0.3696529494485418,
+            "I2_percent": 68.84772690361146,
+            "equal_paper_mean": 0.5184362552763212,
+            "positive_papers": 14,
+            "negative_papers": 5
+          }
+        }
+      },
+      "pollen deposition minus visitation rate": {
+        "paper_sign": {
+          "k": 7,
+          "positive": 3,
+          "negative": 4,
+          "ties": 0,
+          "median": -0.11153710245626339,
+          "equal_cluster_mean": -0.2146700672977059,
+          "sign_p_nominal": 1,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.3657192611423885,
+              -0.07124006757193355
+            ],
+            "same_sign": 7,
+            "n": 7,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "101"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.3547651611224709,
+              -0.04002928744297658
+            ],
+            "same_sign": 7,
+            "n": 7,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "101"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.34051096165357697,
+              -0.012023761085195539
+            ],
+            "same_sign": 7,
+            "n": 7,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "101"
+          }
+        },
+        "species_reuse_components": {
+          "k": 7,
+          "positive": 3,
+          "negative": 4,
+          "ties": 0,
+          "median": -0.11153710245626339,
+          "equal_cluster_mean": -0.2146700672977059,
+          "sign_p_nominal": 1
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.2597711479988358,
+            "ci95": [
+              -0.8908362470893886,
+              0.3712939510917169
+            ],
+            "se_mkh": 0.2579026697652644,
+            "p_two_sided_nominal": 0.35269610223484,
+            "tau2_DL": 0.3057171242523431,
+            "I2_percent": 84.99575300945575,
+            "equal_paper_mean": -0.2146700672977059,
+            "positive_papers": 3,
+            "negative_papers": 4
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.237307761469754,
+            "ci95": [
+              -0.8598655043024352,
+              0.3852499813629273
+            ],
+            "se_mkh": 0.2544258970920311,
+            "p_two_sided_nominal": 0.3869602119085223,
+            "tau2_DL": 0.2564786783139995,
+            "I2_percent": 73.3296007158563,
+            "equal_paper_mean": -0.2146700672977059,
+            "positive_papers": 3,
+            "negative_papers": 4
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.21264181345290134,
+            "ci95": [
+              -0.8255518431013154,
+              0.40026821619551267
+            ],
+            "se_mkh": 0.2504830851841347,
+            "p_two_sided_nominal": 0.4284862810411646,
+            "tau2_DL": 0.21751168052811182,
+            "I2_percent": 62.42879789490329,
+            "equal_paper_mean": -0.2146700672977059,
+            "positive_papers": 3,
+            "negative_papers": 4
+          }
+        }
+      },
+      "fruit set minus pollen deposition": {
+        "paper_sign": {
+          "k": 13,
+          "positive": 1,
+          "negative": 12,
+          "ties": 0,
+          "median": -0.2878946384336691,
+          "equal_cluster_mean": -0.30357181466803546,
+          "sign_p_nominal": 0.00341796875,
+          "holm_within_scope": 0.013671875,
+          "holm_all_16": 0.0546875
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.32674042145766635,
+              -0.23263428871502292
+            ],
+            "same_sign": 13,
+            "n": 13,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "101"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.2861576860682215,
+              -0.2039887446979062
+            ],
+            "same_sign": 13,
+            "n": 13,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "52"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.30299908981151846,
+              -0.1829729220253209
+            ],
+            "same_sign": 13,
+            "n": 13,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "101"
+          }
+        },
+        "species_reuse_components": {
+          "k": 10,
+          "positive": 1,
+          "negative": 9,
+          "ties": 0,
+          "median": -0.35269104414974606,
+          "equal_cluster_mean": -0.28631705722945083,
+          "sign_p_nominal": 0.021484375
+        },
+        "multi_paper_components": [
+          [
+            1,
+            55,
+            81
+          ],
+          [
+            71,
+            72
+          ]
+        ],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 10,
+            "mu": -0.2592352543354088,
+            "ci95": [
+              -0.7875403560131207,
+              0.26906984734230305
+            ],
+            "se_mkh": 0.23354040574756724,
+            "p_two_sided_nominal": 0.29576519943214447,
+            "tau2_DL": 0.46826567284881143,
+            "I2_percent": 96.54141856583087,
+            "equal_paper_mean": -0.28631705722945083,
+            "positive_papers": 1,
+            "negative_papers": 9
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 10,
+            "mu": -0.25169031798729774,
+            "ci95": [
+              -0.7843542993205841,
+              0.28097366334598867
+            ],
+            "se_mkh": 0.23546727436976103,
+            "p_two_sided_nominal": 0.31294529442953306,
+            "tau2_DL": 0.4354375348792776,
+            "I2_percent": 88.65180029322921,
+            "equal_paper_mean": -0.28631705722945083,
+            "positive_papers": 1,
+            "negative_papers": 9
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 10,
+            "mu": -0.2441683379917281,
+            "ci95": [
+              -0.7820536515236963,
+              0.2937169755402401
+            ],
+            "se_mkh": 0.23777539525738947,
+            "p_two_sided_nominal": 0.33128067847026155,
+            "tau2_DL": 0.40894060005005667,
+            "I2_percent": 82.82139678346851,
+            "equal_paper_mean": -0.28631705722945083,
+            "positive_papers": 1,
+            "negative_papers": 9
+          }
+        }
+      }
+    },
+    "context": {
+      "seed set minus fruit set": {
+        "paper_sign": {
+          "k": 34,
+          "positive": 19,
+          "negative": 15,
+          "ties": 0,
+          "median": 0.031299135293412904,
+          "equal_cluster_mean": 0.004876827058123912,
+          "sign_p_nominal": 0.6075913612730801,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.04365868448808367,
+              0.0011563921760611557
+            ],
+            "same_sign": 33,
+            "n": 34,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.06414737422119736,
+              -0.013738236871673573
+            ],
+            "same_sign": 34,
+            "n": 34,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.07510845604850566,
+              -0.02281925188656365
+            ],
+            "same_sign": 34,
+            "n": 34,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          }
+        },
+        "species_reuse_components": {
+          "k": 26,
+          "positive": 14,
+          "negative": 12,
+          "ties": 0,
+          "median": 0.027418687798898098,
+          "equal_cluster_mean": 0.0003376799762244935,
+          "sign_p_nominal": 0.8450189828872681
+        },
+        "multi_paper_components": [
+          [
+            1,
+            9,
+            30,
+            31,
+            55,
+            81
+          ],
+          [
+            29,
+            37
+          ],
+          [
+            15,
+            16
+          ],
+          [
+            71,
+            72
+          ]
+        ],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 26,
+            "mu": -0.04558417437902189,
+            "ci95": [
+              -0.1805272165869511,
+              0.0893588678289073
+            ],
+            "se_mkh": 0.06552100810520424,
+            "p_two_sided_nominal": 0.49302246454977705,
+            "tau2_DL": 0.06249135142648664,
+            "I2_percent": 88.60661587591848,
+            "equal_paper_mean": 0.0003376799762244935,
+            "positive_papers": 14,
+            "negative_papers": 12
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 26,
+            "mu": -0.06429387058750534,
+            "ci95": [
+              -0.20115283174904441,
+              0.07256509057403372
+            ],
+            "se_mkh": 0.06645127423256009,
+            "p_two_sided_nominal": 0.34254466785779203,
+            "tau2_DL": 0.053659924200391625,
+            "I2_percent": 72.66372295584719,
+            "equal_paper_mean": 0.0003376799762244935,
+            "positive_papers": 14,
+            "negative_papers": 12
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 26,
+            "mu": -0.0746788380112429,
+            "ci95": [
+              -0.21248394361938516,
+              0.06312626759689936
+            ],
+            "se_mkh": 0.0669106705596346,
+            "p_two_sided_nominal": 0.27499351682031337,
+            "tau2_DL": 0.04412983915116323,
+            "I2_percent": 59.24770698768798,
+            "equal_paper_mean": 0.0003376799762244935,
+            "positive_papers": 14,
+            "negative_papers": 12
+          }
+        }
+      },
+      "visitation rate minus nectar volume": {
+        "paper_sign": {
+          "k": 10,
+          "positive": 8,
+          "negative": 2,
+          "ties": 0,
+          "median": 0.3157714703763278,
+          "equal_cluster_mean": 0.5843141228455442,
+          "sign_p_nominal": 0.109375,
+          "holm_within_scope": 0.328125,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              0.26565965179388645,
+              0.3989551537480684
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "105"
+          },
+          "0.5": {
+            "mu_range": [
+              0.25930111608624967,
+              0.4321109606755314
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "105"
+          },
+          "1.0": {
+            "mu_range": [
+              0.2576017772792883,
+              0.42867558645747333
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "105"
+          }
+        },
+        "species_reuse_components": {
+          "k": 10,
+          "positive": 8,
+          "negative": 2,
+          "ties": 0,
+          "median": 0.3157714703763278,
+          "equal_cluster_mean": 0.5843141228455442,
+          "sign_p_nominal": 0.109375
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 10,
+            "mu": 0.3464794279033594,
+            "ci95": [
+              -0.06371673438585862,
+              0.7566755901925775
+            ],
+            "se_mkh": 0.1813296481008796,
+            "p_two_sided_nominal": 0.08835251541008908,
+            "tau2_DL": 0.09092365700354671,
+            "I2_percent": 65.62245588942655,
+            "equal_paper_mean": 0.5843141228455442,
+            "positive_papers": 8,
+            "negative_papers": 2
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 10,
+            "mu": 0.3626058515377105,
+            "ci95": [
+              -0.06727307583480535,
+              0.7924847789102264
+            ],
+            "se_mkh": 0.1900305312254034,
+            "p_two_sided_nominal": 0.08872455971453726,
+            "tau2_DL": 0.09795872435340933,
+            "I2_percent": 49.16671073776494,
+            "equal_paper_mean": 0.5843141228455442,
+            "positive_papers": 8,
+            "negative_papers": 2
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 10,
+            "mu": 0.35356550948095783,
+            "ci95": [
+              -0.06218278614799,
+              0.7693138051099057
+            ],
+            "se_mkh": 0.18378400159625075,
+            "p_two_sided_nominal": 0.08652670938900461,
+            "tau2_DL": 0.07913432705360032,
+            "I2_percent": 35.153461610917994,
+            "equal_paper_mean": 0.5843141228455442,
+            "positive_papers": 8,
+            "negative_papers": 2
+          }
+        }
+      },
+      "pollen deposition minus visitation rate": {
+        "paper_sign": {
+          "k": 5,
+          "positive": 2,
+          "negative": 3,
+          "ties": 0,
+          "median": -0.11153710245626339,
+          "equal_cluster_mean": -0.26525101130519135,
+          "sign_p_nominal": 1,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "status": "INSUFFICIENT_FOR_LEAVE_ONE_OUT"
+        },
+        "species_reuse_components": {
+          "k": 5,
+          "positive": 2,
+          "negative": 3,
+          "ties": 0,
+          "median": -0.11153710245626339,
+          "equal_cluster_mean": -0.26525101130519135,
+          "sign_p_nominal": 1
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 5,
+            "mu": -0.14368640099258567,
+            "ci95": [
+              -0.7497564940882034,
+              0.4623836921030321
+            ],
+            "se_mkh": 0.21828996077069576,
+            "p_two_sided_nominal": 0.5463436453883619,
+            "tau2_DL": 0.10588189586892738,
+            "I2_percent": 70.10317290326444,
+            "equal_paper_mean": -0.26525101130519135,
+            "positive_papers": 2,
+            "negative_papers": 3
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 5,
+            "mu": -0.10020853551915657,
+            "ci95": [
+              -0.690893248032679,
+              0.49047617699436596
+            ],
+            "se_mkh": 0.2127485652094105,
+            "p_two_sided_nominal": 0.6621665160546024,
+            "tau2_DL": 0.0890072022240421,
+            "I2_percent": 55.75616487917898,
+            "equal_paper_mean": -0.26525101130519135,
+            "positive_papers": 2,
+            "negative_papers": 3
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 5,
+            "mu": -0.06285339738554357,
+            "ci95": [
+              -0.6301953777913731,
+              0.5044885830202861
+            ],
+            "se_mkh": 0.20434114809030637,
+            "p_two_sided_nominal": 0.7737441247990872,
+            "tau2_DL": 0.06848258319335578,
+            "I2_percent": 42.11056954570818,
+            "equal_paper_mean": -0.26525101130519135,
+            "positive_papers": 2,
+            "negative_papers": 3
+          }
+        }
+      },
+      "fruit set minus pollen deposition": {
+        "paper_sign": {
+          "k": 10,
+          "positive": 1,
+          "negative": 9,
+          "ties": 0,
+          "median": -0.27211342479869854,
+          "equal_cluster_mean": -0.3418214687213395,
+          "sign_p_nominal": 0.021484375,
+          "holm_within_scope": 0.0859375,
+          "holm_all_16": 0.322265625
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.32940043620108234,
+              -0.23226689876548737
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "81"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.2947921270914324,
+              -0.17784507197385216
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "52"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.30994554482316566,
+              -0.14627992429557352
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "52"
+          }
+        },
+        "species_reuse_components": {
+          "k": 7,
+          "positive": 1,
+          "negative": 6,
+          "ties": 0,
+          "median": -0.32750115820903136,
+          "equal_cluster_mean": -0.33449545999386787,
+          "sign_p_nominal": 0.125
+        },
+        "multi_paper_components": [
+          [
+            1,
+            55,
+            81
+          ],
+          [
+            71,
+            72
+          ]
+        ],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.2784938925494661,
+            "ci95": [
+              -0.7114453183739137,
+              0.15445753327498146
+            ],
+            "se_mkh": 0.17693789239765997,
+            "p_two_sided_nominal": 0.16656083794265003,
+            "tau2_DL": 0.1550027900616972,
+            "I2_percent": 92.18604694496867,
+            "equal_paper_mean": -0.33449545999386787,
+            "positive_papers": 1,
+            "negative_papers": 6
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.26974031805305254,
+            "ci95": [
+              -0.7525101871245921,
+              0.21302955101848692
+            ],
+            "se_mkh": 0.19729761366174256,
+            "p_two_sided_nominal": 0.22057456385397758,
+            "tau2_DL": 0.16727295474124979,
+            "I2_percent": 78.82352789648411,
+            "equal_paper_mean": -0.33449545999386787,
+            "positive_papers": 1,
+            "negative_papers": 6
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.26010783328857917,
+            "ci95": [
+              -0.773337443768138,
+              0.25312177719097956
+            ],
+            "se_mkh": 0.2097458517924976,
+            "p_two_sided_nominal": 0.26123087105702775,
+            "tau2_DL": 0.1699994542428012,
+            "I2_percent": 71.48717654254483,
+            "equal_paper_mean": -0.33449545999386787,
+            "positive_papers": 1,
+            "negative_papers": 6
+          }
+        }
+      }
+    },
+    "unique_context": {
+      "seed set minus fruit set": {
+        "paper_sign": {
+          "k": 19,
+          "positive": 10,
+          "negative": 9,
+          "ties": 0,
+          "median": 0.013631502024256392,
+          "equal_cluster_mean": -0.04867622040579238,
+          "sign_p_nominal": 1,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.05429926314490292,
+              0.02936241388450141
+            ],
+            "same_sign": 18,
+            "n": 19,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.05047217223076878,
+              0.037740063481596704
+            ],
+            "same_sign": 18,
+            "n": 19,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.051276406309493844,
+              0.035080701576056375
+            ],
+            "same_sign": 18,
+            "n": 19,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          }
+        },
+        "species_reuse_components": {
+          "k": 19,
+          "positive": 10,
+          "negative": 9,
+          "ties": 0,
+          "median": 0.013631502024256392,
+          "equal_cluster_mean": -0.04867622040579238,
+          "sign_p_nominal": 1
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": -0.03550102234008947,
+            "ci95": [
+              -0.17740536733187381,
+              0.10640332265169486
+            ],
+            "se_mkh": 0.06754384135810626,
+            "p_two_sided_nominal": 0.6055815601443555,
+            "tau2_DL": 0.031905735684679595,
+            "I2_percent": 68.43639827512634,
+            "equal_paper_mean": -0.04867622040579238,
+            "positive_papers": 10,
+            "negative_papers": 9
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": -0.03296522493992222,
+            "ci95": [
+              -0.1696991167728638,
+              0.10376866689301939
+            ],
+            "se_mkh": 0.06508280136718411,
+            "p_two_sided_nominal": 0.6186451748383197,
+            "tau2_DL": 0.02582047149556244,
+            "I2_percent": 52.56992496067786,
+            "equal_paper_mean": -0.04867622040579238,
+            "positive_papers": 10,
+            "negative_papers": 9
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": -0.030525965538160473,
+            "ci95": [
+              -0.16060145475122994,
+              0.09954952367490899
+            ],
+            "se_mkh": 0.06191352497694336,
+            "p_two_sided_nominal": 0.6279438755381741,
+            "tau2_DL": 0.018829396900229008,
+            "I2_percent": 37.466917610482696,
+            "equal_paper_mean": -0.04867622040579238,
+            "positive_papers": 10,
+            "negative_papers": 9
+          }
+        }
+      },
+      "visitation rate minus nectar volume": {
+        "paper_sign": {
+          "k": 5,
+          "positive": 4,
+          "negative": 1,
+          "ties": 0,
+          "median": 0.42394728960152905,
+          "equal_cluster_mean": 0.9089122987946519,
+          "sign_p_nominal": 0.375,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "status": "INSUFFICIENT_FOR_LEAVE_ONE_OUT"
+        },
+        "species_reuse_components": {
+          "k": 5,
+          "positive": 4,
+          "negative": 1,
+          "ties": 0,
+          "median": 0.42394728960152905,
+          "equal_cluster_mean": 0.9089122987946519,
+          "sign_p_nominal": 0.375
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 5,
+            "mu": 0.6235034175960282,
+            "ci95": [
+              -0.7834367247390176,
+              2.030443559931074
+            ],
+            "se_mkh": 0.5067415666533818,
+            "p_two_sided_nominal": 0.2859513069084728,
+            "tau2_DL": 0.38760027135030917,
+            "I2_percent": 81.92376282217505,
+            "equal_paper_mean": 0.9089122987946519,
+            "positive_papers": 4,
+            "negative_papers": 1
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 5,
+            "mu": 0.5924642089497748,
+            "ci95": [
+              -0.7655677440285512,
+              1.950496161928101
+            ],
+            "se_mkh": 0.48912616728346137,
+            "p_two_sided_nominal": 0.2924567697752763,
+            "tau2_DL": 0.3888948946166704,
+            "I2_percent": 75.64174351041008,
+            "equal_paper_mean": 0.9089122987946519,
+            "positive_papers": 4,
+            "negative_papers": 1
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 5,
+            "mu": 0.5637422126676053,
+            "ci95": [
+              -0.7466335705898819,
+              1.8741179959250924
+            ],
+            "se_mkh": 0.4719617113280306,
+            "p_two_sided_nominal": 0.2982814899689262,
+            "tau2_DL": 0.3739836368888904,
+            "I2_percent": 69.40923568103801,
+            "equal_paper_mean": 0.9089122987946519,
+            "positive_papers": 4,
+            "negative_papers": 1
+          }
+        }
+      },
+      "pollen deposition minus visitation rate": {
+        "paper_sign": {
+          "k": 2,
+          "positive": 1,
+          "negative": 1,
+          "ties": 0,
+          "median": -0.4879353700906316,
+          "equal_cluster_mean": -0.4879353700906316,
+          "sign_p_nominal": 1,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "status": "INSUFFICIENT_FOR_LEAVE_ONE_OUT"
+        },
+        "species_reuse_components": {
+          "k": 2,
+          "positive": 1,
+          "negative": 1,
+          "ties": 0,
+          "median": -0.4879353700906316,
+          "equal_cluster_mean": -0.4879353700906316,
+          "sign_p_nominal": 1
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "k": 2,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.4879353700906316
+          },
+          "0.5": {
+            "k": 2,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.4879353700906316
+          },
+          "1.0": {
+            "k": 2,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.4879353700906316
+          }
+        }
+      },
+      "fruit set minus pollen deposition": {
+        "paper_sign": {
+          "k": 4,
+          "positive": 1,
+          "negative": 3,
+          "ties": 0,
+          "median": -0.4388828341714454,
+          "equal_cluster_mean": -0.3586242672796429,
+          "sign_p_nominal": 0.625,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "status": "INSUFFICIENT_FOR_LEAVE_ONE_OUT"
+        },
+        "species_reuse_components": {
+          "k": 4,
+          "positive": 1,
+          "negative": 3,
+          "ties": 0,
+          "median": -0.4388828341714454,
+          "equal_cluster_mean": -0.3586242672796429,
+          "sign_p_nominal": 0.625
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "k": 4,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.3586242672796429
+          },
+          "0.5": {
+            "k": 4,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.3586242672796429
+          },
+          "1.0": {
+            "k": 4,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.3586242672796429
+          }
+        }
+      }
+    },
+    "core_complete_context": {
+      "seed set minus fruit set": {
+        "paper_sign": {
+          "k": 27,
+          "positive": 16,
+          "negative": 11,
+          "ties": 0,
+          "median": 0.05377819348546803,
+          "equal_cluster_mean": 0.02653966165256146,
+          "sign_p_nominal": 0.44206833839416504,
+          "holm_within_scope": 0.8841366767883301,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.02515198453491932,
+              0.039288588903784345
+            ],
+            "same_sign": 11,
+            "n": 27,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.050428109785551026,
+              0.02568968571537669
+            ],
+            "same_sign": 25,
+            "n": 27,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "76"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.07129171280526367,
+              0.009286159466874059
+            ],
+            "same_sign": 25,
+            "n": 27,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "15"
+          }
+        },
+        "species_reuse_components": {
+          "k": 19,
+          "positive": 11,
+          "negative": 8,
+          "ties": 0,
+          "median": 0.05377819348546803,
+          "equal_cluster_mean": 0.029449390738146484,
+          "sign_p_nominal": 0.6476058959960938
+        },
+        "multi_paper_components": [
+          [
+            1,
+            9,
+            30,
+            31,
+            55,
+            81
+          ],
+          [
+            29,
+            37
+          ],
+          [
+            15,
+            16
+          ],
+          [
+            71,
+            72
+          ]
+        ],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": -0.014034962821744004,
+            "ci95": [
+              -0.20217839625087125,
+              0.17410847060738321
+            ],
+            "se_mkh": 0.08955279150079676,
+            "p_two_sided_nominal": 0.8772077946196735,
+            "tau2_DL": 0.08109485306571614,
+            "I2_percent": 85.27458203203912,
+            "equal_paper_mean": 0.029449390738146484,
+            "positive_papers": 11,
+            "negative_papers": 8
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": -0.035624229766648835,
+            "ci95": [
+              -0.23344129973842861,
+              0.16219284020513094
+            ],
+            "se_mkh": 0.09415726342186959,
+            "p_two_sided_nominal": 0.7095971628479383,
+            "tau2_DL": 0.07561195220203622,
+            "I2_percent": 66.88665037720524,
+            "equal_paper_mean": 0.029449390738146484,
+            "positive_papers": 11,
+            "negative_papers": 8
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 19,
+            "mu": -0.05459054021249682,
+            "ci95": [
+              -0.25555910197063136,
+              0.14637802154563775
+            ],
+            "se_mkh": 0.09565731517342975,
+            "p_two_sided_nominal": 0.5752667160834763,
+            "tau2_DL": 0.06139504317254058,
+            "I2_percent": 52.475831677291396,
+            "equal_paper_mean": 0.029449390738146484,
+            "positive_papers": 11,
+            "negative_papers": 8
+          }
+        }
+      },
+      "visitation rate minus nectar volume": {
+        "paper_sign": {
+          "k": 8,
+          "positive": 6,
+          "negative": 2,
+          "ties": 0,
+          "median": 0.4037853835896186,
+          "equal_cluster_mean": 0.6882024361909278,
+          "sign_p_nominal": 0.2890625,
+          "holm_within_scope": 0.8671875,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              0.2893995795029388,
+              0.5167589513264248
+            ],
+            "same_sign": 8,
+            "n": 8,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "105"
+          },
+          "0.5": {
+            "mu_range": [
+              0.2902962585653935,
+              0.5857286225901029
+            ],
+            "same_sign": 8,
+            "n": 8,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "105"
+          },
+          "1.0": {
+            "mu_range": [
+              0.28908280266965164,
+              0.602793346976245
+            ],
+            "same_sign": 8,
+            "n": 8,
+            "intervals_excluding_zero": 0,
+            "largest_influence_paper": "105"
+          }
+        },
+        "species_reuse_components": {
+          "k": 8,
+          "positive": 6,
+          "negative": 2,
+          "ties": 0,
+          "median": 0.4037853835896186,
+          "equal_cluster_mean": 0.6882024361909278,
+          "sign_p_nominal": 0.2890625
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 8,
+            "mu": 0.4307892725199852,
+            "ci95": [
+              -0.18609748634954193,
+              1.0476760313895124
+            ],
+            "se_mkh": 0.26088151572242363,
+            "p_two_sided_nominal": 0.142663875537993,
+            "tau2_DL": 0.16609594791272178,
+            "I2_percent": 72.38249298765702,
+            "equal_paper_mean": 0.6882024361909278,
+            "positive_papers": 6,
+            "negative_papers": 2
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 8,
+            "mu": 0.4726387527958473,
+            "ci95": [
+              -0.19101498052990723,
+              1.1362924861216017
+            ],
+            "se_mkh": 0.2806592772102057,
+            "p_two_sided_nominal": 0.1360488879607811,
+            "tau2_DL": 0.2102135573024074,
+            "I2_percent": 58.84777004906907,
+            "equal_paper_mean": 0.6882024361909278,
+            "positive_papers": 6,
+            "negative_papers": 2
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 8,
+            "mu": 0.47358323123166307,
+            "ci95": [
+              -0.18610025908951838,
+              1.1332667215528445
+            ],
+            "se_mkh": 0.27898026076524673,
+            "p_two_sided_nominal": 0.1334029220150898,
+            "tau2_DL": 0.1948125402172965,
+            "I2_percent": 47.40838682422097,
+            "equal_paper_mean": 0.6882024361909278,
+            "positive_papers": 6,
+            "negative_papers": 2
+          }
+        }
+      },
+      "pollen deposition minus visitation rate": {
+        "paper_sign": {
+          "k": 4,
+          "positive": 2,
+          "negative": 2,
+          "ties": 0,
+          "median": 0.013801514433751022,
+          "equal_cluster_mean": -0.21368933333424325,
+          "sign_p_nominal": 1,
+          "holm_within_scope": 1,
+          "holm_all_16": 1
+        },
+        "leave_one_paper_out": {
+          "status": "INSUFFICIENT_FOR_LEAVE_ONE_OUT"
+        },
+        "species_reuse_components": {
+          "k": 4,
+          "positive": 2,
+          "negative": 2,
+          "ties": 0,
+          "median": 0.013801514433751022,
+          "equal_cluster_mean": -0.21368933333424325,
+          "sign_p_nominal": 1
+        },
+        "multi_paper_components": [],
+        "component_fits": {
+          "0.0": {
+            "k": 4,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.21368933333424325
+          },
+          "0.5": {
+            "k": 4,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.21368933333424325
+          },
+          "1.0": {
+            "k": 4,
+            "status": "INSUFFICIENT_STUDIES",
+            "equal_paper_mean": -0.21368933333424325
+          }
+        }
+      },
+      "fruit set minus pollen deposition": {
+        "paper_sign": {
+          "k": 10,
+          "positive": 1,
+          "negative": 9,
+          "ties": 0,
+          "median": -0.27211342479869854,
+          "equal_cluster_mean": -0.3418214687213395,
+          "sign_p_nominal": 0.021484375,
+          "holm_within_scope": 0.0859375,
+          "holm_all_16": 0.322265625
+        },
+        "leave_one_paper_out": {
+          "0.0": {
+            "mu_range": [
+              -0.32940043620108234,
+              -0.23226689876548737
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "81"
+          },
+          "0.5": {
+            "mu_range": [
+              -0.2947921270914324,
+              -0.17784507197385216
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "52"
+          },
+          "1.0": {
+            "mu_range": [
+              -0.30994554482316566,
+              -0.14627992429557352
+            ],
+            "same_sign": 10,
+            "n": 10,
+            "intervals_excluding_zero": 1,
+            "largest_influence_paper": "52"
+          }
+        },
+        "species_reuse_components": {
+          "k": 7,
+          "positive": 1,
+          "negative": 6,
+          "ties": 0,
+          "median": -0.32750115820903136,
+          "equal_cluster_mean": -0.33449545999386787,
+          "sign_p_nominal": 0.125
+        },
+        "multi_paper_components": [
+          [
+            1,
+            55,
+            81
+          ],
+          [
+            71,
+            72
+          ]
+        ],
+        "component_fits": {
+          "0.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.2784938925494661,
+            "ci95": [
+              -0.7114453183739137,
+              0.15445753327498146
+            ],
+            "se_mkh": 0.17693789239765997,
+            "p_two_sided_nominal": 0.16656083794265003,
+            "tau2_DL": 0.1550027900616972,
+            "I2_percent": 92.18604694496867,
+            "equal_paper_mean": -0.33449545999386787,
+            "positive_papers": 1,
+            "negative_papers": 6
+          },
+          "0.5": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.26974031805305254,
+            "ci95": [
+              -0.7525101871245921,
+              0.21302955101848692
+            ],
+            "se_mkh": 0.19729761366174256,
+            "p_two_sided_nominal": 0.22057456385397758,
+            "tau2_DL": 0.16727295474124979,
+            "I2_percent": 78.82352789648411,
+            "equal_paper_mean": -0.33449545999386787,
+            "positive_papers": 1,
+            "negative_papers": 6
+          },
+          "1.0": {
+            "status": "EXPLORATORY_FIT",
+            "k": 7,
+            "mu": -0.26010783328857917,
+            "ci95": [
+              -0.773337443768138,
+              0.25312177719097956
+            ],
+            "se_mkh": 0.2097458517924976,
+            "p_two_sided_nominal": 0.26123087105702775,
+            "tau2_DL": 0.1699994542428012,
+            "I2_percent": 71.48717654254483,
+            "equal_paper_mean": -0.33449545999386787,
+            "positive_papers": 1,
+            "negative_papers": 6
+          }
+        }
+      }
+    }
+  },
+  "focal_queue": {
+    "visitation rate minus nectar volume": [
+      {
+        "upstream_equal_effect_mean": -0.0838479724778756,
+        "downstream_equal_effect_mean": -0.110751364292703,
+        "profile": "both_negative_amplification",
+        "paper_id": 10,
+        "species": "Tristerix_aphyllus",
+        "title": "Testing non-additive effects of nectar-robbing ants and hummingbird pollination on the reproductive success of a parasitic plant",
+        "reference": "Caballero et al.,2013",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          483
+        ],
+        "downstream_ids": [
+          485
+        ],
+        "context": {
+          "country": "Chile",
+          "longitude": -71.1,
+          "latitude": -31.5,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "wood",
+          "autonomous": "yes",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": null,
+          "pollinator_type": "bird",
+          "larceny_rate": 0.5,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.782094666576441,
+        "downstream_equal_effect_mean": -0.5341752034014935,
+        "profile": "both_negative_attenuation",
+        "paper_id": 100,
+        "species": "Caryopteris_divaricata",
+        "title": "Floral trait variation across individual plants within a population enhances defense capability to nectar robbing",
+        "reference": "Tie et al., 2023",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          416
+        ],
+        "downstream_ids": [
+          422,
+          423
+        ],
+        "context": {
+          "country": "China",
+          "longitude": 107.50525,
+          "latitude": 33.825028,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "perennial_herb",
+          "autonomous": "yes",
+          "self_compatible": "yes",
+          "pollen_limitation": null,
+          "origin": "native",
+          "damage": null,
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.825,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": false,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.3400914072534096,
+        "downstream_equal_effect_mean": -0.295159635752438,
+        "profile": "both_negative_attenuation",
+        "paper_id": 104,
+        "species": "Tirpitzia_sinensis",
+        "title": "Nectar robbing by bees affects the reproductive fitness of the distylous plant Tirpitzia sinensis (Linaceae)",
+        "reference": "Wang et al., 2023",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          451,
+          452,
+          453,
+          454,
+          455,
+          456,
+          457
+        ],
+        "downstream_ids": [
+          445,
+          446
+        ],
+        "context": {
+          "country": "China",
+          "longitude": 104.833889,
+          "latitude": 24.568889,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "wood",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.385,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -3.93427361436297,
+        "downstream_equal_effect_mean": -0.52657398073413,
+        "profile": "both_negative_attenuation",
+        "paper_id": 105,
+        "species": "Impatiens_oxyanthera",
+        "title": "Impact of Nectar Robbing on Female Reproductive Success of Impatiens Oxyanthera (Balsaminaceae) Under Simulated Climate Warming",
+        "reference": "Li et al., 2018",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          464
+        ],
+        "downstream_ids": [
+          466
+        ],
+        "context": {
+          "country": "China",
+          "longitude": 103.25,
+          "latitude": 29.5,
+          "climate": "non-tropical",
+          "rob_location": "spur",
+          "growth_form": "annual_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9058,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.76137034784928,
+        "downstream_equal_effect_mean": -0.13420781335783782,
+        "profile": "both_negative_attenuation",
+        "paper_id": 116,
+        "species": "Bouvardia_ternifolia",
+        "title": "Antagonists and their effects in a hummingbird-plant interaction: Field experiments",
+        "reference": "Torres et al., 2008",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          15,
+          16,
+          21,
+          22
+        ],
+        "downstream_ids": [
+          19,
+          20,
+          25,
+          26
+        ],
+        "context": {
+          "country": "Mexico",
+          "longitude": -98.966667,
+          "latitude": 19.233333,
+          "climate": "tropical",
+          "rob_location": null,
+          "growth_form": "wood",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "thief",
+          "secondary_robber": null,
+          "pollinator_type": "bird",
+          "larceny_rate": null,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": 0.0439671996857079,
+        "downstream_equal_effect_mean": 0.4275906772634161,
+        "profile": "both_nonnegative",
+        "paper_id": 144,
+        "species": "Impatiens_capensis",
+        "title": "Consequences of multiple flower-insect interactions for subsequent plant-insect interactions and plant reproduction",
+        "reference": "Gorden et al., 2018",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          629,
+          630,
+          631,
+          632
+        ],
+        "downstream_ids": [
+          620,
+          621,
+          622
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -72.533333,
+          "latitude": 42.383333,
+          "climate": "non-tropical",
+          "rob_location": "spur",
+          "growth_form": "annual_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.1,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.532418227673748,
+        "downstream_equal_effect_mean": -0.108470938072219,
+        "profile": "both_negative_attenuation",
+        "paper_id": 27,
+        "species": "Tropaeolum_majus",
+        "title": "Choosing rewarding flowers; perceptual limitations and innate preferences influence decision making in bumblebees and honeybees",
+        "reference": "Goulson et al., 2007",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          601
+        ],
+        "downstream_ids": [
+          602
+        ],
+        "context": {
+          "country": "Portugal",
+          "longitude": -9.360623,
+          "latitude": 38.7309973,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "annual_herb",
+          "autonomous": null,
+          "self_compatible": "yes",
+          "pollen_limitation": null,
+          "origin": "non-native",
+          "damage": "yes",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.427,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": 0.0123712918025468,
+        "downstream_equal_effect_mean": 0.007313779539659694,
+        "profile": "both_nonnegative",
+        "paper_id": 28,
+        "species": "Oreocallis_grandiflora",
+        "title": "Nectar robbing impacts pollinator behavior but not plant reproduction",
+        "reference": "Hazlehurst et al., 2016",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          647
+        ],
+        "downstream_ids": [
+          649,
+          650,
+          651,
+          652,
+          653,
+          654,
+          655
+        ],
+        "context": {
+          "country": "Peru",
+          "longitude": -71.587222,
+          "latitude": -13.174722,
+          "climate": "tropical",
+          "rob_location": "corolla",
+          "growth_form": "wood",
+          "autonomous": "yes",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "bird",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "bird",
+          "larceny_rate": 0.21,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.797668417947777,
+        "downstream_equal_effect_mean": -0.147452731143131,
+        "profile": "both_negative_attenuation",
+        "paper_id": 29,
+        "species": "Corydalis_caseana",
+        "title": "Why are some plant–nectar robber interactions commensalisms?",
+        "reference": "Heiling et al., 2018",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          260
+        ],
+        "downstream_ids": [
+          261
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -108.59,
+          "latitude": 38.56,
+          "climate": "non-tropical",
+          "rob_location": "spur",
+          "growth_form": "perennial_herb",
+          "autonomous": "yes",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.0400053346136992,
+        "downstream_equal_effect_mean": 0.0495969411393722,
+        "profile": "negative_to_nonnegative",
+        "paper_id": 66,
+        "species": "Phlomis_aspera",
+        "title": "Nectar robbers deter legitimate pollinators by mutilating flowers",
+        "reference": "Varma et al., 2020",
+        "upstream": "nectar volume",
+        "downstream": "visitation rate",
+        "upstream_ids": [
+          760
+        ],
+        "downstream_ids": [
+          761
+        ],
+        "context": {
+          "country": "India",
+          "longitude": 75.435675,
+          "latitude": 13.710919,
+          "climate": "tropical",
+          "rob_location": "corolla",
+          "growth_form": "annual_herb",
+          "autonomous": "yes",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": null,
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.1,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": true,
+        "core_present": false,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      }
+    ],
+    "fruit set minus pollen deposition": [
+      {
+        "upstream_equal_effect_mean": -0.20564908719248845,
+        "downstream_equal_effect_mean": -0.3666321427753775,
+        "profile": "both_negative_amplification",
+        "paper_id": 1,
+        "species": "Ipomopsis_aggregata",
+        "title": "Nectar-robbing bumble bees reduce the fitness of Ipomopsis aggregata (Polemoniaceae)",
+        "reference": "Irwin et al., 1999",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114
+        ],
+        "downstream_ids": [
+          116,
+          117
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -108.59,
+          "latitude": 38.56,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "bird",
+          "larceny_rate": 0.329,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.200670695462151,
+        "downstream_equal_effect_mean": -0.974859086025222,
+        "profile": "both_negative_amplification",
+        "paper_id": 108,
+        "species": "Asclepias_syriaca",
+        "title": "Nectar Parasitism of Asclepias syriaca by Ants: Effect on Nectar Levels, Pollinia Insertion, Pollinaria Removal and Pod Production",
+        "reference": "Fritz et al., 1981",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          773
+        ],
+        "downstream_ids": [
+          775
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -69.23,
+          "latitude": 43.56,
+          "climate": "non-tropical",
+          "rob_location": null,
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "thief",
+          "secondary_robber": null,
+          "pollinator_type": "insect",
+          "larceny_rate": null,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -1.1519760657385,
+        "downstream_equal_effect_mean": -1.25555334351832,
+        "profile": "both_negative_amplification",
+        "paper_id": 129,
+        "species": "Thunia_alba",
+        "title": "The conspicuously large bracts influence reproductive success in Thunia alba (Orchidaceae)",
+        "reference": "Wu et al., 2024",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          481
+        ],
+        "downstream_ids": [
+          482
+        ],
+        "context": {
+          "country": "China",
+          "longitude": 100.506389,
+          "latitude": 21.728056,
+          "climate": "tropical",
+          "rob_location": "spur",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.1543,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.0645385211375712,
+        "downstream_equal_effect_mean": 0.200670695462151,
+        "profile": "negative_to_nonnegative",
+        "paper_id": 140,
+        "species": "Platanthera_praeclara",
+        "title": "Nectar Robbery and Thievery in the Hawk Moth (Lepidoptera: Sphingidae)-Pollinated Western Prairie Fringed Orchid Platanthera praeclara",
+        "reference": "Fox et al., 2015",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          558
+        ],
+        "downstream_ids": [
+          560
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -97.547879,
+          "latitude": 47.599169,
+          "climate": "non-tropical",
+          "rob_location": "spur",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": null,
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.48,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": 0.192650983201312,
+        "downstream_equal_effect_mean": -0.012196354904515504,
+        "profile": "nonnegative_to_negative",
+        "paper_id": 29,
+        "species": "Corydalis_caseana",
+        "title": "Why are some plant–nectar robber interactions commensalisms?",
+        "reference": "Heiling et al., 2018",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          254,
+          257
+        ],
+        "downstream_ids": [
+          255,
+          258
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -108.59,
+          "latitude": 38.56,
+          "climate": "non-tropical",
+          "rob_location": "spur",
+          "growth_form": "perennial_herb",
+          "autonomous": "yes",
+          "self_compatible": "yes",
+          "pollen_limitation": "no",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": 0.626940602321677,
+        "downstream_equal_effect_mean": -0.195000015053726,
+        "profile": "nonnegative_to_negative",
+        "paper_id": 52,
+        "species": "Chilopsis_linearis",
+        "title": "Are nectar-robbers mutualists or antagonists?",
+        "reference": "Richardson et al., 2004",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          269
+        ],
+        "downstream_ids": [
+          268
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -109.116667,
+          "latitude": 31.95,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "wood",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.75,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": true,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.1655995311722514,
+        "downstream_equal_effect_mean": -0.4534941696059205,
+        "profile": "both_negative_amplification",
+        "paper_id": 55,
+        "species": "Ipomopsis_aggregata",
+        "title": "Facilitated exploitation of pollination mutualisms: fitness consequences for plants",
+        "reference": "Richman et al., 2017a",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          230,
+          231
+        ],
+        "downstream_ids": [
+          232,
+          233
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -107.007481,
+          "latitude": 38.989235,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "bird",
+          "larceny_rate": 0.66,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.05756487030337501,
+        "downstream_equal_effect_mean": -0.4562349755577097,
+        "profile": "both_negative_amplification",
+        "paper_id": 71,
+        "species": "Glechoma_longituba",
+        "title": "Behavioural differences between male and female carpenter bees in nectar robbing and its effect on reproductive success in Glechoma longituba (Lamiaceae)",
+        "reference": "Zhang et al., 2011",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          399,
+          400
+        ],
+        "downstream_ids": [
+          401,
+          402
+        ],
+        "context": {
+          "country": "China",
+          "longitude": 114.35,
+          "latitude": 30.533333,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "yes",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.054388584063314,
+        "downstream_equal_effect_mean": -0.310720795227042,
+        "profile": "both_negative_amplification",
+        "paper_id": 72,
+        "species": "Glechoma_longituba",
+        "title": "Nectar robbing of a carpenter bee and its effects on the reproductive fitness of Glechoma longituba (Lamiaceae)",
+        "reference": "Zhang et al., 2007",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          384,
+          387
+        ],
+        "downstream_ids": [
+          385
+        ],
+        "context": {
+          "country": "China",
+          "longitude": 114.362778,
+          "latitude": 30.542222,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "yes",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "yes",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "no",
+          "pollinator_type": "insect",
+          "larceny_rate": 0.9,
+          "experiment_level": "individual-flower success"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      },
+      {
+        "upstream_equal_effect_mean": -0.20638761057106148,
+        "downstream_equal_effect_mean": -0.8813778801254366,
+        "profile": "both_negative_amplification",
+        "paper_id": 81,
+        "species": "Ipomopsis_aggregata",
+        "title": "Realized tolerance to nectar robbing: compensation to floral enemies in Ipomopsis aggregata",
+        "reference": "Irwin, 2009",
+        "upstream": "pollen deposition",
+        "downstream": "fruit set",
+        "upstream_ids": [
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172
+        ],
+        "downstream_ids": [
+          173,
+          174,
+          175,
+          176,
+          177,
+          178,
+          179,
+          180
+        ],
+        "context": {
+          "country": "USA",
+          "longitude": -108.59,
+          "latitude": 38.56,
+          "climate": "non-tropical",
+          "rob_location": "corolla",
+          "growth_form": "perennial_herb",
+          "autonomous": "no",
+          "self_compatible": "no",
+          "pollen_limitation": "yes",
+          "origin": "native",
+          "damage": "no",
+          "larcenist_type": "insect",
+          "larceny_type": "robber",
+          "secondary_robber": "yes",
+          "pollinator_type": "bird",
+          "larceny_rate": 0.66,
+          "experiment_level": "whole-plant fitness"
+        },
+        "unique_per_endpoint": false,
+        "core_present": true,
+        "same_experiment_verified": false,
+        "same_denominator_verified": false,
+        "sampling_covariance_known": false
+      }
+    ]
+  }
+}

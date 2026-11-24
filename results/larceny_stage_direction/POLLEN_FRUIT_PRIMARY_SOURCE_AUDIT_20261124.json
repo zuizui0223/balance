@@ -1,0 +1,296 @@
+{
+  "scope": "Post-open audit; original publication texts/abstracts, not raw records or newly identified paired causal contrast. No endpoint covariance recovered. Preserve all ten candidates.",
+  "n_candidates": 10,
+  "n_exact_reported_point_matches": 2,
+  "n_verified_same_treatment_inflorescence_group": 1,
+  "n_verified_same_flower_joint_covariance": 0,
+  "studies": [
+    {
+      "paper_id": 1,
+      "doi": "10.1890/0012-9658(1999)080[1703:NRBBRT]2.0.CO;2",
+      "access": "original abstract",
+      "study": "Irwin & Brody 1999",
+      "scope": "Manipulated robbery rates in 20 natural Ipomopsis populations; several response levels including fluorescent dye and pollen receipt, fruit fraction and seeds per fruit. Seven archived pollen rows and two fruit rows require treatment/endpoint identity recovery. No exact pairing.",
+      "archive": {
+        "species": "Ipomopsis_aggregata",
+        "up_ids": [
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114
+        ],
+        "down_ids": [
+          116,
+          117
+        ],
+        "up": -0.20564908719248845,
+        "down": -0.3666321427753775,
+        "profile": "both_negative_amplification"
+      }
+    },
+    {
+      "paper_id": 108,
+      "doi": "10.1007/BF00344969",
+      "access": "original abstract",
+      "study": "Fritz & Morse 1981",
+      "scope": "Ant-attended vs ant-excluded Asclepias umbels/stems: similar pollinia insertion, significantly fewer pods initiated, mature pod reduction a trend. Different-clone pollen is authors' proposed mechanism, not measured parentage. Archived fruit endpoint could be initiation or mature pod; exact table and denominators unavailable.",
+      "archive": {
+        "species": "Asclepias_syriaca",
+        "up_ids": [
+          773
+        ],
+        "down_ids": [
+          775
+        ],
+        "up": -0.200670695462151,
+        "down": -0.974859086025222,
+        "profile": "both_negative_amplification"
+      }
+    },
+    {
+      "paper_id": 129,
+      "doi": "10.1093/jpe/rtad036",
+      "access": "original full text Methods and Results",
+      "study": "Wu & Gao 2024",
+      "scope": "2023 bract removal vs intact, 43 vs 40 marked inflorescences, both deposition and fruit set recorded at flowering end; flower-level link, parent-plant clustering and covariance not available. 2022 hand-pollination experiment separate. Intervention is structural bract removal, not random assignment of robbery alone.",
+      "reconstruction": {
+        "control": {
+          "deposition_mean": 30.79,
+          "deposition_se": 2.13,
+          "fruit_mean": 28.71,
+          "fruit_se": 2.08,
+          "n_inflorescences": 40
+        },
+        "treatment": {
+          "deposition_mean": 9.73,
+          "deposition_se": 3.37,
+          "fruit_mean": 8.18,
+          "fruit_se": 3.39,
+          "n_inflorescences": 43
+        },
+        "source_units": "mean percent across inflorescences",
+        "archived_ids": [
+          481,
+          482
+        ],
+        "upstream_lnRR": -1.1519760657384952,
+        "downstream_lnRR": -1.255553343518317,
+        "delta_lnRR": -0.10357727777982184,
+        "legitimate_visits": {
+          "intact": 16,
+          "removed": 5
+        },
+        "robbing_visits": {
+          "intact": 3,
+          "removed": 21
+        },
+        "hourly_visit_mean": {
+          "intact": 2.48,
+          "removed": 2.39,
+          "p": 0.83
+        },
+        "robbed_flower_percent": {
+          "intact": 15.43,
+          "removed": 90.25
+        },
+        "same_treatment_and_inflorescence_group_verified": true,
+        "same_flower_link_verified": false,
+        "covariance_known": false,
+        "archived_point_match": true
+      },
+      "archive": {
+        "species": "Thunia_alba",
+        "up_ids": [
+          481
+        ],
+        "down_ids": [
+          482
+        ],
+        "up": -1.1519760657385,
+        "down": -1.25555334351832,
+        "profile": "both_negative_amplification"
+      }
+    },
+    {
+      "paper_id": 140,
+      "doi": "10.1093/aesa/sav093",
+      "access": "original full text Table 3 and Methods",
+      "study": "Fox et al. 2015",
+      "scope": "Natural observational robbery; numbered flowers revisited over three years. Deposition n=1182 flowers; fruit n=868, lost plants from weather/animals; 314 fewer flowers, no common-cohort raw analysis. Both endpoints individually nonsignificant. Conditional pollination failure n=161, 32% intact vs 30% robbed, p=.8578; not a demonstrated compensation effect.",
+      "reconstruction": {
+        "control": {
+          "deposition_percent": 16,
+          "fruit_percent": 18
+        },
+        "treatment": {
+          "deposition_percent": 15,
+          "fruit_percent": 22
+        },
+        "deposition_n_total": 1182,
+        "fruit_n_total": 868,
+        "archived_ids": [
+          558,
+          560
+        ],
+        "upstream_lnRR": -0.06453852113757118,
+        "downstream_lnRR": 0.20067069546215124,
+        "delta_lnRR": 0.2652092165997224,
+        "same_treatment_and_inflorescence_group_verified": false,
+        "same_flower_link_verified": false,
+        "covariance_known": false,
+        "archived_point_match": true
+      },
+      "archive": {
+        "species": "Platanthera_praeclara",
+        "up_ids": [
+          558
+        ],
+        "down_ids": [
+          560
+        ],
+        "up": -0.0645385211375712,
+        "down": 0.200670695462151,
+        "profile": "negative_to_nonnegative"
+      }
+    },
+    {
+      "paper_id": 29,
+      "doi": "10.1111/oik.05440",
+      "access": "prior source audit in PR #267; original abstract",
+      "study": "Heiling et al. 2018",
+      "scope": "Authors tested non-discrimination, relative visitor prevalence and pollen saturation. Already traced 2015 primary/continuous robbery seed treatments in upstream #267; pollen and fruit archive row identities remain unverified. Two focal stage contexts differ.",
+      "archive": {
+        "species": "Corydalis_caseana",
+        "up_ids": [
+          254,
+          257
+        ],
+        "down_ids": [
+          255,
+          258
+        ],
+        "up": 0.192650983201312,
+        "down": -0.012196354904515504,
+        "profile": "nonnegative_to_negative"
+      }
+    },
+    {
+      "paper_id": 52,
+      "doi": "10.1007/s00442-004-1504-8",
+      "access": "original abstract",
+      "study": "Richardson 2004",
+      "scope": "Chilopsis: honeybees avoid robbed flowers while effective bumblebees do not. Authors report no detected female reproductive loss (fruit and pollen tubes); visit-level deposition and pollen tubes not interchangeable. Archive positive-to-negative contrast needs original endpoint/arm mapping.",
+      "archive": {
+        "species": "Chilopsis_linearis",
+        "up_ids": [
+          269
+        ],
+        "down_ids": [
+          268
+        ],
+        "up": 0.626940602321677,
+        "down": -0.195000015053726,
+        "profile": "nonnegative_to_negative"
+      }
+    },
+    {
+      "paper_id": 55,
+      "doi": "10.1111/1365-2745.12657",
+      "access": "original methods/results and Dryad metadata",
+      "study": "Richman et al. 2017",
+      "scope": "Primary-only, primary+secondary, control treatments. Secondary+primary lowers conspecific pollen grains and reproductive output. Fruit success denominator is mature plus aborted fruits, not all initial flowers. Original data workbook 2016_Richman_IpomopsisSecondaryRobbing.xlsx publicly listed at Dryad 10.5061/dryad.tf71f; raw bytes not yet retrieved. Archive IDs 230/231 and 232/233 require arm attribution.",
+      "dataset": "10.5061/dryad.tf71f",
+      "archive": {
+        "species": "Ipomopsis_aggregata",
+        "up_ids": [
+          230,
+          231
+        ],
+        "down_ids": [
+          232,
+          233
+        ],
+        "up": -0.1655995311722514,
+        "down": -0.4534941696059205,
+        "profile": "both_negative_amplification"
+      }
+    },
+    {
+      "paper_id": 71,
+      "doi": "10.1111/j.1438-8677.2009.00279.x",
+      "access": "original abstract",
+      "study": "Zhang et al. 2011",
+      "scope": "Four-year Glechoma study, male/female carpenter bee robbing differs in tissue damage, including ovules and nectaries. Same species and some same authors as 2007. Treatment-level contrast IDs and overlap unresolved.",
+      "archive": {
+        "species": "Glechoma_longituba",
+        "up_ids": [
+          399,
+          400
+        ],
+        "down_ids": [
+          401,
+          402
+        ],
+        "up": -0.05756487030337501,
+        "down": -0.4562349755577097,
+        "profile": "both_negative_amplification"
+      }
+    },
+    {
+      "paper_id": 72,
+      "doi": "10.1007/s11258-006-9244-y",
+      "access": "bibliographic record and abstract",
+      "study": "Zhang et al. 2007",
+      "scope": "Glechoma natural populations and controlled pollination comparisons of Xylocopa and legitimate visitors. Pollination efficiency not automatically same as open cohort fruit set. Treatment pairing unresolved; possible shared system with 2011.",
+      "archive": {
+        "species": "Glechoma_longituba",
+        "up_ids": [
+          384,
+          387
+        ],
+        "down_ids": [
+          385
+        ],
+        "up": -0.054388584063314,
+        "down": -0.310720795227042,
+        "profile": "both_negative_amplification"
+      }
+    },
+    {
+      "paper_id": 81,
+      "doi": "10.1093/aob/mcp056",
+      "access": "original abstract",
+      "study": "Irwin 2009",
+      "scope": "Ipomopsis common garden and group differences in tolerance; male pollen donation tolerance distinguished from female reproduction. Eight archived pollen and eight fruit rows require identity matching; no independent species replication.",
+      "archive": {
+        "species": "Ipomopsis_aggregata",
+        "up_ids": [
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172
+        ],
+        "down_ids": [
+          173,
+          174,
+          175,
+          176,
+          177,
+          178,
+          179,
+          180
+        ],
+        "up": -0.20638761057106148,
+        "down": -0.8813778801254366,
+        "profile": "both_negative_amplification"
+      }
+    }
+  ]
+}
