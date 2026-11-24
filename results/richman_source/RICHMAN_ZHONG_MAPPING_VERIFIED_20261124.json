@@ -1,0 +1,265 @@
+{
+  "provenance": {
+    "run": 45358899006,
+    "job": 138323599466,
+    "head": "08d65b47bc16c0ccc94a40e678784874aa408852",
+    "artifact_id": 14903855900,
+    "artifact_digest": "sha256:34ead5a7a2597082d42defb1af81db185562911604261e2ba354924b4aa1d04b"
+  },
+  "scope": "Archive point compatibility with rounded original text; model vs raw means may differ. Bounds are rounding sensitivity, not sampling CI; no treatment mapping claimed by numeric resemblance.",
+  "rows": [
+    {
+      "row": {
+        "ID": 230,
+        "ref-ID": 55,
+        "title": "Facilitated exploitation of pollination mutualisms: fitness consequences for plants",
+        "reference": "Richman et al., 2017a",
+        "country": "USA",
+        "longitude": -107.007481,
+        "latitude": 38.989235,
+        "altitude": 2895,
+        "climate": "non-tropical",
+        "species": "Ipomopsis_aggregata",
+        "rob_location": "corolla",
+        "nectar_production": 3,
+        "sugar_concentration": 22.5,
+        "flower_lifespan": 4,
+        "growth_form": "perennial_herb",
+        "autonomous": "no",
+        "self_compatible": "no",
+        "pollen_limitation": "yes",
+        "origin": "native",
+        "damage": "no",
+        "larcenist_type": "insect",
+        "larceny_type": "robber",
+        "secondary_robber": "yes",
+        "pollinator_type": "bird",
+        "larceny_rate": 0.66,
+        "experiment_level": "whole-plant fitness",
+        "response_variable": "female fitness",
+        "sub_response_variable": "pollen deposition",
+        "yi": -0.0747797258819068,
+        "vi": 0.00395348345961982
+      },
+      "response_ratio": 0.9279478667158491,
+      "compatible_with_printed_rounding_only": [
+        "P/C"
+      ],
+      "treatment_verified": false,
+      "same_plant_covariance_known": false
+    },
+    {
+      "row": {
+        "ID": 231,
+        "ref-ID": 55,
+        "title": "Facilitated exploitation of pollination mutualisms: fitness consequences for plants",
+        "reference": "Richman et al., 2017a",
+        "country": "USA",
+        "longitude": -107.007481,
+        "latitude": 38.989235,
+        "altitude": 2895,
+        "climate": "non-tropical",
+        "species": "Ipomopsis_aggregata",
+        "rob_location": "corolla",
+        "nectar_production": 3,
+        "sugar_concentration": 22.5,
+        "flower_lifespan": 4,
+        "growth_form": "perennial_herb",
+        "autonomous": "no",
+        "self_compatible": "no",
+        "pollen_limitation": "yes",
+        "origin": "native",
+        "damage": "no",
+        "larcenist_type": "insect",
+        "larceny_type": "robber",
+        "secondary_robber": "yes",
+        "pollinator_type": "bird",
+        "larceny_rate": 0.66,
+        "experiment_level": "whole-plant fitness",
+        "response_variable": "female fitness",
+        "sub_response_variable": "pollen deposition",
+        "yi": -0.256419336462596,
+        "vi": 0.00510477973626842
+      },
+      "response_ratio": 0.7738174108917448,
+      "compatible_with_printed_rounding_only": [
+        "PS/P"
+      ],
+      "treatment_verified": false,
+      "same_plant_covariance_known": false
+    },
+    {
+      "row": {
+        "ID": 232,
+        "ref-ID": 55,
+        "title": "Facilitated exploitation of pollination mutualisms: fitness consequences for plants",
+        "reference": "Richman et al., 2017a",
+        "country": "USA",
+        "longitude": -107.007481,
+        "latitude": 38.989235,
+        "altitude": 2895,
+        "climate": "non-tropical",
+        "species": "Ipomopsis_aggregata",
+        "rob_location": "corolla",
+        "nectar_production": 3,
+        "sugar_concentration": 22.5,
+        "flower_lifespan": 4,
+        "growth_form": "perennial_herb",
+        "autonomous": "no",
+        "self_compatible": "no",
+        "pollen_limitation": "yes",
+        "origin": "native",
+        "damage": "no",
+        "larcenist_type": "insect",
+        "larceny_type": "robber",
+        "secondary_robber": "yes",
+        "pollinator_type": "bird",
+        "larceny_rate": 0.66,
+        "experiment_level": "whole-plant fitness",
+        "response_variable": "female fitness",
+        "sub_response_variable": "fruit set",
+        "yi": -0.424333592412547,
+        "vi": 0.00572250312227607
+      },
+      "response_ratio": 0.6542056074766357,
+      "compatible_with_printed_rounding_only": [
+        "P/C"
+      ],
+      "treatment_verified": false,
+      "same_plant_covariance_known": false
+    },
+    {
+      "row": {
+        "ID": 233,
+        "ref-ID": 55,
+        "title": "Facilitated exploitation of pollination mutualisms: fitness consequences for plants",
+        "reference": "Richman et al., 2017a",
+        "country": "USA",
+        "longitude": -107.007481,
+        "latitude": 38.989235,
+        "altitude": 2895,
+        "climate": "non-tropical",
+        "species": "Ipomopsis_aggregata",
+        "rob_location": "corolla",
+        "nectar_production": 3,
+        "sugar_concentration": 22.5,
+        "flower_lifespan": 4,
+        "growth_form": "perennial_herb",
+        "autonomous": "no",
+        "self_compatible": "no",
+        "pollen_limitation": "yes",
+        "origin": "native",
+        "damage": "no",
+        "larcenist_type": "insect",
+        "larceny_type": "robber",
+        "secondary_robber": "yes",
+        "pollinator_type": "bird",
+        "larceny_rate": 0.66,
+        "experiment_level": "whole-plant fitness",
+        "response_variable": "female fitness",
+        "sub_response_variable": "fruit set",
+        "yi": -0.482654746799294,
+        "vi": 0.0124469738390933
+      },
+      "response_ratio": 0.6171428571428573,
+      "compatible_with_printed_rounding_only": [
+        "PS/P"
+      ],
+      "treatment_verified": false,
+      "same_plant_covariance_known": false
+    }
+  ],
+  "expected_ratio_intervals": {
+    "pollen deposition": {
+      "PS/P": [
+        0.765,
+        0.775
+      ],
+      "PS/C": [
+        0.715,
+        0.725
+      ],
+      "P/C": [
+        0.9225806451612902,
+        0.9477124183006536
+      ]
+    },
+    "fruit set": {
+      "PS/P": [
+        0.6070422535211267,
+        0.627536231884058
+      ],
+      "PS/C": [
+        0.4024276377217554,
+        0.40505144995322734
+      ],
+      "P/C": [
+        0.6442577030812324,
+        0.6641721234798877
+      ]
+    }
+  },
+  "published_fruit_minus_pollen_rounding_intervals": {
+    "PS/P": [
+      -0.2442646303028233,
+      -0.19807442443321394
+    ],
+    "PS/C": [
+      -0.5886563562165387,
+      -0.568268446734426
+    ],
+    "P/C": [
+      -0.38595229388458274,
+      -0.32863345433034474
+    ]
+  },
+  "candidate_delta_sensitivity": {
+    "scope": "Conditional on proposed mapping and valid archived sampling variances. Cauchy covariance bound; normal working intervals, not exact finite-sample inference or verified plant-level covariance; shared arms cannot be pooled independently.",
+    "candidates": [
+      {
+        "candidate": "P/C",
+        "rows": [
+          230,
+          232
+        ],
+        "delta": -0.3495538665306402,
+        "ratio": 0.7050025448002488,
+        "variance_bounds": [
+          0.0001630855645318979,
+          0.019188887599259883
+        ],
+        "normal95_independence": [
+          -0.5423488457286005,
+          -0.15675888733267984
+        ],
+        "normal95_max_variance": [
+          -0.6210558398705867,
+          -0.07805189319069372
+        ],
+        "conditional_only": true
+      },
+      {
+        "candidate": "PS/P",
+        "rows": [
+          231,
+          233
+        ],
+        "delta": -0.22623541033669797,
+        "ratio": 0.7975303326810181,
+        "variance_bounds": [
+          0.0016094752147676333,
+          0.03349403193595581
+        ],
+        "normal95_independence": [
+          -0.4858973801950562,
+          0.03342655952166024
+        ],
+        "normal95_max_variance": [
+          -0.584935764979662,
+          0.1324649443062661
+        ],
+        "conditional_only": true
+      }
+    ]
+  }
+}
