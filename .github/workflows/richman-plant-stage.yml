@@ -1,0 +1,29 @@
+name: Richman authenticated plant-linked stage reanalysis
+on:
+  push:
+    branches: [analysis/richman-plant-stage-20261124]
+    paths:
+      - scripts/fit_richman_plant_stage.py
+      - tests/test_richman_plant_stage.py
+      - .github/workflows/richman-plant-stage.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  plant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy==2.2.6 openpyxl==3.1.5 pytest
+      - run: python -m pytest -q tests/test_richman_plant_stage.py
+      - run: python -m scripts.recover_richman_direct_mirror
+      - run: python scripts/fit_richman_plant_stage.py --source artifacts/richman_direct_mirror/2016_Richman_IpomopsisSecondaryRobbing.xlsx --out artifacts/richman_plant_stage/PLANT_STAGE_RESULT.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: richman-plant-stage
+          path: artifacts/richman_plant_stage/PLANT_STAGE_RESULT.json
+          if-no-files-found: error
