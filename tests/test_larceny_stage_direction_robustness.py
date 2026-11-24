@@ -28,3 +28,25 @@ def test_stage_direction_not_necessarily_negative_cost():
     assert stage_profile(-.5,.5)=='negative_to_nonnegative'
     assert stage_profile(.5,-.5)=='nonnegative_to_negative'
     assert stage_profile(.5,1)=='both_nonnegative'
+
+def test_full_result_serializes_for_realistic_nonzero_study_count():
+    import json
+    from scripts.audit_larceny_stage_direction_robustness import run
+    rows=[]
+    for p in range(1,8):
+        rows.extend([row(2*p,p,'pollen deposition',-.2,sp=str(p)),row(2*p+1,p,'fruit set',-.3-p/100,sp=str(p))])
+    d=run(rows)
+    assert d['results']['context']['fruit set minus pollen deposition']['leave_one_paper_out']['1.0']['n']==7
+    json.dumps(d,allow_nan=False)
+
+def test_authenticated_full_analysis_serialization():
+    import os,json
+    from pathlib import Path
+    from scripts.audit_larceny_stage_direction_robustness import run
+    from scripts.audit_larceny_meta_stage_pairability import source_rows
+    source=os.getenv('BALANCE_LARCENY_2025_ORIGINAL')
+    if not source:pytest.skip('Source workflow only')
+    d=run(source_rows(Path(source)))
+    assert d['n_effects']==776
+    assert d['results']['context']['fruit set minus pollen deposition']['paper_sign']['negative']==9
+    json.dumps(d,allow_nan=False)

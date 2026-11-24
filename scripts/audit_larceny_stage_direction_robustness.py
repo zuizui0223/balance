@@ -35,10 +35,10 @@ def loo(items):
     result={}
     for r in RHO:
         fits={str(k):pool([v for p,v in items.items() if p!=k],r) for k in items}
-        mus=[f['mu'] for f in fits.values()]; full=pool(list(items.values()),r)['mu']
+        mus=[float(f['mu']) for f in fits.values()]; full=float(pool(list(items.values()),r)['mu'])
         result[str(r)]={'mu_range':[min(mus),max(mus)],
             'same_sign':sum(mu*full>0 for mu in mus),'n':len(mus),
-            'intervals_excluding_zero':sum(f['ci95'][0]*f['ci95'][1]>0 for f in fits.values()),
+            'intervals_excluding_zero':sum(int(f['ci95'][0]*f['ci95'][1]>0) for f in fits.values()),
             'largest_influence_paper':max(fits,key=lambda k:abs(fits[k]['mu']-full))}
     return result
 
@@ -153,4 +153,6 @@ def main():
     print('BALANCE_DIRECTION_RESULT_BEGIN')
     print(json.dumps(compact,ensure_ascii=False,allow_nan=False))
     print('BALANCE_DIRECTION_RESULT_END')
+    for key,queue in compact['focal_queue'].items():
+        print('BALANCE_FOCAL_QUEUE '+json.dumps({'pair':key,'records':queue},ensure_ascii=False,allow_nan=False))
 if __name__=='__main__':main()
