@@ -1,0 +1,88 @@
+{
+  "scope": "Reported rounded relative group means only. Not raw plant data, not independent effects, no covariance or statistical inference.",
+  "paper_doi": "10.1111/1365-2745.12657",
+  "published_2017": true,
+  "experiment_year": 2013,
+  "initial_n": {
+    "C": 40,
+    "P": 40,
+    "PS": 40
+  },
+  "source": "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2745.12657",
+  "reported": {
+    "PS_vs_P_pollen_reduction": 0.23,
+    "PS_vs_C_pollen_reduction": 0.28,
+    "fruit_set": {
+      "C": 0.535,
+      "P": 0.35,
+      "PS": 0.216
+    },
+    "PS_vs_P_seeds_per_fruit_reduction": 0.35,
+    "PS_vs_C_seeds_per_fruit_reduction": 0.37,
+    "PS_vs_P_total_seed_reduction": 0.49,
+    "PS_vs_C_total_seed_reduction": 0.65,
+    "visit_rate": {
+      "C": 0.076,
+      "P": 0.05,
+      "PS": 0.048
+    },
+    "visit_rate_p": 0.44
+  },
+  "note": "Original Results sentence uses S instead of C for 53.5%, while design and figure specify C, P, PS; mapping to C provisional pending workbook. Visit study separate 30 plants; pollen sample up to three stigmas weekly, 6 weeks, at most 10 per plant; fruit denominator mature+aborted fruits; conditional seed count undamaged seeds/mature fruits. Ratios from rounded prose, not exact published figure means.",
+  "contrasts": [
+    {
+      "contrast": "P/C",
+      "rr": {
+        "pollen": 0.935064935064935,
+        "fruit": 0.6542056074766355,
+        "seed_per_fruit": 0.9692307692307692,
+        "seeds": 0.6862745098039215
+      },
+      "lnRR": {
+        "pollen": -0.06713930283762856,
+        "fruit": -0.42433359241254726,
+        "seed_per_fruit": -0.031252543504104426,
+        "seeds": -0.37647757123491227
+      },
+      "delta_fruit_pollen": -0.3571942895749186,
+      "delta_total_seed_pollen": -0.3093382683972837
+    },
+    {
+      "contrast": "PS/P",
+      "rr": {
+        "pollen": 0.77,
+        "fruit": 0.6171428571428572,
+        "seed_per_fruit": 0.65,
+        "seeds": 0.51
+      },
+      "lnRR": {
+        "pollen": -0.2613647641344075,
+        "fruit": -0.48265474679929427,
+        "seed_per_fruit": -0.4307829160924542,
+        "seeds": -0.6733445532637656
+      },
+      "delta_fruit_pollen": -0.22128998266488673,
+      "delta_total_seed_pollen": -0.41197978912935806
+    },
+    {
+      "contrast": "PS/C",
+      "rr": {
+        "pollen": 0.72,
+        "fruit": 0.4037383177570093,
+        "seed_per_fruit": 0.63,
+        "seeds": 0.35
+      },
+      "lnRR": {
+        "pollen": -0.3285040669720361,
+        "fruit": -0.9069883392118416,
+        "seed_per_fruit": -0.4620354595965587,
+        "seeds": -1.0498221244986778
+      },
+      "delta_fruit_pollen": -0.5784842722398056,
+      "delta_total_seed_pollen": -0.7213180575266417
+    }
+  ],
+  "independent_research_programmes": 1,
+  "raw_original_acquired": false,
+  "causal_stage_amplification_verified": false
+}

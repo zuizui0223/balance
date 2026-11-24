@@ -1,0 +1,26 @@
+name: Richman primary-secondary robbing original source
+on:
+  push:
+    branches: [analysis/richman-paired-stage-source-20261124]
+    paths:
+      - scripts/recover_richman_2017_source.py
+      - .github/workflows/richman-2017-source.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'openpyxl==3.1.5'
+      - run: python scripts/recover_richman_2017_source.py --out artifacts/richman_source
+      - uses: actions/upload-artifact@v4
+        with:
+          name: richman-2017-source
+          path: artifacts/richman_source/
+          if-no-files-found: error
