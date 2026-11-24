@@ -1,0 +1,2371 @@
+{
+  "provenance": {
+    "run_id": 45384106598,
+    "job_id": 138410428034,
+    "head": "1e7a492db40a866fb1a51df32cfca562ddc47005",
+    "artifact_id": 14913999705,
+    "artifact_digest": "sha256:4720db99e1806c87ec0746ef4f3d299ae0dc1763ffc4db3e3b2197f6d7b924b3",
+    "scope": "Exact compact job log JSON; full selected IDs and joint covariance in artifact."
+  },
+  "source_sha256": "c3b8dd209039ab1beca1a098e60906eb4be1fc3b9b57dff9daff66a72fec8a84",
+  "source_md5": "7bd93c8f75bfff9861263d304eaba799",
+  "scope": "Same treatment and plant keys; different flowers, haphazard allocation, no secondary-only treatment, complete-case and missingness sensitivity; descriptive plant-level resampling, not causal mediation or original model replay.",
+  "treatments": {
+    "C": "control",
+    "P": "primary",
+    "S": "primary+secondary"
+  },
+  "metadata": [
+    [
+      "Metadata - Facilitated exploitation of pollination mutualisms: Fitness consequences for plants",
+      null
+    ],
+    [
+      null,
+      null
+    ],
+    [
+      "Authors:",
+      null
+    ],
+    [
+      "Richman, Sarah K.",
+      null
+    ],
+    [
+      "Irwin, Rebecca E.",
+      null
+    ],
+    [
+      "Nelson, Cherie J.",
+      null
+    ],
+    [
+      "Bronstein, Judith L.",
+      null
+    ],
+    [
+      null,
+      null
+    ],
+    [
+      "Precise Study Locations",
+      null
+    ],
+    [
+      "Pollen receipt, Fruit and Seed Success:",
+      "38.989235, -107.007481"
+    ],
+    [
+      "Hummingbird Visitation:",
+      "38.958773, -106.987747"
+    ],
+    [
+      null,
+      null
+    ],
+    [
+      "Variable Descriptions",
+      null
+    ],
+    [
+      null,
+      null
+    ],
+    [
+      "Variable",
+      "Description"
+    ],
+    [
+      "Pollen Receipt",
+      null
+    ],
+    [
+      "date",
+      "Date data were collected"
+    ],
+    [
+      "week",
+      "Week data were collected, first day is start of week 1"
+    ],
+    [
+      "treatment",
+      "Treatment assigned. C - Control, P - Primary Robbing Only, S - Primary and Secondary Robbing"
+    ],
+    [
+      "plant",
+      "Plant number within treatment, 40 plants/treatment"
+    ],
+    [
+      "plant_id",
+      "Overall plant ID, 1-120"
+    ],
+    [
+      "grains",
+      "Number of pollen grains. Each entry = one stigma"
+    ],
+    [
+      "open.flow",
+      "Mean number of flowers open on plant the week before stigma collection"
+    ],
+    [
+      null,
+      null
+    ],
+    [
+      "Fruit and Seed Success",
+      null
+    ],
+    [
+      "treatment",
+      "Treatment assigned. C - Control, P - Primary Robbing Only, S - Primary and Secondary Robbing"
+    ],
+    [
+      "plant",
+      "Plant number within treatment, 40 plants/treatment"
+    ],
+    [
+      "successful_fruits",
+      "Number of successful fruits collected"
+    ],
+    [
+      "DF",
+      "Number of developing fruits on plant at end of sample collection"
+    ],
+    [
+      "total_successful",
+      "successful_fruits + DF"
+    ],
+    [
+      "aborts",
+      "Number of aborted fruits on plant"
+    ],
+    [
+      "deh, drop, hyl",
+      "Combined number of dehisced fruit, fruit dropped during sample collection, fruit destroyed by Hylemia spp. flies."
+    ],
+    [
+      "total_fruit",
+      "total_successful + deh, drop, hyl"
+    ],
+    [
+      "prop_fruit_set",
+      "total_fruit/total_fruit+aborts"
+    ],
+    [
+      "total_seeds_plant",
+      "Total number of seeds produced across all fruits"
+    ],
+    [
+      "seeds_fruit_plant",
+      "total_seeds_plant/total_successful"
+    ],
+    [
+      "browse",
+      "Whether plant had been browed by deer during sample collection. 0 - no, 1 - yes"
+    ],
+    [
+      "height",
+      "Height of plant in cm"
+    ],
+    [
+      null,
+      null
+    ],
+    [
+      "Hummingbird Visitation",
+      null
+    ],
+    [
+      "plant",
+      "Plant number within treatment, 10 plants/treatment"
+    ],
+    [
+      "treatment",
+      "Treatment assigned. C - Control, P - Primary Robbing Only, S - Primary and Secondary Robbing"
+    ],
+    [
+      "num_visits_day",
+      "Total # times a plant was visited/Total # days that plant was observed"
+    ],
+    [
+      "ave_flow_op",
+      "Average number of flowers open on the plant over the whole observation period, calculated as Total # flowers open over all days/Number of days of observation"
+    ],
+    [
+      "ave_flow_prob",
+      "Proportion of flowers/plant probed on all days/Number of observation days"
+    ],
+    [
+      "height",
+      "Height of plant in cm"
+    ]
+  ],
+  "linkage_audit": {
+    "source_pollen_rows": 435,
+    "unique_treatment_plant_keys": 104,
+    "unique_global_ids": 103,
+    "ambiguous_treatment_plant_keys": [
+      {
+        "treatment": "P",
+        "plant": 3,
+        "global_ids": [
+          40
+        ]
+      },
+      {
+        "treatment": "P",
+        "plant": 4,
+        "global_ids": [
+          40
+        ]
+      }
+    ],
+    "ambiguous_global_ids": [
+      {
+        "global_id": 40,
+        "keys": [
+          [
+            "P",
+            3
+          ],
+          [
+            "P",
+            4
+          ]
+        ]
+      }
+    ],
+    "quarantined_stigma_rows": [
+      {
+        "xlsx_row": 161,
+        "treatment": "P",
+        "plant": 3,
+        "global_id": 40
+      },
+      {
+        "xlsx_row": 162,
+        "treatment": "P",
+        "plant": 3,
+        "global_id": 40
+      },
+      {
+        "xlsx_row": 163,
+        "treatment": "P",
+        "plant": 4,
+        "global_id": 40
+      },
+      {
+        "xlsx_row": 164,
+        "treatment": "P",
+        "plant": 4,
+        "global_id": 40
+      }
+    ],
+    "n_quarantined_stigma_rows": 4,
+    "no_id_correction_assumed": true
+  },
+  "audit": {
+    "source_recorded_fruit_fraction_vs": {
+      "success_over_total_fruit": {
+        "eligible": 119,
+        "matches": 119,
+        "max_abs_error": 4.912280582303197e-10
+      },
+      "total_fruit_over_fruit_plus_aborts": {
+        "eligible": 119,
+        "matches": 2,
+        "max_abs_error": 1
+      },
+      "success_over_fruit_plus_aborts": {
+        "eligible": 119,
+        "matches": 93,
+        "max_abs_error": 0.042207398835051535
+      },
+      "success_over_success_plus_aborts": {
+        "eligible": 116,
+        "matches": 3,
+        "max_abs_error": 0.975609756
+      },
+      "collected_success_over_fruit": {
+        "eligible": 119,
+        "matches": 53,
+        "max_abs_error": 0.5
+      }
+    },
+    "component_identities": {
+      "total_successful": {
+        "eligible": 120,
+        "matches": 120,
+        "max_abs_error": 0
+      },
+      "total_fruit": {
+        "eligible": 120,
+        "matches": 93,
+        "max_abs_error": 12
+      }
+    },
+    "groups": {
+      "C": {
+        "allocated": 40,
+        "stigmas": 156,
+        "observed_grains": 156,
+        "pollen_plants": 37,
+        "positive_pollen_plants": 37,
+        "pollen_mean": {
+          "n": 37,
+          "mean": 69.2049764049764,
+          "zero": 0
+        },
+        "pollen_equal_week": {
+          "n": 37,
+          "mean": 68.84076576576577,
+          "zero": 0
+        },
+        "pollen_incidence": {
+          "n": 37,
+          "mean": 0.996138996138996,
+          "zero": 0
+        },
+        "pollen_positive_mean": {
+          "n": 37,
+          "mean": 69.48168168168168,
+          "zero": 0
+        },
+        "prop_fruit_set": {
+          "n": 40,
+          "mean": 0.535085900725,
+          "zero": 1
+        },
+        "total_seeds_plant": {
+          "n": 40,
+          "mean": 60.175,
+          "zero": 1
+        },
+        "seeds_fruit_plant": {
+          "n": 40,
+          "mean": 2.24696347945,
+          "zero": 1
+        },
+        "browse": {
+          "n": 40,
+          "mean": 0.275,
+          "zero": 29
+        },
+        "success_over_total_fruit": {
+          "n": 40,
+          "mean": 0.5350859007147551,
+          "zero": 1
+        },
+        "total_fruit_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.9952592383107088,
+          "zero": 0
+        },
+        "success_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.5328840500250985,
+          "zero": 1
+        },
+        "success_over_success_plus_aborts": {
+          "n": 39,
+          "mean": 0.9887659632700824,
+          "zero": 0
+        },
+        "collected_success_over_fruit": {
+          "n": 40,
+          "mean": 0.48617324904746484,
+          "zero": 1
+        }
+      },
+      "P": {
+        "allocated": 40,
+        "stigmas": 136,
+        "observed_grains": 136,
+        "pollen_plants": 33,
+        "positive_pollen_plants": 33,
+        "pollen_mean": {
+          "n": 33,
+          "mean": 72.22604617604617,
+          "zero": 0
+        },
+        "pollen_equal_week": {
+          "n": 33,
+          "mean": 69.76170033670034,
+          "zero": 0
+        },
+        "pollen_incidence": {
+          "n": 33,
+          "mean": 0.9896103896103896,
+          "zero": 0
+        },
+        "pollen_positive_mean": {
+          "n": 33,
+          "mean": 72.8786075036075,
+          "zero": 0
+        },
+        "prop_fruit_set": {
+          "n": 40,
+          "mean": 0.35002675125,
+          "zero": 0
+        },
+        "total_seeds_plant": {
+          "n": 40,
+          "mean": 40.25,
+          "zero": 5
+        },
+        "seeds_fruit_plant": {
+          "n": 40,
+          "mean": 2.1587992295499996,
+          "zero": 5
+        },
+        "browse": {
+          "n": 40,
+          "mean": 0.2,
+          "zero": 32
+        },
+        "success_over_total_fruit": {
+          "n": 40,
+          "mean": 0.3500267512777639,
+          "zero": 0
+        },
+        "total_fruit_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.9957604323780794,
+          "zero": 0
+        },
+        "success_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.34742752759660744,
+          "zero": 0
+        },
+        "success_over_success_plus_aborts": {
+          "n": 40,
+          "mean": 0.9931612737112563,
+          "zero": 0
+        },
+        "collected_success_over_fruit": {
+          "n": 40,
+          "mean": 0.25821338141520145,
+          "zero": 3
+        }
+      },
+      "S": {
+        "allocated": 40,
+        "stigmas": 139,
+        "observed_grains": 139,
+        "pollen_plants": 32,
+        "positive_pollen_plants": 32,
+        "pollen_mean": {
+          "n": 32,
+          "mean": 54.04555713383838,
+          "zero": 0
+        },
+        "pollen_equal_week": {
+          "n": 32,
+          "mean": 54.628125,
+          "zero": 0
+        },
+        "pollen_incidence": {
+          "n": 32,
+          "mean": 0.9887152777777778,
+          "zero": 0
+        },
+        "pollen_positive_mean": {
+          "n": 32,
+          "mean": 54.82116477272727,
+          "zero": 0
+        },
+        "prop_fruit_set": {
+          "n": 40,
+          "mean": 0.216041871425,
+          "zero": 4
+        },
+        "total_seeds_plant": {
+          "n": 40,
+          "mean": 20.65,
+          "zero": 9
+        },
+        "seeds_fruit_plant": {
+          "n": 40,
+          "mean": 1.412547239725,
+          "zero": 9
+        },
+        "browse": {
+          "n": 40,
+          "mean": 0.25,
+          "zero": 30
+        },
+        "success_over_total_fruit": {
+          "n": 39,
+          "mean": 0.22158140649423905,
+          "zero": 3
+        },
+        "total_fruit_over_fruit_plus_aborts": {
+          "n": 39,
+          "mean": 0.9723755636818086,
+          "zero": 0
+        },
+        "success_over_fruit_plus_aborts": {
+          "n": 39,
+          "mean": 0.21687182627648682,
+          "zero": 3
+        },
+        "success_over_success_plus_aborts": {
+          "n": 37,
+          "mean": 0.8945013839203223,
+          "zero": 1
+        },
+        "collected_success_over_fruit": {
+          "n": 39,
+          "mean": 0.18141087807011688,
+          "zero": 5
+        }
+      }
+    }
+  },
+  "within_key_only_audit": {
+    "source_recorded_fruit_fraction_vs": {
+      "success_over_total_fruit": {
+        "eligible": 119,
+        "matches": 119,
+        "max_abs_error": 4.912280582303197e-10
+      },
+      "total_fruit_over_fruit_plus_aborts": {
+        "eligible": 119,
+        "matches": 2,
+        "max_abs_error": 1
+      },
+      "success_over_fruit_plus_aborts": {
+        "eligible": 119,
+        "matches": 93,
+        "max_abs_error": 0.042207398835051535
+      },
+      "success_over_success_plus_aborts": {
+        "eligible": 116,
+        "matches": 3,
+        "max_abs_error": 0.975609756
+      },
+      "collected_success_over_fruit": {
+        "eligible": 119,
+        "matches": 53,
+        "max_abs_error": 0.5
+      }
+    },
+    "component_identities": {
+      "total_successful": {
+        "eligible": 120,
+        "matches": 120,
+        "max_abs_error": 0
+      },
+      "total_fruit": {
+        "eligible": 120,
+        "matches": 93,
+        "max_abs_error": 12
+      }
+    },
+    "groups": {
+      "C": {
+        "allocated": 40,
+        "stigmas": 156,
+        "observed_grains": 156,
+        "pollen_plants": 37,
+        "positive_pollen_plants": 37,
+        "pollen_mean": {
+          "n": 37,
+          "mean": 69.2049764049764,
+          "zero": 0
+        },
+        "pollen_equal_week": {
+          "n": 37,
+          "mean": 68.84076576576577,
+          "zero": 0
+        },
+        "pollen_incidence": {
+          "n": 37,
+          "mean": 0.996138996138996,
+          "zero": 0
+        },
+        "pollen_positive_mean": {
+          "n": 37,
+          "mean": 69.48168168168168,
+          "zero": 0
+        },
+        "prop_fruit_set": {
+          "n": 40,
+          "mean": 0.535085900725,
+          "zero": 1
+        },
+        "total_seeds_plant": {
+          "n": 40,
+          "mean": 60.175,
+          "zero": 1
+        },
+        "seeds_fruit_plant": {
+          "n": 40,
+          "mean": 2.24696347945,
+          "zero": 1
+        },
+        "browse": {
+          "n": 40,
+          "mean": 0.275,
+          "zero": 29
+        },
+        "success_over_total_fruit": {
+          "n": 40,
+          "mean": 0.5350859007147551,
+          "zero": 1
+        },
+        "total_fruit_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.9952592383107088,
+          "zero": 0
+        },
+        "success_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.5328840500250985,
+          "zero": 1
+        },
+        "success_over_success_plus_aborts": {
+          "n": 39,
+          "mean": 0.9887659632700824,
+          "zero": 0
+        },
+        "collected_success_over_fruit": {
+          "n": 40,
+          "mean": 0.48617324904746484,
+          "zero": 1
+        }
+      },
+      "P": {
+        "allocated": 40,
+        "stigmas": 140,
+        "observed_grains": 140,
+        "pollen_plants": 35,
+        "positive_pollen_plants": 34,
+        "pollen_mean": {
+          "n": 35,
+          "mean": 70.22741496598638,
+          "zero": 1
+        },
+        "pollen_equal_week": {
+          "n": 35,
+          "mean": 67.9038888888889,
+          "zero": 1
+        },
+        "pollen_incidence": {
+          "n": 35,
+          "mean": 0.9616326530612245,
+          "zero": 1
+        },
+        "pollen_positive_mean": {
+          "n": 34,
+          "mean": 72.92629551820727,
+          "zero": 0
+        },
+        "prop_fruit_set": {
+          "n": 40,
+          "mean": 0.35002675125,
+          "zero": 0
+        },
+        "total_seeds_plant": {
+          "n": 40,
+          "mean": 40.25,
+          "zero": 5
+        },
+        "seeds_fruit_plant": {
+          "n": 40,
+          "mean": 2.1587992295499996,
+          "zero": 5
+        },
+        "browse": {
+          "n": 40,
+          "mean": 0.2,
+          "zero": 32
+        },
+        "success_over_total_fruit": {
+          "n": 40,
+          "mean": 0.3500267512777639,
+          "zero": 0
+        },
+        "total_fruit_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.9957604323780794,
+          "zero": 0
+        },
+        "success_over_fruit_plus_aborts": {
+          "n": 40,
+          "mean": 0.34742752759660744,
+          "zero": 0
+        },
+        "success_over_success_plus_aborts": {
+          "n": 40,
+          "mean": 0.9931612737112563,
+          "zero": 0
+        },
+        "collected_success_over_fruit": {
+          "n": 40,
+          "mean": 0.25821338141520145,
+          "zero": 3
+        }
+      },
+      "S": {
+        "allocated": 40,
+        "stigmas": 139,
+        "observed_grains": 139,
+        "pollen_plants": 32,
+        "positive_pollen_plants": 32,
+        "pollen_mean": {
+          "n": 32,
+          "mean": 54.04555713383838,
+          "zero": 0
+        },
+        "pollen_equal_week": {
+          "n": 32,
+          "mean": 54.628125,
+          "zero": 0
+        },
+        "pollen_incidence": {
+          "n": 32,
+          "mean": 0.9887152777777778,
+          "zero": 0
+        },
+        "pollen_positive_mean": {
+          "n": 32,
+          "mean": 54.82116477272727,
+          "zero": 0
+        },
+        "prop_fruit_set": {
+          "n": 40,
+          "mean": 0.216041871425,
+          "zero": 4
+        },
+        "total_seeds_plant": {
+          "n": 40,
+          "mean": 20.65,
+          "zero": 9
+        },
+        "seeds_fruit_plant": {
+          "n": 40,
+          "mean": 1.412547239725,
+          "zero": 9
+        },
+        "browse": {
+          "n": 40,
+          "mean": 0.25,
+          "zero": 30
+        },
+        "success_over_total_fruit": {
+          "n": 39,
+          "mean": 0.22158140649423905,
+          "zero": 3
+        },
+        "total_fruit_over_fruit_plus_aborts": {
+          "n": 39,
+          "mean": 0.9723755636818086,
+          "zero": 0
+        },
+        "success_over_fruit_plus_aborts": {
+          "n": 39,
+          "mean": 0.21687182627648682,
+          "zero": 3
+        },
+        "success_over_success_plus_aborts": {
+          "n": 37,
+          "mean": 0.8945013839203223,
+          "zero": 1
+        },
+        "collected_success_over_fruit": {
+          "n": 39,
+          "mean": 0.18141087807011688,
+          "zero": 5
+        }
+      }
+    }
+  },
+  "variants": {
+    "primary_pollen_fruit": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "prop_fruit_set"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 32
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 69.2049764049764,
+          "prop_fruit_set": 0.5238846377297296
+        },
+        "P": {
+          "pollen_mean": 72.22604617604617,
+          "prop_fruit_set": 0.3702273649090909
+        },
+        "S": {
+          "pollen_mean": 54.045557133838386,
+          "prop_fruit_set": 0.23411062578125
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.04272795780007181,
+              "ci95": [
+                -0.14635203657388382,
+                0.22745346937821656
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.3471541864136912,
+              "ci95": [
+                -0.5807127751821868,
+                -0.13507612667790164
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.38988214421376305,
+              "ci95": [
+                -0.6380976614718951,
+                -0.14281213386711095
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00912037199570889,
+              0.0029596933306936662
+            ],
+            [
+              0.0029596933306936662,
+              0.012873025469783578
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.28997338968701486,
+              "ci95": [
+                -0.5105764317713947,
+                -0.07743025052478006
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.45832355327395596,
+              "ci95": [
+                -0.7975484824831103,
+                -0.12289774363098772
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.1683501635869411,
+              "ci95": [
+                -0.576904494430127,
+                0.24948556757474996
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.012237766327060603,
+              -0.0009452347436816577
+            ],
+            [
+              -0.0009452347436816577,
+              0.0298437175210632
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.24724543188694298,
+              "ci95": [
+                -0.4647121883177713,
+                -0.04595417708631019
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.8054777396876472,
+              "ci95": [
+                -1.134789587679306,
+                -0.5091038299448197
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.5582323078007043,
+              "ci95": [
+                -0.9287098515288186,
+                -0.18509943245288094
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011259735519496352,
+              0.00016072987548631699
+            ],
+            [
+              0.00016072987548631699,
+              0.025228116163750626
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "matched_pollen_fruit_total_seeds": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "prop_fruit_set",
+        "total_seeds_plant"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 32
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 69.2049764049764,
+          "prop_fruit_set": 0.5238846377297296,
+          "total_seeds_plant": 62.78378378378378
+        },
+        "P": {
+          "pollen_mean": 72.22604617604617,
+          "prop_fruit_set": 0.3702273649090909,
+          "total_seeds_plant": 47.63636363636363
+        },
+        "S": {
+          "pollen_mean": 54.045557133838386,
+          "prop_fruit_set": 0.23411062578125,
+          "total_seeds_plant": 23.84375
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.04272795780007181,
+              "ci95": [
+                -0.14635203657388382,
+                0.22745346937821656
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.3471541864136912,
+              "ci95": [
+                -0.5807127751821868,
+                -0.13507612667790164
+              ],
+              "valid_draws": 20000
+            },
+            "total_seeds_plant": {
+              "estimate": -0.2761004086035131,
+              "ci95": [
+                -0.7153303749239388,
+                0.12372815725830845
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.38988214421376305,
+              "ci95": [
+                -0.6380976614718951,
+                -0.14281213386711095
+              ],
+              "valid_draws": 20000
+            },
+            "total_seeds_plant": {
+              "estimate": -0.3188283664035849,
+              "ci95": [
+                -0.7539553140020294,
+                0.08880925556275242
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00912037199570889,
+              0.0029596933306936662,
+              0.00453012374684472
+            ],
+            [
+              0.0029596933306936662,
+              0.012873025469783578,
+              0.017235609294346796
+            ],
+            [
+              0.00453012374684472,
+              0.017235609294346796,
+              0.04544520235043138
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.28997338968701486,
+              "ci95": [
+                -0.5105764317713947,
+                -0.07743025052478006
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.45832355327395596,
+              "ci95": [
+                -0.7975484824831103,
+                -0.12289774363098772
+              ],
+              "valid_draws": 20000
+            },
+            "total_seeds_plant": {
+              "estimate": -0.692074283037941,
+              "ci95": [
+                -1.296453098394533,
+                -0.15740121471609156
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.1683501635869411,
+              "ci95": [
+                -0.576904494430127,
+                0.24948556757474996
+              ],
+              "valid_draws": 20000
+            },
+            "total_seeds_plant": {
+              "estimate": -0.4021008933509262,
+              "ci95": [
+                -1.0096360847165893,
+                0.13001750847903298
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.012237766327060603,
+              -0.0009452347436816577,
+              0.005782394672149818
+            ],
+            [
+              -0.0009452347436816577,
+              0.0298437175210632,
+              0.026440287795999388
+            ],
+            [
+              0.005782394672149818,
+              0.026440287795999388,
+              0.08351115162207808
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.24724543188694298,
+              "ci95": [
+                -0.4647121883177713,
+                -0.04595417708631019
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.8054777396876472,
+              "ci95": [
+                -1.134789587679306,
+                -0.5091038299448197
+              ],
+              "valid_draws": 20000
+            },
+            "total_seeds_plant": {
+              "estimate": -0.9681746916414542,
+              "ci95": [
+                -1.5475038495973088,
+                -0.4814645594936432
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.5582323078007043,
+              "ci95": [
+                -0.9287098515288186,
+                -0.18509943245288094
+              ],
+              "valid_draws": 20000
+            },
+            "total_seeds_plant": {
+              "estimate": -0.7209292597545112,
+              "ci95": [
+                -1.2860663652739972,
+                -0.2659519431238911
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011259735519496352,
+              0.00016072987548631699,
+              0.00923087669547277
+            ],
+            [
+              0.00016072987548631699,
+              0.025228116163750626,
+              0.02115659028234375
+            ],
+            [
+              0.00923087669547277,
+              0.02115659028234375,
+              0.07363958512329162
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "equal_week_pollen_fruit": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_equal_week",
+        "prop_fruit_set"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 32
+      },
+      "means": {
+        "C": {
+          "pollen_equal_week": 68.84076576576577,
+          "prop_fruit_set": 0.5238846377297296
+        },
+        "P": {
+          "pollen_equal_week": 69.76170033670034,
+          "prop_fruit_set": 0.3702273649090909
+        },
+        "S": {
+          "pollen_equal_week": 54.62812499999999,
+          "prop_fruit_set": 0.23411062578125
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_equal_week": {
+              "estimate": 0.01328905826581109,
+              "ci95": [
+                -0.16886555695887545,
+                0.19469353983256307
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.3471541864136912,
+              "ci95": [
+                -0.5807127751821868,
+                -0.13507612667790164
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.36044324467950234,
+              "ci95": [
+                -0.6041483055756216,
+                -0.11863362822303597
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.008595117835032027,
+              0.0031044833388678052
+            ],
+            [
+              0.0031044833388678052,
+              0.012873025469783578
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_equal_week": {
+              "estimate": -0.24453629337887745,
+              "ci95": [
+                -0.465353512598927,
+                -0.03485536426697224
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.45832355327395596,
+              "ci95": [
+                -0.7975484824831103,
+                -0.12289774363098772
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.21378725989507852,
+              "ci95": [
+                -0.6170443821146312,
+                0.1987442435855058
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011999171495681946,
+              -0.0008093832276576735
+            ],
+            [
+              -0.0008093832276576735,
+              0.0298437175210632
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_equal_week": {
+              "estimate": -0.23124723511306644,
+              "ci95": [
+                -0.4521163956087315,
+                -0.028636166834600286
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.8054777396876472,
+              "ci95": [
+                -1.134789587679306,
+                -0.5091038299448197
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.5742305045745808,
+              "ci95": [
+                -0.9418830679580147,
+                -0.20080856213711024
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011635413313524653,
+              0.0003605557452504984
+            ],
+            [
+              0.0003605557452504984,
+              0.025228116163750626
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "alternative_metadata_fraction": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "total_fruit_over_fruit_plus_aborts"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 31
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 69.2049764049764,
+          "total_fruit_over_fruit_plus_aborts": 0.9948748522277934
+        },
+        "P": {
+          "pollen_mean": 72.22604617604617,
+          "total_fruit_over_fruit_plus_aborts": 0.9948611301552478
+        },
+        "S": {
+          "pollen_mean": 55.07928478331704,
+          "total_fruit_over_fruit_plus_aborts": 0.9677509213721903
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.04272795780007181,
+              "ci95": [
+                -0.14635203657388382,
+                0.22745346937821656
+              ],
+              "valid_draws": 20000
+            },
+            "total_fruit_over_fruit_plus_aborts": {
+              "estimate": -0.000013792857612605575,
+              "ci95": [
+                -0.0066058413328113595,
+                0.006171718140404949
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "total_fruit_over_fruit_plus_aborts": {
+              "estimate": -0.042741750657684416,
+              "ci95": [
+                -0.2275645176126616,
+                0.1460448665123227
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00912037199570889,
+              -0.00001198742732140221
+            ],
+            [
+              -0.00001198742732140221,
+              0.000010472974929553741
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.2710270424809583,
+              "ci95": [
+                -0.49157507603582623,
+                -0.05828524700230233
+              ],
+              "valid_draws": 20000
+            },
+            "total_fruit_over_fruit_plus_aborts": {
+              "estimate": -0.02762841820098242,
+              "ci95": [
+                -0.05346505812943193,
+                -0.007722855367295977
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "total_fruit_over_fruit_plus_aborts": {
+              "estimate": 0.2433986242799759,
+              "ci95": [
+                0.022970960248238467,
+                0.4720894104691288
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.01211169312831631,
+              -0.000417860163482732
+            ],
+            [
+              -0.000417860163482732,
+              0.00013915443642446203
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.22829908468088647,
+              "ci95": [
+                -0.4414498766968222,
+                -0.028120229494610113
+              ],
+              "valid_draws": 20000
+            },
+            "total_fruit_over_fruit_plus_aborts": {
+              "estimate": -0.027642211058594924,
+              "ci95": [
+                -0.05368441383498596,
+                -0.00793675395472487
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "total_fruit_over_fruit_plus_aborts": {
+              "estimate": 0.20065687362229154,
+              "ci95": [
+                -0.005911105344298554,
+                0.4216191297890312
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011001180325964961,
+              -0.0003546405274380392
+            ],
+            [
+              -0.0003546405274380392,
+              0.0001372193652194887
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "alternative_success_all_recorded": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "success_over_fruit_plus_aborts"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 31
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 69.2049764049764,
+          "success_over_fruit_plus_aborts": 0.5215042585812542
+        },
+        "P": {
+          "pollen_mean": 72.22604617604617,
+          "success_over_fruit_plus_aborts": 0.3670767907927078
+        },
+        "S": {
+          "pollen_mean": 55.07928478331704,
+          "success_over_fruit_plus_aborts": 0.2360710169354441
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.04272795780007181,
+              "ci95": [
+                -0.14635203657388382,
+                0.22745346937821656
+              ],
+              "valid_draws": 20000
+            },
+            "success_over_fruit_plus_aborts": {
+              "estimate": -0.3511463750466975,
+              "ci95": [
+                -0.5834566395121503,
+                -0.13995945308339908
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "success_over_fruit_plus_aborts": {
+              "estimate": -0.3938743328467693,
+              "ci95": [
+                -0.6409600350868627,
+                -0.14645657501053233
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00912037199570889,
+              0.002924936742271811
+            ],
+            [
+              0.002924936742271811,
+              0.012712014395980858
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.2710270424809583,
+              "ci95": [
+                -0.49157507603582623,
+                -0.05828524700230233
+              ],
+              "valid_draws": 20000
+            },
+            "success_over_fruit_plus_aborts": {
+              "estimate": -0.44143838640779914,
+              "ci95": [
+                -0.7828705192914839,
+                -0.11606752749101139
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "success_over_fruit_plus_aborts": {
+              "estimate": -0.17041134392684082,
+              "ci95": [
+                -0.5859472139323425,
+                0.24442477517173564
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.01211169312831631,
+              -0.0016442604209209936
+            ],
+            [
+              -0.0016442604209209936,
+              0.029122417637297917
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.22829908468088647,
+              "ci95": [
+                -0.4414498766968222,
+                -0.028120229494610113
+              ],
+              "valid_draws": 20000
+            },
+            "success_over_fruit_plus_aborts": {
+              "estimate": -0.7925847614544966,
+              "ci95": [
+                -1.110007660712665,
+                -0.4990334759813034
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "success_over_fruit_plus_aborts": {
+              "estimate": -0.5642856767736102,
+              "ci95": [
+                -0.9353631417241179,
+                -0.18432152809520247
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011001180325964961,
+              -0.0007513442470123349
+            ],
+            [
+              -0.0007513442470123349,
+              0.02438111339957331
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "alternative_success_plus_aborts": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "success_over_success_plus_aborts"
+      ],
+      "n": {
+        "C": 36,
+        "P": 33,
+        "S": 31
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 69.51622574955908,
+          "success_over_success_plus_aborts": 0.9878297935425893
+        },
+        "P": {
+          "pollen_mean": 72.22604617604617,
+          "success_over_success_plus_aborts": 0.9917106348015229
+        },
+        "S": {
+          "pollen_mean": 55.07928478331704,
+          "success_over_success_plus_aborts": 0.8888672431737179
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.03824054186006928,
+              "ci95": [
+                -0.1506245814450786,
+                0.22415230801994587
+              ],
+              "valid_draws": 20000
+            },
+            "success_over_success_plus_aborts": {
+              "estimate": 0.003920956778994776,
+              "ci95": [
+                -0.008847340473009236,
+                0.017977794595261165
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "success_over_success_plus_aborts": {
+              "estimate": -0.03431958508107451,
+              "ci95": [
+                -0.2201049836916303,
+                0.15402536345435416
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.009104657885526862,
+              0.000036222008071481404
+            ],
+            [
+              0.000036222008071481404,
+              0.000046662902959800845
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.2710270424809583,
+              "ci95": [
+                -0.4894208158170298,
+                -0.06209290163055803
+              ],
+              "valid_draws": 20000
+            },
+            "success_over_success_plus_aborts": {
+              "estimate": -0.10948347434403317,
+              "ci95": [
+                -0.2119780296890861,
+                -0.03756340889718944
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "success_over_success_plus_aborts": {
+              "estimate": 0.16154356813692516,
+              "ci95": [
+                -0.09806258785980171,
+                0.4184261831429782
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011977614996482845,
+              -0.0016310289606123614
+            ],
+            [
+              -0.0016310289606123614,
+              0.002012395272584817
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.2327865006208891,
+              "ci95": [
+                -0.44430730555706605,
+                -0.029936539596485835
+              ],
+              "valid_draws": 20000
+            },
+            "success_over_success_plus_aborts": {
+              "estimate": -0.10556251756503826,
+              "ci95": [
+                -0.20850839088184495,
+                -0.03306180300335866
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "success_over_success_plus_aborts": {
+              "estimate": 0.12722398305585084,
+              "ci95": [
+                -0.11806767184619596,
+                0.379169877880451
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011069781951665279,
+              -0.0014923956021790422
+            ],
+            [
+              -0.0014923956021790422,
+              0.0020279449902429933
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "pollen_incidence_fruit": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_incidence",
+        "prop_fruit_set"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 32
+      },
+      "means": {
+        "C": {
+          "pollen_incidence": 0.996138996138996,
+          "prop_fruit_set": 0.5238846377297296
+        },
+        "P": {
+          "pollen_incidence": 0.9896103896103896,
+          "prop_fruit_set": 0.3702273649090909
+        },
+        "S": {
+          "pollen_incidence": 0.9887152777777778,
+          "prop_fruit_set": 0.23411062578125
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_incidence": {
+              "estimate": -0.006575482383162808,
+              "ci95": [
+                -0.024541108916117545,
+                0.007751976804317924
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.3471541864136912,
+              "ci95": [
+                -0.5807127751821868,
+                -0.13507612667790164
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.3405787040305284,
+              "ci95": [
+                -0.577194569832524,
+                -0.12430176782571195
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00006840805081475967,
+              -0.0001435633132651339
+            ],
+            [
+              -0.0001435633132651339,
+              0.012873025469783578
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_incidence": {
+              "estimate": -0.0009049186475711288,
+              "ci95": [
+                -0.02371652661731604,
+                0.020998146839773402
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.45832355327395596,
+              "ci95": [
+                -0.7975484824831103,
+                -0.12289774363098772
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.4574186346263848,
+              "ci95": [
+                -0.800932658560082,
+                -0.1193274823160844
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00012657964929454408,
+              -0.0002444294791053563
+            ],
+            [
+              -0.0002444294791053563,
+              0.0298437175210632
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_incidence": {
+              "estimate": -0.00748040103073398,
+              "ci95": [
+                -0.027278418183676625,
+                0.007751976804317924
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.8054777396876472,
+              "ci95": [
+                -1.134789587679306,
+                -0.5091038299448197
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.7979973386569132,
+              "ci95": [
+                -1.1307968857315005,
+                -0.5009687276326308
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.0000853279942756565,
+              -0.00008467169312277984
+            ],
+            [
+              -0.00008467169312277984,
+              0.025228116163750626
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "positive_stigma_load_fruit": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_positive_mean",
+        "prop_fruit_set"
+      ],
+      "n": {
+        "C": 37,
+        "P": 33,
+        "S": 32
+      },
+      "means": {
+        "C": {
+          "pollen_positive_mean": 69.48168168168168,
+          "prop_fruit_set": 0.5238846377297296
+        },
+        "P": {
+          "pollen_positive_mean": 72.8786075036075,
+          "prop_fruit_set": 0.3702273649090909
+        },
+        "S": {
+          "pollen_positive_mean": 54.82116477272727,
+          "prop_fruit_set": 0.23411062578125
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_positive_mean": {
+              "estimate": 0.04773200116398873,
+              "ci95": [
+                -0.13873527841808833,
+                0.22954491671602414
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.3471541864136912,
+              "ci95": [
+                -0.5807127751821868,
+                -0.13507612667790164
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.39488618757767996,
+              "ci95": [
+                -0.6401838920446884,
+                -0.1514348788810427
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00888406814693662,
+              0.003058607747594954
+            ],
+            [
+              0.003058607747594954,
+              0.012873025469783578
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_positive_mean": {
+              "estimate": -0.28471880819660844,
+              "ci95": [
+                -0.505191158657523,
+                -0.07639336305400313
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.45832355327395596,
+              "ci95": [
+                -0.7975484824831103,
+                -0.12289774363098772
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.17360474507734752,
+              "ci95": [
+                -0.5764960931543756,
+                0.2416455278163757
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011973696403315885,
+              -0.0006874301683688205
+            ],
+            [
+              -0.0006874301683688205,
+              0.0298437175210632
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_positive_mean": {
+              "estimate": -0.23698680703261973,
+              "ci95": [
+                -0.45342546397873484,
+                -0.038310688171227174
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.8054777396876472,
+              "ci95": [
+                -1.134789587679306,
+                -0.5091038299448197
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.5684909326550275,
+              "ci95": [
+                -0.9337250471230333,
+                -0.19686645640215616
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011142562746745367,
+              0.0002839035859699479
+            ],
+            [
+              0.0002839035859699479,
+              0.025228116163750626
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "browse_free_sensitivity": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "prop_fruit_set"
+      ],
+      "n": {
+        "C": 28,
+        "P": 30,
+        "S": 26
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 71.11709183673469,
+          "prop_fruit_set": 0.5343826208214286
+        },
+        "P": {
+          "pollen_mean": 70.18031746031745,
+          "prop_fruit_set": 0.35729211819999995
+        },
+        "S": {
+          "pollen_mean": 52.761198523698525,
+          "prop_fruit_set": 0.2456205004615385
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.013259805774707248,
+              "ci95": [
+                -0.2160385882400049,
+                0.18234234341271774
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.4025583953234738,
+              "ci95": [
+                -0.6546808030571807,
+                -0.17971515326550838
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.38929858954876656,
+              "ci95": [
+                -0.6682035029444597,
+                -0.11969406355866857
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.010427166043164019,
+              0.00301158526600083
+            ],
+            [
+              0.00301158526600083,
+              0.014822531890924091
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.2852918495472772,
+              "ci95": [
+                -0.5235751924662567,
+                -0.050513542494933124
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.37476604172807443,
+              "ci95": [
+                -0.7619863009292903,
+                -0.009167262472805535
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.08947419218079722,
+              "ci95": [
+                -0.5479862406246319,
+                0.36998507110987855
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.014576425417272772,
+              -0.0018195102598760015
+            ],
+            [
+              -0.0018195102598760015,
+              0.036421303491246164
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.29855165532198447,
+              "ci95": [
+                -0.5298870006059364,
+                -0.08349045488340119
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.7773244370515484,
+              "ci95": [
+                -1.1347427056156791,
+                -0.45229472672724164
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.47877278172956395,
+              "ci95": [
+                -0.888287445795166,
+                -0.05767634598579852
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.012741219499183849,
+              -0.0010020651590925622
+            ],
+            [
+              -0.0010020651590925622,
+              0.030384410682734394
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    },
+    "ambiguous_within_key_only_sensitivity": {
+      "status": "DESCRIPTIVE_PAIRED_PLANT_BOOTSTRAP",
+      "fields": [
+        "pollen_mean",
+        "prop_fruit_set"
+      ],
+      "n": {
+        "C": 37,
+        "P": 35,
+        "S": 32
+      },
+      "means": {
+        "C": {
+          "pollen_mean": 69.2049764049764,
+          "prop_fruit_set": 0.5238846377297296
+        },
+        "P": {
+          "pollen_mean": 70.2274149659864,
+          "prop_fruit_set": 0.36775283417142857
+        },
+        "S": {
+          "pollen_mean": 54.045557133838386,
+          "prop_fruit_set": 0.23411062578125
+        }
+      },
+      "effects": {
+        "P/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.014665987972417652,
+              "ci95": [
+                -0.18603676086020593,
+                0.20628477963449451
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.3538604368383639,
+              "ci95": [
+                -0.5797196779469842,
+                -0.14405882321004967
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.3685264248107815,
+              "ci95": [
+                -0.6123144309900772,
+                -0.12249773308953897
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.00979162604561376,
+              0.003317596859123623
+            ],
+            [
+              0.003317596859123623,
+              0.012426204652388667
+            ]
+          ]
+        },
+        "S/P": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.2619114198593607,
+              "ci95": [
+                -0.4864389877789048,
+                -0.04331116585914818
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.4516173028492833,
+              "ci95": [
+                -0.7965361315841583,
+                -0.12086486653462936
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.18970588298992264,
+              "ci95": [
+                -0.5987132067800582,
+                0.21804871085711527
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.01283035434329166,
+              -0.0005151556643321364
+            ],
+            [
+              -0.0005151556643321364,
+              0.030055064836746432
+            ]
+          ]
+        },
+        "S/C": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": -0.24724543188694298,
+              "ci95": [
+                -0.46167085064102475,
+                -0.04792331249822924
+              ],
+              "valid_draws": 20000
+            },
+            "prop_fruit_set": {
+              "estimate": -0.8054777396876472,
+              "ci95": [
+                -1.1295315650737607,
+                -0.5087720932143707
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "downstream_minus_upstream": {
+            "prop_fruit_set": {
+              "estimate": -0.5582323078007043,
+              "ci95": [
+                -0.9247949337732847,
+                -0.18143736138056277
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "bootstrap_covariance_lnRR": [
+            [
+              0.011262596888062916,
+              0.00010451563844805515
+            ],
+            [
+              0.00010451563844805515,
+              0.02525991698671116
+            ]
+          ]
+        }
+      },
+      "joint_valid_draws": 20000,
+      "B": 20000,
+      "seed": 20261124
+    }
+  }
+}
