@@ -22,6 +22,13 @@ def norm(x):
     if x is None or isinstance(x,(str,int,float,bool)):return x
     return str(x)
 def safe(a,b):return a/b if b and a is not None else None
+def add(a,b):return a+b if a is not None and b is not None else None
+def subtract(a,b):return a-b if a is not None and b is not None else None
+def outcome(v):
+    if v is None or isinstance(v,str) and v.strip().lower() in ('na','n/a'):return 0
+    if v==1 or v=='1':return 1
+    if v==0 or v=='0':return 0
+    raise ValueError('unrecognized fruit code '+str(v))
 def extract(path):
     b=path.read_bytes()
     if len(b)!=122150 or hashlib.md5(b).hexdigest()!=MD5 or hashlib.sha256(b).hexdigest()!=SHA:raise ValueError('source mismatch')
@@ -48,8 +55,7 @@ def aggregate(p,f):
         t=str(r['treatment']);plant=ident(r['plant_num']);rac=ident(r['raceme_num']);k=(t,plant,rac)
         if k in fruits:raise ValueError('duplicate fruit raceme '+str(k))
         a={x:num(r[x]) for x in FRUIT if x not in ('treatment','plant_num','raceme_num')}
-        if any(v is None for v in a.values()):raise ValueError('missing fruit count '+str(k))
-        a['fruit_fraction']=safe(a['total_good_fruit'],a['total_good_fruit']+a['total_aborted_fruit'])
+        a['fruit_fraction']=safe(a['total_good_fruit'],add(a['total_good_fruit'],a['total_aborted_fruit']))
         a['fruit_per_recorded_flower']=safe(a['total_good_fruit'],a['flr_count'])
         a['seed_per_recorded_flower']=safe(a['total_good_seed'],a['flr_count'])
         if a['fruit_fraction'] is not None and not 0<=a['fruit_fraction']<=1:raise ValueError('fraction')
@@ -58,32 +64,39 @@ def aggregate(p,f):
         t=str(r['treatment']);plant=ident(r['plant']);rac=ident(r['raceme']);fl=ident(r['flower']);k=(t,plant,rac)
         fk=k+(fl,)
         if fk in flowerkeys:raise ValueError('duplicate flower key '+str(fk))
-        flowerkeys.add(fk);poll[k].append({'flower':fl,'fruit':norm(r['fruit']),'grains':num(r['grains']),'xlsx_row':r['xlsx_row']})
+        flowerkeys.add(fk);poll[k].append({'flower':fl,'fruit':norm(r['fruit']),'fruit_binary':outcome(r['fruit']),'grains':num(r['grains']),'xlsx_row':r['xlsx_row']});arms[t].add(plant)
     keys=set(fruits)&set(poll)
     print('HEILING_LINK_DIAG '+json.dumps({'fruit_racemes':len(fruits),'pollen_racemes':len(poll),'linked_racemes':len(keys),'fruit_only':[list(k) for k in sorted(set(fruits)-set(poll))],'pollen_only':[list(k) for k in sorted(set(poll)-set(fruits))],'fruit_plants_per_label':{t:sorted(v) for t,v in arms.items()},'fruit_status_values':dict(collections.Counter(str(r['fruit']) for rs in poll.values() for r in rs))},ensure_ascii=False))
-    if len(arms)!=3 or any(len(v)!=5 for v in arms.values()) or len(fruits)!=75:raise ValueError('expected 3 arms / 5 plants / 75 racemes; inspect source')
-    if not set(poll)<=set(fruits):raise ValueError('unmatched pollen raceme')
+    if set(arms)!={'control','pr','cr'} or any(len(v)!=5 for v in arms.values()):raise ValueError('expected metadata-confirmed 3 arms / 5 plants; inspect source')
+    if len({p for a in arms.values() for p in a})!=15:raise ValueError('plant key shared across treatments')
+    allkeys=set(poll)|set(fruits)
+    if len(allkeys)>75:raise ValueError('union exceeds allocated 75 racemes')
     details=[];plants=collections.defaultdict(list)
-    for k,a in sorted(fruits.items()):
+    for k in sorted(allkeys):
+        a=fruits.get(k,{x:None for x in ('flr_count','total_good_fruit','total_aborted_fruit','total_good_seed','total_aborted_seed','fruit_fraction','fruit_per_recorded_flower','seed_per_recorded_flower')})
         rs=poll.get(k,[]);g=[x['grains'] for x in rs if x['grains'] is not None]
-        b=dict(a);b['pollen_rows']=len(rs);b['pollen_nonmissing']=len(g)
+        b=dict(a);b['fruit_sheet_present']=k in fruits;b['pollen_rows']=len(rs);b['pollen_nonmissing']=len(g)
+        b['fruit_from_flower_codes']=sum(x['fruit_binary'] for x in rs) if rs else None
+        b['flower_code_success_fraction']=safe(b['fruit_from_flower_codes'],len(rs))
+        b['flower_code_count_matches_fruit_sheet']= (len(rs)==a['flr_count']) if rs and a['flr_count'] is not None else None
+        b['flower_code_success_matches_fruit_sheet']= (b['fruit_from_flower_codes']==a['total_good_fruit']) if rs and a['total_good_fruit'] is not None else None
         b['pollen_mean']=float(np.mean(g)) if g else None
         b['sqrt_raceme_mean']=math.sqrt(b['pollen_mean']) if g else None
         b['pollen_positive_fraction']=float(np.mean([x>0 for x in g])) if g else None
         b['status_value_counts']=dict(collections.Counter(str(x['fruit']) for x in rs))
-        b['count_residual']=a['flr_count']-a['total_good_fruit']-a['total_aborted_fruit']
+        b['count_residual']=subtract(a['flr_count'],add(a['total_good_fruit'],a['total_aborted_fruit']))
         details.append({'treatment':k[0],'plant':k[1],'raceme':k[2],**b})
         plants[k[:2]].append(b)
-    fields=('pollen_mean','sqrt_raceme_mean','pollen_positive_fraction','fruit_fraction','fruit_per_recorded_flower','total_good_seed','seed_per_recorded_flower')
+    fields=('pollen_mean','sqrt_raceme_mean','pollen_positive_fraction','fruit_fraction','fruit_per_recorded_flower','total_good_seed','seed_per_recorded_flower','flower_code_success_fraction')
     plant=[]
     for (t,k),rs in sorted(plants.items()):
-        if len(rs)!=5:raise ValueError('expected 5 racemes per plant')
+        if len(rs)>5:raise ValueError('more than 5 racemes per plant')
         b={'treatment':t,'plant':k,'n_racemes':len(rs),'n_pollen_racemes':sum(r['pollen_mean'] is not None for r in rs)}
         for field in fields:
             vs=[r[field] for r in rs if r[field] is not None]
             b[field]=float(np.mean(vs)) if vs else None
         # Same-raceme complete subset for paired endpoint sensitivity.
-        good=[r for r in rs if r['pollen_mean'] is not None and r['fruit_fraction'] is not None]
+        good=[r for r in rs if all(r[x] is not None for x in ('pollen_mean','fruit_fraction','total_good_seed'))]
         for field in ('pollen_mean','fruit_fraction','total_good_seed'):
             b['matched_raceme_'+field]=float(np.mean([r[field] for r in good])) if good else None
         plant.append(b)
@@ -111,14 +124,18 @@ def main():
     if len(ctrl)!=1:raise ValueError('control label not resolved')
     c=ctrl[0]
     variants={'raw_pollen_fruit_seed':('pollen_mean','fruit_fraction','total_good_seed'),
+        'pollen_sheet_flower_status':('pollen_mean','flower_code_success_fraction'),
         'matched_racemes':('matched_raceme_pollen_mean','matched_raceme_fruit_fraction','matched_raceme_total_good_seed'),
         'recorded_flower_denominator':('pollen_mean','fruit_per_recorded_flower','seed_per_recorded_flower'),
         'sqrt_scale_diagnostic_not_lnRR_comparable':('sqrt_raceme_mean','fruit_fraction','total_good_seed')}
-    out={'sha256':SHA,'n_pollen_rows':len(pollen),'n_fruit_racemes':len(rac),'n_plants':len(plant),'n_extra_nondata_rows':len(extra),'metadata':meta,
+    out={'sha256':SHA,'n_pollen_rows':len(pollen),'n_fruit_racemes':len(fruit),'n_union_racemes':len(rac),'n_plants':len(plant),'n_extra_nondata_rows':len(extra),'metadata':meta,
          'count_closure':dict(collections.Counter(str(x['count_residual']) for x in rac)),
+         'flower_count_identity':dict(collections.Counter(str(x['flower_code_count_matches_fruit_sheet']) for x in rac)),
+         'flower_success_identity':dict(collections.Counter(str(x['flower_code_success_matches_fruit_sheet']) for x in rac)),
+         'missing_fruit_sheet_or_fields':[{'treatment':x['treatment'],'plant':x['plant'],'raceme':x['raceme'],'present':x['fruit_sheet_present'],'missing':[f for f in ('flr_count','total_good_fruit','total_aborted_fruit','total_good_seed','total_aborted_seed') if x[f] is None]} for x in rac if any(x[f] is None for f in ('flr_count','total_good_fruit','total_aborted_fruit','total_good_seed','total_aborted_seed'))],
          'pollen_raceme_count':sum(x['pollen_mean'] is not None for x in rac),'plant_records':plant,
          'raceme_records':rac,'variants':{k:fit(plant,v,c) for k,v in variants.items()},
-         'scope':'Original same treatment/plant/raceme key linkage, distinct stigma and seed recording grain. Five haphazardly assigned plants per treatment, not 75 independent plants. Equal-raceme means then equal-plant means; 20k arm-stratified bootstrap descriptive with n=5, not original mixed-model replay or equivalence. No same-flower seed data, no mechanistic mediation, no new independent archive study.'}
+         'scope':'Original treatment/plant/raceme linkage; flower pollen sheet status code 1=yes, NA=no per metadata; count comparison to fruit sheet explicit, not assume identity. Missing fruit-sheet counts not imputed as zero. No seed counts at individual flower grain. Five haphazardly assigned plants per treatment, not 75 independent plants. Equal-raceme means then equal-plant means; 20k arm-stratified bootstrap descriptive with n=5, not original mixed-model replay or equivalence. No same-flower seed data, no mechanistic mediation, no new independent archive study.'}
     p.out.mkdir(parents=True,exist_ok=False);(p.out/'RESULT.json').write_text(json.dumps(out,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
     print('HEILING_PLANT_RESULT '+json.dumps({k:v for k,v in out.items() if k not in ('raceme_records','metadata')},ensure_ascii=False,allow_nan=False))
 if __name__=='__main__':main()
