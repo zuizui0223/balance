@@ -1,0 +1,502 @@
+{
+  "provenance": {
+    "run": 45719750298,
+    "job": 139574789549,
+    "head": "7d9fa8ca0ca49f84cea516415551f11f635968b7",
+    "artifact_id": 15071931221,
+    "artifact_digest": "sha256:5fca6db7bf500320367556b5d61d85d42c99d033578762efd0c6893c7db00fe0"
+  },
+  "source_doi": "https://doi.org/10.1002/ece3.10714",
+  "dataset_doi": "10.5061/dryad.6hdr7sr62",
+  "archive_sha256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4",
+  "published_points_mean_SE_percent": {
+    "L": {
+      "C": [
+        83.55,
+        4.59,
+        80.11,
+        5.62
+      ],
+      "H": [
+        58.59,
+        1.3,
+        33.5,
+        3.89
+      ],
+      "N": [
+        59.55,
+        1.78,
+        40,
+        4.39
+      ]
+    },
+    "S": {
+      "C": [
+        87.13,
+        4.71,
+        61.21,
+        5.66
+      ],
+      "H": [
+        49.212,
+        4.52,
+        42.9,
+        3.2
+      ],
+      "N": [
+        49.02,
+        3.33,
+        47.25,
+        3.73
+      ]
+    }
+  },
+  "published_natural_visitation_and_seed_mean_SE_percent": {
+    "L": {
+      "C": [
+        75.36,
+        6.42,
+        52.7,
+        3.63
+      ],
+      "R": [
+        64.32,
+        7.22,
+        39.47,
+        3.85
+      ]
+    },
+    "S": {
+      "C": [
+        74.9,
+        6.82,
+        48.5,
+        2.66
+      ],
+      "R": [
+        48.63,
+        9.01,
+        39.77,
+        4.98
+      ]
+    }
+  },
+  "hand_pollination_germination_seed": {
+    "L": {
+      "H": {
+        "upstream_lnRR": -0.35488122148470547,
+        "downstream_lnRR": -0.8718552513960046,
+        "delta": -0.5169740299112991,
+        "upstream_reduction": 0.2987432675044883,
+        "downstream_reduction": 0.5818249906378729,
+        "se_independence": 0.14803931193731545,
+        "se_Cauchy_upper": 0.26339819194854924,
+        "normal95_independence": [
+          -0.8071257496045279,
+          -0.22682231021807037
+        ],
+        "normal95_Cauchy_upper": [
+          -1.0332249997234237,
+          -0.000723060099174555
+        ]
+      },
+      "N": {
+        "upstream_lnRR": -0.33862895924009356,
+        "downstream_lnRR": -0.6945212361130891,
+        "delta": -0.35589227687299557,
+        "upstream_reduction": 0.28725314183123873,
+        "downstream_reduction": 0.5006865559855199,
+        "se_independence": 0.144492685743726,
+        "se_Cauchy_upper": 0.26473155028612705,
+        "normal95_independence": [
+          -0.6390927369601627,
+          -0.07269181678582848
+        ],
+        "normal95_Cauchy_upper": [
+          -0.8747565810052589,
+          0.16297202725926768
+        ]
+      }
+    },
+    "S": {
+      "H": {
+        "upstream_lnRR": -0.5712637600452728,
+        "downstream_lnRR": -0.3554387489290072,
+        "delta": 0.21582501111626562,
+        "upstream_reduction": 0.43518879834729707,
+        "downstream_reduction": 0.29913412841039044,
+        "se_independence": 0.15960123107955498,
+        "se_Cauchy_upper": 0.31296529832208925,
+        "normal95_independence": [
+          -0.0969876536879169,
+          0.5286376759204481
+        ],
+        "normal95_Cauchy_upper": [
+          -0.3975757020058631,
+          0.8292257242383944
+        ]
+      },
+      "N": {
+        "upstream_lnRR": -0.5751728781432289,
+        "downstream_lnRR": -0.25885792092322674,
+        "delta": 0.3163149572200022,
+        "upstream_reduction": 0.43739240215769537,
+        "downstream_reduction": 0.2280673092631923,
+        "se_independence": 0.14939578114757118,
+        "se_Cauchy_upper": 0.29339896235435614,
+        "normal95_independence": [
+          0.02350460672853466,
+          0.6091253077114698
+        ],
+        "normal95_Cauchy_upper": [
+          -0.258736442095959,
+          0.8913663565359633
+        ]
+      }
+    }
+  },
+  "hand_pollination_morph_delta": {
+    "H": {
+      "L_minus_S": -0.7327990410275648,
+      "normal95_independence": [
+        -1.1594602458526952,
+        -0.3061378362024344
+      ],
+      "normal95_within_morph_upper_assume_independent_morphs": [
+        -1.534531851065108,
+        0.06893376900997839
+      ],
+      "normal95_full_Cauchy_upper": [
+        -1.862450723961818,
+        0.39685264190668856
+      ]
+    },
+    "N": {
+      "L_minus_S": -0.6722072340929978,
+      "normal95_independence": [
+        -1.0795650644442985,
+        -0.26484940374169696
+      ],
+      "normal95_within_morph_upper_assume_independent_morphs": [
+        -1.4467421125574236,
+        0.10232764437142805
+      ],
+      "normal95_full_Cauchy_upper": [
+        -1.7661229375412222,
+        0.42170846935522677
+      ]
+    }
+  },
+  "natural_visitation_seed_descriptive": {
+    "L": {
+      "upstream_lnRR": -0.15840600539739677,
+      "downstream_lnRR": -0.289074565872561,
+      "delta": -0.1306685604751642,
+      "upstream_reduction": 0.14649681528662428,
+      "downstream_reduction": 0.25104364326375717,
+      "se_independence": 0.18470762445000816,
+      "se_Cauchy_upper": 0.36386521928575943,
+      "normal95_independence": [
+        -0.4926888520671301,
+        0.2313517311168017
+      ],
+      "normal95_Cauchy_upper": [
+        -0.8438312855020218,
+        0.5824941645516934
+      ]
+    },
+    "S": {
+      "upstream_lnRR": -0.4319132661074793,
+      "downstream_lnRR": -0.19845093872383818,
+      "delta": 0.23346232738364114,
+      "upstream_reduction": 0.3507343124165554,
+      "downstream_reduction": 0.17999999999999994,
+      "se_independence": 0.24760137689709089,
+      "se_Cauchy_upper": 0.45639669380824394,
+      "normal95_independence": [
+        -0.2518274538571848,
+        0.718752108624467
+      ],
+      "normal95_Cauchy_upper": [
+        -0.6610587551436716,
+        1.127983409910954
+      ]
+    }
+  },
+  "natural_morph_delta": {
+    "L_minus_S": -0.3641308878588053,
+    "normal95_independence": [
+      -0.9695768914801859,
+      0.24131511576257525
+    ],
+    "normal95_within_morph_upper_assume_independent_morphs": [
+      -1.5081453280882848,
+      0.7798835523706741
+    ],
+    "normal95_full_Cauchy_upper": [
+      -1.9718146954129758,
+      1.243552919695365
+    ]
+  },
+  "archive_focal_count": 22,
+  "archive_focal_endpoint_counts": {
+    "fruit set": 4,
+    "nectar volume": 7,
+    "pollen quality": 3,
+    "sugar concentration": 6,
+    "visitation rate": 2
+  },
+  "archive_focal_rows": [
+    {
+      "id": 442,
+      "endpoint": "pollen quality",
+      "response": "male fitness",
+      "yi": -0.0143120750619541,
+      "vi": 0.0000663467785885618,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 443,
+      "endpoint": "pollen quality",
+      "response": "male fitness",
+      "yi": -0.167576230467215,
+      "vi": 0.0087050776916817,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 444,
+      "endpoint": "pollen quality",
+      "response": "male fitness",
+      "yi": -0.0668829324286294,
+      "vi": 0.0155700919699228,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 445,
+      "endpoint": "visitation rate",
+      "response": "pollination",
+      "yi": -0.158406005397397,
+      "vi": 0.0198893445147096,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 446,
+      "endpoint": "visitation rate",
+      "response": "pollination",
+      "yi": -0.431913266107479,
+      "vi": 0.0426336335489461,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 447,
+      "endpoint": "fruit set",
+      "response": "female fitness",
+      "yi": -0.289074565872561,
+      "vi": 0.0142259649983426,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 448,
+      "endpoint": "fruit set",
+      "response": "female fitness",
+      "yi": -0.198450938723838,
+      "vi": 0.0186868745588181,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 449,
+      "endpoint": "fruit set",
+      "response": "female fitness",
+      "yi": -0.177334015282916,
+      "vi": 0.0261778668414458,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 450,
+      "endpoint": "fruit set",
+      "response": "female fitness",
+      "yi": -0.0965808280057805,
+      "vi": 0.0154776443472414,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 451,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": 0.523248143764548,
+      "vi": 0.102431597542834,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 452,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": 0.613025255553615,
+      "vi": 0.155312699533265,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 453,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": -2.42119083540189,
+      "vi": 1.11130351361673,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 454,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": 0.347911827530607,
+      "vi": 0.404362062914127,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 455,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": -0.243304482302191,
+      "vi": 0.0873159496574193,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 456,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": -0.60358369669808,
+      "vi": 0.333275698968828,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 457,
+      "endpoint": "nectar volume",
+      "response": "flower traits",
+      "yi": -0.596746063220476,
+      "vi": 0.889947396758812,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 458,
+      "endpoint": "sugar concentration",
+      "response": "flower traits",
+      "yi": 0.0853135837125355,
+      "vi": 0.0567751270406613,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 459,
+      "endpoint": "sugar concentration",
+      "response": "flower traits",
+      "yi": 0.610042058537381,
+      "vi": 0.0712997533671739,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 460,
+      "endpoint": "sugar concentration",
+      "response": "flower traits",
+      "yi": -1.03113713632027,
+      "vi": 0.512073872021571,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 461,
+      "endpoint": "sugar concentration",
+      "response": "flower traits",
+      "yi": 0.276901234249333,
+      "vi": 0.133848296235266,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 462,
+      "endpoint": "sugar concentration",
+      "response": "flower traits",
+      "yi": 0.0429087905010965,
+      "vi": 0.0368682218720424,
+      "experiment_level": "individual-flower success"
+    },
+    {
+      "id": 463,
+      "endpoint": "sugar concentration",
+      "response": "flower traits",
+      "yi": -0.578466595628361,
+      "vi": 0.184321901955243,
+      "experiment_level": "individual-flower success"
+    }
+  ],
+  "point_identity_candidates": [
+    {
+      "morph": "L",
+      "arm": "H",
+      "source_endpoint": "female_germination",
+      "source_lnRR": -0.35488122148470547,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "L",
+      "arm": "H",
+      "source_endpoint": "seed_set",
+      "source_lnRR": -0.8718552513960046,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "L",
+      "arm": "N",
+      "source_endpoint": "female_germination",
+      "source_lnRR": -0.33862895924009356,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "L",
+      "arm": "N",
+      "source_endpoint": "seed_set",
+      "source_lnRR": -0.6945212361130891,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "S",
+      "arm": "H",
+      "source_endpoint": "female_germination",
+      "source_lnRR": -0.5712637600452728,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "S",
+      "arm": "H",
+      "source_endpoint": "seed_set",
+      "source_lnRR": -0.3554387489290072,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "S",
+      "arm": "N",
+      "source_endpoint": "female_germination",
+      "source_lnRR": -0.5751728781432289,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    },
+    {
+      "morph": "S",
+      "arm": "N",
+      "source_endpoint": "seed_set",
+      "source_lnRR": -0.25885792092322674,
+      "exact_point_candidates": [],
+      "same_metric_verified": false
+    }
+  ],
+  "source_reporting_checks": {
+    "germination_interaction_table2_p": 0.931,
+    "germination_interaction_prose_says_significant": true,
+    "seed_set_interaction_table2_p": 0.036,
+    "pooled_germination_control_reported": 83.81,
+    "pooled_germination_control_se_reported": 11.72,
+    "pooled_values_not_used_for_morph_estimates": true
+  },
+  "scope": "Reported morph-specific summary point reanalysis, not original plant-level refit. H=artificial rob hole; N=nectar removal without intentional damage; C=undamaged intermorph hand pollination. Germination experiment about 25 plants per morph, three buds randomly allocated, destructive pistil collection at 6 h. Seed experiment initially 50 plants per morph, different flowers with losses to herbivory/other factors, >20 per treatment reported. Unknown actual sample overlap, denominators and covariance; seed fraction conditional on recovered material. Normal working intervals rely on printed SE and first-order delta approximation, not verified sampling inference; shared controls and multiplicity preclude treating four contrasts as independent. Germination rate is not pollen deposition. The natural visitation-seed comparisons are observational and separate from hand pollination. No inference of causal mediation or structural BALANCE, no added independent archive study."
+}

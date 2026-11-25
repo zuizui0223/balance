@@ -1,0 +1,35 @@
+name: Heiling authenticated plant and raceme stage reanalysis
+on:
+  push:
+    branches: [analysis/distyly-stage-contrast-20261126]
+    paths:
+      - scripts/fit_heiling_original_stage.py
+      - .github/workflows/heiling-original-stage-reanalysis.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  heiling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy==2.2.6 openpyxl==3.1.5
+      - name: Retrieve official pinned Zenodo original
+        run: |
+          python - <<'PY'
+          import hashlib, pathlib, urllib.request
+          url='https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content'
+          with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'BALANCE-original-data-audit/1.0'}),timeout=70) as r: b=r.read(122151)
+          if len(b)!=122150 or hashlib.md5(b).hexdigest()!='31e7e67fa98c5ffb7b4b133686191b90' or hashlib.sha256(b).hexdigest()!='e11d6e9ef1aacc796c95ced562117c8760197fb62be0e505b9148644106a8fa9':raise ValueError('source mismatch')
+          pathlib.Path('/tmp/heiling.xlsx').write_bytes(b)
+          PY
+      - run: python -m scripts.fit_heiling_original_stage --source /tmp/heiling.xlsx --out artifacts/heiling_plant_stage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heiling-plant-stage
+          path: artifacts/heiling_plant_stage/RESULT.json
+          if-no-files-found: error
