@@ -1,0 +1,89 @@
+{
+  "provenance": {
+    "run": 45719750298,
+    "job": 139574789476,
+    "head": "7d9fa8ca0ca49f84cea516415551f11f635968b7",
+    "artifact_id": 15072085622,
+    "artifact_digest": "sha256:9894dbe9eefef0393d3c1855d195978a249afa01235598c7a1ce3f4976dc129b"
+  },
+  "source": "heiling",
+  "doi": "10.5061/dryad.bh6hs70",
+  "attempts": [
+    {
+      "url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.bh6hs70",
+      "error": null
+    },
+    {
+      "url": "https://datadryad.org/api/v2/versions/9716/files",
+      "error": null
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=doi%3A%2210.5061%2Fdryad.bh6hs70%22&size=10",
+      "error": null,
+      "hits": 1
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=title%3A%22why+are+some+plant%22&size=10",
+      "error": null,
+      "hits": 1
+    }
+  ],
+  "source_authenticated": true,
+  "files": [
+    {
+      "name": "Heiling.et.al.Oikos.2018.data.xlsx",
+      "url": "https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content",
+      "final": "https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content",
+      "authenticated": true,
+      "size": 122150,
+      "sha256": "e11d6e9ef1aacc796c95ced562117c8760197fb62be0e505b9148644106a8fa9"
+    }
+  ],
+  "official_files": {
+    "Heiling.et.al.Oikos.2018.data.xlsx": {
+      "size": 122150,
+      "md5": "31e7e67fa98c5ffb7b4b133686191b90",
+      "file_id": "41496",
+      "urls": [
+        "https://datadryad.org/downloads/file_stream/41496",
+        "https://datadryad.org/api/v2/files/41496/download",
+        "https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content",
+        "https://zenodo.org/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx?download=1",
+        "https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content",
+        "https://zenodo.org/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx?download=1"
+      ],
+      "mirror_record": 4956554
+    }
+  },
+  "downloads": [
+    {
+      "name": "Heiling.et.al.Oikos.2018.data.xlsx",
+      "url": "https://datadryad.org/downloads/file_stream/41496",
+      "authenticated": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "name": "Heiling.et.al.Oikos.2018.data.xlsx",
+      "url": "https://datadryad.org/api/v2/files/41496/download",
+      "authenticated": false,
+      "error": "HTTP Error 401: Unauthorized"
+    },
+    {
+      "name": "Heiling.et.al.Oikos.2018.data.xlsx",
+      "url": "https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content",
+      "final": "https://zenodo.org/api/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx/content",
+      "authenticated": true,
+      "size": 122150,
+      "sha256": "e11d6e9ef1aacc796c95ced562117c8760197fb62be0e505b9148644106a8fa9"
+    },
+    {
+      "name": "Heiling.et.al.Oikos.2018.data.xlsx",
+      "url": "https://zenodo.org/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx?download=1",
+      "final": "https://zenodo.org/records/4956554/files/Heiling.et.al.Oikos.2018.data.xlsx?download=1",
+      "authenticated": true,
+      "size": 122150,
+      "sha256": "e11d6e9ef1aacc796c95ced562117c8760197fb62be0e505b9148644106a8fa9"
+    }
+  ],
+  "all_listed_supported_files_authenticated": true
+}

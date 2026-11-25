@@ -1,0 +1,1112 @@
+{
+  "provenance": {
+    "run": 45720121837,
+    "job": 139576051846,
+    "head": "9b9b9a997b9bdc4188160c41c9df6ca329786557",
+    "artifact_id": 15072026447,
+    "artifact_digest": "sha256:f6f3a8e6717ee591b70c8e2e7d986c831be8e7dc6d27a78f44956f42defde1f6"
+  },
+  "linkage": {
+    "fruit_racemes": 73,
+    "pollen_racemes": 70,
+    "linked_racemes": 51,
+    "fruit_only": [
+      [
+        "cr",
+        11,
+        53
+      ],
+      [
+        "cr",
+        11,
+        54
+      ],
+      [
+        "cr",
+        12,
+        57
+      ],
+      [
+        "cr",
+        12,
+        58
+      ],
+      [
+        "cr",
+        12,
+        59
+      ],
+      [
+        "cr",
+        13,
+        62
+      ],
+      [
+        "cr",
+        13,
+        63
+      ],
+      [
+        "cr",
+        13,
+        64
+      ],
+      [
+        "cr",
+        14,
+        66
+      ],
+      [
+        "cr",
+        14,
+        67
+      ],
+      [
+        "cr",
+        14,
+        68
+      ],
+      [
+        "cr",
+        15,
+        71
+      ],
+      [
+        "cr",
+        15,
+        72
+      ],
+      [
+        "cr",
+        15,
+        73
+      ],
+      [
+        "pr",
+        6,
+        30
+      ],
+      [
+        "pr",
+        7,
+        35
+      ],
+      [
+        "pr",
+        8,
+        39
+      ],
+      [
+        "pr",
+        8,
+        40
+      ],
+      [
+        "pr",
+        9,
+        43
+      ],
+      [
+        "pr",
+        9,
+        44
+      ],
+      [
+        "pr",
+        10,
+        48
+      ],
+      [
+        "pr",
+        10,
+        49
+      ]
+    ],
+    "pollen_only": [
+      [
+        "cr",
+        11,
+        48
+      ],
+      [
+        "cr",
+        11,
+        49
+      ],
+      [
+        "cr",
+        12,
+        53
+      ],
+      [
+        "cr",
+        12,
+        54
+      ],
+      [
+        "cr",
+        13,
+        57
+      ],
+      [
+        "cr",
+        13,
+        58
+      ],
+      [
+        "cr",
+        13,
+        59
+      ],
+      [
+        "cr",
+        14,
+        62
+      ],
+      [
+        "cr",
+        14,
+        63
+      ],
+      [
+        "cr",
+        14,
+        64
+      ],
+      [
+        "cr",
+        15,
+        66
+      ],
+      [
+        "cr",
+        15,
+        67
+      ],
+      [
+        "cr",
+        15,
+        68
+      ],
+      [
+        "pr",
+        7,
+        30
+      ],
+      [
+        "pr",
+        8,
+        35
+      ],
+      [
+        "pr",
+        9,
+        39
+      ],
+      [
+        "pr",
+        9,
+        40
+      ],
+      [
+        "pr",
+        10,
+        43
+      ],
+      [
+        "pr",
+        10,
+        44
+      ]
+    ],
+    "fruit_plants_per_label": {
+      "control": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "pr": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "cr": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    "fruit_status_values": {
+      "1": 238,
+      "None": 47
+    }
+  },
+  "sha256": "e11d6e9ef1aacc796c95ced562117c8760197fb62be0e505b9148644106a8fa9",
+  "n_pollen_rows": 285,
+  "n_fruit_racemes": 73,
+  "n_union_racemes": 92,
+  "n_plants": 15,
+  "n_extra_nondata_rows": 0,
+  "count_closure": {
+    "0.0": 62,
+    "None": 22,
+    "1.0": 7,
+    "2.0": 1
+  },
+  "flower_count_identity": {
+    "False": 40,
+    "True": 11,
+    "None": 41
+  },
+  "flower_success_identity": {
+    "True": 25,
+    "False": 26,
+    "None": 41
+  },
+  "missing_fruit_sheet_or_fields": [
+    {
+      "treatment": "cr",
+      "plant": 11,
+      "raceme": 48,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 11,
+      "raceme": 49,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 12,
+      "raceme": 53,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 12,
+      "raceme": 54,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 12,
+      "raceme": 59,
+      "present": true,
+      "missing": [
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 13,
+      "raceme": 57,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 13,
+      "raceme": 58,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 13,
+      "raceme": 59,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 14,
+      "raceme": 62,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 14,
+      "raceme": 63,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 14,
+      "raceme": 64,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 15,
+      "raceme": 66,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 15,
+      "raceme": 67,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "cr",
+      "plant": 15,
+      "raceme": 68,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 6,
+      "raceme": 29,
+      "present": true,
+      "missing": [
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 7,
+      "raceme": 30,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 8,
+      "raceme": 35,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 8,
+      "raceme": 38,
+      "present": true,
+      "missing": [
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 9,
+      "raceme": 39,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 9,
+      "raceme": 40,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 10,
+      "raceme": 43,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    },
+    {
+      "treatment": "pr",
+      "plant": 10,
+      "raceme": 44,
+      "present": false,
+      "missing": [
+        "flr_count",
+        "total_good_fruit",
+        "total_aborted_fruit",
+        "total_good_seed",
+        "total_aborted_seed"
+      ]
+    }
+  ],
+  "pollen_raceme_count": 70,
+  "plant_records": [
+    {
+      "treatment": "control",
+      "plant": 1,
+      "n_racemes": 5,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 595.5666666666667,
+      "sqrt_raceme_mean": 24.27622318447113,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.64,
+      "fruit_per_recorded_flower": 0.64,
+      "total_good_seed": 7.6,
+      "seed_per_recorded_flower": 1.5,
+      "flower_code_success_fraction": 0.8333333333333333,
+      "complete_flower_success_fraction": 0.8333333333333333,
+      "matched_flower_pollen_mean": 595.5666666666667,
+      "matched_flower_complete_flower_success_fraction": 0.8333333333333333
+    },
+    {
+      "treatment": "control",
+      "plant": 2,
+      "n_racemes": 5,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 450.52333333333337,
+      "sqrt_raceme_mean": 21.012988260558366,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.86,
+      "fruit_per_recorded_flower": 0.86,
+      "total_good_seed": 11.2,
+      "seed_per_recorded_flower": 2.44,
+      "flower_code_success_fraction": 0.8666666666666666,
+      "complete_flower_success_fraction": 0.8666666666666666,
+      "matched_flower_pollen_mean": 450.52333333333337,
+      "matched_flower_complete_flower_success_fraction": 0.8666666666666666
+    },
+    {
+      "treatment": "control",
+      "plant": 3,
+      "n_racemes": 5,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 821.6666666666667,
+      "sqrt_raceme_mean": 28.233811367247437,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.5566666666666666,
+      "fruit_per_recorded_flower": 0.5566666666666666,
+      "total_good_seed": 3,
+      "seed_per_recorded_flower": 0.6900000000000001,
+      "flower_code_success_fraction": 0.76,
+      "complete_flower_success_fraction": 0.76,
+      "matched_flower_pollen_mean": 821.6666666666667,
+      "matched_flower_complete_flower_success_fraction": 0.76
+    },
+    {
+      "treatment": "control",
+      "plant": 4,
+      "n_racemes": 5,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 1031.0066666666667,
+      "sqrt_raceme_mean": 31.41485376639714,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.7700000000000001,
+      "fruit_per_recorded_flower": 0.7700000000000001,
+      "total_good_seed": 7.4,
+      "seed_per_recorded_flower": 1.3233333333333335,
+      "flower_code_success_fraction": 0.8766666666666667,
+      "complete_flower_success_fraction": 0.8766666666666667,
+      "matched_flower_pollen_mean": 1031.0066666666667,
+      "matched_flower_complete_flower_success_fraction": 0.8766666666666667
+    },
+    {
+      "treatment": "control",
+      "plant": 5,
+      "n_racemes": 5,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 705.5,
+      "sqrt_raceme_mean": 26.519302004524206,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.8533333333333333,
+      "fruit_per_recorded_flower": 0.8533333333333333,
+      "total_good_seed": 8.6,
+      "seed_per_recorded_flower": 1.5466666666666669,
+      "flower_code_success_fraction": 0.9333333333333333,
+      "complete_flower_success_fraction": 0.9333333333333333,
+      "matched_flower_pollen_mean": 705.5,
+      "matched_flower_complete_flower_success_fraction": 0.9333333333333333
+    },
+    {
+      "treatment": "cr",
+      "plant": 11,
+      "n_racemes": 7,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 915.05,
+      "sqrt_raceme_mean": 30.086511817391294,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.7214285714285714,
+      "fruit_per_recorded_flower": 0.7014285714285714,
+      "total_good_seed": 2,
+      "seed_per_recorded_flower": 0.41428571428571426,
+      "flower_code_success_fraction": 0.8,
+      "complete_flower_success_fraction": 0.8,
+      "matched_flower_pollen_mean": 915.05,
+      "matched_flower_complete_flower_success_fraction": 0.8
+    },
+    {
+      "treatment": "cr",
+      "plant": 12,
+      "n_racemes": 7,
+      "n_pollen_racemes": 4,
+      "pollen_mean": 874.0416666666667,
+      "sqrt_raceme_mean": 28.8653191675611,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.875,
+      "fruit_per_recorded_flower": 0.7,
+      "total_good_seed": 5.75,
+      "seed_per_recorded_flower": 1.2291666666666667,
+      "flower_code_success_fraction": 0.875,
+      "complete_flower_success_fraction": 0.875,
+      "matched_flower_pollen_mean": 874.0416666666667,
+      "matched_flower_complete_flower_success_fraction": 0.875
+    },
+    {
+      "treatment": "cr",
+      "plant": 13,
+      "n_racemes": 8,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 705.4266666666666,
+      "sqrt_raceme_mean": 26.484567469876318,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.9666666666666666,
+      "fruit_per_recorded_flower": 0.8766666666666666,
+      "total_good_seed": 10.6,
+      "seed_per_recorded_flower": 2.1533333333333333,
+      "flower_code_success_fraction": 0.9,
+      "complete_flower_success_fraction": 0.9,
+      "matched_flower_pollen_mean": 705.4266666666666,
+      "matched_flower_complete_flower_success_fraction": 0.9
+    },
+    {
+      "treatment": "cr",
+      "plant": 14,
+      "n_racemes": 7,
+      "n_pollen_racemes": 4,
+      "pollen_mean": 966.6464285714286,
+      "sqrt_raceme_mean": 31.083981439654895,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.9166666666666666,
+      "fruit_per_recorded_flower": 0.9166666666666666,
+      "total_good_seed": 19.75,
+      "seed_per_recorded_flower": 3.0791666666666666,
+      "flower_code_success_fraction": 0.9166666666666666,
+      "complete_flower_success_fraction": 0.9166666666666666,
+      "matched_flower_pollen_mean": 966.6464285714286,
+      "matched_flower_complete_flower_success_fraction": 0.9166666666666666
+    },
+    {
+      "treatment": "cr",
+      "plant": 15,
+      "n_racemes": 8,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 915.96,
+      "sqrt_raceme_mean": 29.736677906614318,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.6866666666666668,
+      "fruit_per_recorded_flower": 0.6566666666666667,
+      "total_good_seed": 6.8,
+      "seed_per_recorded_flower": 1.46,
+      "flower_code_success_fraction": 0.95,
+      "complete_flower_success_fraction": 0.95,
+      "matched_flower_pollen_mean": 915.96,
+      "matched_flower_complete_flower_success_fraction": 0.95
+    },
+    {
+      "treatment": "pr",
+      "plant": 6,
+      "n_racemes": 5,
+      "n_pollen_racemes": 4,
+      "pollen_mean": 820.9833333333333,
+      "sqrt_raceme_mean": 28.58671948776923,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.95,
+      "fruit_per_recorded_flower": 0.6466666666666667,
+      "total_good_seed": 11,
+      "seed_per_recorded_flower": 2.2833333333333337,
+      "flower_code_success_fraction": 0.8583333333333334,
+      "complete_flower_success_fraction": 0.8583333333333334,
+      "matched_flower_pollen_mean": 820.9833333333333,
+      "matched_flower_complete_flower_success_fraction": 0.8583333333333334
+    },
+    {
+      "treatment": "pr",
+      "plant": 7,
+      "n_racemes": 6,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 918.7933333333334,
+      "sqrt_raceme_mean": 29.97898181478373,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.6633333333333333,
+      "fruit_per_recorded_flower": 0.6366666666666666,
+      "total_good_seed": 4.8,
+      "seed_per_recorded_flower": 0.8833333333333332,
+      "flower_code_success_fraction": 0.6466666666666666,
+      "complete_flower_success_fraction": 0.6466666666666666,
+      "matched_flower_pollen_mean": 918.7933333333334,
+      "matched_flower_complete_flower_success_fraction": 0.6466666666666666
+    },
+    {
+      "treatment": "pr",
+      "plant": 8,
+      "n_racemes": 6,
+      "n_pollen_racemes": 4,
+      "pollen_mean": 992.1750000000001,
+      "sqrt_raceme_mean": 31.172672091250373,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.6125,
+      "fruit_per_recorded_flower": 0.49000000000000005,
+      "total_good_seed": 4.75,
+      "seed_per_recorded_flower": 1.0458333333333334,
+      "flower_code_success_fraction": 0.6375,
+      "complete_flower_success_fraction": 0.6375,
+      "matched_flower_pollen_mean": 992.1750000000001,
+      "matched_flower_complete_flower_success_fraction": 0.6375
+    },
+    {
+      "treatment": "pr",
+      "plant": 9,
+      "n_racemes": 6,
+      "n_pollen_racemes": 4,
+      "pollen_mean": 848.9166666666666,
+      "sqrt_raceme_mean": 28.196757489498438,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.5416666666666667,
+      "fruit_per_recorded_flower": 0.5416666666666667,
+      "total_good_seed": 4.25,
+      "seed_per_recorded_flower": 0.8500000000000001,
+      "flower_code_success_fraction": 0.75,
+      "complete_flower_success_fraction": 0.75,
+      "matched_flower_pollen_mean": 848.9166666666666,
+      "matched_flower_complete_flower_success_fraction": 0.75
+    },
+    {
+      "treatment": "pr",
+      "plant": 10,
+      "n_racemes": 7,
+      "n_pollen_racemes": 5,
+      "pollen_mean": 808.0866666666667,
+      "sqrt_raceme_mean": 28.37266475923513,
+      "pollen_positive_fraction": 1,
+      "fruit_fraction": 0.8466666666666667,
+      "fruit_per_recorded_flower": 0.818095238095238,
+      "total_good_seed": 8.8,
+      "seed_per_recorded_flower": 1.4428571428571428,
+      "flower_code_success_fraction": 0.9,
+      "complete_flower_success_fraction": 0.9,
+      "matched_flower_pollen_mean": 808.0866666666667,
+      "matched_flower_complete_flower_success_fraction": 0.9
+    }
+  ],
+  "fruit_sheet_separate_margins": {
+    "control": {
+      "fruit_fraction": {
+        "n_plants": 5,
+        "mean": 0.736
+      },
+      "fruit_per_recorded_flower": {
+        "n_plants": 5,
+        "mean": 0.736
+      },
+      "total_good_seed": {
+        "n_plants": 5,
+        "mean": 7.56
+      },
+      "seed_per_recorded_flower": {
+        "n_plants": 5,
+        "mean": 1.5
+      }
+    },
+    "cr": {
+      "fruit_fraction": {
+        "n_plants": 5,
+        "mean": 0.8332857142857144
+      },
+      "fruit_per_recorded_flower": {
+        "n_plants": 5,
+        "mean": 0.7702857142857142
+      },
+      "total_good_seed": {
+        "n_plants": 5,
+        "mean": 8.98
+      },
+      "seed_per_recorded_flower": {
+        "n_plants": 5,
+        "mean": 1.6671904761904763
+      }
+    },
+    "pr": {
+      "fruit_fraction": {
+        "n_plants": 5,
+        "mean": 0.7228333333333333
+      },
+      "fruit_per_recorded_flower": {
+        "n_plants": 5,
+        "mean": 0.6266190476190475
+      },
+      "total_good_seed": {
+        "n_plants": 5,
+        "mean": 6.720000000000001
+      },
+      "seed_per_recorded_flower": {
+        "n_plants": 5,
+        "mean": 1.3010714285714287
+      }
+    }
+  },
+  "pollen_sheet_margins": {
+    "control": {
+      "n_flower_records": 96,
+      "n_observed_grains": 96,
+      "n_pollen_racemes": 25,
+      "n_fruit_racemes": 25,
+      "n_exact_matched_keys": 25
+    },
+    "cr": {
+      "n_flower_records": 93,
+      "n_observed_grains": 93,
+      "n_pollen_racemes": 23,
+      "n_fruit_racemes": 24,
+      "n_exact_matched_keys": 10
+    },
+    "pr": {
+      "n_flower_records": 96,
+      "n_observed_grains": 96,
+      "n_pollen_racemes": 22,
+      "n_fruit_racemes": 24,
+      "n_exact_matched_keys": 16
+    }
+  },
+  "variants": {
+    "matched_flower_primary": {
+      "status": "DESCRIPTIVE_5_PLANT_PER_ARM",
+      "n": {
+        "control": 5,
+        "cr": 5,
+        "pr": 5
+      },
+      "fields": [
+        "matched_flower_pollen_mean",
+        "matched_flower_complete_flower_success_fraction"
+      ],
+      "means": {
+        "control": {
+          "matched_flower_pollen_mean": 720.8526666666667,
+          "matched_flower_complete_flower_success_fraction": 0.8540000000000001
+        },
+        "cr": {
+          "matched_flower_pollen_mean": 875.4249523809525,
+          "matched_flower_complete_flower_success_fraction": 0.8883333333333333
+        },
+        "pr": {
+          "matched_flower_pollen_mean": 877.7909999999999,
+          "matched_flower_complete_flower_success_fraction": 0.7585
+        }
+      },
+      "contrasts": {
+        "cr/control": {
+          "lnRR": {
+            "matched_flower_pollen_mean": {
+              "estimate": 0.19427465773947628,
+              "percentile95": [
+                -0.04466104085464811,
+                0.46488475160977305
+              ],
+              "valid_draws": 20000
+            },
+            "matched_flower_complete_flower_success_fraction": {
+              "estimate": 0.039415854143265296,
+              "percentile95": [
+                -0.03657324889290592,
+                0.1164933925324025
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "delta": {
+            "matched_flower_complete_flower_success_fraction": {
+              "estimate": -0.154858803596211,
+              "percentile95": [
+                -0.4454236955864225,
+                0.09735393479191205
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "covariance_lnRR": [
+            [
+              0.017258320557891046,
+              -0.0003975820406586749
+            ],
+            [
+              -0.0003975820406586749,
+              0.0015371466190973841
+            ]
+          ]
+        },
+        "pr/control": {
+          "lnRR": {
+            "matched_flower_pollen_mean": {
+              "estimate": 0.19697375370908057,
+              "percentile95": [
+                -0.03391401842345639,
+                0.46400906182648993
+              ],
+              "valid_draws": 20000
+            },
+            "matched_flower_complete_flower_success_fraction": {
+              "estimate": -0.11858839499998312,
+              "percentile95": [
+                -0.2594945923394017,
+                0.01557850558768843
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "delta": {
+            "matched_flower_complete_flower_success_fraction": {
+              "estimate": -0.3155621487090637,
+              "percentile95": [
+                -0.6471274151104657,
+                -0.0218114577586101
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "covariance_lnRR": [
+            [
+              0.016271139728901436,
+              -0.0023735514942282657
+            ],
+            [
+              -0.0023735514942282657,
+              0.0049431707249340765
+            ]
+          ]
+        }
+      },
+      "B": 20000
+    },
+    "pollen_sheet_all_status_sensitivity": {
+      "status": "DESCRIPTIVE_5_PLANT_PER_ARM",
+      "n": {
+        "control": 5,
+        "cr": 5,
+        "pr": 5
+      },
+      "fields": [
+        "pollen_mean",
+        "flower_code_success_fraction"
+      ],
+      "means": {
+        "control": {
+          "pollen_mean": 720.8526666666667,
+          "flower_code_success_fraction": 0.8540000000000001
+        },
+        "cr": {
+          "pollen_mean": 875.4249523809525,
+          "flower_code_success_fraction": 0.8883333333333333
+        },
+        "pr": {
+          "pollen_mean": 877.7909999999999,
+          "flower_code_success_fraction": 0.7585
+        }
+      },
+      "contrasts": {
+        "cr/control": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.19427465773947628,
+              "percentile95": [
+                -0.04466104085464811,
+                0.46488475160977305
+              ],
+              "valid_draws": 20000
+            },
+            "flower_code_success_fraction": {
+              "estimate": 0.039415854143265296,
+              "percentile95": [
+                -0.03657324889290592,
+                0.1164933925324025
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "delta": {
+            "flower_code_success_fraction": {
+              "estimate": -0.154858803596211,
+              "percentile95": [
+                -0.4454236955864225,
+                0.09735393479191205
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "covariance_lnRR": [
+            [
+              0.017258320557891046,
+              -0.0003975820406586749
+            ],
+            [
+              -0.0003975820406586749,
+              0.0015371466190973841
+            ]
+          ]
+        },
+        "pr/control": {
+          "lnRR": {
+            "pollen_mean": {
+              "estimate": 0.19697375370908057,
+              "percentile95": [
+                -0.03391401842345639,
+                0.46400906182648993
+              ],
+              "valid_draws": 20000
+            },
+            "flower_code_success_fraction": {
+              "estimate": -0.11858839499998312,
+              "percentile95": [
+                -0.2594945923394017,
+                0.01557850558768843
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "delta": {
+            "flower_code_success_fraction": {
+              "estimate": -0.3155621487090637,
+              "percentile95": [
+                -0.6471274151104657,
+                -0.0218114577586101
+              ],
+              "valid_draws": 20000
+            }
+          },
+          "covariance_lnRR": [
+            [
+              0.016271139728901436,
+              -0.0023735514942282657
+            ],
+            [
+              -0.0023735514942282657,
+              0.0049431707249340765
+            ]
+          ]
+        }
+      },
+      "B": 20000
+    }
+  },
+  "scope": "Within-pollen-sheet flower records only for joint stage contrasts, fruit=1 yes and blank/NA=no per original metadata. Complete observed-grains subset primary. Cross-sheet raceme keys conflict; union is only a diagnostic index. Separate fruit-sheet descriptive margins, never matched to pollen covariance or assumed equivalent. No same-flower seed data. Five haphazardly assigned plants per treatment; 20k arm-stratified plant bootstrap is descriptive with n=5, not original mixed model, causal mediation or equivalence. No new independent archive study."
+}

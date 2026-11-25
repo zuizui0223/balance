@@ -1,0 +1,36 @@
+{
+  "provenance": {
+    "run": 45719750298,
+    "job": 139574789126,
+    "head": "7d9fa8ca0ca49f84cea516415551f11f635968b7",
+    "artifact_id": 15072065719,
+    "artifact_digest": "sha256:89fc1acbae1be817e49084bedfe079abe1c232b509ed6236e278b591e53279bb"
+  },
+  "source": "tirpitzia",
+  "doi": "10.5061/dryad.6hdr7sr62",
+  "attempts": [
+    {
+      "url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62",
+      "error": null
+    },
+    {
+      "url": "https://datadryad.org/api/v2/versions/259753/files",
+      "error": null
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=doi%3A%2210.5061%2Fdryad.6hdr7sr62%22&size=10",
+      "error": null,
+      "hits": 1
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=title%3A%22nectar+robbing+by+bees+affects+the+reproductive+fitness%22&size=10",
+      "error": null,
+      "hits": 1
+    }
+  ],
+  "source_authenticated": false,
+  "files": [],
+  "official_files": {},
+  "downloads": [],
+  "all_listed_supported_files_authenticated": false
+}
