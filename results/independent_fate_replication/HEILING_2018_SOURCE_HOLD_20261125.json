@@ -1,0 +1,92 @@
+{
+  "provenance": {
+    "run_id": 45541331515,
+    "head": "38a482fe34207e1525e9e31cb8099debd02adac4",
+    "artifacts": [
+      {
+        "id": 14989750969,
+        "digest": "sha256:2ce8914dd0bc1c53a0516e004fd76430a6a095f58074e806da2c274f6ee6432d",
+        "name": "irwin-2009-denominator"
+      },
+      {
+        "id": 14988893513,
+        "digest": "sha256:b295ff7dd5dd23711fc92a068c6de3b80d603474ddeb6360aea1a746ee70eab0",
+        "name": "heiling-original-source"
+      }
+    ]
+  },
+  "dataset_doi": "10.5061/dryad.bh6hs70",
+  "paper_doi": "10.1111/oik.05440",
+  "pinned_md5": "31e7e67fa98c5ffb7b4b133686191b90",
+  "metadata_attempts": [
+    {
+      "url": "https://zenodo.org/api/records?q=doi%3A%2210.5061%2Fdryad.bh6hs70%22&size=30",
+      "error": "HTTP Error 400: BAD REQUEST"
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=%2210.5061%2Fdryad.bh6hs70%22&size=30",
+      "error": "HTTP Error 400: BAD REQUEST"
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=title%3A%22Why+are+some+plant%22+AND+title%3A%22commensalisms%22&size=30",
+      "error": "HTTP Error 400: BAD REQUEST"
+    },
+    {
+      "url": "https://datadryad.org/api/v2/versions/9716/files",
+      "files": [
+        {
+          "_links": {
+            "self": {
+              "href": "/api/v2/files/41496"
+            },
+            "stash:dataset": {
+              "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.bh6hs70"
+            },
+            "stash:version": {
+              "href": "/api/v2/versions/9716"
+            },
+            "stash:files": {
+              "href": "/api/v2/versions/9716/files"
+            },
+            "stash:download": {
+              "href": "/api/v2/files/41496/download"
+            },
+            "curies": [
+              {
+                "name": "stash",
+                "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                "templated": "true"
+              }
+            ]
+          },
+          "path": "Heiling.et.al.Oikos.2018.data.xlsx",
+          "size": 122150,
+          "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "status": "created",
+          "digest": "31e7e67fa98c5ffb7b4b133686191b90",
+          "digestType": "md5",
+          "description": "An Excel workbook of data for Heiling et al 2018. First sheet is a metadata file, all other sheets are arrange chronologically. Sheet names describe the analysis the data were used for."
+        }
+      ]
+    }
+  ],
+  "download_attempts": [
+    {
+      "url": "https://datadryad.org/downloads/file_stream/41496",
+      "size": 122150,
+      "file_id": 41496,
+      "official_md5": "31e7e67fa98c5ffb7b4b133686191b90",
+      "authenticated": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "url": "https://datadryad.org/api/v2/files/41496/download",
+      "size": 122150,
+      "file_id": 41496,
+      "official_md5": "31e7e67fa98c5ffb7b4b133686191b90",
+      "authenticated": false,
+      "error": "HTTP Error 401: Unauthorized"
+    }
+  ],
+  "source_authenticated": false
+}

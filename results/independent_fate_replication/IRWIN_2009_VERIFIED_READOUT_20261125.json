@@ -1,0 +1,420 @@
+{
+  "provenance": {
+    "run_id": 45541331515,
+    "head": "38a482fe34207e1525e9e31cb8099debd02adac4",
+    "artifacts": [
+      {
+        "id": 14989750969,
+        "digest": "sha256:2ce8914dd0bc1c53a0516e004fd76430a6a095f58074e806da2c274f6ee6432d",
+        "name": "irwin-2009-denominator"
+      },
+      {
+        "id": 14988893513,
+        "digest": "sha256:b295ff7dd5dd23711fc92a068c6de3b80d603474ddeb6360aea1a746ee70eab0",
+        "name": "heiling-original-source"
+      }
+    ]
+  },
+  "source_sha256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4",
+  "paper_doi": "10.1093/aob/mcp056",
+  "original_full_text": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2701760/",
+  "study": "Irwin 2009, Ipomopsis aggregata",
+  "original_reported_low_relative_to_high_fraction_more": {
+    "pollen deposition": 0.17,
+    "fruit set": 0.56,
+    "seed set": 0.34,
+    "total seeds": 0.58
+  },
+  "reported_F_tests": {
+    "pollen_deposition": {
+      "F": 5.68,
+      "df": [
+        1,
+        48
+      ],
+      "p": 0.02
+    },
+    "fruit_set": {
+      "F": 34.88,
+      "df": [
+        1,
+        48
+      ],
+      "p": "<.0001"
+    },
+    "seeds_per_fruit": {
+      "F": 20.22,
+      "df": [
+        1,
+        48
+      ],
+      "p": "<.0001"
+    },
+    "total_seeds": {
+      "F": 17.9,
+      "df": [
+        1,
+        48
+      ],
+      "p": 0.0001
+    }
+  },
+  "high_vs_low_lnRR_from_rounded_prose": {
+    "pollen deposition": -0.15700374880966475,
+    "fruit set": -0.44468582126144574,
+    "seed set": -0.29266961396282,
+    "total seeds": -0.4574248470388754
+  },
+  "stage_delta": {
+    "fruit set": -0.287682072451781,
+    "seed set": -0.13566586515315524,
+    "total seeds": -0.3004210982292107
+  },
+  "rounded_percentage_sensitivity_not_ci": {
+    "fruit set": [
+      -0.29516473697445267,
+      -0.2802073980350752
+    ],
+    "seed set": [
+      -0.14367292603613852,
+      -0.1276631442560906
+    ],
+    "total seeds": [
+      -0.30786332031158,
+      -0.29298712468147403
+    ]
+  },
+  "archive_rows": {
+    "fruit set": {
+      "rows": [
+        {
+          "id": 173,
+          "yi": -0.623194868569813,
+          "vi": 0.136967463952522,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 174,
+          "yi": -0.928164824804492,
+          "vi": 0.277840537301251,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 175,
+          "yi": -0.767355187726005,
+          "vi": 0.171631814458493,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 176,
+          "yi": -1.26792152892621,
+          "vi": 0.205071063433862,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 177,
+          "yi": -1.02722837159032,
+          "vi": 0.188682556645823,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 178,
+          "yi": -0.779869736967038,
+          "vi": 0.254956650204517,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 179,
+          "yi": -1.09847512386438,
+          "vi": 0.189594024754438,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 180,
+          "yi": -0.558813398555235,
+          "vi": 0.070810668763485,
+          "experiment_level": "whole-plant fitness"
+        }
+      ],
+      "equal_row_mean": -0.8813778801254366,
+      "range": [
+        -1.26792152892621,
+        -0.558813398555235
+      ]
+    },
+    "pollen deposition": {
+      "rows": [
+        {
+          "id": 165,
+          "yi": -0.151554325029371,
+          "vi": 0.0468781849590262,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 166,
+          "yi": 0.27736469907317,
+          "vi": 0.00913701981227848,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 167,
+          "yi": -0.372138668842007,
+          "vi": 0.0485491412816758,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 168,
+          "yi": -0.448921939489335,
+          "vi": 0.047844176145631,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 169,
+          "yi": -0.336312045556619,
+          "vi": 0.084944957744038,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 170,
+          "yi": 0.0297387275153573,
+          "vi": 0.033562757483875,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 171,
+          "yi": -0.474471143812141,
+          "vi": 0.0745415473947745,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 172,
+          "yi": -0.174806188427546,
+          "vi": 0.0202943895111106,
+          "experiment_level": "whole-plant fitness"
+        }
+      ],
+      "equal_row_mean": -0.20638761057106148,
+      "range": [
+        -0.474471143812141,
+        0.27736469907317
+      ]
+    },
+    "pollen donation": {
+      "rows": [
+        {
+          "id": 157,
+          "yi": -1.63392373874697,
+          "vi": 0.132638406125043,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 158,
+          "yi": -3.25534414692519,
+          "vi": 0.653311982758654,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 159,
+          "yi": -1.18594533780815,
+          "vi": 0.654669804332033,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 160,
+          "yi": -1.65171899620737,
+          "vi": 0.378841298044616,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 161,
+          "yi": 0.0805356827882775,
+          "vi": 0.294020413868182,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 162,
+          "yi": -0.295198359779357,
+          "vi": 0.862524150392425,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 163,
+          "yi": 1.87010689728309,
+          "vi": 0.84841883542799,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 164,
+          "yi": -0.985853870390293,
+          "vi": 0.483089461037204,
+          "experiment_level": "whole-plant fitness"
+        }
+      ],
+      "equal_row_mean": -0.8821677337232453,
+      "range": [
+        -3.25534414692519,
+        1.87010689728309
+      ]
+    },
+    "seed set": {
+      "rows": [
+        {
+          "id": 181,
+          "yi": -0.780743701611437,
+          "vi": 0.092881572514102,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 182,
+          "yi": -0.204400048811177,
+          "vi": 0.040580909953347,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 183,
+          "yi": -1.01590137951762,
+          "vi": 0.478939799598589,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 184,
+          "yi": -0.616999892955566,
+          "vi": 0.0333987175097438,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 185,
+          "yi": -0.181233442419271,
+          "vi": 0.0393163627312574,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 186,
+          "yi": 0.0751022233098325,
+          "vi": 0.0460395875755719,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 187,
+          "yi": -0.366813680399058,
+          "vi": 0.0350828435057094,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 188,
+          "yi": -0.492927663952364,
+          "vi": 0.0450849227979999,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 189,
+          "yi": -1.82599404038791,
+          "vi": 0.65726563374774,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 190,
+          "yi": -1.66322919438196,
+          "vi": 0.274271244820804,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 191,
+          "yi": -0.990859353294018,
+          "vi": 0.211492444656601,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 192,
+          "yi": -0.521765437000632,
+          "vi": 0.182353077368264,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 193,
+          "yi": -0.284584039436193,
+          "vi": 0.0430464863852328,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 194,
+          "yi": -1.67652854139385,
+          "vi": 0.270991037257317,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 195,
+          "yi": -1.1486273689326,
+          "vi": 0.29838711278042,
+          "experiment_level": "whole-plant fitness"
+        },
+        {
+          "id": 196,
+          "yi": 0.00461972196389138,
+          "vi": 0.423989701778003,
+          "experiment_level": "whole-plant fitness"
+        }
+      ],
+      "equal_row_mean": -0.7306803649512458,
+      "range": [
+        -1.82599404038791,
+        0.0751022233098325
+      ]
+    }
+  },
+  "archive_pollen_fruit_pairing_candidates": [
+    {
+      "up_ids": [
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172
+      ],
+      "down_ids": [
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180
+      ],
+      "n_candidate_combinations": 64,
+      "delta_range": [
+        -1.54528622799938,
+        -0.08434225474309404
+      ],
+      "all_negative": true,
+      "same_group_mapping_verified": false
+    }
+  ],
+  "claim_ceiling": "Original authors report one overall female-reproduction comparison and eight group means; all fruits collected/scored seeded or aborted, fruit fraction seed-bearing fruits/all flowers. Pollen receipt on destructive stigma samples, not same flowers. Rounded reported point ratios, no reconstructed joint uncertainty. Group identities, sample covariance, raw plant data not retrieved. No independent species replication of Richman. No combining subgroup effects as independent studies or causal stage amplification.",
+  "aggregation_reconciliation": {
+    "scope": "Distinct aggregations, not a demonstrated source error. If both treatment arms have identical group weights, the arithmetic ratio of weighted means lies within the convex hull of group treatment ratios (positive denominators). The original prose ratio is outside the eight archived fruit ratios even allowing printed percentage rounding. Unknown arm-specific attrition/group weights, transformations, adjusted versus raw means and original extraction can invalidate a common-weight comparison; source raw values and group mapping are not verified. No source correction or statistical CI.",
+    "original_fruit_ratio": 0.641025641025641,
+    "original_fruit_ratio_rounding_interval": [
+      0.6389776357827476,
+      0.6430868167202572
+    ],
+    "archive_fruit_ratio_range": [
+      0.28141592920353964,
+      0.5718872636460937
+    ],
+    "archive_equal_log_mean_fruit": -0.8813778801254366,
+    "archive_equal_log_mean_pollen": -0.20638761057106148,
+    "archive_equal_log_mean_delta": -0.6749902695543751,
+    "original_reported_point_delta": -0.287682072451781,
+    "archive_64_pairing_range": [
+      -1.54528622799938,
+      -0.08434225474309404
+    ],
+    "archive_equal_paper_mean_10_before": -0.3418214687213395,
+    "archive_equal_paper_mean_10_if_only_replace_point_with_rounded_publication": -0.30309064901108007,
+    "weighted_meta_refit_permitted": false
+  }
+}
