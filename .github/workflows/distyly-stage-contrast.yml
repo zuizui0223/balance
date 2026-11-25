@@ -1,0 +1,48 @@
+name: Distyly reproductive stage contrast and primary source recovery
+on:
+  push:
+    branches: [analysis/distyly-stage-contrast-20261126]
+    paths:
+      - scripts/audit_tirpitzia_stage_contrast.py
+      - scripts/recover_distyly_and_heiling_sources.py
+      - tests/test_tirpitzia_stage_contrast.py
+      - .github/workflows/distyly-stage-contrast.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pytest
+      - run: python -m pytest -q tests/test_tirpitzia_stage_contrast.py
+      - run: python -m scripts.audit_tirpitzia_stage_contrast --out artifacts/distyly_stage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distyly-stage
+          path: artifacts/distyly_stage/RESULT.json
+          if-no-files-found: error
+  source:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        source: [tirpitzia, heiling]
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install openpyxl==3.1.5
+      - run: python -m scripts.recover_distyly_and_heiling_sources --source ${{ matrix.source }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-${{ matrix.source }}
+          path: artifacts/${{ matrix.source }}/
+          if-no-files-found: error
