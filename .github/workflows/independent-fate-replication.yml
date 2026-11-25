@@ -1,0 +1,42 @@
+name: Independent reproductive denominator and Heiling source audit
+on:
+  push:
+    branches: [analysis/independent-fate-replication-20261125]
+    paths:
+      - scripts/recover_heiling_original_mirror.py
+      - scripts/audit_irwin_2009_full_flower.py
+      - .github/workflows/independent-fate-replication.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  heiling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install openpyxl==3.1.5
+      - run: python -m scripts.recover_heiling_original_mirror
+      - uses: actions/upload-artifact@v4
+        with:
+          name: heiling-original-source
+          path: artifacts/heiling_source/
+          if-no-files-found: error
+  irwin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install scipy==1.14.1
+      - run: python -m scripts.audit_irwin_2009_full_flower --out artifacts/irwin_full_flower
+      - uses: actions/upload-artifact@v4
+        with:
+          name: irwin-2009-denominator
+          path: artifacts/irwin_full_flower/RESULT.json
+          if-no-files-found: error
