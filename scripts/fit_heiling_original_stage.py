@@ -70,7 +70,8 @@ def aggregate(p,f):
     if set(arms)!={'control','pr','cr'} or any(len(v)!=5 for v in arms.values()):raise ValueError('expected metadata-confirmed 3 arms / 5 plants; inspect source')
     if len({p for a in arms.values() for p in a})!=15:raise ValueError('plant key shared across treatments')
     allkeys=set(poll)|set(fruits)
-    if len(allkeys)>75:raise ValueError('union exceeds allocated 75 racemes')
+    # The source's incompatible raceme IDs are audited, not forced into a single allocation.
+    # Union keys are not biological racemes; no cross-sheet covariance or imputation.
     details=[];plants=collections.defaultdict(list)
     for k in sorted(allkeys):
         a=fruits.get(k,{x:None for x in ('flr_count','total_good_fruit','total_aborted_fruit','total_good_seed','total_aborted_seed','fruit_fraction','fruit_per_recorded_flower','seed_per_recorded_flower')})
@@ -78,6 +79,7 @@ def aggregate(p,f):
         b=dict(a);b['fruit_sheet_present']=k in fruits;b['pollen_rows']=len(rs);b['pollen_nonmissing']=len(g)
         b['fruit_from_flower_codes']=sum(x['fruit_binary'] for x in rs) if rs else None
         b['flower_code_success_fraction']=safe(b['fruit_from_flower_codes'],len(rs))
+        b['complete_flower_success_fraction']=safe(sum(x['fruit_binary'] for x in rs if x['grains'] is not None),len(g))
         b['flower_code_count_matches_fruit_sheet']= (len(rs)==a['flr_count']) if rs and a['flr_count'] is not None else None
         b['flower_code_success_matches_fruit_sheet']= (b['fruit_from_flower_codes']==a['total_good_fruit']) if rs and a['total_good_fruit'] is not None else None
         b['pollen_mean']=float(np.mean(g)) if g else None
@@ -87,18 +89,18 @@ def aggregate(p,f):
         b['count_residual']=subtract(a['flr_count'],add(a['total_good_fruit'],a['total_aborted_fruit']))
         details.append({'treatment':k[0],'plant':k[1],'raceme':k[2],**b})
         plants[k[:2]].append(b)
-    fields=('pollen_mean','sqrt_raceme_mean','pollen_positive_fraction','fruit_fraction','fruit_per_recorded_flower','total_good_seed','seed_per_recorded_flower','flower_code_success_fraction')
+    fields=('pollen_mean','sqrt_raceme_mean','pollen_positive_fraction','fruit_fraction','fruit_per_recorded_flower','total_good_seed','seed_per_recorded_flower','flower_code_success_fraction','complete_flower_success_fraction')
     plant=[]
     for (t,k),rs in sorted(plants.items()):
-        if len(rs)>5:raise ValueError('more than 5 racemes per plant')
+        if sum(r['pollen_rows']>0 for r in rs)>5 or sum(r['fruit_sheet_present'] for r in rs)>5:raise ValueError('more than 5 within-sheet racemes per plant')
         b={'treatment':t,'plant':k,'n_racemes':len(rs),'n_pollen_racemes':sum(r['pollen_mean'] is not None for r in rs)}
         for field in fields:
             vs=[r[field] for r in rs if r[field] is not None]
             b[field]=float(np.mean(vs)) if vs else None
-        # Same-raceme complete subset for paired endpoint sensitivity.
-        good=[r for r in rs if all(r[x] is not None for x in ('pollen_mean','fruit_fraction','total_good_seed'))]
-        for field in ('pollen_mean','fruit_fraction','total_good_seed'):
-            b['matched_raceme_'+field]=float(np.mean([r[field] for r in good])) if good else None
+        # Primary inference uses only within-pollen-sheet complete flower records.
+        good=[r for r in rs if r['pollen_mean'] is not None and r['complete_flower_success_fraction'] is not None]
+        for field in ('pollen_mean','complete_flower_success_fraction'):
+            b['matched_flower_'+field]=float(np.mean([r[field] for r in good])) if good else None
         plant.append(b)
     return details,plant,arms
 def fit(plant,fields,control,B=20000):
@@ -123,19 +125,18 @@ def main():
     ctrl=[t for t in arms if t.strip().lower()=='control']
     if len(ctrl)!=1:raise ValueError('control label not resolved')
     c=ctrl[0]
-    variants={'raw_pollen_fruit_seed':('pollen_mean','fruit_fraction','total_good_seed'),
-        'pollen_sheet_flower_status':('pollen_mean','flower_code_success_fraction'),
-        'matched_racemes':('matched_raceme_pollen_mean','matched_raceme_fruit_fraction','matched_raceme_total_good_seed'),
-        'recorded_flower_denominator':('pollen_mean','fruit_per_recorded_flower','seed_per_recorded_flower'),
-        'sqrt_scale_diagnostic_not_lnRR_comparable':('sqrt_raceme_mean','fruit_fraction','total_good_seed')}
+    variants={'matched_flower_primary':('matched_flower_pollen_mean','matched_flower_complete_flower_success_fraction'),
+        'pollen_sheet_all_status_sensitivity':('pollen_mean','flower_code_success_fraction')}
+    fruit_margins={t:{field:{'n_plants':len(vals),'mean':float(np.mean(vals)) if vals else None} for field in ('fruit_fraction','fruit_per_recorded_flower','total_good_seed','seed_per_recorded_flower') for vals in [[r[field] for r in plant if r['treatment']==t and r[field] is not None]]} for t in sorted(arms)}
+    pollen_margins={t:{'n_flower_records':sum(r['pollen_rows'] for r in rac if r['treatment']==t),'n_observed_grains':sum(r['pollen_nonmissing'] for r in rac if r['treatment']==t),'n_pollen_racemes':sum(r['pollen_rows']>0 for r in rac if r['treatment']==t),'n_fruit_racemes':sum(r['fruit_sheet_present'] for r in rac if r['treatment']==t),'n_exact_matched_keys':sum(r['fruit_sheet_present'] and r['pollen_rows']>0 for r in rac if r['treatment']==t)} for t in sorted(arms)}
     out={'sha256':SHA,'n_pollen_rows':len(pollen),'n_fruit_racemes':len(fruit),'n_union_racemes':len(rac),'n_plants':len(plant),'n_extra_nondata_rows':len(extra),'metadata':meta,
          'count_closure':dict(collections.Counter(str(x['count_residual']) for x in rac)),
          'flower_count_identity':dict(collections.Counter(str(x['flower_code_count_matches_fruit_sheet']) for x in rac)),
          'flower_success_identity':dict(collections.Counter(str(x['flower_code_success_matches_fruit_sheet']) for x in rac)),
          'missing_fruit_sheet_or_fields':[{'treatment':x['treatment'],'plant':x['plant'],'raceme':x['raceme'],'present':x['fruit_sheet_present'],'missing':[f for f in ('flr_count','total_good_fruit','total_aborted_fruit','total_good_seed','total_aborted_seed') if x[f] is None]} for x in rac if any(x[f] is None for f in ('flr_count','total_good_fruit','total_aborted_fruit','total_good_seed','total_aborted_seed'))],
          'pollen_raceme_count':sum(x['pollen_mean'] is not None for x in rac),'plant_records':plant,
-         'raceme_records':rac,'variants':{k:fit(plant,v,c) for k,v in variants.items()},
-         'scope':'Original treatment/plant/raceme linkage; flower pollen sheet status code 1=yes, NA=no per metadata; count comparison to fruit sheet explicit, not assume identity. Missing fruit-sheet counts not imputed as zero. No seed counts at individual flower grain. Five haphazardly assigned plants per treatment, not 75 independent plants. Equal-raceme means then equal-plant means; 20k arm-stratified bootstrap descriptive with n=5, not original mixed-model replay or equivalence. No same-flower seed data, no mechanistic mediation, no new independent archive study.'}
+         'raceme_records':rac,'fruit_sheet_separate_margins':fruit_margins,'pollen_sheet_margins':pollen_margins,'variants':{k:fit(plant,v,c) for k,v in variants.items()},
+         'scope':'Within-pollen-sheet flower records only for joint stage contrasts, fruit=1 yes and blank/NA=no per original metadata. Complete observed-grains subset primary. Cross-sheet raceme keys conflict; union is only a diagnostic index. Separate fruit-sheet descriptive margins, never matched to pollen covariance or assumed equivalent. No same-flower seed data. Five haphazardly assigned plants per treatment; 20k arm-stratified plant bootstrap is descriptive with n=5, not original mixed model, causal mediation or equivalence. No new independent archive study.'}
     p.out.mkdir(parents=True,exist_ok=False);(p.out/'RESULT.json').write_text(json.dumps(out,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
     print('HEILING_PLANT_RESULT '+json.dumps({k:v for k,v in out.items() if k not in ('raceme_records','metadata')},ensure_ascii=False,allow_nan=False))
 if __name__=='__main__':main()
