@@ -1,0 +1,547 @@
+{
+  "provenance": {
+    "run": 45759304653,
+    "head": "638386111d19fd80adfd357950168fb4bea30b50",
+    "artifacts": [
+      {
+        "id": 15089700151,
+        "name": "tirpitzia-full-metadata",
+        "digest": "sha256:5c0f4bf1f002bb65b3570beb74275913a025b22af2a642482529085add04fe0f"
+      },
+      {
+        "id": 15088793997,
+        "name": "breeding-stage-moderators",
+        "digest": "sha256:6ed2c5dbf025dc474d08c2a21efbc3633cdde85cebf27f7eadb44e34620593b5"
+      }
+    ]
+  },
+  "metadata": [
+    {
+      "url": "https://datadryad.org/api/v2/versions/259753/files",
+      "metadata": {
+        "_links": {
+          "self": {
+            "href": "/api/v2/versions/259753/files"
+          },
+          "first": {
+            "href": "/api/v2/versions/259753/files"
+          },
+          "last": {
+            "href": "/api/v2/versions/259753/files?page=1"
+          }
+        },
+        "count": 12,
+        "total": 12,
+        "_embedded": {
+          "stash:files": [
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643334"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643334/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "1_nectar_robbing_rate1011.xls",
+              "size": 34816,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "06d2b45aa08e7c66d3e2e7273815b158d23676cfbab2d08182df604354b14bfa",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643343"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643343/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "10_pollen_production_and_pollen_quality_(male_fitness)_1011.xls",
+              "size": 39936,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "cffd6eb4a2179e461d27932b9c65b992a5dd1274e19df2c23bdff13265032387",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643344"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643344/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "11_visit_frequency_of_hawkmoths_1011.xls",
+              "size": 28160,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "013511d0101551c5c2bc79cf0d53c8aec54308f072cbef72eff7bb7128e2fc0b",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643335"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643335/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "2_floral_traits_of_Tirpitzia_sinensis1011.xls",
+              "size": 45568,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "f794ba23e9096f35a94150e56ca568be806eafa628f269cdcf7cee093ca269bf",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643336"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643336/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "3_the_temporal_pattern_of_variation_in_nectar_volume_and_sugar_concentration_between_robbed_and_unrobbed_flowers_of_the_two_morphs（0800-2000)_1011.xls",
+              "size": 52736,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "26db8cbfe0ab0bdbe464bf03e35b4fc501a18daa58a72c3845fad70670080489",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643337"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643337/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "4_chemical_compounds_tentatively_identified_1011.xls",
+              "size": 63488,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "7b1be1599ddc2a443b01b8ced5320e8dec89bc1e3b44d2d3da3760347b30f294",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643339"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643339/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "5_nectar_sugar_composition_1011.xls",
+              "size": 29184,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "4e14309b2a4dc30c1e181198f22259a147fe4423c1b031963e234ad7e9993228",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643340"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643340/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "6_visit_rate_of_nectar_robbers_1011.xls",
+              "size": 30720,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "ae1e3fe11335053dab96b1f8976b576eacb61bba030c37d4a34046cc0ef1bf68",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643422"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643422/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "7_pollen_germination_(female_fitness)_1011.xls",
+              "size": 35840,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "created",
+              "digest": "3511f44baae64885a358dcbfb39ad1a20e155ca9d20aa3564690b2617b044555",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643424"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643424/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "8_pollen_tube_length_(female_fitness)_1011.xls",
+              "size": 34816,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "created",
+              "digest": "70780cdaaf87ecb934062d39582e6aa2403290e79cb69721e78da1c27a1d5da3",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643342"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643342/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "9_seed_set_(female_fitness)1011.xls",
+              "size": 46080,
+              "mimeType": "application/vnd.ms-excel",
+              "status": "copied",
+              "digest": "a0f04f5419c69a75d35a4c1720e5f4235092075551b08ae0e45328e32e54099e",
+              "digestType": "sha-256"
+            },
+            {
+              "_links": {
+                "self": {
+                  "href": "/api/v2/files/2643426"
+                },
+                "stash:dataset": {
+                  "href": "/api/v2/datasets/doi%3A10.5061%2Fdryad.6hdr7sr62"
+                },
+                "stash:version": {
+                  "href": "/api/v2/versions/259753"
+                },
+                "stash:files": {
+                  "href": "/api/v2/versions/259753/files"
+                },
+                "stash:download": {
+                  "href": "/api/v2/files/2643426/download"
+                },
+                "curies": [
+                  {
+                    "name": "stash",
+                    "href": "https://github.com/datadryad/dryad-app/blob/main/documentation/apis/link_relations.md#{rel}",
+                    "templated": "true"
+                  }
+                ]
+              },
+              "path": "README.md",
+              "size": 18782,
+              "mimeType": "text/markdown",
+              "status": "created",
+              "digest": "e18a96cdc09178673688948a50e3ec4cfcb09e9d97adc889a80baa12103ed9f0",
+              "digestType": "sha-256"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "https://zenodo.org/api/records?q=doi%3A%2210.5061%2Fdryad.6hdr7sr62%22&size=10",
+      "metadata": [
+        {
+          "id": 8435776,
+          "doi": "10.5061/dryad.6hdr7sr62",
+          "title": "Nectar robbing by bees affects the reproductive fitness of the distylous plant Tirpitzia sinensis (Linaceae)",
+          "related_ids": null,
+          "files": [
+            {
+              "id": "dbfb4036-1204-4c2e-8c96-ac27d2bc3e78",
+              "key": "10_pollen_production_and_pollen_quality_(male_fitness)_1011.xls",
+              "size": 39936,
+              "checksum": "md5:2211438001935d2bf292362d6f1f794b",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/10_pollen_production_and_pollen_quality_(male_fitness)_1011.xls/content"
+              }
+            },
+            {
+              "id": "379ef7af-e152-4c29-9599-ca16ca4fc6a4",
+              "key": "11_visit_frequency_of_hawkmoths_1011.xls",
+              "size": 28160,
+              "checksum": "md5:7a58e20fbbeb5e7c3025dd5e96cdda45",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/11_visit_frequency_of_hawkmoths_1011.xls/content"
+              }
+            },
+            {
+              "id": "9fa5725e-866c-42ef-9513-a738422dcecf",
+              "key": "1_nectar_robbing_rate1011.xls",
+              "size": 34816,
+              "checksum": "md5:34e0190ffd62f50bc76e10de87177d7a",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/1_nectar_robbing_rate1011.xls/content"
+              }
+            },
+            {
+              "id": "98b6d6a2-5728-4f5c-9c82-9380666e5a42",
+              "key": "2_floral_traits_of_Tirpitzia_sinensis1011.xls",
+              "size": 45568,
+              "checksum": "md5:38d4e5ec5824d3cd6b897495765de9db",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/2_floral_traits_of_Tirpitzia_sinensis1011.xls/content"
+              }
+            },
+            {
+              "id": "2f98694d-17bf-4b60-8a99-62e66074bf1a",
+              "key": "3_the_temporal_pattern_of_variation_in_nectar_volume_and_sugar_concentration_between_robbed_and_unrobbed_flowers_of_the_two_morphs（0800-2000)_1011.xls",
+              "size": 52736,
+              "checksum": "md5:3a6c563c3aa5a6dc42e31411e9e066e4",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/3_the_temporal_pattern_of_variation_in_nectar_volume_and_sugar_concentration_between_robbed_and_unrobbed_flowers_of_the_two_morphs%EF%BC%880800-2000)_1011.xls/content"
+              }
+            },
+            {
+              "id": "635f9c58-c9e7-4c51-81b4-28dcb402ac16",
+              "key": "4_chemical_compounds_tentatively_identified_1011.xls",
+              "size": 63488,
+              "checksum": "md5:8422999be36c1915f436d7840a798092",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/4_chemical_compounds_tentatively_identified_1011.xls/content"
+              }
+            },
+            {
+              "id": "e0890119-6fc9-48e6-a98a-24588f1574c4",
+              "key": "5_nectar_sugar_composition_1011.xls",
+              "size": 29184,
+              "checksum": "md5:005c5f9ea1531154b7251dac095a33d0",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/5_nectar_sugar_composition_1011.xls/content"
+              }
+            },
+            {
+              "id": "4fcefad5-f2e8-46aa-be3b-bc0394aa2b4b",
+              "key": "6_visit_rate_of_nectar_robbers_1011.xls",
+              "size": 30720,
+              "checksum": "md5:dac6a4adc95e492cac44eeeed37cd648",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/6_visit_rate_of_nectar_robbers_1011.xls/content"
+              }
+            },
+            {
+              "id": "d3ef732f-6b04-42ce-b3b3-da3555010783",
+              "key": "7_pollen_germination_(female_fitness)_1011.xls",
+              "size": 35840,
+              "checksum": "md5:be8955c057ccf9feb493f1c3876ae915",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/7_pollen_germination_(female_fitness)_1011.xls/content"
+              }
+            },
+            {
+              "id": "9f565493-6b5a-4b13-9f9a-a6c49dfb1973",
+              "key": "8_pollen_tube_length_(female_fitness)_1011.xls",
+              "size": 34816,
+              "checksum": "md5:08b368cfc443d627cf188d992d2c2a0b",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/8_pollen_tube_length_(female_fitness)_1011.xls/content"
+              }
+            },
+            {
+              "id": "9432183d-374c-4faa-b300-f3cd16eabdfb",
+              "key": "9_seed_set_(female_fitness)1011.xls",
+              "size": 46080,
+              "checksum": "md5:cb81d09dcf9f88f7e08632f0b847779c",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/9_seed_set_(female_fitness)1011.xls/content"
+              }
+            },
+            {
+              "id": "e65ffee9-40dc-4fb1-b8cc-9b767bfcca44",
+              "key": "README.md",
+              "size": 18782,
+              "checksum": "md5:804d32da573407ea4e29f6cfdc06b15e",
+              "links": {
+                "self": "https://zenodo.org/api/records/8435776/files/README.md/content"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
