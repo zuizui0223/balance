@@ -1,0 +1,62 @@
+name: Breeding system and stage dependence in floral larceny archive
+on:
+  push:
+    branches: [analysis/stage-dependence-small-n-20261126]
+    paths:
+      - scripts/audit_breeding_stage_moderators.py
+      - scripts/audit_heiling_small_n.py
+      - tests/test_breeding_stage_moderators.py
+      - .github/workflows/breeding-stage-moderators.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install scipy==1.14.1 pytest
+      - run: python -m pytest -q tests/test_breeding_stage_moderators.py
+      - run: python -m scripts.audit_breeding_stage_moderators --out artifacts/breeding_stage
+      - run: python -m scripts.audit_heiling_small_n --out artifacts/breeding_stage/HEILING_SMALL_N_REPLAY.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: breeding-stage-moderators
+          path: |
+            artifacts/breeding_stage/RESULT.json
+            artifacts/breeding_stage/HEILING_SMALL_N_REPLAY.json
+          if-no-files-found: error
+  source_metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Audit full Tirpitzia dataset file metadata
+        run: |
+          python - <<'PY'
+          import json, pathlib, urllib.parse, urllib.request
+          urls=['https://datadryad.org/api/v2/versions/259753/files','https://zenodo.org/api/records?'+urllib.parse.urlencode({'q':'doi:"10.5061/dryad.6hdr7sr62"','size':10})]
+          out=[]
+          for u in urls:
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'BALANCE-original-data-audit/1.0'}),timeout=35) as r: d=json.load(r)
+                  if 'zenodo' in u:
+                      d=[{'id':a['id'],'doi':a.get('doi'),'title':a.get('metadata',{}).get('title'),'related_ids':a.get('metadata',{}).get('related_identifiers'),'files':a.get('files')} for a in d.get('hits',{}).get('hits',[])]
+                  out.append({'url':u,'metadata':d})
+              except Exception as e:out.append({'url':u,'error':str(e)})
+          pathlib.Path('artifacts/tirpitzia_metadata').mkdir(parents=True,exist_ok=False)
+          pathlib.Path('artifacts/tirpitzia_metadata/RESULT.json').write_text(json.dumps(out,ensure_ascii=False,indent=2))
+          print('TIRPITZIA_FULL_METADATA '+json.dumps(out,ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tirpitzia-full-metadata
+          path: artifacts/tirpitzia_metadata/RESULT.json
+          if-no-files-found: error

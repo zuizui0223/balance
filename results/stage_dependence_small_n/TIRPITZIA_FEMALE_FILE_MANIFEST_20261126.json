@@ -1,0 +1,55 @@
+{
+  "doi": "10.5061/dryad.6hdr7sr62",
+  "dryad_version": 259753,
+  "zenodo_record": 8435776,
+  "files": [
+    {
+      "name": "7_pollen_germination_(female_fitness)_1011.xls",
+      "size": 35840,
+      "sha256": "3511f44baae64885a358dcbfb39ad1a20e155ca9d20aa3564690b2617b044555",
+      "md5": "be8955c057ccf9feb493f1c3876ae915",
+      "file_id": "2643422",
+      "record": 8435776,
+      "urls": [
+        "https://zenodo.org/api/records/8435776/files/7_pollen_germination_(female_fitness)_1011.xls/content",
+        "https://zenodo.org/records/8435776/files/7_pollen_germination_(female_fitness)_1011.xls?download=1"
+      ]
+    },
+    {
+      "name": "8_pollen_tube_length_(female_fitness)_1011.xls",
+      "size": 34816,
+      "sha256": "70780cdaaf87ecb934062d39582e6aa2403290e79cb69721e78da1c27a1d5da3",
+      "md5": "08b368cfc443d627cf188d992d2c2a0b",
+      "file_id": "2643424",
+      "record": 8435776,
+      "urls": [
+        "https://zenodo.org/api/records/8435776/files/8_pollen_tube_length_(female_fitness)_1011.xls/content",
+        "https://zenodo.org/records/8435776/files/8_pollen_tube_length_(female_fitness)_1011.xls?download=1"
+      ]
+    },
+    {
+      "name": "9_seed_set_(female_fitness)1011.xls",
+      "size": 46080,
+      "sha256": "a0f04f5419c69a75d35a4c1720e5f4235092075551b08ae0e45328e32e54099e",
+      "md5": "cb81d09dcf9f88f7e08632f0b847779c",
+      "file_id": "2643342",
+      "record": 8435776,
+      "urls": [
+        "https://zenodo.org/api/records/8435776/files/9_seed_set_(female_fitness)1011.xls/content",
+        "https://zenodo.org/records/8435776/files/9_seed_set_(female_fitness)1011.xls?download=1"
+      ]
+    },
+    {
+      "name": "README.md",
+      "size": 18782,
+      "sha256": "e18a96cdc09178673688948a50e3ec4cfcb09e9d97adc889a80baa12103ed9f0",
+      "md5": "804d32da573407ea4e29f6cfdc06b15e",
+      "file_id": "2643426",
+      "record": 8435776,
+      "urls": [
+        "https://zenodo.org/api/records/8435776/files/README.md/content",
+        "https://zenodo.org/records/8435776/files/README.md?download=1"
+      ]
+    }
+  ]
+}

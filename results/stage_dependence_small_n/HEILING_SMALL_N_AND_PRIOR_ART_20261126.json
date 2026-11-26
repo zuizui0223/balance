@@ -1,0 +1,444 @@
+{
+  "scope": "New calculation using authenticated prior plant summaries; not new raw experiment. Haphazard allocation: permutation distribution is an exchangeability diagnostic only. Two dependent comparisons share controls; no confirmatory inference. Ratios of equally weighted plant means, same as primary Heiling receipt.",
+  "input_commit": "b66b47fb9596ff1624499167b370f554b3a7ad2e",
+  "input_path": "results/distyly_stage/HEILING_FLOWER_STAGE_VERIFIED_20261126.json",
+  "source_hash": "e11d6e9ef1aacc796c95ced562117c8760197fb62be0e505b9148644106a8fa9",
+  "robustness": {
+    "pr": {
+      "estimate": -0.3155621487090637,
+      "exchangeability_diagnostic": {
+        "enumerated": 252,
+        "at_least_as_extreme": 28,
+        "p_two_sided": 0.1111111111111111
+      },
+      "leave_one": [
+        {
+          "arm": "pr",
+          "plant": 6,
+          "delta": -0.3650702135516891
+        },
+        {
+          "arm": "pr",
+          "plant": 7,
+          "delta": -0.26761877998501377
+        },
+        {
+          "arm": "pr",
+          "plant": 8,
+          "delta": -0.24333585126292362
+        },
+        {
+          "arm": "pr",
+          "plant": 9,
+          "delta": -0.3209544330338123
+        },
+        {
+          "arm": "pr",
+          "plant": 10,
+          "delta": -0.38298056532762154
+        },
+        {
+          "arm": "control",
+          "plant": 1,
+          "delta": -0.27906075098743927
+        },
+        {
+          "arm": "control",
+          "plant": 2,
+          "delta": -0.22223201887673555
+        },
+        {
+          "arm": "control",
+          "plant": 3,
+          "delta": -0.3782972184812583
+        },
+        {
+          "arm": "control",
+          "plant": 4,
+          "delta": -0.422706165783614
+        },
+        {
+          "arm": "control",
+          "plant": 5,
+          "delta": -0.2867538209062174
+        }
+      ],
+      "leave_one_per_arm": [
+        {
+          "removed_treated": 6,
+          "removed_control": 1,
+          "delta": -0.3285688158300645
+        },
+        {
+          "removed_treated": 6,
+          "removed_control": 2,
+          "delta": -0.2717400837193609
+        },
+        {
+          "removed_treated": 6,
+          "removed_control": 3,
+          "delta": -0.42780528332388357
+        },
+        {
+          "removed_treated": 6,
+          "removed_control": 4,
+          "delta": -0.47221423062623924
+        },
+        {
+          "removed_treated": 6,
+          "removed_control": 5,
+          "delta": -0.33626188574884286
+        },
+        {
+          "removed_treated": 7,
+          "removed_control": 1,
+          "delta": -0.23111738226338935
+        },
+        {
+          "removed_treated": 7,
+          "removed_control": 2,
+          "delta": -0.17428865015268571
+        },
+        {
+          "removed_treated": 7,
+          "removed_control": 3,
+          "delta": -0.3303538497572084
+        },
+        {
+          "removed_treated": 7,
+          "removed_control": 4,
+          "delta": -0.3747627970595641
+        },
+        {
+          "removed_treated": 7,
+          "removed_control": 5,
+          "delta": -0.23881045218216768
+        },
+        {
+          "removed_treated": 8,
+          "removed_control": 1,
+          "delta": -0.20683445354129906
+        },
+        {
+          "removed_treated": 8,
+          "removed_control": 2,
+          "delta": -0.15000572143059532
+        },
+        {
+          "removed_treated": 8,
+          "removed_control": 3,
+          "delta": -0.3060709210351181
+        },
+        {
+          "removed_treated": 8,
+          "removed_control": 4,
+          "delta": -0.3504798683374739
+        },
+        {
+          "removed_treated": 8,
+          "removed_control": 5,
+          "delta": -0.21452752346007736
+        },
+        {
+          "removed_treated": 9,
+          "removed_control": 1,
+          "delta": -0.2844530353121878
+        },
+        {
+          "removed_treated": 9,
+          "removed_control": 2,
+          "delta": -0.2276243032014842
+        },
+        {
+          "removed_treated": 9,
+          "removed_control": 3,
+          "delta": -0.3836895028060068
+        },
+        {
+          "removed_treated": 9,
+          "removed_control": 4,
+          "delta": -0.42809845010836267
+        },
+        {
+          "removed_treated": 9,
+          "removed_control": 5,
+          "delta": -0.29214610523096624
+        },
+        {
+          "removed_treated": 10,
+          "removed_control": 1,
+          "delta": -0.34647916760599706
+        },
+        {
+          "removed_treated": 10,
+          "removed_control": 2,
+          "delta": -0.2896504354952935
+        },
+        {
+          "removed_treated": 10,
+          "removed_control": 3,
+          "delta": -0.44571563509981604
+        },
+        {
+          "removed_treated": 10,
+          "removed_control": 4,
+          "delta": -0.4901245824021719
+        },
+        {
+          "removed_treated": 10,
+          "removed_control": 5,
+          "delta": -0.35417223752477556
+        }
+      ]
+    },
+    "cr": {
+      "estimate": -0.154858803596211,
+      "exchangeability_diagnostic": {
+        "enumerated": 252,
+        "at_least_as_extreme": 84,
+        "p_two_sided": 0.3333333333333333
+      },
+      "leave_one": [
+        {
+          "arm": "cr",
+          "plant": 11,
+          "delta": -0.11892302241263696
+        },
+        {
+          "arm": "cr",
+          "plant": 12,
+          "delta": -0.15150843549949708
+        },
+        {
+          "arm": "cr",
+          "plant": 13,
+          "delta": -0.20555324836443628
+        },
+        {
+          "arm": "cr",
+          "plant": 14,
+          "delta": -0.13646854209961526
+        },
+        {
+          "arm": "cr",
+          "plant": 15,
+          "delta": -0.1607224148699531
+        },
+        {
+          "arm": "control",
+          "plant": 1,
+          "delta": -0.11835740587458642
+        },
+        {
+          "arm": "control",
+          "plant": 2,
+          "delta": -0.06152867376388265
+        },
+        {
+          "arm": "control",
+          "plant": 3,
+          "delta": -0.2175938733684055
+        },
+        {
+          "arm": "control",
+          "plant": 4,
+          "delta": -0.2620028206707612
+        },
+        {
+          "arm": "control",
+          "plant": 5,
+          "delta": -0.1260504757933648
+        }
+      ],
+      "leave_one_per_arm": [
+        {
+          "removed_treated": 11,
+          "removed_control": 1,
+          "delta": -0.08242162469101214
+        },
+        {
+          "removed_treated": 11,
+          "removed_control": 2,
+          "delta": -0.025592892580308682
+        },
+        {
+          "removed_treated": 11,
+          "removed_control": 3,
+          "delta": -0.1816580921848312
+        },
+        {
+          "removed_treated": 11,
+          "removed_control": 4,
+          "delta": -0.22606703948718715
+        },
+        {
+          "removed_treated": 11,
+          "removed_control": 5,
+          "delta": -0.09011469460979049
+        },
+        {
+          "removed_treated": 12,
+          "removed_control": 1,
+          "delta": -0.11500703777787247
+        },
+        {
+          "removed_treated": 12,
+          "removed_control": 2,
+          "delta": -0.05817830566716889
+        },
+        {
+          "removed_treated": 12,
+          "removed_control": 3,
+          "delta": -0.2142435052716916
+        },
+        {
+          "removed_treated": 12,
+          "removed_control": 4,
+          "delta": -0.2586524525740473
+        },
+        {
+          "removed_treated": 12,
+          "removed_control": 5,
+          "delta": -0.12270010769665096
+        },
+        {
+          "removed_treated": 13,
+          "removed_control": 1,
+          "delta": -0.1690518506428115
+        },
+        {
+          "removed_treated": 13,
+          "removed_control": 2,
+          "delta": -0.11222311853210808
+        },
+        {
+          "removed_treated": 13,
+          "removed_control": 3,
+          "delta": -0.2682883181366307
+        },
+        {
+          "removed_treated": 13,
+          "removed_control": 4,
+          "delta": -0.31269726543898635
+        },
+        {
+          "removed_treated": 13,
+          "removed_control": 5,
+          "delta": -0.17674492056159002
+        },
+        {
+          "removed_treated": 14,
+          "removed_control": 1,
+          "delta": -0.09996714437799055
+        },
+        {
+          "removed_treated": 14,
+          "removed_control": 2,
+          "delta": -0.04313841226728698
+        },
+        {
+          "removed_treated": 14,
+          "removed_control": 3,
+          "delta": -0.1992036118718096
+        },
+        {
+          "removed_treated": 14,
+          "removed_control": 4,
+          "delta": -0.24361255917416544
+        },
+        {
+          "removed_treated": 14,
+          "removed_control": 5,
+          "delta": -0.10766021429676885
+        },
+        {
+          "removed_treated": 15,
+          "removed_control": 1,
+          "delta": -0.12422101714832837
+        },
+        {
+          "removed_treated": 15,
+          "removed_control": 2,
+          "delta": -0.06739228503762476
+        },
+        {
+          "removed_treated": 15,
+          "removed_control": 3,
+          "delta": -0.22345748464214737
+        },
+        {
+          "removed_treated": 15,
+          "removed_control": 4,
+          "delta": -0.26786643194450316
+        },
+        {
+          "removed_treated": 15,
+          "removed_control": 5,
+          "delta": -0.13191408706710658
+        }
+      ]
+    }
+  },
+  "prior_art": {
+    "doi": "10.1093/aob/mcp104",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2706726/",
+    "reported_three_species": [
+      {
+        "taxon": "Corydalis tomentella",
+        "system": "predominantly autonomous selfing",
+        "robbed": 97.2,
+        "control": 98.4,
+        "excluded_visitors": 96.9,
+        "hand_pollinated": 97.1,
+        "open_pollinated": 98.4,
+        "reported_F": 0.312,
+        "reported_df": [
+          1,
+          189
+        ],
+        "reported_p": "not significant",
+        "seed_set_lnRR": -0.01227009259181436,
+        "bagged_over_hand": 0.9979402677651906,
+        "scope": "Published means from one comparative programme; not stage difference or independent causal contrast."
+      },
+      {
+        "taxon": "Corydalis incisa",
+        "system": "facultative outcrossing",
+        "robbed": 70.7,
+        "control": 66.6,
+        "excluded_visitors": 21.4,
+        "hand_pollinated": 79.8,
+        "open_pollinated": 66.6,
+        "reported_F": 1.145,
+        "reported_df": [
+          1,
+          232
+        ],
+        "reported_p": "0.042",
+        "seed_set_lnRR": 0.059740995356183726,
+        "bagged_over_hand": 0.2681704260651629,
+        "scope": "Published means from one comparative programme; not stage difference or independent causal contrast."
+      },
+      {
+        "taxon": "Corydalis ternatifolia",
+        "system": "outcrossing",
+        "robbed": 46.3,
+        "control": 64.2,
+        "excluded_visitors": 2.2,
+        "hand_pollinated": 61.3,
+        "open_pollinated": 64.2,
+        "reported_F": 25.459,
+        "reported_df": [
+          1,
+          234
+        ],
+        "reported_p": "<0.001",
+        "seed_set_lnRR": -0.3268612496037272,
+        "bagged_over_hand": 0.03588907014681893,
+        "scope": "Published means from one comparative programme; not stage difference or independent causal contrast."
+      }
+    ],
+    "n_programmes": 1,
+    "scope": "Existing breeding-system hypothesis; no pollen-receipt paired stage in this paper. F(1,232)=1.145 implies p about .286, not printed .042; not a verified positive effect. No independent species replication from a shared environment and study. Source report's grouping/SE and degrees of freedom require raw source."
+  }
+}

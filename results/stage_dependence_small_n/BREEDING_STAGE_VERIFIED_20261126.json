@@ -1,0 +1,1576 @@
+{
+  "provenance": {
+    "run": 45759304653,
+    "head": "638386111d19fd80adfd357950168fb4bea30b50",
+    "artifacts": [
+      {
+        "id": 15089700151,
+        "name": "tirpitzia-full-metadata",
+        "digest": "sha256:5c0f4bf1f002bb65b3570beb74275913a025b22af2a642482529085add04fe0f"
+      },
+      {
+        "id": 15088793997,
+        "name": "breeding-stage-moderators",
+        "digest": "sha256:6ed2c5dbf025dc474d08c2a21efbc3633cdde85cebf27f7eadb44e34620593b5"
+      }
+    ]
+  },
+  "source_sha256": "6554409f22b09156ee1c2a35ee2547eb5ae28c4a25934b9c639d8a19ea7fe9b4",
+  "n_effects": 776,
+  "n_papers": 153,
+  "label_vocabulary": {
+    "autonomous": {
+      "no": 621,
+      "yes": 135,
+      "None": 20
+    },
+    "self_compatible": {
+      "yes": 426,
+      "no": 329,
+      "None": 21
+    },
+    "pollen_limitation": {
+      "None": 147,
+      "yes": 326,
+      "no": 303
+    }
+  },
+  "stage_differences": {
+    "fruit set minus pollen deposition": {
+      "paper": {
+        "autonomous": {
+          "n_total": 10,
+          "n_excluded": 0,
+          "n_yes": 1,
+          "n_no": 9,
+          "equal_unit_means": {
+            "yes": -0.2048473381058275,
+            "no": -0.3570408165675075
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 10,
+          "n_excluded": 0,
+          "n_yes": 5,
+          "n_no": 5,
+          "equal_unit_means": {
+            "yes": -0.13964354314079758,
+            "no": -0.5439993943018815
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.34734560875697573,
+              "ci95": [
+                -0.16476003271862794,
+                0.8594512502325794
+              ],
+              "p_nominal": 0.15393313820861784,
+              "df": 7.2902268993416754,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.33189924249219027,
+              "ci95": [
+                -0.1657451722761334,
+                0.8295436572605139
+              ],
+              "p_nominal": 0.15919398705446303,
+              "df": 7.095239046502597,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.3666114507859699,
+              "ci95": [
+                -0.1015644246400203,
+                0.8347873262119601
+              ],
+              "p_nominal": 0.10685324050764033,
+              "df": 7.14951025352747,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 10,
+          "n_excluded": 1,
+          "n_yes": 8,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.4348220707134112,
+            "no": -0.2048473381058275
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 7,
+          "n_excluded": 0,
+          "n_yes": 1,
+          "n_no": 6,
+          "equal_unit_means": {
+            "yes": -0.2048473381058275,
+            "no": -0.3561034803085412
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 7,
+          "n_excluded": 0,
+          "n_yes": 4,
+          "n_no": 3,
+          "equal_unit_means": {
+            "yes": -0.09267913937373913,
+            "no": -0.6569172208207061
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 7,
+          "n_excluded": 1,
+          "n_yes": 5,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.48036601969019393,
+            "no": -0.2048473381058275
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    },
+    "seed set minus pollen deposition": {
+      "paper": {
+        "autonomous": {
+          "n_total": 8,
+          "n_excluded": 0,
+          "n_yes": 1,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": -0.1834549410925415,
+            "no": -0.17251929933827345
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 8,
+          "n_excluded": 0,
+          "n_yes": 5,
+          "n_no": 3,
+          "equal_unit_means": {
+            "yes": -0.11542641339678,
+            "no": -0.27131932315885193
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 8,
+          "n_excluded": 1,
+          "n_yes": 6,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.16185717390537452,
+            "no": -0.1834549410925415
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 4,
+          "n_excluded": 0,
+          "n_yes": 1,
+          "n_no": 3,
+          "equal_unit_means": {
+            "yes": -0.1834549410925415,
+            "no": -0.18673546658213874
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 4,
+          "n_excluded": 0,
+          "n_yes": 3,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.15744733922670193,
+            "no": -0.27131932315885193
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 4,
+          "n_excluded": 1,
+          "n_yes": 2,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.16185717390537452,
+            "no": -0.1834549410925415
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    },
+    "fruit set minus visitation rate": {
+      "paper": {
+        "autonomous": {
+          "n_total": 10,
+          "n_excluded": 0,
+          "n_yes": 2,
+          "n_no": 8,
+          "equal_unit_means": {
+            "yes": 0.012363974393597987,
+            "no": -0.17306128205584267
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 10,
+          "n_excluded": 0,
+          "n_yes": 6,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": -0.33115276024167417,
+            "no": 0.15678856344762487
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 10,
+          "n_excluded": 1,
+          "n_yes": 4,
+          "n_no": 5,
+          "equal_unit_means": {
+            "yes": -0.4915127675921622,
+            "no": 0.05050360145404409
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 9,
+          "n_excluded": 0,
+          "n_yes": 2,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": 0.012363974393597987,
+            "no": -0.13690843164489416
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 9,
+          "n_excluded": 0,
+          "n_yes": 6,
+          "n_no": 3,
+          "equal_unit_means": {
+            "yes": -0.33115276024167417,
+            "no": 0.3510951629076606
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 9,
+          "n_excluded": 1,
+          "n_yes": 3,
+          "n_no": 5,
+          "equal_unit_means": {
+            "yes": -0.5133066118120555,
+            "no": 0.05050360145404409
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    },
+    "seed set minus visitation rate": {
+      "paper": {
+        "autonomous": {
+          "n_total": 17,
+          "n_excluded": 0,
+          "n_yes": 5,
+          "n_no": 12,
+          "equal_unit_means": {
+            "yes": 0.7445903406146115,
+            "no": -0.08286275213451923
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.5886441389388539,
+              "ci95": [
+                -0.09605938665186153,
+                1.2733476645295694
+              ],
+              "p_nominal": 0.0822739913075157,
+              "df": 7.580750082504969,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.5709585749107208,
+              "ci95": [
+                -0.041608904920699796,
+                1.1835260547421413
+              ],
+              "p_nominal": 0.06382746525299578,
+              "df": 7.975308988271455,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.5700301823048001,
+              "ci95": [
+                -0.004247513323384355,
+                1.1443078779329845
+              ],
+              "p_nominal": 0.051344555892501975,
+              "df": 7.8903551825744,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 17,
+          "n_excluded": 0,
+          "n_yes": 12,
+          "n_no": 5,
+          "equal_unit_means": {
+            "yes": 0.28866086876523234,
+            "no": -0.14706634954479228
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.2890641607388166,
+              "ci95": [
+                -0.6883243165693342,
+                1.2664526380469674
+              ],
+              "p_nominal": 0.4934470335443675,
+              "df": 5.763472710096104,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.28451419427168734,
+              "ci95": [
+                -0.6113114982023108,
+                1.1803398867456854
+              ],
+              "p_nominal": 0.46345033740547814,
+              "df": 5.758088655222555,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.3018174386608383,
+              "ci95": [
+                -0.5711609968471912,
+                1.174795874168868
+              ],
+              "p_nominal": 0.42588985832585735,
+              "df": 5.687936659972367,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 17,
+          "n_excluded": 5,
+          "n_yes": 5,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": -0.3563231954975854,
+            "no": 0.016338461470418886
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.2626488640466753,
+              "ci95": [
+                -0.8135125903613094,
+                0.2882148622679588
+              ],
+              "p_nominal": 0.3120744371692173,
+              "df": 9.74880375268144,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": -0.24512400946263369,
+              "ci95": [
+                -0.8006601323018497,
+                0.31041211337658237
+              ],
+              "p_nominal": 0.34826388854410883,
+              "df": 9.88540643573201,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": -0.21975337270336343,
+              "ci95": [
+                -0.7698860431487533,
+                0.3303792977420264
+              ],
+              "p_nominal": 0.3938841649120488,
+              "df": 9.88821132572148,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 15,
+          "n_excluded": 0,
+          "n_yes": 5,
+          "n_no": 10,
+          "equal_unit_means": {
+            "yes": 0.7445903406146115,
+            "no": 0.0054487464105817725
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.5215218886153258,
+              "ci95": [
+                -0.17719549692659775,
+                1.2202392741572492
+              ],
+              "p_nominal": 0.12419117093101169,
+              "df": 8.301016786610573,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.5089540755832459,
+              "ci95": [
+                -0.11865327689828298,
+                1.1365614280647747
+              ],
+              "p_nominal": 0.09944866264065344,
+              "df": 8.738232835566055,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.5112372116253754,
+              "ci95": [
+                -0.0759536079947074,
+                1.0984280312454582
+              ],
+              "p_nominal": 0.08008553029060736,
+              "df": 8.600725094245853,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 15,
+          "n_excluded": 0,
+          "n_yes": 12,
+          "n_no": 3,
+          "equal_unit_means": {
+            "yes": 0.28866086876523234,
+            "no": 0.10450291399869567
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 15,
+          "n_excluded": 5,
+          "n_yes": 3,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": -0.24425849592262622,
+            "no": 0.016338461470418886
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    },
+    "seed set minus fruit set": {
+      "paper": {
+        "autonomous": {
+          "n_total": 34,
+          "n_excluded": 2,
+          "n_yes": 5,
+          "n_no": 27,
+          "equal_unit_means": {
+            "yes": -0.007042938203673621,
+            "no": 0.018204704935984493
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.016720862340765277,
+              "ci95": [
+                -0.16098402661215472,
+                0.19442575129368528
+              ],
+              "p_nominal": 0.8462649155947432,
+              "df": 19.719601271391234,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.03651414554425011,
+              "ci95": [
+                -0.16447199465720072,
+                0.23750028574570095
+              ],
+              "p_nominal": 0.7055902767329816,
+              "df": 16.351516327224054,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.04795867495353303,
+              "ci95": [
+                -0.17141685339893564,
+                0.2673342033060017
+              ],
+              "p_nominal": 0.6464668249791401,
+              "df": 14.056546575895752,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 34,
+          "n_excluded": 1,
+          "n_yes": 17,
+          "n_no": 16,
+          "equal_unit_means": {
+            "yes": 0.09118433285330084,
+            "no": -0.08909546325646506
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.12077519803849804,
+              "ci95": [
+                -0.12278174925819021,
+                0.3643321453351863
+              ],
+              "p_nominal": 0.31956475610647805,
+              "df": 30.70519156601549,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.12793788975614465,
+              "ci95": [
+                -0.1274772383267578,
+                0.38335301783904707
+              ],
+              "p_nominal": 0.31375209637018364,
+              "df": 28.225352842979976,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.12655915149137614,
+              "ci95": [
+                -0.13285359016047038,
+                0.38597189314322267
+              ],
+              "p_nominal": 0.3253715354903097,
+              "df": 26.348864043945248,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 34,
+          "n_excluded": 5,
+          "n_yes": 16,
+          "n_no": 13,
+          "equal_unit_means": {
+            "yes": -0.014809672764589478,
+            "no": -0.04965943332333673
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.15543119997296384,
+              "ci95": [
+                -0.09044755618941747,
+                0.40130995613534515
+              ],
+              "p_nominal": 0.2013789192348804,
+              "df": 18.825124656707835,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.18972373889831337,
+              "ci95": [
+                -0.05179589909240495,
+                0.4312433768890317
+              ],
+              "p_nominal": 0.11677925300545808,
+              "df": 19.544747746307486,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.2009777377180442,
+              "ci95": [
+                -0.035668408128048834,
+                0.43762388356413723
+              ],
+              "p_nominal": 0.09163778541374727,
+              "df": 19.677320491307725,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 26,
+          "n_excluded": 2,
+          "n_yes": 4,
+          "n_no": 20,
+          "equal_unit_means": {
+            "yes": -0.006257910780533902,
+            "no": 0.016215577239048633
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 26,
+          "n_excluded": 1,
+          "n_yes": 14,
+          "n_no": 11,
+          "equal_unit_means": {
+            "yes": 0.08116217945007675,
+            "no": -0.10624515513570705
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.1368123764131507,
+              "ci95": [
+                -0.18695274516278249,
+                0.4605774979890839
+              ],
+              "p_nominal": 0.38639825186167487,
+              "df": 18.024575243263264,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.12688487495220926,
+              "ci95": [
+                -0.2112463542491997,
+                0.46501610415361827
+              ],
+              "p_nominal": 0.4382479439182666,
+              "df": 16.18300870257459,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.12176583163362498,
+              "ci95": [
+                -0.22370040656803175,
+                0.4672320698352817
+              ],
+              "p_nominal": 0.4639317595195641,
+              "df": 14.89750482912997,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 26,
+          "n_excluded": 5,
+          "n_yes": 9,
+          "n_no": 12,
+          "equal_unit_means": {
+            "yes": -0.0449078058582267,
+            "no": -0.052949132108928744
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.15377257970132002,
+              "ci95": [
+                -0.11850529620497752,
+                0.42605045560761756
+              ],
+              "p_nominal": 0.25032381949060967,
+              "df": 17.484664269429466,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.2088811792787765,
+              "ci95": [
+                -0.05360079860139841,
+                0.4713631571589514
+              ],
+              "p_nominal": 0.11151638734584741,
+              "df": 17.181146983773353,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.2220966872483503,
+              "ci95": [
+                -0.054175802943301765,
+                0.49836917744000236
+              ],
+              "p_nominal": 0.10875458901967675,
+              "df": 18.81111269643637,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      }
+    },
+    "visitation rate minus nectar volume": {
+      "paper": {
+        "autonomous": {
+          "n_total": 10,
+          "n_excluded": 1,
+          "n_yes": 5,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": 0.19115530433099007,
+            "no": 1.1158543542997406
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 10,
+          "n_excluded": 0,
+          "n_yes": 8,
+          "n_no": 2,
+          "equal_unit_means": {
+            "yes": 0.6463808653078784,
+            "no": 0.33604715299620697
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 10,
+          "n_excluded": 2,
+          "n_yes": 1,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": 0.04493177150097158,
+            "no": 0.7323346720254277
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 10,
+          "n_excluded": 1,
+          "n_yes": 5,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": 0.19115530433099007,
+            "no": 1.1158543542997406
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 10,
+          "n_excluded": 0,
+          "n_yes": 8,
+          "n_no": 2,
+          "equal_unit_means": {
+            "yes": 0.6463808653078784,
+            "no": 0.33604715299620697
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 10,
+          "n_excluded": 2,
+          "n_yes": 1,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": 0.04493177150097158,
+            "no": 0.7323346720254277
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    },
+    "pollen deposition minus visitation rate": {
+      "paper": {
+        "autonomous": {
+          "n_total": 5,
+          "n_excluded": 0,
+          "n_yes": 1,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": 0.13914013132376543,
+            "no": -0.3663487969624305
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 5,
+          "n_excluded": 0,
+          "n_yes": 4,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.3036794885174233,
+            "no": -0.11153710245626339
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 5,
+          "n_excluded": 0,
+          "n_yes": 4,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.3663487969624305,
+            "no": 0.13914013132376543
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 5,
+          "n_excluded": 0,
+          "n_yes": 1,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": 0.13914013132376543,
+            "no": -0.3663487969624305
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 5,
+          "n_excluded": 0,
+          "n_yes": 4,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.3036794885174233,
+            "no": -0.11153710245626339
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "pollen_limitation": {
+          "n_total": 5,
+          "n_excluded": 0,
+          "n_yes": 4,
+          "n_no": 1,
+          "equal_unit_means": {
+            "yes": -0.3663487969624305,
+            "no": 0.13914013132376543
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    }
+  },
+  "marginal_outcomes": {
+    "pollen deposition": {
+      "paper": {
+        "autonomous": {
+          "n_total": 23,
+          "n_excluded": 1,
+          "n_yes": 2,
+          "n_no": 20,
+          "equal_unit_means": {
+            "yes": -0.20120215400303876,
+            "no": -0.24850856261970655
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 23,
+          "n_excluded": 0,
+          "n_yes": 13,
+          "n_no": 10,
+          "equal_unit_means": {
+            "yes": -0.3853717257077535,
+            "no": -0.2729866740331033
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.15537311452991823,
+              "ci95": [
+                -0.6333593248591121,
+                0.32261309579927555
+              ],
+              "p_nominal": 0.5027898833048745,
+              "df": 17.543743400178812,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": -0.17197608703006897,
+              "ci95": [
+                -0.657987527559598,
+                0.3140353534994601
+              ],
+              "p_nominal": 0.4669276789516362,
+              "df": 18.085582819430563,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": -0.1790113327265505,
+              "ci95": [
+                -0.67204251229596,
+                0.314019846842859
+              ],
+              "p_nominal": 0.45614931937221337,
+              "df": 18.583282332572196,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 23,
+          "n_excluded": 6,
+          "n_yes": 13,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": -0.4537366321744819,
+            "no": -0.2621352814445236
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 17,
+          "n_excluded": 1,
+          "n_yes": 2,
+          "n_no": 14,
+          "equal_unit_means": {
+            "yes": -0.20120215400303876,
+            "no": -0.282854300636644
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        },
+        "self_compatible": {
+          "n_total": 17,
+          "n_excluded": 0,
+          "n_yes": 10,
+          "n_no": 7,
+          "equal_unit_means": {
+            "yes": -0.4952187614591452,
+            "no": -0.25390007377989465
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.2991250912069112,
+              "ci95": [
+                -0.9070757139876254,
+                0.308825531573803
+              ],
+              "p_nominal": 0.306883454946396,
+              "df": 12.877410605054004,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": -0.32448593652359564,
+              "ci95": [
+                -0.9386194953828944,
+                0.289647622335703
+              ],
+              "p_nominal": 0.27446029632153696,
+              "df": 13.094969159395548,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": -0.3399723472271784,
+              "ci95": [
+                -0.9573373858481491,
+                0.2773926913937923
+              ],
+              "p_nominal": 0.2558495897257536,
+              "df": 13.211592159308568,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 17,
+          "n_excluded": 5,
+          "n_yes": 8,
+          "n_no": 4,
+          "equal_unit_means": {
+            "yes": -0.6072729927615417,
+            "no": -0.2621352814445236
+          },
+          "contrasts": {},
+          "status": "INSUFFICIENT_SUPPORT"
+        }
+      }
+    },
+    "fruit set": {
+      "paper": {
+        "autonomous": {
+          "n_total": 68,
+          "n_excluded": 3,
+          "n_yes": 13,
+          "n_no": 52,
+          "equal_unit_means": {
+            "yes": -0.18151666891736926,
+            "no": -0.3211613487273101
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.16238189130929429,
+              "ci95": [
+                -0.2449780158468012,
+                0.5697417984653897
+              ],
+              "p_nominal": 0.4106311837415303,
+              "df": 16.052922462625073,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.16449719368049073,
+              "ci95": [
+                -0.24636488839139428,
+                0.5753592757523758
+              ],
+              "p_nominal": 0.4091547816678138,
+              "df": 16.40433733849552,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.16617763623790857,
+              "ci95": [
+                -0.24797287904329193,
+                0.5803281515191091
+              ],
+              "p_nominal": 0.40873703071420364,
+              "df": 16.811851707423397,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 68,
+          "n_excluded": 4,
+          "n_yes": 35,
+          "n_no": 29,
+          "equal_unit_means": {
+            "yes": -0.1616130097130574,
+            "no": -0.30988243518047914
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.2555335169762327,
+              "ci95": [
+                0.010566861734625788,
+                0.5005001722178397
+              ],
+              "p_nominal": 0.04127430532544519,
+              "df": 45.144982202024465,
+              "p_holm_family": 0.3301944426035615
+            },
+            "0.5": {
+              "yes_minus_no": 0.24861440754516792,
+              "ci95": [
+                -0.011012280898629573,
+                0.5082410959889654
+              ],
+              "p_nominal": 0.06008036238864784,
+              "df": 43.66195378674132,
+              "p_holm_family": 0.4205625367205349
+            },
+            "1.0": {
+              "yes_minus_no": 0.24580128258389156,
+              "ci95": [
+                -0.02117079930904492,
+                0.512773364476828
+              ],
+              "p_nominal": 0.07020239801580391,
+              "df": 42.968740254061025,
+              "p_holm_family": 0.4914167861106274
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 68,
+          "n_excluded": 14,
+          "n_yes": 28,
+          "n_no": 26,
+          "equal_unit_means": {
+            "yes": -0.4651373148093656,
+            "no": -0.07492772665604637
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.42816375020006936,
+              "ci95": [
+                -0.7276100645746304,
+                -0.12871743582550838
+              ],
+              "p_nominal": 0.005966505963306052,
+              "df": 50.18253122505484,
+              "p_holm_family": 0.05369855366975446
+            },
+            "0.5": {
+              "yes_minus_no": -0.43707930281713847,
+              "ci95": [
+                -0.7470009575647862,
+                -0.12715764806949076
+              ],
+              "p_nominal": 0.006622697611226932,
+              "df": 50.80953649822427,
+              "p_holm_family": 0.05960427850104239
+            },
+            "1.0": {
+              "yes_minus_no": -0.443064969574063,
+              "ci95": [
+                -0.758359846246795,
+                -0.127770092901331
+              ],
+              "p_nominal": 0.006801997988365715,
+              "df": 51.02238096935158,
+              "p_holm_family": 0.061217981895291436
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 55,
+          "n_excluded": 3,
+          "n_yes": 10,
+          "n_no": 42,
+          "equal_unit_means": {
+            "yes": -0.2542147645975761,
+            "no": -0.3042929068399176
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.08696126048852301,
+              "ci95": [
+                -0.4513686416338688,
+                0.6252911626109149
+              ],
+              "p_nominal": 0.7300007713654519,
+              "df": 11.506893268873338,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.08874375397307474,
+              "ci95": [
+                -0.45524797754892043,
+                0.63273548549507
+              ],
+              "p_nominal": 0.7277324724695861,
+              "df": 11.643099916694334,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.08935520930537716,
+              "ci95": [
+                -0.4600609684416866,
+                0.638771387052441
+              ],
+              "p_nominal": 0.7290075069070828,
+              "df": 11.887533579738665,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 55,
+          "n_excluded": 4,
+          "n_yes": 29,
+          "n_no": 22,
+          "equal_unit_means": {
+            "yes": -0.17424750060159197,
+            "no": -0.2660096066477778
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.22069608067595978,
+              "ci95": [
+                -0.08333388481276852,
+                0.5247260461646881
+              ],
+              "p_nominal": 0.14915513789108256,
+              "df": 32.77291551380124,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.2115849198578805,
+              "ci95": [
+                -0.1131558324928004,
+                0.5363256722085614
+              ],
+              "p_nominal": 0.19379456137649909,
+              "df": 31.786576573243302,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.20843648412730628,
+              "ci95": [
+                -0.12366416106886977,
+                0.5405371293234823
+              ],
+              "p_nominal": 0.21017717380184023,
+              "df": 31.5765215700513,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 55,
+          "n_excluded": 15,
+          "n_yes": 20,
+          "n_no": 20,
+          "equal_unit_means": {
+            "yes": -0.4910842976895521,
+            "no": -0.057590100777991246
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.49492457346782925,
+              "ci95": [
+                -0.8948519743500304,
+                -0.09499717258562812
+              ],
+              "p_nominal": 0.01684758321083772,
+              "df": 32.89304627301491,
+              "p_holm_family": 0.1516282488975395
+            },
+            "0.5": {
+              "yes_minus_no": -0.5081831296688472,
+              "ci95": [
+                -0.9227158671550334,
+                -0.09365039218266091
+              ],
+              "p_nominal": 0.017784217186137742,
+              "df": 33.59862423551885,
+              "p_holm_family": 0.16005795467523967
+            },
+            "1.0": {
+              "yes_minus_no": -0.5154452477034795,
+              "ci95": [
+                -0.9369325565186855,
+                -0.09395793888827358
+              ],
+              "p_nominal": 0.01802691733787575,
+              "df": 33.95358318018952,
+              "p_holm_family": 0.16224225604088177
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      }
+    },
+    "seed set": {
+      "paper": {
+        "autonomous": {
+          "n_total": 66,
+          "n_excluded": 5,
+          "n_yes": 14,
+          "n_no": 47,
+          "equal_unit_means": {
+            "yes": -0.04443941631932395,
+            "no": -0.2685819578494156
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.20983995633151167,
+              "ci95": [
+                0.006980226315505655,
+                0.4126996863475177
+              ],
+              "p_nominal": 0.042855902284444414,
+              "df": 58.4193029874319,
+              "p_holm_family": 0.3301944426035615
+            },
+            "0.5": {
+              "yes_minus_no": 0.21056887790212817,
+              "ci95": [
+                0.00195075160292002,
+                0.4191870042013363
+              ],
+              "p_nominal": 0.047963634295182134,
+              "df": 58.50221461024582,
+              "p_holm_family": 0.38370907436145707
+            },
+            "1.0": {
+              "yes_minus_no": 0.21193765392269695,
+              "ci95": [
+                -0.00013937859362453398,
+                0.4240146864390184
+              ],
+              "p_nominal": 0.050145882772669806,
+              "df": 58.55047704828583,
+              "p_holm_family": 0.40116706218135845
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 66,
+          "n_excluded": 4,
+          "n_yes": 37,
+          "n_no": 25,
+          "equal_unit_means": {
+            "yes": -0.08003781419083807,
+            "no": -0.3975749089490362
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.2953954409095188,
+              "ci95": [
+                -0.058058385229255105,
+                0.6488492670482927
+              ],
+              "p_nominal": 0.09767998085013765,
+              "df": 25.811643515172076,
+              "p_holm_family": 0.586079885100826
+            },
+            "0.5": {
+              "yes_minus_no": 0.29430994262732835,
+              "ci95": [
+                -0.06701125589754009,
+                0.6556311411521968
+              ],
+              "p_nominal": 0.10605540769135263,
+              "df": 25.974146179078073,
+              "p_holm_family": 0.6363324461481158
+            },
+            "1.0": {
+              "yes_minus_no": 0.2945910468434902,
+              "ci95": [
+                -0.07154859437878652,
+                0.6607306880657668
+              ],
+              "p_nominal": 0.11019272339289425,
+              "df": 26.05799691163235,
+              "p_holm_family": 0.6611563403573655
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 66,
+          "n_excluded": 21,
+          "n_yes": 24,
+          "n_no": 21,
+          "equal_unit_means": {
+            "yes": -0.41282761237191484,
+            "no": -0.1065795558176232
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.29798414701062215,
+              "ci95": [
+                -0.6799431140215189,
+                0.08397482000027451
+              ],
+              "p_nominal": 0.12118392133508064,
+              "df": 27.597616142132708,
+              "p_holm_family": 0.6059196066754032
+            },
+            "0.5": {
+              "yes_minus_no": -0.3024242663820928,
+              "ci95": [
+                -0.6931685521342761,
+                0.08832001937009043
+              ],
+              "p_nominal": 0.12409213585265347,
+              "df": 27.929736708749353,
+              "p_holm_family": 0.6363324461481158
+            },
+            "1.0": {
+              "yes_minus_no": -0.3047397268995771,
+              "ci95": [
+                -0.7000021929954459,
+                0.09052273919629167
+              ],
+              "p_nominal": 0.12552350961547992,
+              "df": 28.109249701507565,
+              "p_holm_family": 0.6611563403573655
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      },
+      "species": {
+        "autonomous": {
+          "n_total": 52,
+          "n_excluded": 4,
+          "n_yes": 13,
+          "n_no": 35,
+          "equal_unit_means": {
+            "yes": -0.051918905566342585,
+            "no": -0.17872278297407887
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.13934789541163045,
+              "ci95": [
+                -0.040478266298898335,
+                0.31917405712215924
+              ],
+              "p_nominal": 0.12565315842827204,
+              "df": 45.87752482702,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.13366762655795733,
+              "ci95": [
+                -0.04561748983001068,
+                0.31295274294592534
+              ],
+              "p_nominal": 0.140257944124698,
+              "df": 45.9982716194998,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.1292289183791657,
+              "ci95": [
+                -0.04901164343376033,
+                0.30746948019209175
+              ],
+              "p_nominal": 0.1512476597975323,
+              "df": 45.965750561179966,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "self_compatible": {
+          "n_total": 52,
+          "n_excluded": 4,
+          "n_yes": 31,
+          "n_no": 17,
+          "equal_unit_means": {
+            "yes": -0.09106247854295031,
+            "no": -0.2255133704272012
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": 0.14652823858937902,
+              "ci95": [
+                -0.17664850566133833,
+                0.4697049828400964
+              ],
+              "p_nominal": 0.35327619956644496,
+              "df": 17.8691883503132,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": 0.13034335055345653,
+              "ci95": [
+                -0.18574987043855995,
+                0.446436571545473
+              ],
+              "p_nominal": 0.3980329040525079,
+              "df": 18.269491093104605,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": 0.11615366445026974,
+              "ci95": [
+                -0.19245061804973274,
+                0.42475794695027225
+              ],
+              "p_nominal": 0.4400820965498051,
+              "df": 18.589107014413706,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        },
+        "pollen_limitation": {
+          "n_total": 52,
+          "n_excluded": 21,
+          "n_yes": 13,
+          "n_no": 18,
+          "equal_unit_means": {
+            "yes": -0.274630870130533,
+            "no": -0.12794306307327807
+          },
+          "contrasts": {
+            "0.0": {
+              "yes_minus_no": -0.15982944000710173,
+              "ci95": [
+                -0.5967943370548227,
+                0.27713545704061915
+              ],
+              "p_nominal": 0.4464746903119855,
+              "df": 14.326018557835562,
+              "p_holm_family": 1
+            },
+            "0.5": {
+              "yes_minus_no": -0.15415922858948405,
+              "ci95": [
+                -0.5920380658431538,
+                0.28371960866418566
+              ],
+              "p_nominal": 0.4639475078861136,
+              "df": 14.62978787478273,
+              "p_holm_family": 1
+            },
+            "1.0": {
+              "yes_minus_no": -0.1486641024744123,
+              "ci95": [
+                -0.5860282097678446,
+                0.2887000048190201
+              ],
+              "p_nominal": 0.47954451800773323,
+              "df": 14.797822987012133,
+              "p_holm_family": 1
+            }
+          },
+          "status": "EXPLORATORY_FIT"
+        }
+      }
+    }
+  },
+  "scope": "Post-open exploratory moderator comparisons on all eligible archived effects, not causal mating-system contrasts. Within-paper exact recorded contexts, paper as unit, species connected-component sensitivity, no phylogenetic correction. Binary archive labels only; ambiguous or mixed units excluded without imputing absence. Marginal outcome differences are separate from stage interactions. At least five units per moderator level before fitting. Holm across the 21 planned stage-pair/field comparisons within each scope and variance scenario; non-estimable comparisons p=1 for correction only.",
+  "prior_art_F_p_audit": {
+    "Corydalis_incisa_reported_F": 1.145,
+    "df": [
+      1,
+      232
+    ],
+    "reported_p": 0.042,
+    "computed_survival": 0.2857102658173867
+  }
+}

@@ -1,0 +1,27 @@
+name: Reconstruct authenticated Tirpitzia original row means
+on:
+  push:
+    branches: [analysis/stage-dependence-small-n-20261126]
+    paths:
+      - scripts/audit_tirpitzia_raw_points.py
+      - .github/workflows/tirpitzia-raw-points.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  raw:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install xlrd==2.0.1
+      - run: python -m scripts.recover_tirpitzia_female_originals
+      - run: python -m scripts.audit_tirpitzia_raw_points --source artifacts/tirpitzia_female_original --out artifacts/tirpitzia_raw_points/RESULT.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tirpitzia-raw-points
+          path: artifacts/tirpitzia_raw_points/RESULT.json
+          if-no-files-found: error
