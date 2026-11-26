@@ -1,0 +1,413 @@
+{
+  "provenance": {
+    "run": 45759575380,
+    "job": 139706147956,
+    "head": "0ad9e51ef92bc5d07fe4d639f79e8d0879c3b99c",
+    "artifact_id": 15089161255,
+    "artifact_digest": "sha256:99b5641717b41089fc8fb969cc6074ec22095c603033b72bba6c8f55769a6bdd"
+  },
+  "tables": {
+    "germination": {
+      "header": [
+        "pollen germination rate （%）",
+        "intermorph pollination （1） intermorph pollination of pollen recipients with rob holes (2) intermorph pollination of pollen recipients after nectar removal （3） ",
+        "L- morph (1) S- morph (2) "
+      ],
+      "raw_rows": 169,
+      "missing_outcome_rows": [],
+      "groups_by_original_code": {
+        "1/1": {
+          "n_rows": 34,
+          "mean": 83.442494645,
+          "sd_rows": 24.707793043395082,
+          "naive_row_se": 4.237351548936179,
+          "min": 25,
+          "max": 100,
+          "zero_rows": 0
+        },
+        "1/2": {
+          "n_rows": 31,
+          "mean": 58.58611582,
+          "sd_rows": 7.216662531546784,
+          "naive_row_se": 1.2961508536037702,
+          "min": 50.4587156,
+          "max": 78.125,
+          "zero_rows": 0
+        },
+        "1/3": {
+          "n_rows": 28,
+          "mean": 59.55328052142857,
+          "sd_rows": 9.400559591081231,
+          "naive_row_se": 1.776538775917427,
+          "min": 45.52238806,
+          "max": 80.95238095,
+          "zero_rows": 0
+        },
+        "2/1": {
+          "n_rows": 31,
+          "mean": 87.12854349967742,
+          "sd_rows": 26.241986510086374,
+          "naive_row_se": 4.713199912926616,
+          "min": 0,
+          "max": 100,
+          "zero_rows": 1
+        },
+        "2/2": {
+          "n_rows": 20,
+          "mean": 49.2065906185,
+          "sd_rows": 20.223671950266862,
+          "naive_row_se": 4.522150523545244,
+          "min": 13.7254902,
+          "max": 85.33333333,
+          "zero_rows": 0
+        },
+        "2/3": {
+          "n_rows": 25,
+          "mean": 49.0182908,
+          "sd_rows": 16.64276062312218,
+          "naive_row_se": 3.328552124624436,
+          "min": 14.08450704,
+          "max": 72.13114754,
+          "zero_rows": 0
+        }
+      }
+    },
+    "tube": {
+      "header": [
+        "pollen tube length (mm)",
+        "intermorph pollination （1） intermorph pollination of pollen recipients with rob holes (2) intermorph pollination of pollen recipients after nectar removal （3）",
+        " S- morph (1) L- morph (2)"
+      ],
+      "raw_rows": 179,
+      "missing_outcome_rows": [],
+      "groups_by_original_code": {
+        "1/1": {
+          "n_rows": 30,
+          "mean": 723.3926666666666,
+          "sd_rows": 159.4886587673315,
+          "naive_row_se": 29.11851202437051,
+          "min": 314.23,
+          "max": 1016.15,
+          "zero_rows": 0
+        },
+        "1/2": {
+          "n_rows": 29,
+          "mean": 739.643448275862,
+          "sd_rows": 159.37904610608237,
+          "naive_row_se": 29.595945865004907,
+          "min": 304.67,
+          "max": 999.91,
+          "zero_rows": 0
+        },
+        "1/3": {
+          "n_rows": 30,
+          "mean": 743.0553333333334,
+          "sd_rows": 161.6042263601768,
+          "naive_row_se": 29.50476005521327,
+          "min": 602.18,
+          "max": 1413.44,
+          "zero_rows": 0
+        },
+        "2/1": {
+          "n_rows": 30,
+          "mean": 733.622,
+          "sd_rows": 156.95095013279214,
+          "naive_row_se": 28.6551919365329,
+          "min": 459.72,
+          "max": 1025.19,
+          "zero_rows": 0
+        },
+        "2/2": {
+          "n_rows": 30,
+          "mean": 741.769,
+          "sd_rows": 106.63857506582205,
+          "naive_row_se": 19.469451021252898,
+          "min": 520.55,
+          "max": 902.79,
+          "zero_rows": 0
+        },
+        "2/3": {
+          "n_rows": 30,
+          "mean": 746.8016666666666,
+          "sd_rows": 263.6025048162523,
+          "naive_row_se": 48.12701270090852,
+          "min": 441.79,
+          "max": 1504.05,
+          "zero_rows": 0
+        }
+      }
+    },
+    "seed": {
+      "header": [
+        "seed set(%)",
+        "treatments",
+        "L-morph (1) S-morph (2)",
+        "number",
+        "the meaning for treatments"
+      ],
+      "raw_rows": 412,
+      "missing_outcome_rows": [],
+      "groups_by_original_code": {
+        "1/1": {
+          "n_rows": 50,
+          "mean": 52.7,
+          "sd_rows": 25.648924869061773,
+          "naive_row_se": 3.627305741011572,
+          "min": 12.5,
+          "max": 100,
+          "zero_rows": 0
+        },
+        "1/2": {
+          "n_rows": 38,
+          "mean": 39.473684210526315,
+          "sd_rows": 23.703958891729986,
+          "naive_row_se": 3.8452898978416137,
+          "min": 12.5,
+          "max": 87.5,
+          "zero_rows": 0
+        },
+        "1/3": {
+          "n_rows": 23,
+          "mean": 80.1086956521739,
+          "sd_rows": 26.973032206319743,
+          "naive_row_se": 5.624266005843368,
+          "min": 0,
+          "max": 100,
+          "zero_rows": 1
+        },
+        "1/4": {
+          "n_rows": 50,
+          "mean": 33.5,
+          "sd_rows": 28.171305418450025,
+          "naive_row_se": 3.9840242192526683,
+          "min": 0,
+          "max": 87.5,
+          "zero_rows": 14
+        },
+        "1/5": {
+          "n_rows": 50,
+          "mean": 40,
+          "sd_rows": 31.032405708897798,
+          "naive_row_se": 4.388644902658752,
+          "min": 0,
+          "max": 100,
+          "zero_rows": 13
+        },
+        "2/1": {
+          "n_rows": 50,
+          "mean": 48.5,
+          "sd_rows": 18.837381420343704,
+          "naive_row_se": 2.6640080284245022,
+          "min": 12.5,
+          "max": 87.5,
+          "zero_rows": 0
+        },
+        "2/2": {
+          "n_rows": 22,
+          "mean": 39.77272727272727,
+          "sd_rows": 23.34917520350521,
+          "naive_row_se": 4.978060879699967,
+          "min": 0,
+          "max": 87.5,
+          "zero_rows": 2
+        },
+        "2/3": {
+          "n_rows": 29,
+          "mean": 61.206896551724135,
+          "sd_rows": 30.49898044003723,
+          "naive_row_se": 5.6635184868680035,
+          "min": 0,
+          "max": 100,
+          "zero_rows": 3
+        },
+        "2/4": {
+          "n_rows": 50,
+          "mean": 42.9,
+          "sd_rows": 29.147583650331313,
+          "naive_row_se": 4.122090810870283,
+          "min": 0,
+          "max": 100,
+          "zero_rows": 6
+        },
+        "2/5": {
+          "n_rows": 50,
+          "mean": 47.25,
+          "sd_rows": 26.40080587823804,
+          "naive_row_se": 3.7336377730583563,
+          "min": 0,
+          "max": 87.5,
+          "zero_rows": 4
+        }
+      }
+    }
+  },
+  "germination_seed_reconstruction": [
+    {
+      "morph": "L",
+      "arm": "C",
+      "endpoint": "germination",
+      "raw_mean": 83.442494645,
+      "reported_mean": 83.55,
+      "difference": -0.10750535500000069,
+      "raw_naive_row_se": 4.237351548936179,
+      "reported_se": 4.59
+    },
+    {
+      "morph": "L",
+      "arm": "C",
+      "endpoint": "seed",
+      "raw_mean": 80.1086956521739,
+      "reported_mean": 80.11,
+      "difference": -0.0013043478260925667,
+      "raw_naive_row_se": 5.624266005843368,
+      "reported_se": 5.62
+    },
+    {
+      "morph": "L",
+      "arm": "H",
+      "endpoint": "germination",
+      "raw_mean": 58.58611582,
+      "reported_mean": 58.59,
+      "difference": -0.003884180000000015,
+      "raw_naive_row_se": 1.2961508536037702,
+      "reported_se": 1.3
+    },
+    {
+      "morph": "L",
+      "arm": "H",
+      "endpoint": "seed",
+      "raw_mean": 33.5,
+      "reported_mean": 33.5,
+      "difference": 0,
+      "raw_naive_row_se": 3.9840242192526683,
+      "reported_se": 3.89
+    },
+    {
+      "morph": "L",
+      "arm": "N",
+      "endpoint": "germination",
+      "raw_mean": 59.55328052142857,
+      "reported_mean": 59.55,
+      "difference": 0.0032805214285716033,
+      "raw_naive_row_se": 1.776538775917427,
+      "reported_se": 1.78
+    },
+    {
+      "morph": "L",
+      "arm": "N",
+      "endpoint": "seed",
+      "raw_mean": 40,
+      "reported_mean": 40,
+      "difference": 0,
+      "raw_naive_row_se": 4.388644902658752,
+      "reported_se": 4.39
+    },
+    {
+      "morph": "S",
+      "arm": "C",
+      "endpoint": "germination",
+      "raw_mean": 87.12854349967742,
+      "reported_mean": 87.13,
+      "difference": -0.0014565003225754936,
+      "raw_naive_row_se": 4.713199912926616,
+      "reported_se": 4.71
+    },
+    {
+      "morph": "S",
+      "arm": "C",
+      "endpoint": "seed",
+      "raw_mean": 61.206896551724135,
+      "reported_mean": 61.21,
+      "difference": -0.0031034482758656168,
+      "raw_naive_row_se": 5.6635184868680035,
+      "reported_se": 5.66
+    },
+    {
+      "morph": "S",
+      "arm": "H",
+      "endpoint": "germination",
+      "raw_mean": 49.2065906185,
+      "reported_mean": 49.212,
+      "difference": -0.005409381500001587,
+      "raw_naive_row_se": 4.522150523545244,
+      "reported_se": 4.52
+    },
+    {
+      "morph": "S",
+      "arm": "H",
+      "endpoint": "seed",
+      "raw_mean": 42.9,
+      "reported_mean": 42.9,
+      "difference": 0,
+      "raw_naive_row_se": 4.122090810870283,
+      "reported_se": 3.2
+    },
+    {
+      "morph": "S",
+      "arm": "N",
+      "endpoint": "germination",
+      "raw_mean": 49.0182908,
+      "reported_mean": 49.02,
+      "difference": -0.0017092000000005214,
+      "raw_naive_row_se": 3.328552124624436,
+      "reported_se": 3.33
+    },
+    {
+      "morph": "S",
+      "arm": "N",
+      "endpoint": "seed",
+      "raw_mean": 47.25,
+      "reported_mean": 47.25,
+      "difference": 0,
+      "raw_naive_row_se": 3.7336377730583563,
+      "reported_se": 3.73
+    }
+  ],
+  "morph_stage_contrasts": {
+    "L": {
+      "H": {
+        "germination_lnRR": -0.353659970605862,
+        "seed_lnRR": -0.8718389693033212,
+        "delta": -0.5181789986974592
+      },
+      "N": {
+        "germination_lnRR": -0.3372863249117903,
+        "seed_lnRR": -0.6945049540204056,
+        "delta": -0.3572186291086153
+      },
+      "tube_sheet_header": {
+        "H": 0.01104396435483137,
+        "N": 0.017805733821942865
+      },
+      "tube_README": {
+        "H": 0.022216061276131332,
+        "N": 0.02681833265049592
+      }
+    },
+    "S": {
+      "H": {
+        "germination_lnRR": -0.5713569695114188,
+        "seed_lnRR": -0.3553880459890708,
+        "delta": 0.21596892352234798
+      },
+      "N": {
+        "germination_lnRR": -0.5751910296079683,
+        "seed_lnRR": -0.25880721798329037,
+        "delta": 0.31638381162467794
+      },
+      "tube_sheet_header": {
+        "H": 0.022216061276131332,
+        "N": 0.02681833265049592
+      },
+      "tube_README": {
+        "H": 0.01104396435483137,
+        "N": 0.017805733821942865
+      }
+    }
+  },
+  "L_minus_S_delta": {
+    "H": -0.7341479222198072,
+    "N": -0.6736024407332932
+  },
+  "scope": "Original raw row summaries only. Germination and seed code L=1/S=2 agreed by headers and README; tube code disagrees (sheet S=1/L=2, README L=1/S=2). Report both tube mappings, do not choose on outcome. No plant IDs, no cross-stage cohort linkage, no valid cluster covariance from archive. Naive row SE diagnostic only; no row-based hypothesis tests or bootstrap. Seed table includes distinct natural-robbing and hand-pollination experiments. No causal mediation or new independent study count."
+}

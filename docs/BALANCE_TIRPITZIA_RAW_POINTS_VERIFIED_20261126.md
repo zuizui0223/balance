@@ -1,0 +1,9 @@
+# Verified original Tirpitzia row summaries (2026-11-26)
+
+Source DOI 10.5061/dryad.6hdr7sr62. Dryad version 259753, Zenodo record 8435776. Four original files (germination, tube length, seed set, README) verified against both independently registered checksums and exact file lengths, run 45759420625. Actual raw reanalysis run 45759575380 succeeded, artifact 15089161255 sha256:99b5641717b41089fc8fb969cc6074ec22095c603033b72bba6c8f55769a6bdd. Earlier MD5-only filter excluded the Dryad SHA-256 file metadata. This is now resolved.
+
+Germination 169 rows, tube 179, seed 412. No missing outcome cells among these rows. No plant IDs or cross-stage individual IDs. Germination and seed morph code L=1/S=2 confirmed by both headers and README. Tube header says S=1/L=2, README says L=1/S=2; retain both code mappings, no outcome-based relabeling. Tube means increase slightly after either intervention under both mappings. No tube-stage causal inference.
+
+The hand-pollination germination and seed arithmetic group means closely match reported values. L control germination raw 83.4425 vs printed 83.55; S hole seed mean 42.9 reproduced, but raw row-wise SE 4.1221 vs printed 3.20. Row-wise SE is a diagnostic, not valid plant-cluster uncertainty; do not correct printed SE by assumption.
+
+Raw germination-to-seed point difference of lnRRs: artificial hole L -.518179, S +.215969, L-S -.734148; nectar removal L -.357219, S +.316384, L-S -.673602. This reproduces the opposing morph-specific point directions from #289. Germination is destructive collection and seed measurement belongs to a separate experiment; no identifiable within-plant covariance or causal path. Distinct natural-robbery groups retained separately. No hypothesis test treating raw flower rows as independent plants. Previous conservative reported-SE intervals span zero for morph interaction. Do not add this study as a second independent source to Zhong or promote to V4/structural BALANCE.
